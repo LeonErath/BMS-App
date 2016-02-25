@@ -1,0 +1,168 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="leon.bms.Fragment_Highlight"
+    android:background="@drawable/tafel_schwarz">
+
+
+ <LinearLayout
+     android:layout_marginTop="16dp"
+     android:layout_width="fill_parent"
+     android:orientation="vertical"
+     android:layout_height="wrap_content"
+     android:layout_alignParentTop="true"
+     android:layout_alignParentStart="true">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Deine Stunde:"
+        android:id="@+id/textView2"
+        android:textColor="#fff"
+        android:layout_margin="8dp" />
+
+     <android.support.v7.widget.CardView
+         xmlns:android="http://schemas.android.com/apk/res/android"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         app:cardBackgroundColor="#afffffff"
+         android:id="@+id/cardView">
+
+         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="horizontal" android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:foreground="?android:attr/selectableItemBackground"
+             android:layout_margin="8dp">
+
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceLarge"
+                 android:text="10"
+                 android:textSize="25dp"
+                 android:id="@+id/textViewNumber"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentStart="true" />
+
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Stundenname"
+                 android:textColor="#000000"
+                 android:id="@+id/textViewStunde"
+                 android:layout_toStartOf="@+id/textViewRaum"
+                 android:layout_toEndOf="@+id/textViewNumber"/>
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Lehrer"
+                 android:id="@+id/textViewLehrer"
+                 android:layout_below="@+id/textViewStunde"
+                 android:textSize="14dp"
+                 android:layout_toStartOf="@+id/textViewRaum"
+                 android:layout_toEndOf="@+id/textViewNumber" />
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Raum"
+                 android:id="@+id/textViewRaum"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentEnd="true" />
+
+
+         </RelativeLayout>
+     </android.support.v7.widget.CardView>
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:text="Nächste Stunde:"
+         android:id="@+id/textView4"
+         android:textColor="#fff"
+         android:layout_margin="8dp" />
+
+     <android.support.v7.widget.CardView
+         xmlns:android="http://schemas.android.com/apk/res/android"
+         app:cardBackgroundColor="#afffffff"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent"
+         android:id="@+id/cardView2">
+
+         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:orientation="horizontal" android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:foreground="?android:attr/selectableItemBackground"
+             android:layout_margin="8dp">
+
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceLarge"
+                 android:text="10"
+                 android:textSize="25dp"
+                 android:id="@+id/textViewNumber2"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentStart="true" />
+
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Stundenname"
+                 android:textColor="#000000"
+                 android:id="@+id/textViewStunde2"
+                 android:layout_toStartOf="@+id/textViewRaum2"
+                 android:layout_toEndOf="@+id/textViewNumber2"/>
+             <TextView
+                 android:layout_marginRight="8dp"
+                 android:layout_width="fill_parent"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Lehrer"
+                 android:id="@+id/textViewLehrer2"
+                 android:layout_below="@+id/textViewStunde2"
+                 android:textSize="14dp"
+                 android:layout_toStartOf="@+id/textViewRaum2"
+                 android:layout_toEndOf="@+id/textViewNumber2" />
+
+             <TextView
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:textAppearance="?android:attr/textAppearanceMedium"
+                 android:text="Raum"
+                 android:id="@+id/textViewRaum2"
+                 android:layout_centerVertical="true"
+                 android:layout_alignParentEnd="true" />
+
+
+         </RelativeLayout>
+     </android.support.v7.widget.CardView>
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:textAppearance="?android:attr/textAppearanceMedium"
+         android:text="Newscenter:"
+         android:id="@+id/textView3"
+         android:textColor="#fff"
+         android:layout_marginTop="32dp"
+         android:layout_marginBottom="8dp"
+         android:layout_marginLeft="8dp"/>
+
+     <android.support.v7.widget.RecyclerView
+         android:id="@+id/recycler_view"
+         android:layout_width="match_parent"
+         android:layout_height="match_parent" />
+</LinearLayout>
+</RelativeLayout>

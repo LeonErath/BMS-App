@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="leon.bms.AufgabenActivity">
+    <item
+        android:id="@+id/menu_finnish"
+        android:icon="@drawable/ic_done_white_48dp"
+        android:orderInCategory="1"
+        app:showAsAction="always"
+        android:title="Finnish" />
+</menu>

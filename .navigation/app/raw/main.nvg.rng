@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+    <start>
+        <element name="navigationModel">
+            <attribute name="ns">
+                <data type="anyURI"/>
+            </attribute>
+            <element name="locations">
+                <attribute name="class">
+                    <data type="NCName"/>
+                </attribute>
+                <oneOrMore>
+                    <element name="statePointEntry">
+                        <element name="state">
+                            <attribute name="class"/>
+                            <attribute name="className">
+                                <data type="NCName"/>
+                            </attribute>
+                        </element>
+                        <element name="point">
+                            <attribute name="x">
+                                <data type="integer"/>
+                            </attribute>
+                            <attribute name="y">
+                                <data type="integer"/>
+                            </attribute>
+                        </element>
+                    </element>
+                </oneOrMore>
+            </element>
+        </element>
+    </start>
+</grammar>

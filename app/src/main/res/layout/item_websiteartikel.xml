@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+
+<android.support.v7.widget.CardView
+    android:layout_margin="8dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recycler_view">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:id="@+id/imageView"
+        android:layout_alignTop="@+id/recycler_view"
+        android:layout_alignStart="@+id/recycler_view" />
+    <RelativeLayout
+        android:layout_below="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp">
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Hier eine große Überschrift"
+        android:id="@+id/textViewHeadline"
+        android:layout_below="@+id/imageView"
+        />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Hier kommt ein langer Text rein der irgendwas über den Artikel aussagt aber sich kaum einer durchliest weil sich jeder nur das bild anguckt"
+        android:id="@+id/textViewExcerpt"
+        android:layout_below="@+id/textViewHeadline"
+        android:layout_marginTop="8dp" />
+
+    </RelativeLayout>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
+
+
+
+</RelativeLayout>

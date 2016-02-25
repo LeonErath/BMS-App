@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">BMS</string>
+    <string-array name="week_arrays">
+        <item>Montag</item>
+        <item>Dienstag</item>
+        <item>Mittwoch</item>
+        <item>Donnerstag</item>
+        <item>Freitag</item>
+    </string-array>
+    <string name="week_prompt">Wähle einen Wochentag</string>
+    <string name="date_prompt">Datum auswählen</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_aufgaben">AufgabenActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_website_article">WebsiteArticleActivity</string>
+    <string name="title_activity_introduction">IntroductionActivity</string>
+
+</resources>

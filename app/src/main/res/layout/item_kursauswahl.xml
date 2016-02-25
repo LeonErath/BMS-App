@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="?android:attr/selectableItemBackground">
+
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="FACHNAME"
+                android:id="@+id/textViewFachname"
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="16dp"
+                />
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:textSize="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="FACHID"
+                android:id="@+id/textViewFachid"
+                android:layout_below="@+id/textViewFachname"
+                android:layout_alignStart="@+id/textViewFachname" />
+
+            <TextView
+                android:textSize="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="LEHRER"
+                android:id="@+id/textViewFachlehrer"
+                android:layout_below="@+id/textViewFachid"
+                android:layout_alignStart="@+id/textViewFachid" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="ART"
+                android:id="@+id/textViewArt"
+                android:layout_marginRight="60dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="#5e5e5e"></RelativeLayout>
+
+
+
+
+        </RelativeLayout>
+        <View
+            android:id="@+id/selected_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#88545454"
+            android:visibility="invisible" />
+    </android.support.v7.widget.CardView>

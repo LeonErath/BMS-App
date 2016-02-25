@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context="leon.bms.AufgabenActivity"
+    android:background="#e0e0e0">
+
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:fitsSystemWindows="true"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme" />
+
+
+    </android.support.design.widget.AppBarLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_marginBottom="16dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_margin="16dp"
+        android:layout_height="fill_parent"
+       >
+
+
+        <android.support.v7.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="8dp"
+            card_view:cardCornerRadius="4dp"
+            android:layout_marginBottom="20dp"
+            android:id="@+id/cardView">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Aufgabe"
+                android:id="@+id/textView8"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextBeschreibung"
+                android:layout_centerVertical="true"
+                 />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Beschreibung"
+                android:id="@+id/textView9"
+                />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="100dp"
+                android:id="@+id/editTextNotizen"
+                android:layout_centerVertical="true"
+                android:textColor="@color/fallback"
+                android:layout_marginBottom="16dp"
+                />
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="8dp"
+            card_view:cardCornerRadius="4dp"
+            android:id="@+id/cardView2">
+
+            <LinearLayout
+                android:layout_margin="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.25"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Kurs:"
+            android:id="@+id/textViewKurs"
+             />
+
+        <Spinner
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.75"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner2"
+            android:spinnerMode="dialog"
+
+            />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Datum:"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/textView4"
+             />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.75"
+                android:textSize="16dp"
+                android:layout_height="wrap_content"
+                android:text=" Datum auswählen"
+                android:textColor="#000"
+                android:layout_gravity="center"
+                android:id="@+id/textViewDatePicker"
+                style="@style/Widget.AppCompat.Spinner" />
+            </LinearLayout>
+        </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="32dp"
+    android:orientation="horizontal">
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_height="wrap_content">
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabCamera"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_photo_camera_white_48dp"
+        app:backgroundTint="#00897B"
+        app:elevation="4dp"
+        /></RelativeLayout>
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_weight="0.5"
+        android:layout_height="wrap_content">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fabGallarie"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_insert_photo_white_48dp"
+            app:backgroundTint="#607D8B"
+            app:elevation="4dp"
+            /></RelativeLayout>
+</LinearLayout>
+        <android.support.v7.widget.CardView
+            android:animateLayoutChanges="true"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="16dp"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            card_view:cardElevation="8dp"
+            card_view:cardCornerRadius="4dp"
+            android:visibility="invisible"
+            android:id="@+id/cardView3">
+<LinearLayout
+    android:animateLayoutChanges="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/linearLayout1"
+    android:orientation="vertical"
+    ></LinearLayout>
+</android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</ScrollView>
+
+</LinearLayout>
