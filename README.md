@@ -7,3 +7,15 @@ Die App wird es für IOS und Android geben. Sie beinhaltet außerdem auch ein ei
 der Vertretungsplan oder andere Dinge verwaltet werden können. Es sollen viele verschiedene Funktionen eingebunden werden sodass der Schulalltag bestmöglich erleichtert wird. Dazu kommen Funktionen , wie ein Kalender der die aktuellen Termine überschaulich darstellen soll und eine effiziente Planung für Prüfung und Hausaufgaben bereitstellt. Auch aktuelle Nachrichten und Informationen zum Tagesgeschehen in der Schule sollen angezeigt werden. Außerdem soll die Website , der Marienschule und deren Artikel mit in die App eingebunden werden und dynamisch auf die Interessen der User angezeigt werden. Die App soll nicht nur Informieren sondern den Schülern auch beim lernen unterstützten indem eine Quiz eingebaut werden soll , wo ausgewählte Fragen von Lehrer abgefragt werden , die sich auf den aktuellen Schulstoff beziehen, oder auf die nächste Klausur vorbereiten sollen . Aber nicht nur der Schüler soll von der App profitieren sondern auch die Lehrer die damit auch ihren eigenen Stundenplan zusammenstellen können und somit ihren eigenen Alltag besser strukturieren können. Das ist nur ein Teil der möglichen Funktionen die man einbauen könnte.
  
 Schwerpunkt der App sollte Individualität sein. Jeder Schüler wird seinen eigen Stundenplan zusammengestellt und der Vertretungsplan,Klausurplan und Artikel der Website sollen sich dynamisch darauf aufbauen. Dazu kommt das die Daten mit größtmöglichen Vertrauen behandelt werden und die persönliche Daten vor möglichen Abgreifern gesichert werden sollen. Die App soll nur für Schüler der Bischöflichen Marienschule verfügbar seien und ein Projekt von Schülern für Schülern sein.
+
+Stand 25.02:Aufgaben Feature
+![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Aufgaben.PNG)
+
+Stand 25.02:Stundenplan Feature
+![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Stundenplan.PNG)
+
+Stand 25.02:Welcome Bildschirm
+![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Welcome.PNG)
+
+Stand 25.02:Article Feature
+![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/screenshot_article.PNG)
