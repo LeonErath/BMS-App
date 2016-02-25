@@ -395,17 +395,19 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
             /** Überprüft die LK : man MUSS 2 LKS haben und die Schulstunden dürfen nicht gleich
              *  sein
              */
-            if (lkList.size()==2){
-                List<dbSchulstunde>stundenList = lkList.get(0).getSchulStunden(lkList.get(0).getId());
-                List<dbSchulstunde>stundenList2 = lkList.get(1).getSchulStunden(lkList.get(1).getId());
+            if (new dbUser().getUser().stufe.equals("Q2")||new dbUser().getUser().stufe.equals("Q1")){
+                if (lkList.size()==2){
+                    List<dbSchulstunde>stundenList = lkList.get(0).getSchulStunden(lkList.get(0).getId());
+                    List<dbSchulstunde>stundenList2 = lkList.get(1).getSchulStunden(lkList.get(1).getId());
 
-                if (stundenList.get(0).wochentag == stundenList2.get(0).wochentag && stundenList.get(0).beginnzeit == stundenList2.get(0).beginnzeit){
-                    Log.d("CHECK","LKs funktionieren nicht zusammen");
+                    if (stundenList.get(0).wochentag == stundenList2.get(0).wochentag && stundenList.get(0).beginnzeit == stundenList2.get(0).beginnzeit){
+                        Log.d("CHECK", "LKs funktionieren nicht zusammen");
+                        return false;
+                    }
+                }else {
+                    Log.d("CHECK","LKs sind zu wenige oder zu viele");
                     return false;
                 }
-            }else {
-                Log.d("CHECK","LKs sind zu wenige oder zu viele");
-                return false;
             }
 
             Log.d("SIZE","GKLISTE: "+gkList.size());
