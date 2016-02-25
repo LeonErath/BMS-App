@@ -46,6 +46,7 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
 
         // kurseList wird durch die Methode sortierteListe() mit allen verfügbaren Kursen gefüllt
         kurseList = sortierteListe();
+        Log.d(TAG,kurseList.size()+"");
         // Adapter bekommt die Kurseliste für die Anzeige der Kurse
         kursauswahlAdapter = new KursauswahlAdapter(this,kurseList);
 
@@ -64,17 +65,35 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
      *   diese nach ihren Namen sodass sie nacher bei der Anzeige sortiert angezeigt werden
      */
     public List<dbKurs> sortierteListe(){
-        List<dbKurs> lkList = sortListASC(new dbKurs().kursartListe(0));
-        List<dbKurs> gkList =  sortListASC(new dbKurs().kursartListe(1));
-        List<dbKurs> pkList =  sortListASC(new dbKurs().kursartListe(2));
-        List<dbKurs> agList =  sortListASC(new dbKurs().kursartListe(3));
+        List<dbKurs> sortiereListe = new ArrayList<>();
+
+        if (new dbKurs().kursartListe(0).size() > 0){
+            List<dbKurs> lkList = sortListASC(new dbKurs().kursartListe(0));
+            Log.d(TAG, lkList.size()+"");
+            sortiereListe.addAll(lkList);
+
+        }
+        if (new dbKurs().kursartListe(1).size() > 0){
+            List<dbKurs> gkList =  sortListASC(new dbKurs().kursartListe(1));
+            Log.d(TAG, gkList.size()+"");
+            sortiereListe.addAll(gkList);
+
+        }
+        if (new dbKurs().kursartListe(2).size() > 0){
+            List<dbKurs> pkList =  sortListASC(new dbKurs().kursartListe(2));
+            Log.d(TAG, pkList.size()+"");
+            sortiereListe.addAll(pkList);
+
+        }
+        if (new dbKurs().kursartListe(3).size() > 0){
+            List<dbKurs> agList =  sortListASC(new dbKurs().kursartListe(3));
+            Log.d(TAG, agList.size()+"");
+            sortiereListe.addAll(agList);
+
+        }
 
 
 
-        List<dbKurs> sortiereListe = lkList;
-        sortiereListe.addAll(gkList);
-        sortiereListe.addAll(pkList);
-        sortiereListe.addAll(agList);
         // gibt die sortierteListe zurück
         return sortiereListe;
 
@@ -83,12 +102,13 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
     /** @sortiereListASC sortiert die Liste nach ihrem Name von A bis Z durch
      */
     public List<dbKurs> sortListASC(List<dbKurs> list){
-        Collections.sort(list, new Comparator<dbKurs>() {
-            @Override
-            public int compare(dbKurs lhs, dbKurs rhs) {
-                return lhs.getFach().compareTo(rhs.getFach());
-            }
-        });
+            Collections.sort(list, new Comparator<dbKurs>() {
+                @Override
+                public int compare(dbKurs lhs, dbKurs rhs) {
+                    return lhs.getName().compareTo(rhs.getName());
+                }
+            });
+
         return list;
     }
 

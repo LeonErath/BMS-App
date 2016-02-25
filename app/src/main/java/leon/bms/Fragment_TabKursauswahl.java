@@ -42,20 +42,35 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
     }
 
     public List<dbKurs> sortierteListe(){
+        List<dbKurs> sortiereListe = new ArrayList<>();
+
+        if (new dbKurs().kursartListe(0).size() > 0){
         List<dbKurs> lkList = sortListASC(new dbKurs().kursartListe(0));
         Log.d(TAG, lkList.size()+"");
+            sortiereListe.addAll(lkList);
+
+        }
+        if (new dbKurs().kursartListe(1).size() > 0){
         List<dbKurs> gkList =  sortListASC(new dbKurs().kursartListe(1));
         Log.d(TAG, gkList.size()+"");
+            sortiereListe.addAll(gkList);
+
+        }
+        if (new dbKurs().kursartListe(2).size() > 0){
         List<dbKurs> pkList =  sortListASC(new dbKurs().kursartListe(2));
         Log.d(TAG, pkList.size()+"");
+            sortiereListe.addAll(pkList);
+
+        }
+        if (new dbKurs().kursartListe(3).size() > 0){
         List<dbKurs> agList =  sortListASC(new dbKurs().kursartListe(3));
         Log.d(TAG, agList.size()+"");
+            sortiereListe.addAll(agList);
+
+        }
 
 
-        List<dbKurs> sortiereListe = lkList;
-        sortiereListe.addAll(gkList);
-        sortiereListe.addAll(pkList);
-        sortiereListe.addAll(agList);
+
         // gibt die sortierteListe zurück
         return sortiereListe;
 
@@ -88,7 +103,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
         Collections.sort(list, new Comparator<dbKurs>() {
             @Override
             public int compare(dbKurs lhs, dbKurs rhs) {
-                return lhs.getFach().compareTo(rhs.getFach());
+                return lhs.getName().compareTo(rhs.getName());
             }
         });
         return list;
