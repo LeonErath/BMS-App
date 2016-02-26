@@ -42,10 +42,12 @@
             android:value="leon.bms" />
 
         <activity android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"/>
         <activity android:name=".KursauswahlActivity"
             />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".AufgabenActivity"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"

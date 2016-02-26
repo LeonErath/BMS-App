@@ -9,6 +9,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="windowActionModeOverlay">true</item>
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
+        <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
         <item name="android:editTextStyle">@style/RobotoEditTextStyle</item>
         <item name="android:toolbarStyle">@style/RobotoToolbarStylee</item>

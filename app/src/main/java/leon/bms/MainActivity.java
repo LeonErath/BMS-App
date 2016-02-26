@@ -1,32 +1,33 @@
 package leon.bms;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity  {
 
     Toolbar toolbar;
+    TextView textViewHeaderName, textViewHeaderDatum;
     ViewPager viewPager;
     TabLayout tabLayout;
+    NavigationView navigationView;
+    DrawerLayout drawerLayoutgesamt;
+    ActionBarDrawerToggle drawerToggle;
     int[] tabIcons;
 
 
@@ -41,6 +42,12 @@ public class MainActivity extends AppCompatActivity  {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Highlights");
 
+        drawerLayoutgesamt = (DrawerLayout) findViewById(R.id.drawerlayoutgesamt);
+        drawerToggle = new ActionBarDrawerToggle(MainActivity.this,drawerLayoutgesamt,R.string.auf, R.string.zu);
+        drawerLayoutgesamt.setDrawerListener(drawerToggle);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        drawerToggle.syncState();
 
         //viewpager for tablayout
         viewPager = (ViewPager) findViewById(R.id.viewpager);
@@ -69,6 +76,13 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
+        navigationView = (NavigationView) findViewById(R.id.navView);
+        View headerLayout = navigationView.getHeaderView(0);
+        textViewHeaderName = (TextView) headerLayout.findViewById(R.id.headerName);
+        textViewHeaderDatum = (TextView) headerLayout.findViewById(R.id.headerEmail);
+
+        textViewHeaderName.setText(new dbUser().getUser().vorname +" "+new dbUser().getUser().nachname);
+        textViewHeaderDatum.setText("Deine Stufe: "+new dbUser().getUser().stufe);
 
     }
 
@@ -138,6 +152,9 @@ public class MainActivity extends AppCompatActivity  {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (drawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
         switch (id){
             case R.id.action_settings: return true;
             case R.id.action_logout:
@@ -172,5 +189,16 @@ public class MainActivity extends AppCompatActivity  {
         dbSchulstunde.deleteAll(dbSchulstunde.class);
         dbMediaFile.deleteAll(dbMediaFile.class);
         dbLehrer.deleteAll(dbLehrer.class);
+    }
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(new Configuration());
     }
 }

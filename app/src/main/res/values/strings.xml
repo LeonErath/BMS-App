@@ -7,6 +7,8 @@
         <item>Donnerstag</item>
         <item>Freitag</item>
     </string-array>
+    <string name="auf">open</string>
+    <string name="zu">closed</string>
     <string name="week_prompt">Wähle einen Wochentag</string>
     <string name="date_prompt">Datum auswählen</string>
     <string name="title_activity_main">MainActivity</string>

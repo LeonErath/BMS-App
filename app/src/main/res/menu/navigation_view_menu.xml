@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <!-- //////////////// ERGÄNZUNG: ////////////////
+        Damit das 1. Item gleich beim App-Start markiert ist, müsst ihr beim ersten Item noch diese Zeile einfügen:
+        android:checked="true"
+        -->
+        <item
+            android:id="@+id/drawerViewItem1"
+            android:title="Home"
+            android:icon="@drawable/ic_home_white_48dp"
+            android:checked="true"
+            />
+
+        <item
+            android:id="@+id/drawerViewItem2"
+            android:title="Quiz"
+            android:icon="@drawable/ic_question_answer_white_48dp"
+            />
+
+    </group>
+
+</menu>

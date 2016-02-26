@@ -6,6 +6,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <android.support.v4.widget.DrawerLayout
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        android:id="@+id/drawerlayoutgesamt"
+        >
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+        <!-- Activity Layout-->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,5 +47,33 @@
 
 
     </android.support.v4.view.ViewPager>
+
+</LinearLayout>
+    <!-- Drawer Layout -->
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/drawerlayoutsingle"
+        android:layout_gravity="start"
+        android:background="#fff"
+        >
+
+        <android.support.design.widget.NavigationView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/navView"
+            app:menu="@menu/navigation_view_menu"
+            app:itemIconTint="@color/itemtintcolor"
+            app:itemTextColor="@color/itemtintcolor"
+            app:headerLayout="@layout/headerlayout"
+            />
+
+
+
+    </RelativeLayout>
+
+
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
