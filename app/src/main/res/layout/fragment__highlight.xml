@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="leon.bms.Fragment_Highlight"
-    android:background="@drawable/tafel_schwarz">
+    >
 
 
  <LinearLayout
