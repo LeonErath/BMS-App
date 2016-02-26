@@ -17,7 +17,7 @@
 
     <ImageView
         android:layout_width="fill_parent"
-        android:layout_height="200dp"
+        android:layout_height="229dp"
         android:scaleType="centerCrop"
         android:id="@+id/imageView"
         android:layout_alignTop="@+id/recycler_view"
@@ -43,6 +43,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Hier kommt ein langer Text rein der irgendwas über den Artikel aussagt aber sich kaum einer durchliest weil sich jeder nur das bild anguckt"
         android:id="@+id/textViewExcerpt"
+        android:textSize="14dp"
         android:layout_below="@+id/textViewHeadline"
         android:layout_marginTop="8dp" />
 

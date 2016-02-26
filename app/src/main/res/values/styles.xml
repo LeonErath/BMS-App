@@ -9,7 +9,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="bottomSheetStyle">@style/BottomSheet.StyleDialog</item>
+
         <item name="android:textViewStyle">@style/RobotoTextViewStyle</item>
         <item name="android:buttonStyle">@style/RobotoButtonStyle</item>
         <item name="android:editTextStyle">@style/RobotoEditTextStyle</item>

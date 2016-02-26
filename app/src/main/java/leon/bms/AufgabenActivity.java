@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,12 +16,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -82,6 +88,9 @@ public class AufgabenActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Verbindung zum layout acitivity_aufgaben
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setEnterTransition(new Fade().setDuration(500).setInterpolator(new AccelerateDecelerateInterpolator()));
+        }
         setContentView(R.layout.activity_aufgaben);
 
         // setUp der toolbar
@@ -337,7 +346,7 @@ public class AufgabenActivity extends AppCompatActivity{
         switch (item.getItemId()) {
             //wenn home geclickt wird soll er die Activity schließen
             case android.R.id.home:
-                onBackPressed();
+                exitAcitivity();
                 return true;
             //wenn menu_finnish geclickt wird , wird die Aufgabe gespeichert
             case R.id.menu_finnish:
@@ -372,7 +381,7 @@ public class AufgabenActivity extends AppCompatActivity{
                             }
                             Log.d("AufgabeActitviy","Aufgabe wurde erstellt");
                             // Activity wird geschlossen
-                            onBackPressed();
+                            exitAcitivity();
                             return true;
 
                     }
@@ -415,6 +424,12 @@ public class AufgabenActivity extends AppCompatActivity{
         Log.d("image:",image.getAbsolutePath());
         // Save a file: path for use with ACTION_VIEW intents
         return image;
+    }
+    public void exitAcitivity(){
+        Fade fade = new Fade();
+        fade.setDuration(500);
+        getWindow().setEnterTransition(fade);
+        onBackPressed();
     }
 
 

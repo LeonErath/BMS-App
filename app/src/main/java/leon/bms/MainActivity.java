@@ -4,14 +4,19 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Transition;
+import android.transition.TransitionInflater;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,7 +39,13 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= 21) {
+            TransitionInflater inflater = TransitionInflater.from(this);
+            Transition transition = inflater.inflateTransition(R.anim.transition_enter);
+            getWindow().setExitTransition(transition);
+        }
         setContentView(R.layout.activity_main);
+
         tabIcons = new int[]{R.drawable.ic_done_white_24dp, R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_timeline_white_24dp};
 
 
@@ -48,7 +59,6 @@ public class MainActivity extends AppCompatActivity  {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle.syncState();
-
         //viewpager for tablayout
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         final ViewPagerAdapterMain viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager);
@@ -173,8 +183,8 @@ public class MainActivity extends AppCompatActivity  {
                 return true;
             case R.id.menu_add:
                 Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-                Intent intent3 = new Intent(this,AufgabenActivity.class);
-                startActivity(intent3);
+                ActivityOptionsCompat activityOptionsCompat= ActivityOptionsCompat.makeSceneTransitionAnimation(this, null);
+                startActivity(new Intent(this,AufgabenActivity.class),activityOptionsCompat.toBundle());
                 return true;
         }
 
