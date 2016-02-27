@@ -6,7 +6,9 @@
     tools:context="leon.bms.Fragment_Highlight"
     >
 
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
  <LinearLayout
      android:layout_marginTop="16dp"
      android:layout_width="fill_parent"
@@ -28,7 +30,8 @@
          xmlns:android="http://schemas.android.com/apk/res/android"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         app:cardBackgroundColor="#afffffff"
+         app:cardCornerRadius="0dp"
+         app:cardBackgroundColor="#c1ffffff"
          android:id="@+id/cardView">
 
          <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -93,7 +96,8 @@
 
      <android.support.v7.widget.CardView
          xmlns:android="http://schemas.android.com/apk/res/android"
-         app:cardBackgroundColor="#afffffff"
+         app:cardBackgroundColor="#c1ffffff"
+         app:cardCornerRadius="0dp"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          android:id="@+id/cardView2">
@@ -165,4 +169,5 @@
          android:layout_width="match_parent"
          android:layout_height="match_parent" />
 </LinearLayout>
+</ScrollView>
 </RelativeLayout>

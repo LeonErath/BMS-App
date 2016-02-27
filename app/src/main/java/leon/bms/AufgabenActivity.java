@@ -89,7 +89,7 @@ public class AufgabenActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         // Verbindung zum layout acitivity_aufgaben
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setEnterTransition(new Fade().setDuration(500).setInterpolator(new AccelerateDecelerateInterpolator()));
+            getWindow().setEnterTransition(new Fade().setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()));
         }
         setContentView(R.layout.activity_aufgaben);
 

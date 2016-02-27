@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -30,9 +32,12 @@ public class MainActivity extends AppCompatActivity  {
     TextView textViewHeaderName, textViewHeaderDatum;
     ViewPager viewPager;
     TabLayout tabLayout;
+    TextView textViewTitle;
     NavigationView navigationView;
+    AppBarLayout appBarLayout;
     DrawerLayout drawerLayoutgesamt;
     ActionBarDrawerToggle drawerToggle;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     int[] tabIcons;
 
 
@@ -59,6 +64,17 @@ public class MainActivity extends AppCompatActivity  {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle.syncState();
+
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle("Hightlights");
+
+        textViewTitle = (TextView) findViewById(R.id.textViewTitle);
+        textViewTitle.setText("Highlights");
+
+        appBarLayout = (AppBarLayout) findViewById(R.id.AppBarLayout);
+
+
+
         //viewpager for tablayout
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         final ViewPagerAdapterMain viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager);
@@ -99,10 +115,10 @@ public class MainActivity extends AppCompatActivity  {
 
 
     public void setupTabLayout(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setIcon(tabIcons[1]).getIcon().mutate().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).setIcon(tabIcons[2]).getIcon().mutate().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).setIcon(tabIcons[0]).getIcon().mutate().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(3).setIcon(tabIcons[3]).getIcon().mutate().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(0).setIcon(tabIcons[1]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).setIcon(tabIcons[2]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).setIcon(tabIcons[0]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(3).setIcon(tabIcons[3]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
         int i =tabLayout.getSelectedTabPosition();
         tabLayout.getTabAt(i).getIcon().clearColorFilter();
 
@@ -117,19 +133,23 @@ public class MainActivity extends AppCompatActivity  {
                 switch (tab.getPosition()) {
                     case 0:
                         getSupportActionBar().setTitle("Highlights");
-                        ;
+                        collapsingToolbarLayout.setTitle("Highlights");
+                        textViewTitle.setText("Highlights");
                         break;
                     case 1:
                         getSupportActionBar().setTitle("Stundenplan");
-                        ;
+                        collapsingToolbarLayout.setTitle("Stundenplan");
+                        textViewTitle.setText("Stundenplan");
                         break;
                     case 2:
                         getSupportActionBar().setTitle("Aufgaben");
-                        ;
+                        collapsingToolbarLayout.setTitle("Aufgaben");
+                        textViewTitle.setText("Aufgaben");
                         break;
                     case 3:
                         getSupportActionBar().setTitle("News");
-                        ;
+                        collapsingToolbarLayout.setTitle("News");
+                        textViewTitle.setText("News");
                         break;
                 }
                 viewPager.setCurrentItem(tab.getPosition());
@@ -139,7 +159,7 @@ public class MainActivity extends AppCompatActivity  {
             public void onTabUnselected(TabLayout.Tab tab) {
 
 
-                tab.getIcon().mutate().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+                tab.getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
 
             }
 

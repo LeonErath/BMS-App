@@ -10,45 +10,77 @@
         android:layout_height="fill_parent"
         android:layout_width="fill_parent"
         android:id="@+id/drawerlayoutgesamt"
+        android:fitsSystemWindows="true"
         >
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+
         <!-- Activity Layout-->
+    <android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/AppBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:fitsSystemWindows="true"
-            android:id="@+id/toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme" />
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme"
+                app:layout_collapseMode="pin"/>
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/colorAccent"
+                android:text="MainActivity"
+                android:textSize="20dp"
+                android:gravity="center"
+                app:layout_collapseMode="pin"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
         <android.support.design.widget.TabLayout
+            android:layout_gravity="bottom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tablayout"
-            android:layout_below="@+id/toolbar1"
+            app:layout_collapseMode="pin"
             android:background="?attr/colorPrimary" />
 
     </android.support.design.widget.AppBarLayout>
 
 
     <android.support.v4.view.ViewPager
-
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/viewpager"
-        android:background="@drawable/tafel_schwarz">
+        android:background="@drawable/tafel_schwarz"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
 
     </android.support.v4.view.ViewPager>
 
+
+    </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>
     <!-- Drawer Layout -->
 
