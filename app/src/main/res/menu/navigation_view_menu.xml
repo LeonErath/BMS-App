@@ -7,14 +7,14 @@
         android:checked="true"
         -->
         <item
-            android:id="@+id/drawerViewItem1"
+            android:id="@+id/drawerViewItemHome"
             android:title="Home"
             android:icon="@drawable/ic_home_white_48dp"
             android:checked="true"
             />
 
         <item
-            android:id="@+id/drawerViewItem2"
+            android:id="@+id/drawerViewItemQuiz"
             android:title="Quiz"
             android:icon="@drawable/ic_question_answer_white_48dp"
             />

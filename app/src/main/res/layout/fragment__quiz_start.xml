@@ -1,0 +1,64 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment_QuizStart"
+    android:background="@drawable/tafel_schwarz">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_marginTop="30dp"
+            android:src="@drawable/quiz_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:id="@+id/imageView2"
+            android:layout_gravity="center_horizontal|top" />
+
+        <Button
+            android:layout_marginTop="32dp"
+            style="?android:attr/buttonStyleSmall"
+            android:background="@color/colorPrimary"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Quiz starten"
+            android:id="@+id/buttonStart"
+            />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_marginTop="32dp"
+            android:background="@color/colorPrimary"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Score"
+            android:id="@+id/buttonScore" />
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_marginTop="32dp"
+            android:background="@color/colorPrimary"
+            android:layout_width="190dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="Zurück"
+            android:id="@+id/buttonZurück" />
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginBottom="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#fff"
+        android:text="Letztes Update: "
+        android:id="@+id/textViewDate"
+        android:layout_gravity="center_horizontal|bottom" />
+</FrameLayout>

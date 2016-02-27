@@ -110,9 +110,43 @@ public class MainActivity extends AppCompatActivity  {
         textViewHeaderName.setText(new dbUser().getUser().vorname +" "+new dbUser().getUser().nachname);
         textViewHeaderDatum.setText("Deine Stufe: "+new dbUser().getUser().stufe);
 
+        navigationView.getMenu().getItem(0).setChecked(true);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()){
+
+                    case R.id.drawerViewItemHome:{
+
+                        break;
+                    }
+
+                    case R.id.drawerViewItemQuiz:{
+                        Intent intent3 = new Intent(MainActivity.this,QuizActivity.class);
+                        startActivity(intent3);
+                        break;
+                    }
+
+
+
+                }
+
+                drawerLayoutgesamt.closeDrawers();
+                item.setChecked(true);
+
+
+
+                return false;
+            }
+        });
+
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        navigationView.getMenu().getItem(0).setChecked(true);
+    }
 
     public void setupTabLayout(TabLayout tabLayout) {
         tabLayout.getTabAt(0).setIcon(tabIcons[1]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);

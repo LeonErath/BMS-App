@@ -33,7 +33,7 @@
             android:value="BMSDATENBANK2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="30" />
+            android:value="37" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />
@@ -41,27 +41,28 @@
             android:name="DOMAIN_PACKAGE_NAME"
             android:value="leon.bms" />
 
-        <activity android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".KursauswahlActivity"
-            />
         <activity
-            android:windowSoftInputMode="adjustPan"
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".KursauswahlActivity" />
+        <activity
             android:name=".AufgabenActivity"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"
-            />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".WebsiteArticleActivity"
             android:label="@string/title_activity_website_article"
-            android:theme="@style/AppTheme"
-            />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".IntroductionActivity"
             android:label="@string/title_activity_introduction"
-            android:theme="@style/AppTheme"
-            ></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".QuizActivity"
+            android:label="@string/title_activity_quiz"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

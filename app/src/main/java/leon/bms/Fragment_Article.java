@@ -26,7 +26,7 @@ import java.util.List;
  *  darstellen soll . Die Artikel werden in einem RecyclerView angezeigt und das Laden sowie
  *  verarbeiten der Artikel übernimmt der ArticleController
  */
-public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter.ViewHolder.ClickListener, WebsiteArticleController.UpdateUI{
+public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter.ViewHolder.ClickListener{
 
     // RecyclerView für das Anzeigen der einzelnen Artikel
     RecyclerView recyclerView;
@@ -121,8 +121,5 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
 
     /** @updateList automatische Erstellung beim Implementieren des Interface
      */
-    @Override
-    public void updateList(List<WebsiteArtikel> list) {
 
-    }
 }
