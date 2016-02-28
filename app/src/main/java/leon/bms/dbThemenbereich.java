@@ -75,4 +75,11 @@ public class dbThemenbereich extends SugarRecord {
             return false;
         }
     }
+    public List<dbFragen> getFragen(long id){
+        if (find(dbFragen.class, "themenbereich = ?", String.valueOf(id)).size() != 0){
+            return find(dbFragen.class, "themenbereich = ?", String.valueOf(id));
+        }else {
+            return null;
+        }
+    }
 }

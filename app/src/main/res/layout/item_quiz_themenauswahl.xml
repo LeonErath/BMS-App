@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:cardCornerRadius="0dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/cardView">
+    <LinearLayout
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.75"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:textColor="@color/fallback"
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hier der Themenbereich"
+                android:id="@+id/textViewThemen"/>
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hier der Lehrer"
+                android:id="@+id/textViewLehrer"/>
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hier die kurs id"
+                android:id="@+id/textViewKursID"/>
+        </LinearLayout>
+        <LinearLayout
+            android:gravity="center"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:textSize="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fragen"
+                android:id="@+id/textViewFragen"/>
+            <TextView
+                android:textSize="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datum"
+                android:id="@+id/textViewDatum"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+
+
+</android.support.v7.widget.CardView>

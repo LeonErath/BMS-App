@@ -12,11 +12,14 @@ import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment,Fragment_QuizFachAuswahl.OnFragmentInteractionListener {
 
     FrameLayout frameLayout;
     int counter = 0;
+    String kursid;
+    String themenbereichID;
 
 
 
@@ -50,7 +53,25 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                 // Commit the transaction
                 transaction.commit();
                 break;
-            case 2:break;
+            case 2:
+                if (kursid!=null){
+                    Fragment_QuizThemenAuswahl fragment = new Fragment_QuizThemenAuswahl(kursid);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment,"2");
+                    transaction2.addToBackStack("2");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+                }else {
+                    Toast.makeText(QuizActivity.this, "Ein Fehler ist aufgetreten. Versuche es später nochmal", Toast.LENGTH_SHORT).show();
+                }
+                break;
             case 3:break;
             case 4:break;
             case 5:break;
@@ -80,8 +101,16 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
         next();
     }
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
 
+
+    @Override
+    public void next(String Kursid) {
+        this.kursid = Kursid;
+        next();
+    }
+
+    @Override
+    public void back() {
+        onBackPressed();
     }
 }

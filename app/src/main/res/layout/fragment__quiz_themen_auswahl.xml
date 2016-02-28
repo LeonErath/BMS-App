@@ -30,8 +30,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="wrap_content"
-            android:text="Wähle einen Kurs: "
-            android:textSize="20dp"
+            android:text="Wähle einen Themenbereich: "
+            android:textSize="16dp"
             android:textColor="#fff"
             android:gravity="center_horizontal"
             android:layout_gravity="center"/>
@@ -46,7 +46,7 @@
             android:background="@color/colorPrimary"
             />
 
-</LinearLayout>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

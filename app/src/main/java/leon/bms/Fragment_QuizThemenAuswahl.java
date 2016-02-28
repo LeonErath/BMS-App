@@ -20,19 +20,21 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Fragment_QuizFachAuswahl.OnFragmentInteractionListener} interface
+ * {@link Fragment_QuizThemenAuswahl.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener {
+public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener, QuizThemenAdapter.ViewHolder.ClickListener {
 
+    String kursID;
     private OnFragmentInteractionListener mListener;
     Button buttonBack,buttonQuit;
     RecyclerView recyclerView;
-    QuizKursAdapter quizKursAdapter;
-    List<quizkurs> quizkursList;
+    QuizThemenAdapter quizThemenAdapter;
+    List<quizthemen> quizthemenList;
 
-    public Fragment_QuizFachAuswahl() {
+    public Fragment_QuizThemenAuswahl(String kursID) {
         // Required empty public constructor
+        this.kursID = kursID;
     }
 
 
@@ -40,7 +42,7 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment__quiz_fach_auswahl, container, false);
+        return inflater.inflate(R.layout.fragment__quiz_themen_auswahl, container, false);
     }
 
     @Override
@@ -49,25 +51,20 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         QuizController quizController = new QuizController(getActivity());
-        quizkursList = new ArrayList<>();
-        if (quizController.getQuizKurse()!=null){
-            quizkursList = quizController.getQuizKurse();
-        }else {
-            Toast.makeText(getActivity(), "Keine Kurse vorhanden.", Toast.LENGTH_SHORT).show();
+        quizthemenList = new ArrayList<>();
+        if (quizController.getThemenbereiche(kursID)!=null){
+                quizthemenList = quizController.getThemenbereiche(kursID);
         }
-
-        quizKursAdapter = new QuizKursAdapter(this,quizkursList);
-        recyclerView.setAdapter(quizKursAdapter);
+        quizThemenAdapter = new QuizThemenAdapter(this,quizthemenList);
+        recyclerView.setAdapter(quizThemenAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
 
         buttonBack = (Button) view.findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mListener.back();
+                //back
             }
         });
         buttonQuit = (Button) view.findViewById(R.id.buttonQuit);
@@ -77,8 +74,9 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
                 getActivity().finish();
             }
         });
-
     }
+
+
 
     @Override
     public void onAttach(Context context) {
@@ -86,7 +84,8 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
@@ -98,31 +97,27 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
 
     @Override
     public void onItemClicked(int position) {
-        quizkurs quizkurs = quizkursList.get(position);
-        mListener.next(quizkurs.kursId);
+        quizthemen quizthemen = quizthemenList.get(position);
     }
 
     @Override
     public boolean onItemLongClicked(int position) {
-        quizkurs quizkurs = quizkursList.get(position);
-        mListener.next(quizkurs.kursId);
+        quizthemen quizthemen = quizthemenList.get(position);
         return false;
     }
-
 
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void next(String id);
-        void back();
+        void onFragmentInteraction(Long themenbereichID);
     }
 }

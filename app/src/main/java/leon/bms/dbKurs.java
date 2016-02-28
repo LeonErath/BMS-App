@@ -257,6 +257,21 @@ public class dbKurs extends SugarRecord<dbKurs> {
         List<dbKurs> dbKursList = dbKurs.find(dbKurs.class,"fach = ?",fach);
         return dbKursList.get(0);
     }
+    public List<dbThemenbereich> getThemenbereiche(long id){
+        if (find(dbThemenbereich.class, "kurs = ?", String.valueOf(id)).size() != 0){
+            return find(dbThemenbereich.class, "kurs = ?", String.valueOf(id));
+        }else {
+            return null;
+        }
+    }
+    public dbKurs getKursWithKursid(String kursid){
+        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class,"name = ?",kursid);
+        if (dbKursList.size()==1){
+            return dbKursList.get(0);
+        }else {
+            return null;
+        }
+    }
 
 
 
