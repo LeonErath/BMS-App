@@ -272,6 +272,14 @@ public class dbKurs extends SugarRecord<dbKurs> {
             return null;
         }
     }
+    public List<dbSchulstunde> getSchulstundeWithWeekAndKurs(long kursid, int week){
+        List<dbSchulstunde> dbSchulstundeList = dbSchulstunde.find(dbSchulstunde.class,"kurs = ? and wochentag = ?",String.valueOf(kursid),String.valueOf(week));
+        if (dbSchulstundeList.size()>0){
+            return dbSchulstundeList;
+        }else {
+            return null;
+        }
+    }
 
 
 
