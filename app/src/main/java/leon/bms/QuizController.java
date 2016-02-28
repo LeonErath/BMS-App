@@ -62,7 +62,14 @@ public class QuizController {
                 themenbereich.name = jsonObject.getString("title");
                 themenbereich.zuletztAktualisiert = jsonObject.getString("dat");
                 if (new dbThemenbereich().themenbereichVorhanden(themenbereich.serverid)==false){
-                themenbereich.save();}
+                    String kursID = jsonObject.getString("kursid");
+                    if (new dbKurs().getKursWithKursid(kursID) != null) {
+                        dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
+                        themenbereich.kurs = kurs;
+                        themenbereich.save();
+                    }
+
+                }
             }
 
             JSONArray jsonArrayFragen = jsonObjectAll.getJSONArray("frag");
@@ -75,17 +82,16 @@ public class QuizController {
                     fragen.serverid = jsonObject.getInt("id");;
                     if (new dbFragen().frageVorhanden(fragen.serverid)==false){
                         dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(jsonObject.getInt("themen"));
-                        themenbereich.fragen = fragen;
+                        fragen.themenbereich = themenbereich;
                         String kursID = jsonObject.getString("kursid");
                         if (new dbKurs().getKursWithKursid(kursID) != null) {
                             dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
                             fragen.kurs = kurs;
-                            themenbereich.kurs = kurs;
+                            fragen.save();
+                            themenbereich.save();
                         }
 
-                        themenbereich.save();
 
-                        fragen.save();
                     }
                 }
             }
@@ -135,6 +141,7 @@ public class QuizController {
         updateUI.updateUI(zuletztAktualisiert);
 
     }
+
     public List<quizkurs> getQuizKurse(){
         List<dbKurs> kursList = new dbKurs().getActiveKurse(0);
         kursList.addAll(new dbKurs().getActiveKurse(1));

@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment,Fragment_QuizFachAuswahl.OnFragmentInteractionListener {
+public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment,Fragment_QuizFachAuswahl.OnFragmentInteractionListener,Fragment_QuizThemenAuswahl.OnFragmentInteractionListener {
 
     FrameLayout frameLayout;
     int counter = 0;
@@ -112,5 +112,15 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     @Override
     public void back() {
         onBackPressed();
+    }
+
+    @Override
+    public void backQuizThemenAuswwahl() {
+        onBackPressed();
+    }
+
+    @Override
+    public void onFragmentInteraction(Long themenbereichID) {
+
     }
 }

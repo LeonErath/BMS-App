@@ -29,7 +29,7 @@ public class QuizThemenAdapter extends RecyclerView.Adapter<QuizThemenAdapter.Vi
     public QuizThemenAdapter(ViewHolder.ClickListener clickListener, List<quizthemen> quizthemens) {
         super();
         this.clickListener = clickListener;
-        this.quizthemenList = quizthemenList;
+        this.quizthemenList = quizthemens;
         Log.d(TAG,quizthemenList.size()+" ");
     }
 
