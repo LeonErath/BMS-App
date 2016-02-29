@@ -72,7 +72,9 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
             List<dbAufgabe> alleAufgaben = unerledigtList;
             alleAufgaben.addAll(erledigtList);
             if (alleAufgaben != null || alleAufgaben.size() != 0) {
-                aufgabeAdapter.changeDataSet(alleAufgaben);
+                for (dbAufgabe aufgabe: alleAufgaben){
+                    aufgabeAdapter.addAufgabe(aufgabe);
+                }
             }
         }
     }
@@ -126,7 +128,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
-                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            aufgabeAdapter.removeAufgabe(aufgabe);
                             break;
                         case R.id.erledigt:
                             alleAufgaben.clear();

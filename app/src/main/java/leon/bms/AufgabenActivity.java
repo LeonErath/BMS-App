@@ -1,6 +1,8 @@
 package leon.bms;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,8 +14,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.transition.Fade;
@@ -39,6 +47,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -47,38 +56,48 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 /** @AufgabenActivity ist für die erstellung von Aufgaben zuständig
  *  Es speichert die erstellten Aufgaben in der Datenbank
  *  Die Aufgaben beinhalten ein Kurs, ein Datum und min. eine Beschreibung
  *  dazu soll noch die Möglichkeit kommen von Bildern und anderen hilfreichen Informationen
  *  an die Aufgabe "dranzuhängen"
  */
-public class AufgabenActivity extends AppCompatActivity{
+public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.ViewHolder.ClickListener {
 
     // @datePickerDialog wird gebraucht für die Auswahl der Datums
     DatePickerDialog datePickerDialog;
     // @dateString hier wird das Datum als String gespeichert
-    String dateString;
+    String dateString,dateAnzeige;
     // @dateCalendar ist das heutige Datum @calendar2 ist das Datum welches der User auswählt
-    Calendar dateCalendar,calendar2;
+    Calendar dateCalendar,calendar2 = Calendar.getInstance();
     Calendar calendar= Calendar.getInstance();
     // Views
     TextView textViewDatePicker;
+    dbAufgabe aufgabeLoad=null;
     EditText editTextBeschreibung,editTextNotizen;
     // zeigt eine Liste mit den Kursen an
     Spinner spinner;
     // @selectedItem speichert den ausgewählten Kurs
     String selectedItem;
     FloatingActionButton fabCamera,fabGallarie;
-    Intent bildintent;
     int Kameracode = 1;
     CardView cardViewImage;
-    File photoFile = null;
-   LinearLayout linearLayout;
+    LinearLayout linearLayout;
     int counter =0;
     String picturePath;
     List<String> picturePaths=new ArrayList<>();
     static int RESULT_LOAD_IMG = 1;
+    private static String TAG = AufgabenActivity.class.getSimpleName();
+    private PhotoAdapter photoAdapter;
+    /** ActionModeCallback und ActionMode ist für die veränderun der Toolbar bei einer Auswahl der
+     * der Kurse. Über die "neue" Toolbar kann der User sein Auswahl abschließen oder noch weiter
+     * informationen zu den Auswahl bekommen.
+     */
+    private ActionModeCallback actionModeCallback = new ActionModeCallback(this);
+    private ActionMode actionMode;
+    File photoFile = null;
 
     /**
      * Automatische generierte Methode
@@ -102,29 +121,40 @@ public class AufgabenActivity extends AppCompatActivity{
          *  sodass einfach wieder "zurück" gegangen werden kann
          */
 
+        // kurseList wird durch die Methode sortierteListe() mit allen verfügbaren Kursen gefüllt
 
-        linearLayout = (LinearLayout) findViewById(R.id.linearLayout1);
-        cardViewImage = (CardView) findViewById(R.id.cardView3);
+        Log.d(TAG, picturePaths.size() + "");
+        // Adapter bekommt die Kurseliste für die Anzeige der Kurse
+        photoAdapter = new PhotoAdapter(this,picturePaths);
+        // setUp RecyclerView
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(photoAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,0,false));
+        recyclerView.setHasFixedSize(true);
+
+
         fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera);
         fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie);
 
         fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bildintent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if (bildintent.resolveActivity(getPackageManager()) != null) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                // Ensure that there's a camera activity to handle the intent
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     // Create the File where the photo should go
                     try {
                         photoFile = createImageFile();
                     } catch (IOException ex) {
-                        // Error occurred while creating the File
+
                     }
                     // Continue only if the File was successfully created
                     if (photoFile != null) {
-                        picturePaths.add(photoFile.getAbsolutePath());
-                        Log.d("TAG", "intent ausgeführt");
-                        bildintent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                        startActivityForResult(bildintent, Kameracode);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                        startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
+
+
                     }
                 }
             }
@@ -134,8 +164,7 @@ public class AufgabenActivity extends AppCompatActivity{
             public void onClick(View v) {
 
                 // Create intent to Open Image applications like Gallery, Google Photos
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 // Start the Intent
                 startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
 
@@ -167,8 +196,7 @@ public class AufgabenActivity extends AppCompatActivity{
                         calendar2.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
                         //Datum wird als String gespeichert für die Anzeige
-                        dateString = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
-
+                        dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
                         // heutiges Datum wird in @dateCalendar gespeichert
                         dateCalendar = Calendar.getInstance();
 
@@ -178,8 +206,10 @@ public class AufgabenActivity extends AppCompatActivity{
                          */
                         if (dateCalendar.before(calendar2) == true) {
                             //wenn das Datum Okay ist wird es angezeigt und als Toast ausgegeben
-                            Toast.makeText(AufgabenActivity.this, "Datum: " + dateString, Toast.LENGTH_SHORT).show();
-                            textViewDatePicker.setText(dateString);
+                            Toast.makeText(AufgabenActivity.this, "Datum: " + dateAnzeige, Toast.LENGTH_SHORT).show();
+                            textViewDatePicker.setText(dateAnzeige);
+                            dateString = calendar2.get(Calendar.YEAR)+"."+(calendar2.get(Calendar.MONTH)+1)+"."+calendar2.get(Calendar.DAY_OF_MONTH);
+                            Log.d(TAG,dateString+"");
                         } else {
                             //ist es nicht Okay wird es dem User durch ein Toast mitgeteilt
                             Toast.makeText(AufgabenActivity.this, "Datum nicht möglich", Toast.LENGTH_SHORT).show();
@@ -228,58 +258,38 @@ public class AufgabenActivity extends AppCompatActivity{
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-
             Long id = intent.getLongExtra("id", 0);
-            Log.d("TAG", id + "");
-            List<dbMediaFile> mediaFiles = dbMediaFile.listAll(dbMediaFile.class);
-            Log.d(getClass().getSimpleName(), mediaFiles.size() + " SIZE");
-            if (mediaFiles.size() > 0) {
-                dbMediaFile mediaFile = mediaFiles.get(0);
-                Log.d("TAG", mediaFile.aufgaben.getId() + " ");
-            }
-
-            dbAufgabe aufgabe = new dbAufgabe().getAufgabe(id);
-            if (aufgabe != null) {
-                editTextBeschreibung.setText(aufgabe.beschreibung);
-                editTextNotizen.setText(aufgabe.notizen);
+            aufgabeLoad  = new dbAufgabe().getAufgabe(id);
+            if (aufgabeLoad != null) {
+                editTextBeschreibung.setText(aufgabeLoad.beschreibung);
+                editTextNotizen.setText(aufgabeLoad.notizen);
                 List<String> fachList = new ArrayList<>();
                 for (dbKurs kurs : allActiveKurse) {
                     fachList.add(kurs.fach);
                 }
-                int position = fachList.indexOf(aufgabe.kurs.fach);
+                int position = fachList.indexOf(aufgabeLoad.kurs.fach);
                 spinner.setSelection(position);
 
 
-                Calendar abgabeDatum = Calendar.getInstance();
-                SimpleDateFormat sdf = new SimpleDateFormat("MM d yyyy");
+
+                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.M.d");
                 try {
-                    abgabeDatum.setTime(sdf.parse(aufgabe.abgabeDatum));// all done
+                    calendar2.setTime(sdf2.parse(aufgabeLoad.zuletztAktualisiert));// all done
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
+                Log.d(TAG,calendar2.getTime()+"");
+                dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
+                textViewDatePicker.setText(dateAnzeige);
+                Log.d(TAG, dateString + "");
+                dateString = aufgabeLoad.zuletztAktualisiert;
 
-                dateString = DateUtils.formatDateTime(AufgabenActivity.this, abgabeDatum.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
-                textViewDatePicker.setText(dateString);
-
-
-                if (aufgabe.getMediaFile(aufgabe.getId()).size() != 0) {
+                if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
                     Log.d("IMAGE", "Bild wird geladen");
-                    List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabe.getId());
+                    List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabeLoad.getId());
                     for (int i = 0; i < dbMediaFileList.size(); i++) {
-                        File imgFile = new File(dbMediaFileList.get(i).path);
-                        if (imgFile.exists()) {
-                            Uri uriFile = Uri.fromFile(imgFile);
-                            ImageView imageViewCamera = new ImageView(this);
-                            imageViewCamera.setImageURI(uriFile);
-                            imageViewCamera.setId(counter++);
-                            RelativeLayout.LayoutParams paramsImage = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                            paramsImage.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                            paramsImage.height = 400;
-                            imageViewCamera.setPadding(8, 8, 8, 8);
-                            imageViewCamera.setLayoutParams(paramsImage);
-                            linearLayout.addView(imageViewCamera, paramsImage);
-                            cardViewImage.setVisibility(1);
-                        }
+                        dbMediaFile dbMediaFile = dbMediaFileList.get(i);
+                        photoAdapter.addPhoto(dbMediaFile.path);
                     }
 
 
@@ -300,23 +310,14 @@ public class AufgabenActivity extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK){
-
-            if(requestCode == Kameracode){
-                Bundle extras = data.getExtras();
-
-                ImageView imageViewCamera = new ImageView(this);
-                imageViewCamera.setId(counter++);
-                RelativeLayout.LayoutParams paramsImage = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                paramsImage.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                paramsImage.height = 400;
-                imageViewCamera.setPadding(8, 8, 8, 8);
-                imageViewCamera.setLayoutParams(paramsImage);
-                if (extras!=null){
-
-                imageViewCamera.setImageBitmap((Bitmap) extras.get("data"));
-                }else {
+            if(requestCode == Kameracode) {
+                if (photoFile!=null){
+                    photoAdapter.addPhoto(photoFile.getAbsolutePath());
+                    photoFile = null;
+                }
+                if (data != null) {
                     Uri selectedImage = data.getData();
-                    String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
                     cursor.moveToFirst();
@@ -324,15 +325,10 @@ public class AufgabenActivity extends AppCompatActivity{
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     picturePath = cursor.getString(columnIndex);
                     cursor.close();
-                    picturePaths.add(picturePath);
-                    imageViewCamera.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                    photoAdapter.addPhoto(picturePath);
+
                 }
-
-                linearLayout.addView(imageViewCamera,paramsImage);
-                cardViewImage.setVisibility(1);
-
             }
-
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -354,31 +350,45 @@ public class AufgabenActivity extends AppCompatActivity{
                 dateCalendar = Calendar.getInstance();
                 // es wird überprüft ob alle notwendigen Daten ausgefüllt worden sind
                 if (calendar2!=null&&dateCalendar.before(calendar2) == true&&selectedItem!=null && editTextBeschreibung.getText().toString()!="") {
-                            dbAufgabe aufgabe = new dbAufgabe();
+                            if (aufgabeLoad == null){
+                                aufgabeLoad = new dbAufgabe();
+                            }
                             // Daten werden eingetragen
-                            aufgabe.abgabeDatum = fromCalendarToString(calendar2);
-                            aufgabe.erstelltAm = fromCalendarToString(Calendar.getInstance());
-                            aufgabe.zuletztAktualisiert = fromCalendarToString(Calendar.getInstance());
-                            aufgabe.erledigt = false;
+                            aufgabeLoad.abgabeDatum = fromCalendarToString(calendar2);
+                            aufgabeLoad.erstelltAm = fromCalendarToString(Calendar.getInstance());
+                            Log.d(TAG,dateString+"");
+                            aufgabeLoad.zuletztAktualisiert = dateString;
+                            aufgabeLoad.erledigt = false;
 
-                            aufgabe.kurs = new dbKurs().getKursWithFach(selectedItem);
-                            aufgabe.beschreibung = editTextBeschreibung.getText().toString();
+                            aufgabeLoad.kurs = new dbKurs().getKursWithFach(selectedItem);
+                            aufgabeLoad.beschreibung = editTextBeschreibung.getText().toString();
                             if (editTextNotizen.getText().toString()!= "") {
-                                aufgabe.notizen = editTextNotizen.getText().toString();
+                                aufgabeLoad.notizen = editTextNotizen.getText().toString();
                             }
 
 
                             // Aufgabe wird in der Datenbank gespeichert
-                            aufgabe.save();
-                            if (picturePaths.size()!=0){
-                                for (String path:picturePaths){
-                                    dbMediaFile mediaFile = new dbMediaFile();
-                                    mediaFile.path = path;
-                                    mediaFile.aufgaben = aufgabe;
-                                    mediaFile.save();
-                                    Log.d("Photo","Photo gespeichert: "+path);
+                            aufgabeLoad.save();
+                            if (photoAdapter.getList() !=null){
+                                if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() !=0) {
+                                    List<dbMediaFile> mediaFileList = aufgabeLoad.getMediaFile(aufgabeLoad.getId());
+                                    for (dbMediaFile mediaFile : mediaFileList) {
+                                        mediaFile.delete();
+                                    }
                                 }
+                                picturePaths = photoAdapter.getList();
+                                if (picturePaths.size() != 0) {
+                                    for (String path : picturePaths) {
+                                        dbMediaFile mediaFile = new dbMediaFile();
+                                        mediaFile.path = path;
+                                        mediaFile.aufgaben = aufgabeLoad;
+                                        mediaFile.save();
+                                        Log.d("Photo", "Photo gespeichert: " + path);
+                                    }
+                                }
+
                             }
+
                             Log.d("AufgabeActitviy","Aufgabe wurde erstellt");
                             // Activity wird geschlossen
                             exitAcitivity();
@@ -431,6 +441,106 @@ public class AufgabenActivity extends AppCompatActivity{
         getWindow().setEnterTransition(fade);
         onBackPressed();
     }
+    /**
+     * Ändert die Makierung (Selection) in das entgegengesetze
+     *
+     * Wenn es das letzte Item in der Liste ist wird der actionMode beendet
+     * Darf nur aufgerufen werden wenn der ActionMode nicht null ist
+     *
+     * @param position Position von dem Item
+     */
+    private void toggleSelection(int position) {
+        // ändert die Makierung
+        photoAdapter.toggleSelection(position);
+        // count ist die Anzahl der ausgewählten Kurse
+        int count = photoAdapter.getSelectedItemCount();
+
+        // wenn kein Item mehr ausgewählt ist wird der actionMode beendet
+        if (count == 0) {
+            actionMode.finish();
+        } else {
+            // zählt im Titel mit wie viele Kurse ausgewählt worden sind
+            actionMode.setTitle(String.valueOf(count)+" Selected");
+            actionMode.invalidate();
+        }
+    }
+    /** @ActionModeCallback ist für die "neue" Toolbar zuständig sowie die Fertigstellung
+     *  der Kursauswahl wenn der User fertig ist.
+     */
+    private class ActionModeCallback implements ActionMode.Callback {
+        @SuppressWarnings("unused")
+
+        private Context context;
+        // Tag für die Log-Datein
+        private final String TAG = ActionModeCallback.class.getSimpleName();
+
+        public ActionModeCallback(Context context){
+            // Context für Anzeigen in der UI
+            this.context = context;
+        }
+
+        // Hier wird das Menü erstellt selected_menu.xml
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // selected_menu ist ein spezielles Menü das angezeigt werden soll
+            // findet sich unter res -> menu
+            mode.getMenuInflater().inflate(R.menu.selected_menu_delete, menu);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        /** @onACtionItemClicked wird ausgelöst wenn eins der Menü Items gecklickt wird
+         *  je nach Menü Item wird entweder
+         *      die Auswahl fertig gestellt
+         *      Informationen zur Kursauswahl gegeben
+         */
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_delete:
+                    List<Integer> photoPositions = photoAdapter.getSelectedItems();
+                    for (Integer i:photoPositions){
+                        photoAdapter.removeItem(i);
+                    }
+                    mode.finish();
+                    break;
+            }
+            return true;
+        }
+
+        /** @onDestroyActionMode wird ausgelöst wenn der User die Auswahl aufheben möchte
+         *  gibt an kursauswahlAdapter an die Auswahl aufzulösen
+         *  und der ActionMode wird beendet
+         */
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            photoAdapter.clearSelection();
+            actionMode = null;
+        }
+
+    }
 
 
+    @Override
+    public void onItemClicked(int position) {
+        if (actionMode != null){
+            toggleSelection(position);
+        }else {
+            // neuer Intent
+        }
+        Log.d(TAG,"On photo clicked");
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        if (actionMode == null) {
+            actionMode = startSupportActionMode(actionModeCallback);
+        }
+        toggleSelection(position);
+        return false;
+    }
 }

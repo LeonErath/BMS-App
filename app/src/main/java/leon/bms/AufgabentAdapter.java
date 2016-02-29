@@ -41,12 +41,36 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         super();
         this.clickListener = clickListener;
         this.aufgabenList = aufgabeList;
-        Log.d(TAG,aufgabeList.size()+" ");
+        Log.d(TAG, aufgabeList.size() + " ");
     }
 
     public void changeDataSet(List<dbAufgabe> dbAufgabeList){
         aufgabenList = dbAufgabeList;
         notifyDataSetChanged();
+    }
+    public void removeAufgabe(dbAufgabe aufgabe){
+        if (aufgabenList.contains(aufgabe)){
+            if (aufgabenList.size() == 1){
+                aufgabenList.clear();
+                notifyItemRemoved(0);
+            }else {
+                int position = aufgabenList.indexOf(aufgabe);
+                aufgabenList.remove(aufgabe);
+                notifyItemRemoved(position);
+            }
+        }
+    }
+    public void addAufgabe(dbAufgabe aufgabe){
+        boolean contains = false;
+        for (dbAufgabe aufgabe1:aufgabenList){
+            if (aufgabe1.getId()==aufgabe.getId()){
+                contains = true;
+            }
+        }
+        if (contains == false) {
+            aufgabenList.add(aufgabe);
+            notifyItemInserted(aufgabenList.size() - 1);
+        }
     }
 
 
