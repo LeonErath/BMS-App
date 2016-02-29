@@ -46,7 +46,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
         super.setUserVisibleHint(isVisibleToUser);
         m_iAmVisible = isVisibleToUser;
         if (m_iAmVisible) {
-            if (aufgabeAdapter!=null) {
+            if (aufgabeAdapter != null) {
                 List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
                 List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
                 List<dbAufgabe> alleAufgaben = unerledigtList;
@@ -66,20 +66,21 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
     @Override
     public void onResume() {
         super.onResume();
-        if (aufgabeAdapter!=null) {
+        if (aufgabeAdapter != null) {
             List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
             List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
             List<dbAufgabe> alleAufgaben = unerledigtList;
             alleAufgaben.addAll(erledigtList);
             if (alleAufgaben != null || alleAufgaben.size() != 0) {
-                for (dbAufgabe aufgabe: alleAufgaben){
+                for (dbAufgabe aufgabe : alleAufgaben) {
                     aufgabeAdapter.addAufgabe(aufgabe);
                 }
             }
         }
     }
 
-    /** @onViewCreated hier wird alles erstellt und initalisiert
+    /**
+     * @onViewCreated hier wird alles erstellt und initalisiert
      */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -87,44 +88,44 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
 
         recyclerViewAufgaben = (RecyclerView) view.findViewById(R.id.recycler_view);
 
-            List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-            List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
-            List<dbAufgabe> alleAufgaben = unerledigtList;
-            alleAufgaben.addAll(erledigtList);
+        List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+        List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
+        List<dbAufgabe> alleAufgaben = unerledigtList;
+        alleAufgaben.addAll(erledigtList);
 
-            aufgabeAdapter = new AufgabentAdapter(this,alleAufgaben);
-            recyclerViewAufgaben.setAdapter(aufgabeAdapter);
-            recyclerViewAufgaben.setItemAnimator(new DefaultItemAnimator());
-            recyclerViewAufgaben.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        aufgabeAdapter = new AufgabentAdapter(this, alleAufgaben);
+        recyclerViewAufgaben.setAdapter(aufgabeAdapter);
+        recyclerViewAufgaben.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewAufgaben.setLayoutManager(new LinearLayoutManager(getActivity()));
 
 
     }
 
     @Override
     public void onItemClicked(final dbAufgabe aufgabe) {
-        if (aufgabe.checkIfErledigtAufgabe(aufgabe)!= true){
-            new BottomSheet.Builder(getActivity()).title("Aufgabe "+aufgabe.beschreibung+"             Fach: "+aufgabe.kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+        if (aufgabe.checkIfErledigtAufgabe(aufgabe) != true) {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "             Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     List<dbAufgabe> unerledigtList;
                     List<dbAufgabe> erledigtList;
-                    List<dbAufgabe> alleAufgaben= new ArrayList<dbAufgabe>();
+                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
                     switch (which) {
                         case R.id.change:
-                            Intent intent = new Intent(getActivity(),AufgabenActivity.class);
-                            intent.putExtra("id",aufgabe.getId());
+                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+                            intent.putExtra("id", aufgabe.getId());
                             startActivity(intent);
                             break;
-                        case R.id.details:break;
+                        case R.id.details:
+                            break;
                         case R.id.delete:
                             alleAufgaben.clear();
                             aufgabe.delete();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size()!=0){
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
                                 unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
                                 alleAufgaben.addAll(unerledigtList);
                             }
-                            if (new dbAufgabe().getErledigtAufgabe().size()!=0){
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
@@ -134,11 +135,11 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                             alleAufgaben.clear();
                             aufgabe.erledigt = true;
                             aufgabe.save();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size()!=0){
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
                                 unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
                                 alleAufgaben.addAll(unerledigtList);
                             }
-                            if (new dbAufgabe().getErledigtAufgabe().size()!=0){
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
@@ -147,8 +148,8 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                     }
                 }
             }).show();
-        }else {
-            new BottomSheet.Builder(getActivity()).title("Aufgabe "+aufgabe.beschreibung+"            Fach: "+aufgabe.kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+        } else {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "            Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     List<dbAufgabe> unerledigtList;
@@ -199,10 +200,103 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
     }
 
     @Override
-    public boolean onItemLongClicked(dbAufgabe aufgabe) {
-
+    public boolean onItemLongClicked(final dbAufgabe aufgabe) {
+        if (aufgabe.checkIfErledigtAufgabe(aufgabe) != true) {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "             Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    List<dbAufgabe> unerledigtList;
+                    List<dbAufgabe> erledigtList;
+                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
+                    switch (which) {
+                        case R.id.change:
+                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+                            intent.putExtra("id", aufgabe.getId());
+                            startActivity(intent);
+                            break;
+                        case R.id.details:
+                            break;
+                        case R.id.delete:
+                            alleAufgaben.clear();
+                            aufgabe.delete();
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
+                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+                                alleAufgaben.addAll(unerledigtList);
+                            }
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
+                                erledigtList = new dbAufgabe().getErledigtAufgabe();
+                                alleAufgaben.addAll(erledigtList);
+                            }
+                            aufgabeAdapter.removeAufgabe(aufgabe);
+                            break;
+                        case R.id.erledigt:
+                            alleAufgaben.clear();
+                            aufgabe.erledigt = true;
+                            aufgabe.save();
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
+                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+                                alleAufgaben.addAll(unerledigtList);
+                            }
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
+                                erledigtList = new dbAufgabe().getErledigtAufgabe();
+                                alleAufgaben.addAll(erledigtList);
+                            }
+                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            break;
+                    }
+                }
+            }).show();
+        } else {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "            Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    List<dbAufgabe> unerledigtList;
+                    List<dbAufgabe> erledigtList;
+                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
+                    switch (which) {
+                        case R.id.change:
+                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+                            intent.putExtra("Beschreibung", aufgabe.beschreibung);
+                            intent.putExtra("Notizen", aufgabe.notizen);
+                            intent.putExtra("Fach", aufgabe.kurs.fach);
+                            intent.putExtra("Datum", aufgabe.abgabeDatum);
+                            startActivity(intent);
+                            break;
+                        case R.id.details:
+                            break;
+                        case R.id.delete:
+                            alleAufgaben.clear();
+                            aufgabe.delete();
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
+                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+                                alleAufgaben.addAll(unerledigtList);
+                            }
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
+                                erledigtList = new dbAufgabe().getErledigtAufgabe();
+                                alleAufgaben.addAll(erledigtList);
+                            }
+                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            break;
+                        case R.id.cancel:
+                            alleAufgaben.clear();
+                            aufgabe.erledigt = false;
+                            aufgabe.save();
+                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
+                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+                                alleAufgaben.addAll(unerledigtList);
+                            }
+                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
+                                erledigtList = new dbAufgabe().getErledigtAufgabe();
+                                alleAufgaben.addAll(erledigtList);
+                            }
+                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            break;
+                    }
+                }
+            }).show();
+        }
         return false;
     }
 
-
 }
+

@@ -81,7 +81,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     Spinner spinner;
     // @selectedItem speichert den ausgewählten Kurs
     String selectedItem;
-    FloatingActionButton fabCamera,fabGallarie;
+    FloatingActionButton fabCamera,fabGallarie,fabAnimate;
     int Kameracode = 1;
     CardView cardViewImage;
     LinearLayout linearLayout;
@@ -91,6 +91,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     static int RESULT_LOAD_IMG = 1;
     private static String TAG = AufgabenActivity.class.getSimpleName();
     private PhotoAdapter photoAdapter;
+    boolean fabVisible = false;
     /** ActionModeCallback und ActionMode ist für die veränderun der Toolbar bei einer Auswahl der
      * der Kurse. Über die "neue" Toolbar kann der User sein Auswahl abschließen oder noch weiter
      * informationen zu den Auswahl bekommen.
@@ -130,31 +131,65 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setAdapter(photoAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,0,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, 0, false));
         recyclerView.setHasFixedSize(true);
 
 
         fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera);
         fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie);
 
+        fabCamera.setAlpha(0f);
+        fabGallarie.setAlpha(0f);
+        fabCamera.animate().translationY(-72).setDuration(0).setInterpolator(new AccelerateDecelerateInterpolator());
+        fabGallarie.animate().translationY(-200).setDuration(0);
+
+        fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate);
+        fabAnimate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fabVisible == false) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_48dp, getTheme()));
+                    } else {
+                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_48dp));
+                    }
+                    fabGallarie.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabCamera.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabVisible = true;
+                }else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp, getTheme()));
+                    } else {
+                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp));
+                    }
+                    fabGallarie.animate().setDuration(300).translationY(-200).alpha(0f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabCamera.animate().setDuration(300).translationY(-72).alpha(0f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabVisible = false;
+                }
+
+            }
+        });
+
         fabCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                // Ensure that there's a camera activity to handle the intent
-                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    // Create the File where the photo should go
-                    try {
-                        photoFile = createImageFile();
-                    } catch (IOException ex) {
+                if (fabVisible != false) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // Ensure that there's a camera activity to handle the intent
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        // Create the File where the photo should go
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
 
-                    }
-                    // Continue only if the File was successfully created
-                    if (photoFile != null) {
-                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                        startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
+                        }
+                        // Continue only if the File was successfully created
+                        if (photoFile != null) {
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                            startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
 
 
+                        }
                     }
                 }
             }
@@ -162,12 +197,12 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         fabGallarie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Create intent to Open Image applications like Gallery, Google Photos
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                // Start the Intent
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-
+                if (fabVisible != false) {
+                    // Create intent to Open Image applications like Gallery, Google Photos
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    // Start the Intent
+                    startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+                }
             }
         });
 
@@ -369,7 +404,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
                             // Aufgabe wird in der Datenbank gespeichert
                             aufgabeLoad.save();
-                            if (photoAdapter.getList() !=null){
                                 if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() !=0) {
                                     List<dbMediaFile> mediaFileList = aufgabeLoad.getMediaFile(aufgabeLoad.getId());
                                     for (dbMediaFile mediaFile : mediaFileList) {
@@ -387,7 +421,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                                     }
                                 }
 
-                            }
 
                             Log.d("AufgabeActitviy","Aufgabe wurde erstellt");
                             // Activity wird geschlossen

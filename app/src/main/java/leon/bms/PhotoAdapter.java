@@ -53,11 +53,7 @@ public class PhotoAdapter extends SelectableAdapter<PhotoAdapter.ViewHolder> {
         }
     }
     public List<String> getList(){
-        if (photoList.size()==0){
-            return null;
-        }else {
             return photoList;
-        }
     }
 
 
