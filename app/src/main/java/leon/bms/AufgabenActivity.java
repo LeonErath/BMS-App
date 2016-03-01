@@ -116,7 +116,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         // setUp der toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_18dp);
+        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
         toolbar.setTitle("Neue Aufgabe");
         /**  Wichtig: @setDisplayHosAsUpEnabled erstellt einen "Back"-Button und die Activity ist "Vor" der Activity die sie aufuruft,
          *  sodass einfach wieder "zurück" gegangen werden kann
