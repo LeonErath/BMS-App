@@ -32,6 +32,7 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     QuizThemenAdapter quizThemenAdapter;
     List<quizthemen> quizthemenList;
 
+
     public Fragment_QuizThemenAuswahl(String kursID) {
         // Required empty public constructor
         this.kursID = kursID;

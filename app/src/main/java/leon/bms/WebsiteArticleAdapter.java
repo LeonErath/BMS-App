@@ -40,6 +40,14 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
 
     }
 
+    public List<WebsiteArtikel> getArtikelList(){
+        return artikelList;
+    }
+    public void addArticle(WebsiteArtikel websiteArtikel){
+        artikelList.add(websiteArtikel);
+        notifyItemInserted(artikelList.size()-1);
+    }
+
 public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
     artikelList = websiteArtikelList;
   notifyDataSetChanged();

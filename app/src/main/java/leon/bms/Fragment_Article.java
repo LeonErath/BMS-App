@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -26,10 +28,11 @@ import java.util.List;
  *  darstellen soll . Die Artikel werden in einem RecyclerView angezeigt und das Laden sowie
  *  verarbeiten der Artikel übernimmt der ArticleController
  */
-public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter.ViewHolder.ClickListener{
+public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter.ViewHolder.ClickListener,WebsiteArticleController.UpdateUI{
 
     // RecyclerView für das Anzeigen der einzelnen Artikel
     RecyclerView recyclerView;
+    Snackbar snackbar;
     // Adapter für den RecyclerView
     WebsiteArticleAdapter websiteArticleAdapter;
     // WebsiteArticleController für das herunterladen und verarbeiten der Artikel
@@ -39,6 +42,10 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
     private static String TAG = Fragment_Article.class.getSimpleName();
     ViewPager viewPager;
     ProgressDialog progressDialog;
+    CoordinatorLayout coordinatorLayout;
+    int page = 1;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     public Fragment_Article(ViewPager viewPager) {
     this.viewPager = viewPager;
@@ -55,21 +62,11 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
         super.setUserVisibleHint(isVisibleToUser);
         m_iAmVisible = isVisibleToUser;
         if (m_iAmVisible) {
-            articleController = new WebsiteArticleController(getActivity(),progressDialog);
+            articleController = new WebsiteArticleController(getActivity(),this);
             if (websiteArtikelList == null ||websiteArtikelList.size()==0){
                 progressDialog = ProgressDialog.show(getActivity(), "Load Articles", "Loading..", true, false);
                 // das Interface des articleControllers wird Initialisiert
-                articleController.setUpdateInterface(new WebsiteArticleController.UpdateUI() {
-                    @Override
-                    public void updateList(List<WebsiteArtikel> list) {
-                        //wenn das Interface ausgelöst wird bzw. der WebsiteController fertig ist
-                        // wird der RecyclerView aktualisiert sodass er die Artikel anzeigt
-                        websiteArtikelList = list;
-                        websiteArticleAdapter.changeDataSet(websiteArtikelList);
-                        progressDialog.dismiss();
-                    }
-                });
-                articleController.getRecentPosts();
+                articleController.getRecentPosts(page);
             }else{
                 Log.d(TAG,"No update needed");
             }
@@ -83,17 +80,41 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        articleController = new WebsiteArticleController(getActivity(),progressDialog);
+        articleController = new WebsiteArticleController(getActivity(),this);
 
         // sagt dem articleController ,dass er den Download der Artikel beginnen kann
-
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+            coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
+            recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
             // setUp recylcerView
-
+            final LinearLayoutManager mLayoutManager;
+            mLayoutManager = new LinearLayoutManager(getActivity());
             websiteArticleAdapter = new WebsiteArticleAdapter(this,websiteArtikelList);
             recyclerView.setAdapter(websiteArticleAdapter);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView.setLayoutManager(mLayoutManager);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) //check for scroll down
+                {
+                    visibleItemCount = mLayoutManager.getChildCount();
+                    totalItemCount = mLayoutManager.getItemCount();
+                    pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            articleController = new WebsiteArticleController(getActivity(),Fragment_Article.this);
+                            articleController.getRecentPosts(page);
+                            snackbar = Snackbar.make(coordinatorLayout, "Loading Articles..", Snackbar.LENGTH_LONG);
+                            snackbar.show();
+                            //Do pagination.. i.e. fetch new data
+                        }
+                    }
+                }
+            }
+        });
 
 
 
@@ -117,6 +138,25 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
     @Override
     public boolean onItemLongClicked(int position) {
         return false;
+    }
+
+    @Override
+    public void updateList(List<WebsiteArtikel> list) {
+        //wenn das Interface ausgelöst wird bzw. der WebsiteController fertig ist
+        // wird der RecyclerView aktualisiert sodass er die Artikel anzeigt
+        for (WebsiteArtikel websiteArtikel:list){
+            if (!websiteArtikelList.contains(websiteArtikel)){
+                websiteArticleAdapter.addArticle(websiteArtikel);
+            }
+        }
+        Log.d(TAG, "list: " + list.size() + " website: " + websiteArtikelList.size());
+        loading = true;
+        if (progressDialog.isShowing()){
+            progressDialog.dismiss();}
+        if (snackbar != null && snackbar.isShown()){
+            snackbar.dismiss();
+        }
+        page++;
     }
 
     /** @updateList automatische Erstellung beim Implementieren des Interface

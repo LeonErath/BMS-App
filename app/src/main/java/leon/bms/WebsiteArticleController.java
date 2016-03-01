@@ -30,28 +30,29 @@ import java.util.concurrent.ExecutionException;
 
 public class WebsiteArticleController {
 Context context;
-    ProgressDialog progressDialog;
-    UpdateUI updateUI;
+
+    UpdateUI mListener;
+
 
     Boolean finnish = false;
     List<WebsiteArtikel> websiteArtikelList = new ArrayList<>();
 
-    public WebsiteArticleController(Context mainContext,ProgressDialog progressDialog) {
+    public WebsiteArticleController(Context mainContext,Fragment_Article fragementContext) {
         this.context = mainContext;
-        this.progressDialog = progressDialog;
-
-
+        if (fragementContext instanceof UpdateUI) {
+            mListener = (UpdateUI) fragementContext;
+        } else {
+            throw new RuntimeException(fragementContext.toString() + " must implement OnFragmentInteractionListener");
+        }
 
     }
-    private void setData(String data){
 
-    }
 
-    public void getRecentPosts(){
 
+    public void getRecentPosts(int page){
                 // DO YOUR STUFFS HERE
                 websiteArtikelList.clear();
-                String Url = "http://marienschule.de/?json=get_recent_posts";
+                String Url = "http://marienschule.de/?json=get_recent_posts&page="+page;
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("", "");
                 String params = builder.build().getEncodedQuery();
@@ -90,7 +91,10 @@ Context context;
                 websiteArtikel.modified = einzelnerPost.optString("modified");
 
                 JSONObject custom_fields = einzelnerPost.getJSONObject("custom_fields");
-
+                JSONArray autorArray = custom_fields.getJSONArray("Autor");
+                for (int k=0;k<autorArray.length();k++){
+                    websiteArtikel.author = autorArray.getString(0);
+                }
                 JSONArray imageArray = custom_fields.getJSONArray("leadimage");
                 for (int k=0;k<imageArray.length();k++){
                     imageLoader.loadImage(imageArray.getString(0), new ImageLoadingListener() {
@@ -108,7 +112,8 @@ Context context;
                         public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                             websiteArtikel.image = loadedImage;
                             finnish = true;
-                            updateUI.updateList(websiteArtikelList);
+                            websiteArtikelList.add(websiteArtikel);
+                            mListener.updateList(websiteArtikelList);
                             Log.d("WebsiteArticleController","Image successfully loaded.");
                         }
 
@@ -119,12 +124,6 @@ Context context;
                     });
 
                 }
-                JSONArray autorArray = custom_fields.getJSONArray("Autor");
-                for (int k=0;k<imageArray.length();k++){
-                    websiteArtikel.author = autorArray.getString(0);
-                }
-              Log.d("WebsiteArticleController","Website Object created");
-                websiteArtikelList.add(websiteArtikel);
 
             }
 
@@ -133,7 +132,7 @@ Context context;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        updateUI.updateList(websiteArtikelList);
+        //updateUI.updateList(websiteArtikelList);
 
 
     }
@@ -152,9 +151,7 @@ Context context;
     public interface UpdateUI {
         public void updateList(List<WebsiteArtikel> list);
     }
-    public void setUpdateInterface(UpdateUI updateInterface){
-        this.updateUI = updateInterface;
-    }
+
 
 }
 
