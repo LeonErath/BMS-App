@@ -116,6 +116,7 @@ public class QuizController {
                             }
                             antworten.antwort = jsonArrayFalscheAntworten.getString(k);
                             antworten.serverid = id;
+                            antworten.langfassung = jsonObject.getString("description");
 
                             antworten.fragen = frage;
 
