@@ -7,6 +7,7 @@ public class quizthemen {
 
     String themenbereich;
     int fragen;
+    Long id;
     String kursId;
     String lehrer;
     String datum;
@@ -14,12 +15,21 @@ public class quizthemen {
     public quizthemen() {
     }
 
-    public quizthemen(String themenbereich, int fragen, String kursId, String lehrer, String datum) {
+    public quizthemen(String themenbereich, int fragen, Long id, String kursId, String lehrer, String datum) {
         this.themenbereich = themenbereich;
         this.fragen = fragen;
+        this.id = id;
         this.kursId = kursId;
         this.lehrer = lehrer;
         this.datum = datum;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getKursId() {

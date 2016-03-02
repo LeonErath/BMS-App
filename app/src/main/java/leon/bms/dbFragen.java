@@ -117,6 +117,15 @@ public class dbFragen extends SugarRecord {
             return null;
         }
     }
+    public List<dbAntworten> getAnworten(long id){
+        List<dbAntworten> dbAntwortenList = new dbAntworten().find(dbAntworten.class,"fragen = ?",String.valueOf(id));
+        if (dbAntwortenList.size() > 0){
+            return dbAntwortenList;
+        }else {
+            return null;
+        }
+    }
+
     public boolean frageVorhanden(int idlocal){
         List<dbFragen> dbFragenList= dbFragen.find(dbFragen.class, "serverid = ?", String.valueOf(idlocal));
         if (dbFragenList.size() > 0){

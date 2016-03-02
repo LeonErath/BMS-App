@@ -99,7 +99,7 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     @Override
     public void onItemClicked(int position) {
         quizthemen quizthemen = quizthemenList.get(position);
-        mListener.FragmentQuizThemen_next();
+        mListener.FragmentQuizThemen_next(quizthemen.getId());
     }
 
     @Override
@@ -121,7 +121,6 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void backQuizThemenAuswwahl();
-        void FragmentQuizThemen_next();
-        void onFragmentInteraction(Long themenbereichID);
+        void FragmentQuizThemen_next(Long themenbereichID);
     }
 }

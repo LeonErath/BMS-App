@@ -67,6 +67,14 @@ public class dbThemenbereich extends SugarRecord {
             Log.d("dbThhemenbereich","Keinen Themenbereich gefuden");
             return null;}
     }
+    public dbThemenbereich getThemenbereich(long id){
+        List<dbThemenbereich> dbThemenbereichList= dbThemenbereich.find(dbThemenbereich.class,"id = ?", String.valueOf(id));
+        if (dbThemenbereichList.size() == 1){
+            return dbThemenbereichList.get(0);
+        }else {
+            Log.d("dbThhemenbereich","Keinen Themenbereich gefuden");
+            return null;}
+    }
     public boolean themenbereichVorhanden(int idlocal){
         List<dbThemenbereich> dbThemenbereichList= dbThemenbereich.find(dbThemenbereich.class,"serverid = ?", String.valueOf(idlocal));
         if (dbThemenbereichList.size() > 0){
