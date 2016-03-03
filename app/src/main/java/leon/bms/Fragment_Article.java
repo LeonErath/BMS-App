@@ -130,6 +130,8 @@ public class Fragment_Article extends Fragment  implements WebsiteArticleAdapter
         intent.putExtra("content",websiteArtikelList.get(position).contentArticle);
         intent.putExtra("headline", websiteArtikelList.get(position).title);
         intent.putExtra("autor",websiteArtikelList.get(position).author);
+        intent.putExtra("bild",websiteArtikelList.get(position).image);
+        intent.putExtra("id",websiteArtikelList.get(position).id);
 
         getActivity().startActivity(intent);
 

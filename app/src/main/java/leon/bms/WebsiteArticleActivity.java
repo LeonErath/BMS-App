@@ -1,63 +1,64 @@
 package leon.bms;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.Calendar;
 
 public class WebsiteArticleActivity extends AppCompatActivity {
 
     TextView textViewHeadline;
-    TextView textViewContent;
-    TextView textViewAutor;
+    TextView textViewAutor,textViewToolbar;
     WebView webView;
     String content;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent intent = getIntent();
+        content = intent.getStringExtra("content");
+        String headline = intent.getStringExtra("headline");
+        String autor = intent.getStringExtra("autor");
         setContentView(R.layout.activity_website_article);
+
+        String message ="<font color=\"" + "#5e5e5e" + "\">" +content+ "</font>";
+
+        webView = (WebView) findViewById(R.id.webView);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webView.getSettings().setLoadsImagesAutomatically(true);
+        webView.getSettings().setLoadWithOverviewMode(true);
+        webView.getSettings().setUseWideViewPort(true);
+        webView.getSettings().setDefaultFontSize(40);
+        webView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
+
+        webView.loadDataWithBaseURL("", message, "text/html", "utf-8", "");
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_18dp);
-        Intent intent = getIntent();
-        content= intent.getStringExtra("content");
-        String headline= intent.getStringExtra("headline");
-        String autor= intent.getStringExtra("autor");
 
-
+        textViewToolbar = (TextView) findViewById(R.id.textViewToolbar);
         textViewAutor = (TextView) findViewById(R.id.textViewAutor);
-        textViewContent = (TextView) findViewById(R.id.textViewContent);
         textViewHeadline = (TextView) findViewById(R.id.textViewHeadline);
+        toolbar.setNavigationIcon(R.drawable.ic_clear_white_18dp);
 
-        //webView = (WebView) findViewById(R.id.webView);
-        //webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        //webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        //webView.loadDataWithBaseURL("", content, "text/html", "utf-8", "");
-
-        textViewContent.setText(Html.fromHtml(content));
-        textViewHeadline.setText(headline);
         textViewAutor.setText(autor);
+        textViewHeadline.setText(headline);
+        textViewToolbar.setText("");
         getSupportActionBar().setTitle("");
 
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
