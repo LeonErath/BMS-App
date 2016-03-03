@@ -43,10 +43,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     private static String TAG = Fragment_QuizFrage.class.getSimpleName();
     Long themenbereichID;
     dbFragen frage;
+    boolean richtigOderFalsch = true;
     List<dbFragen> fragenList;
     List<dbAntworten> falscheAntworten;
     List<dbAntworten> richtigeAntworten;
     int counter = 1;
+    boolean mAlreadyLoaded=false;
     Boolean[] placeofAntwort = new Boolean[5];
 
 
@@ -74,6 +76,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+            // Do this code only first time, not after rotation or reuse fragment from backstack
         textViewThemenbereich = (TextView) view.findViewById(R.id.textViewThemenbereich);
         textViewFrageID = (TextView) view.findViewById(R.id.textViewFrageID);
         textViewFrage = (TextView) view.findViewById(R.id.textViewFrage);
@@ -97,8 +100,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         cardViewBottombar.setOnClickListener(this);
 
         setUpQuiz();
-
     }
+
 
 
     public void setUpQuiz() {
@@ -116,10 +119,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     }
 
     public void setUpFrage(int counter, List<dbFragen> fragenList) {
-        if (counter > 0) {
+        if (counter > 0 && counter-1< fragenList.size()) {
             frage = fragenList.get(counter - 1);
             textViewFrage.setText(frage.getFrage());
             setUpAntwort(frage.getId());
+        }else {
+
         }
     }
 
@@ -227,13 +232,13 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                             deineAntwort+=textViewAntwort1.getText().toString()+", ";
                         }
                         if (selected2 == true){
-                            deineAntwort+=textViewAntwort1.getText().toString()+", ";
+                            deineAntwort+=textViewAntwort2.getText().toString()+", ";
                         }
                         if (selected3 == true){
-                            deineAntwort+=textViewAntwort1.getText().toString()+", ";
+                            deineAntwort+=textViewAntwort3.getText().toString()+", ";
                         }
                         if (selected4 == true){
-                            deineAntwort+=textViewAntwort1.getText().toString()+", ";
+                            deineAntwort+=textViewAntwort4.getText().toString()+", ";
                         }
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -264,6 +269,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                         generealCheck(cardView2, selected2, 2, textViewAntwort2);
                         generealCheck(cardView3, selected3, 3, textViewAntwort3);
                         generealCheck(cardView4, selected4, 4, textViewAntwort4);
+                        checkRight();
                     }
                 }
                 break;
@@ -272,14 +278,28 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
 
         }
     }
+    public void checkRight(){
+        if (richtigOderFalsch == true){
+            Log.d(TAG,"Richtig!");
+            dbFragen fragen = fragenList.get(counter-1);
+            fragen.richtigCounter++;
+            fragen.save();
+        }else {
+            Log.d(TAG,"Falsch!");
+        }
+    }
+
     public void nextQuestion(){
         counter++;
         if (fragenList.size()>=counter){
+            richtigOderFalsch = true;
             enableCardView();
             textViewContinue.setText("Lösen");
             textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
             setUpFrage(counter,fragenList);
         }else {
+            mListener.Fragment_QuizFrageShowErgebnis(themenbereichID);
+
             Log.d(TAG,"Ergebnis");
         }
 
@@ -330,6 +350,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                 cardView.setCardBackgroundColor(Color.parseColor("#b7d167"));
                 textView.setTextColor(Color.parseColor("#ffffff"));
             } else {
+                richtigOderFalsch = false;
                 animateViewRippleIN(cardView);
                 cardView.setCardBackgroundColor(Color.parseColor("#e30613"));
                 textView.setTextColor(Color.parseColor("#ffffff"));
@@ -337,10 +358,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         } else {
             if (selection != placeofAntwort[position]) {
                 if (placeofAntwort[position] == true) {
+                    richtigOderFalsch = false;
                     animateViewRippleIN(cardView);
                     cardView.setCardBackgroundColor(Color.parseColor("#b7d167"));
                     textView.setTextColor(Color.parseColor("#ffffff"));
                 } else {
+                    richtigOderFalsch = false;
                     Log.d(TAG, "false " + placeofAntwort[position]);
                     animateViewRippleIN(cardView);
                     cardView.setCardBackgroundColor(Color.parseColor("#e30613"));
@@ -442,6 +465,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void Fragment_QuizFrageShowErgebnis(long themenbereichID);
+        void Fragment_QuitFrageBACK();
     }
 }

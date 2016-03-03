@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment,Fragment_QuizFachAuswahl.OnFragmentInteractionListener,Fragment_QuizThemenAuswahl.OnFragmentInteractionListener,Fragment_QuizFrage.OnFragmentInteractionListener {
+public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment,Fragment_QuizFachAuswahl.OnFragmentInteractionListener,Fragment_QuizThemenAuswahl.OnFragmentInteractionListener,Fragment_QuizFrage.OnFragmentInteractionListener,Fragment_QuizErgebnis.OnFragmentInteractionListener {
 
     FrameLayout frameLayout;
     int counter = 0;
@@ -89,7 +89,23 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                     transaction2.commit();
                 }
                 break;
-            case 4:break;
+            case 4:
+                if (themenbereichID != null) {
+                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment, "4");
+                    transaction2.addToBackStack("4");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+                }
+                break;
             case 5:break;
         }
 
@@ -104,9 +120,12 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
 
         if (count == 0) {
             super.onBackPressed();
+            if (counter==3){
+                counter--;
+                super.onBackPressed();
+            }
             //additional code
         } else {
-
             getFragmentManager().popBackStack();
         }
 
@@ -131,9 +150,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     }
 
     @Override
-    public void backQuizThemenAuswwahl() {
-        onBackPressed();
-    }
+    public void backQuizThemenAuswwahl() {onBackPressed();}
 
     @Override
     public void FragmentQuizThemen_next(Long themenbereichID) {
@@ -142,10 +159,25 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     }
 
 
+    @Override
+    public void Fragment_QuizFrageShowErgebnis(long themenbereichID) {
+        this.themenbereichID = themenbereichID;
+        next();
+    }
+
+    @Override
+    public void Fragment_QuitFrageBACK() {
+        onBackPressed();
+    }
 
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void Fragment_QuizErgebnisBACK() {
+        onBackPressed();
+    }
+
+    @Override
+    public void Fragment_QuizErgebnisZuFrage(long themenbereichID, int FrageID) {
 
     }
 }

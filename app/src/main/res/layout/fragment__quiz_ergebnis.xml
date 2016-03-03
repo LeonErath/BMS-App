@@ -1,13 +1,173 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="leon.bms.Fragment_QuizErgebnis">
+    tools:context="leon.bms.Fragment_QuizFrage">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:background="@drawable/tafel_schwarz"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/containerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="30dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:orientation="horizontal">
+
+                    <android.support.design.widget.CoordinatorLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.8">
+
+
+
+                        <in.raveesh.customtype.TextView
+                            android:id="@+id/textViewFrageID"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="ERGEBNIS"
+                            android:textColor="#fff"
+                            android:textSize="26dp"
+                            app:typeface="fonts/chalkduster.ttf" />
+
+                        <in.raveesh.customtype.TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="32dp"
+                            android:layout_marginTop="30dp"
+                            android:maxLines="1"
+                            android:text="____________________________"
+                            android:textColor="#9a0000"
+                            android:textSize="20dp"
+                            app:typeface="fonts/chalkduster.ttf" />
+
+                    </android.support.design.widget.CoordinatorLayout>
+
+                    <ImageView
+                        android:id="@+id/imageViewCancel"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_weight="0.2"
+                        android:src="@drawable/quiz_cancel_button" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="16dp">
+
+
+                    <TextView
+                    android:id="@+id/textViewName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Name: Leon Erath"
+                    android:textColor="#fff"
+                    android:textSize="20dp"
+                    />
+                    <TextView
+                        android:id="@+id/textViewStufe"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Stufe: Q2"
+                        android:textColor="#fff"
+                        android:textSize="20dp"
+                        />
+                    <TextView
+                        android:id="@+id/textViewThemenbereich"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Themenbereich: ..."
+                        android:textColor="#fff"
+                        android:textSize="20dp"
+                        />
+                    <TextView
+                        android:id="@+id/textViewFrageRichtig"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Fragen richtig beantwortet: 10(10%)"
+                        android:textColor="#fff"
+                        android:textSize="20dp"
+                        />
+                    <TextView
+                        android:id="@+id/textViewFrageFalsch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Fragen falsche beantwortet: 90(90%)"
+                        android:textColor="#fff"
+                        android:textSize="20dp"
+                        />
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <android.support.design.widget.CoordinatorLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <in.raveesh.customtype.TextView
+                    android:layout_marginLeft="16dp"
+                    android:id="@+id/textViewFragen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="FRAGEN"
+                    android:textColor="#fff"
+                    android:textSize="26dp"
+                    app:typeface="fonts/chalkduster.ttf" />
+
+                <in.raveesh.customtype.TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:maxLines="1"
+                    android:text="_________________________________________________________________________________________________________________________________________"
+                    android:textColor="#9a0000"
+                    android:textSize="20dp"
+                    app:typeface="fonts/chalkduster.ttf" />
+            </android.support.design.widget.CoordinatorLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@+id/relative"
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
