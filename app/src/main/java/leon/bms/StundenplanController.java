@@ -8,6 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -96,17 +99,22 @@ public class StundenplanController {
     // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
     // altualisiert werden können
     public void checkUpdate(){
-        String Url = "http://app.marienschule.de/files/scripts/NEW/getAllDataN.php";
+        String Url = "http://app.marienschule.de/files/scripts/getAllDataN.php";
         String result="";
         LogInController logInController = new LogInController(mainContext);
-
-
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
+        try {
+            calendar.setTime(sdf2.parse("2015-03-05 12:16:22"));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("username", logInController.getUsername())
                 .appendQueryParameter("pw", logInController.getPass())
-                .appendQueryParameter("date","");
-        String params = builder.build().getEncodedQuery();
+                .appendQueryParameter("date","2015-03-05 12:16:22"); // TODO Kein URi Builder
+        String params = "pw=Ardaturan99&username=erath&date=2015-03-05+12%3A16%3A22";
 
         atOnline atOnline = new atOnline(Url, params, mainContext);
         try {
