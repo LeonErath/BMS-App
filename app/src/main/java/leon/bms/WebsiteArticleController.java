@@ -89,6 +89,17 @@ Context context;
                 websiteArtikel.excerpt =  Html.fromHtml(einzelnerPost.optString("excerpt")).toString();
                 websiteArtikel.date = einzelnerPost.optString("date");
                 websiteArtikel.modified = einzelnerPost.optString("modified");
+                JSONArray websiteTags = einzelnerPost.getJSONArray("tags");
+                if (websiteTags.length() >0) {
+                    List<String> tagList = new ArrayList<>();
+                    for (int l = 0; l < websiteTags.length(); l++) {
+                        JSONObject tagObject = websiteTags.getJSONObject(l);
+                        tagList.add(tagObject.optString("title"));
+                    }
+                    if (tagList.size()>0){
+                        websiteArtikel.tags = tagList;
+                    }
+                }
 
                 JSONObject custom_fields = einzelnerPost.getJSONObject("custom_fields");
                 JSONArray autorArray = custom_fields.getJSONArray("Autor");

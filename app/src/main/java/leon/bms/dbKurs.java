@@ -37,11 +37,12 @@ public class dbKurs extends SugarRecord<dbKurs> {
     dbUser user;
     public dbLehrer lehrer;
     dbSchulstunde stunde;
+    dbKursTagConnect dbKursTagConnect;
 
     public dbKurs() {
     }
 
-    public dbKurs(String name, int kursart, Boolean aktiv, int id, String fach, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int icon, int schuljahr, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbUser user, dbLehrer lehrer, dbSchulstunde stunde) {
+    public dbKurs(String name, int kursart, Boolean aktiv, String fach, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int icon, int schuljahr, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, leon.bms.dbKursTagConnect dbKursTagConnect) {
         this.name = name;
         this.kursart = kursart;
         this.aktiv = aktiv;
@@ -58,7 +59,17 @@ public class dbKurs extends SugarRecord<dbKurs> {
         this.user = user;
         this.lehrer = lehrer;
         this.stunde = stunde;
+        this.dbKursTagConnect = dbKursTagConnect;
     }
+
+    public leon.bms.dbKursTagConnect getDbKursTagConnect() {
+        return dbKursTagConnect;
+    }
+
+    public void setDbKursTagConnect(leon.bms.dbKursTagConnect dbKursTagConnect) {
+        this.dbKursTagConnect = dbKursTagConnect;
+    }
+
     public String getGeandertAm() {
         return geandertAm;
     }
@@ -276,6 +287,15 @@ public class dbKurs extends SugarRecord<dbKurs> {
         List<dbSchulstunde> dbSchulstundeList = dbSchulstunde.find(dbSchulstunde.class,"kurs = ? and wochentag = ?",String.valueOf(kursid),String.valueOf(week));
         if (dbSchulstundeList.size()>0){
             return dbSchulstundeList;
+        }else {
+            return null;
+        }
+    }
+
+    public List<dbWebsiteTag> getWebsiteTags(Long id){
+        List<dbWebsiteTag> dbWebsiteTagList = dbWebsiteTag.find(dbWebsiteTag.class,"kurs = ?",String.valueOf(id));
+        if (dbWebsiteTagList.size()>0) {
+            return dbWebsiteTagList;
         }else {
             return null;
         }

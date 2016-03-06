@@ -1,10 +1,28 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:id="@+id/coordinatorLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="leon.bms.Fragment_Article"
-   >
+    android:orientation="vertical"
+    android:background="#fff"
+    tools:context="leon.bms.Fragment_Article">
+
+    <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/toogleButton"
+        android:textSize="16sp"
+        custom:activeBgColor="@android:color/holo_blue_dark"
+        custom:activeTextColor="@android:color/white"
+        custom:inactiveBgColor="@android:color/white"
+        custom:inactiveTextColor="@android:color/black"
+        custom:separatorColor="@color/gray_very_light"
+        custom:textToggleLeft="alle Artikel"
+        custom:textToggleRight="deine Artikel"
+        android:layout_margin="8dp"
+        custom:toggleWidth="154dp"/>
 
 
     <android.support.v7.widget.RecyclerView
@@ -13,5 +31,4 @@
         android:layout_height="match_parent" />
 
 
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>

@@ -143,7 +143,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
-                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            aufgabeAdapter.changeAufgabe(aufgabe);
                             break;
                     }
                 }
@@ -158,10 +158,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                     switch (which) {
                         case R.id.change:
                             Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("Beschreibung", aufgabe.beschreibung);
-                            intent.putExtra("Notizen", aufgabe.notizen);
-                            intent.putExtra("Fach", aufgabe.kurs.fach);
-                            intent.putExtra("Datum", aufgabe.abgabeDatum);
+                            intent.putExtra("id", aufgabe.getId());
                             startActivity(intent);
                             break;
                         case R.id.details:
@@ -177,7 +174,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
-                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            aufgabeAdapter.removeAufgabe(aufgabe);
                             break;
                         case R.id.cancel:
                             alleAufgaben.clear();
@@ -191,7 +188,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                                 erledigtList = new dbAufgabe().getErledigtAufgabe();
                                 alleAufgaben.addAll(erledigtList);
                             }
-                            aufgabeAdapter.changeDataSet(alleAufgaben);
+                            aufgabeAdapter.changeAufgabe(aufgabe);
                             break;
                     }
                 }

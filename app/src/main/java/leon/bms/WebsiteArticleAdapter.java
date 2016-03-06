@@ -24,8 +24,7 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
     private static final String TAG = KursauswahlAdapter.class.getSimpleName();
 
 
-
-    private List<WebsiteArtikel> artikelList= new ArrayList<>();
+    private List<WebsiteArtikel> artikelList = new ArrayList<>();
 
 
     private ViewHolder.ClickListener clickListener;
@@ -33,30 +32,25 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
     public WebsiteArticleAdapter(ViewHolder.ClickListener clickListener, List<WebsiteArtikel> artikelList) {
         super();
         this.clickListener = clickListener;
-        this.artikelList= artikelList;
+        this.artikelList = artikelList;
         Log.d(TAG, artikelList.size() + " ");
 
 
-
     }
 
-    public List<WebsiteArtikel> getArtikelList(){
+    public List<WebsiteArtikel> getArtikelList() {
         return artikelList;
     }
-    public void addArticle(WebsiteArtikel websiteArtikel){
+
+    public void addArticle(WebsiteArtikel websiteArtikel) {
         artikelList.add(websiteArtikel);
-        notifyItemInserted(artikelList.size()-1);
+        notifyItemInserted(artikelList.size() - 1);
     }
 
-public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
-    artikelList = websiteArtikelList;
-  notifyDataSetChanged();
-}
-
-
-
-
-
+    public void changeDataSet(List<WebsiteArtikel> websiteArtikelList) {
+        artikelList = websiteArtikelList;
+        notifyDataSetChanged();
+    }
 
 
     @Override
@@ -68,7 +62,7 @@ public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final WebsiteArtikel websiteArtikel =artikelList.get(position);
+        final WebsiteArtikel websiteArtikel = artikelList.get(position);
 
         //Setting text view title
         holder.imageView.setImageBitmap(websiteArtikel.getImage());
@@ -84,7 +78,6 @@ public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
     }
 
 
-
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
@@ -92,7 +85,6 @@ public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
         TextView textViewHeadline;
         TextView textViewContent;
         ImageView imageView;
-
 
 
         private ClickListener listener;
@@ -129,6 +121,7 @@ public void changeDataSet(List<WebsiteArtikel> websiteArtikelList){
 
         public interface ClickListener {
             public void onItemClicked(int position);
+
             public boolean onItemLongClicked(int position);
         }
     }

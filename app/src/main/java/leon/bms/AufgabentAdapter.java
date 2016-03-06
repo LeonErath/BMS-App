@@ -72,6 +72,14 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
             notifyItemInserted(aufgabenList.size() - 1);
         }
     }
+    public void changeAufgabe(dbAufgabe aufgabe){
+        if (aufgabenList.contains(aufgabe)){
+            int index = aufgabenList.indexOf(aufgabe);
+            aufgabenList.remove(index);
+            aufgabenList.add(index,aufgabe);
+            notifyItemChanged(index);
+        }
+    }
 
 
     @Override

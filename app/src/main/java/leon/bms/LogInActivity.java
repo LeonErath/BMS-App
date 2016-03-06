@@ -15,7 +15,7 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        deleteDB();
         setContentView(R.layout.activity_log_in);
         findViewById(R.id.fragment).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,6 +32,10 @@ public class LogInActivity extends AppCompatActivity {
         dbSchulstunde.deleteAll(dbSchulstunde.class);
         dbMediaFile.deleteAll(dbMediaFile.class);
         dbLehrer.deleteAll(dbLehrer.class);
+        dbWebsiteTag.deleteAll(dbWebsiteTag.class);
+        dbFragen.deleteAll(dbFragen.class);
+        dbThemenbereich.deleteAll(dbThemenbereich.class);
+        dbAntworten.deleteAll(dbAntworten.class);
     }
 
     }

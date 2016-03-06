@@ -35,7 +35,7 @@
             android:value="BMSDATENBANK2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="38" />
+            android:value="42" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />

@@ -3,6 +3,7 @@ package leon.bms;
 import android.graphics.Bitmap;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Leon E on 13.02.2016.
@@ -19,13 +20,14 @@ public class WebsiteArtikel{
     String modified;
     String author;
     Bitmap image;
-    String tag;
+    int relevanz;
+    List<String> tags;
 
 
     public WebsiteArtikel() {
     }
 
-    public WebsiteArtikel(int id, String slug, String url, String title, String title_plain, String contentArticle, String excerpt, String date, String modified, String author, Bitmap image, String tag) {
+    public WebsiteArtikel(int id, String slug, String url, String title, String title_plain, String contentArticle, String excerpt, String date, String modified, String author, Bitmap image, int relevanz, List<String> tags) {
         this.id = id;
         this.slug = slug;
         this.url = url;
@@ -37,7 +39,16 @@ public class WebsiteArtikel{
         this.modified = modified;
         this.author = author;
         this.image = image;
-        this.tag = tag;
+        this.relevanz = relevanz;
+        this.tags = tags;
+    }
+
+    public int getRelevanz() {
+        return relevanz;
+    }
+
+    public void setRelevanz(int relevanz) {
+        this.relevanz = relevanz;
     }
 
     public String getAuthor() {
@@ -56,12 +67,12 @@ public class WebsiteArtikel{
         this.image = image;
     }
 
-    public String getTag() {
-        return tag;
+    public List<String> getTags() {
+        return tags;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 
     public int getId() {
