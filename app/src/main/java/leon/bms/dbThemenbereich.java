@@ -13,17 +13,44 @@ public class dbThemenbereich extends SugarRecord {
 
     String name;
     String zuletztAktualisiert;
+    String infos;
     int serverid;
     dbKurs kurs;
     dbFragen fragen;
     public dbThemenbereich() {
     }
 
-    public dbThemenbereich(String name, String zuletztAktualisiert, Integer id, dbKurs kurs) {
+    public dbThemenbereich(String name, String zuletztAktualisiert, String infos, int serverid, dbKurs kurs, dbFragen fragen) {
         this.name = name;
         this.zuletztAktualisiert = zuletztAktualisiert;
-        this.serverid = id;
+        this.infos = infos;
+        this.serverid = serverid;
         this.kurs = kurs;
+        this.fragen = fragen;
+    }
+
+    public String getInfos() {
+        return infos;
+    }
+
+    public void setInfos(String infos) {
+        this.infos = infos;
+    }
+
+    public int getServerid() {
+        return serverid;
+    }
+
+    public void setServerid(int serverid) {
+        this.serverid = serverid;
+    }
+
+    public dbFragen getFragen() {
+        return fragen;
+    }
+
+    public void setFragen(dbFragen fragen) {
+        this.fragen = fragen;
     }
 
     public String getName() {

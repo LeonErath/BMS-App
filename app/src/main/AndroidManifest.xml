@@ -35,7 +35,7 @@
             android:value="BMSDATENBANK2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="37" />
+            android:value="38" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />
@@ -49,6 +49,7 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".KursauswahlActivity" />
         <activity
+            android:configChanges="orientation|screenSize"
             android:name=".AufgabenActivity"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"

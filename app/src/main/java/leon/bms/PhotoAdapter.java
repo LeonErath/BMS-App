@@ -52,6 +52,12 @@ public class PhotoAdapter extends SelectableAdapter<PhotoAdapter.ViewHolder> {
             Log.d(TAG, photoList.size() + "");
         }
     }
+
+    public void newData(List<String> paths){
+        photoList.clear();
+        photoList = paths;
+        notifyDataSetChanged();
+    }
     public List<String> getList(){
             return photoList;
     }

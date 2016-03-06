@@ -17,6 +17,8 @@ public class dbFragen extends SugarRecord {
     int richtigCounter;
     int schwirigkeit;
     String langfassung;
+    String date;
+    String stufe;
 
     dbKurs kurs;
     dbAntworten antworten;

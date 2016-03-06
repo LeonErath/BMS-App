@@ -342,6 +342,24 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        ArrayList<String> test = (ArrayList<String>) photoAdapter.getList();
+        outState.putStringArrayList("paths", test);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("paths")) {
+                ArrayList<String> paths= savedInstanceState.getStringArrayList("paths");
+                photoAdapter.newData(paths);
+            }
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK){

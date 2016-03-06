@@ -59,8 +59,11 @@ public class QuizController {
                 JSONObject jsonObject = jsonArrayThemenbereiche.getJSONObject(i);
                 dbThemenbereich themenbereich = new dbThemenbereich();
                 themenbereich.serverid = jsonObject.getInt("id");
-                themenbereich.name = jsonObject.getString("title");
-                themenbereich.zuletztAktualisiert = jsonObject.getString("dat");
+                if (jsonObject.getString("wInfos")!=null){
+                    themenbereich.infos = jsonObject.getString("wInfos");
+                }
+                themenbereich.name = jsonObject.getString("titel");
+                themenbereich.zuletztAktualisiert = jsonObject.getString("change");
                 if (new dbThemenbereich().themenbereichVorhanden(themenbereich.serverid) == false) {
                     String kursID = jsonObject.getString("kursid");
                     if (new dbKurs().getKursWithKursid(kursID) != null) {
@@ -71,66 +74,46 @@ public class QuizController {
 
                 }
             }
-
             JSONArray jsonArrayFragen = jsonObjectAll.getJSONArray("frag");
             for (int i = 0; i < jsonArrayFragen.length(); i++) {
                 JSONObject jsonObject = jsonArrayFragen.getJSONObject(i);
                 dbFragen fragen = new dbFragen();
-                if (new dbThemenbereich().getThemenbereich(jsonObject.getInt("themen")) != null) {
+                if (new dbThemenbereich().getThemenbereich(jsonObject.getInt("themenbereich")) != null) {
                     fragen.frage = jsonObject.getString("frage");
-                    fragen.schwirigkeit = jsonObject.getInt("schw");
+                    fragen.schwirigkeit = jsonObject.getInt("schwierigkeit");
                     fragen.serverid = jsonObject.getInt("id");
-                    ;
-                    if (new dbFragen().frageVorhanden(fragen.serverid) == false) {
-                        dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(jsonObject.getInt("themen"));
-                        fragen.themenbereich = themenbereich;
-                        String kursID = jsonObject.getString("kursid");
-                        if (new dbKurs().getKursWithKursid(kursID) != null) {
-                            dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
-                            fragen.kurs = kurs;
-                            fragen.save();
-                            themenbereich.save();
-                        }
+                    fragen.stufe = jsonObject.getString("stufe");
+                    if (fragen.stufe.equals(new dbUser().getUser().stufe)) {
+                        if (new dbFragen().frageVorhanden(fragen.serverid) == false) {
+                            dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(jsonObject.getInt("themenbereich"));
+                            fragen.themenbereich = themenbereich;
+                            String kursID = jsonObject.getString("kursid");
+                            if (new dbKurs().getKursWithKursid(kursID) != null) {
+                                dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
+                                fragen.kurs = kurs;
+                                fragen.save();
 
+                                JSONArray answers = jsonObject.getJSONArray("answers");
+                                for (int l=0;l<answers.length();l++){
+                                    JSONObject jsonObjectAnswer = answers.getJSONObject(l);
+                                    dbAntworten antworten = new dbAntworten();
+                                    antworten.serverid = jsonObjectAnswer.getInt("id");
+                                    antworten.antwort = jsonObjectAnswer.getString("text");
+                                    antworten.richtig = jsonObjectAnswer.getBoolean("truth");
+                                    antworten.langfassung = jsonObjectAnswer.getString("description");
+                                    antworten.fragen = fragen;
+                                    antworten.save();
 
-                    }
-                }
-            }
+                                }
 
-            JSONArray jsonArrayAntworten = jsonObjectAll.getJSONArray("antworten");
-            for (int i = 0; i < jsonArrayAntworten.length(); i++) {
-                JSONObject jsonObject = jsonArrayAntworten.getJSONObject(i);
-                if (new dbFragen().getFrage(jsonObject.getInt("fragid")) != null) {
-                    dbFragen frage = new dbFragen().getFrage(jsonObject.getInt("fragid"));
-                    int id = jsonObject.optInt("id");
-                    if (new dbAntworten().antwortVorhanden(id) == false) {
-
-                        JSONArray jsonArrayFalscheAntworten = jsonObject.getJSONArray("antworten");
-                        int richtig = jsonObject.getInt("truth");
-                        for (int k = 0; k < jsonArrayFalscheAntworten.length(); k++) {
-                            dbAntworten antworten = new dbAntworten();
-                            if (richtig == k+1){
-                                antworten.richtig = true;
-                            }else {
-                                antworten.richtig = false;
                             }
-                            antworten.antwort = jsonArrayFalscheAntworten.getString(k);
-                            antworten.serverid = id;
-                            antworten.langfassung = jsonObject.getString("description");
 
-                            antworten.fragen = frage;
 
-                            antworten.save();
-                            frage.save();
                         }
-
-
-
-
                     }
                 }
-
             }
+
 
 
         } catch (JSONException e) {

@@ -17,7 +17,7 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="0.75"
+        android:layout_weight="0.7"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
@@ -41,19 +41,22 @@
             android:id="@+id/textViewKursID"/>
     </LinearLayout>
     <LinearLayout
-        android:gravity="center"
         android:layout_width="0dp"
-        android:layout_weight="0.25"
+        android:layout_weight="0.3"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
-            android:textSize="20dp"
+            android:layout_gravity="end"
+            android:textSize="18dp"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Fragen"
             android:id="@+id/textViewFragen"/>
         <TextView
-            android:textSize="16dp"
+            android:textSize="20dp"
+            android:gravity="end"
+            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Datum"
