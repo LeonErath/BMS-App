@@ -143,7 +143,7 @@ Context context;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //updateUI.updateList(websiteArtikelList);
+        //updateUI.updateList(generalListForArticles);
 
 
     }

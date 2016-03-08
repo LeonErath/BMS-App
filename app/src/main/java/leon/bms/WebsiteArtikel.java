@@ -25,6 +25,7 @@ public class WebsiteArtikel{
 
 
     public WebsiteArtikel() {
+        this.relevanz = 0;
     }
 
     public WebsiteArtikel(int id, String slug, String url, String title, String title_plain, String contentArticle, String excerpt, String date, String modified, String author, Bitmap image, int relevanz, List<String> tags) {
@@ -146,4 +147,7 @@ public class WebsiteArtikel{
     public void setModified(String modified) {
         this.modified = modified;
     }
+
+
+
 }

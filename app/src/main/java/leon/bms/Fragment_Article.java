@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 
@@ -40,13 +39,14 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     // WebsiteArticleController für das herunterladen und verarbeiten der Artikel
     WebsiteArticleController articleController;
     private static boolean m_iAmVisible;
-    List<WebsiteArtikel> websiteArtikelList = new ArrayList<>();
+    List<WebsiteArtikel> generalListForArticles = new ArrayList<>();
     private static String TAG = Fragment_Article.class.getSimpleName();
     ViewPager viewPager;
     ProgressDialog progressDialog;
     LinearLayout linearLayout;
     belka.us.androidtoggleswitch.widgets.ToggleSwitch toggleSwitch;
     int page = 1;
+    List<WebsiteArtikel> sortedList = new ArrayList<>();
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
@@ -66,8 +66,9 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         m_iAmVisible = isVisibleToUser;
         if (m_iAmVisible) {
             articleController = new WebsiteArticleController(getActivity(), this);
-            if (websiteArtikelList == null || websiteArtikelList.size() == 0) {
+            if (generalListForArticles == null || generalListForArticles.size() == 0) {
                 progressDialog = ProgressDialog.show(getActivity(), "Load Articles", "Loading..", true, false);
+                progressDialog.setCancelable(false);
                 // das Interface des articleControllers wird Initialisiert
                 articleController.getRecentPosts(page);
             } else {
@@ -91,7 +92,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         // setUp recylcerView
         final LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getActivity());
-        websiteArticleAdapter = new WebsiteArticleAdapter(this, websiteArtikelList);
+        websiteArticleAdapter = new WebsiteArticleAdapter(this, generalListForArticles);
         recyclerView.setAdapter(websiteArticleAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -124,13 +125,22 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
             @Override
             public void onToggleSwitchChangeListener(int position) {
                 if (position == 0) {
-                    websiteArticleAdapter.changeDataSet(websiteArtikelList);
+                    Log.d(TAG,"trigger");
+                    websiteArticleAdapter.changeDataSet(sortedList);
+                    recyclerView.smoothScrollToPosition(0);
                     //alle artikel normal
 
                 } else {
                     List<WebsiteArtikel> sortedList = new ArrayList<WebsiteArtikel>();
-                    sortedList = sortForPersonalInterest(websiteArtikelList);
-                    websiteArticleAdapter.changeDataSet(sortedList);
+                    for (int i = 0; i < websiteArticleAdapter.getArtikelList().size() / 10; i++) {
+                        List<WebsiteArtikel> tempList = websiteArticleAdapter.getArtikelList().subList(i * 10, (i * 10) + 10);
+                        tempList = sortForPersonalInterest(tempList);
+                        sortedList.addAll(tempList);
+                    }
+                    if (sortedList.size() > 0) {
+                        websiteArticleAdapter.changeDataSet(sortedList);
+                        recyclerView.smoothScrollToPosition(0);
+                    }
                     //personalisierte Artikel
 
                 }
@@ -141,7 +151,8 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     }
 
     public List<WebsiteArtikel> sortForPersonalInterest(List<WebsiteArtikel> list) {
-        for (WebsiteArtikel websiteArtikel : list){
+        for (int i=0;i<list.size();i++) {
+            WebsiteArtikel websiteArtikel = list.get(i);
             List<String> tagList = websiteArtikel.getTags();
             int relevanz = 0;
             int count = 0;
@@ -153,39 +164,39 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
                     tag = tag.toUpperCase();
                     if (new dbWebsiteTag().tagVorhanden(tag) != false) {
                         dbWebsiteTag websiteTag = new dbWebsiteTag().getWebsiteTag(tag);
-                        vorkommen = websiteTag.vorkommen;
-                        if (vorkommen != 0) {
-                            count = countWord(websiteTag.websitetag, text);
+                        vorkommen += websiteTag.vorkommen;
+                        if (websiteTag.vorkommen != 0) {
+                            count += countWord(websiteTag.websitetag, text);
                         }
                     }
                 }
             }
-            relevanz = vorkommen + count;
+            relevanz += vorkommen + count;
             websiteArtikel.relevanz = relevanz;
         }
-        return sortListInteger(list);
-    }
-    public List<WebsiteArtikel> sortListInteger(List<WebsiteArtikel> list){
+
         Collections.sort(list, new Comparator<WebsiteArtikel>() {
             @Override
             public int compare(WebsiteArtikel lhs, WebsiteArtikel rhs) {
                 return lhs.relevanz - rhs.relevanz;
             }
         });
+        Collections.reverse(list);
         return list;
     }
 
+
     public int countWord(String word, String text) {
         int count = 0;
-        for (int i=0;i<text.length();i++){
-            if (i+word.length()<=text.length()) {
+        for (int i = 0; i < text.length(); i++) {
+            if (i + word.length() <= text.length()) {
                 String excerpt = text.substring(i, i + word.length());
                 if (word.equals(excerpt)) {
                     count++;
                 }
             }
         }
-        Log.d(TAG,count+" COUNT");
+        Log.d(TAG, count + " COUNT");
         return count;
     }
 
@@ -196,12 +207,12 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     @Override
     public void onItemClicked(int position) {
         Intent intent = new Intent(getActivity(), WebsiteArticleActivity.class);
-        intent.putExtra("content", websiteArtikelList.get(position).contentArticle);
-        intent.putExtra("headline", websiteArtikelList.get(position).title);
-        intent.putExtra("autor", websiteArtikelList.get(position).author);
-        intent.putExtra("url", websiteArtikelList.get(position).url);
-        intent.putExtra("bild", websiteArtikelList.get(position).image);
-        intent.putExtra("id", websiteArtikelList.get(position).id);
+        intent.putExtra("content", generalListForArticles.get(position).contentArticle);
+        intent.putExtra("headline", generalListForArticles.get(position).title);
+        intent.putExtra("autor", generalListForArticles.get(position).author);
+        intent.putExtra("url", generalListForArticles.get(position).url);
+        intent.putExtra("bild", generalListForArticles.get(position).image);
+        intent.putExtra("id", generalListForArticles.get(position).id);
 
         getActivity().startActivity(intent);
 
@@ -216,30 +227,28 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     public void updateList(List<WebsiteArtikel> list) {
         //wenn das Interface ausgelöst wird bzw. der WebsiteController fertig ist
         // wird der RecyclerView aktualisiert sodass er die Artikel anzeigt
-        Log.d(TAG,"POSITION "+toggleSwitch.getCheckedTogglePosition());
-        if (toggleSwitch.getCheckedTogglePosition() == 0) {
-            for (WebsiteArtikel websiteArtikel : list) {
-                if (!websiteArtikelList.contains(websiteArtikel)) {
-                    websiteArticleAdapter.addArticle(websiteArtikel);
-                }
+
+        if (list.size()==10) {
+            sortedList.addAll(list);
+            if (toggleSwitch.getCheckedTogglePosition()==1){
+                list = sortForPersonalInterest(list);
             }
-        }else {
-            list = sortForPersonalInterest(list);
             for (WebsiteArtikel websiteArtikel : list) {
-                if (!websiteArtikelList.contains(websiteArtikel)) {
-                    websiteArticleAdapter.addArticle(websiteArtikel);
-                }
+                websiteArticleAdapter.addArticle(websiteArtikel);
             }
+
+
+            loading = true;
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
+            if (snackbar != null && snackbar.isShown()) {
+                snackbar.dismiss();
+            }
+
+            page++;
+
         }
-        Log.d(TAG, "list: " + list.size() + " website: " + websiteArtikelList.size());
-        loading = true;
-        if (progressDialog.isShowing()) {
-            progressDialog.dismiss();
-        }
-        if (snackbar != null && snackbar.isShown()) {
-            snackbar.dismiss();
-        }
-        page++;
     }
 
     /** @updateList automatische Erstellung beim Implementieren des Interface

@@ -43,13 +43,20 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
     }
 
     public void addArticle(WebsiteArtikel websiteArtikel) {
-        artikelList.add(websiteArtikel);
-        notifyItemInserted(artikelList.size() - 1);
+        if (!artikelList.contains(websiteArtikel)) {
+            artikelList.add(websiteArtikel);
+            notifyItemInserted(artikelList.size() - 1);
+        }
     }
 
     public void changeDataSet(List<WebsiteArtikel> websiteArtikelList) {
-        artikelList = websiteArtikelList;
-        notifyDataSetChanged();
+        for (int i = 0; i < websiteArtikelList.size(); i++) {
+            WebsiteArtikel websiteArtikel = websiteArtikelList.get(i);
+            artikelList.remove(i);
+            artikelList.add(i, websiteArtikel);
+            notifyItemChanged(i);
+        }
+
     }
 
 

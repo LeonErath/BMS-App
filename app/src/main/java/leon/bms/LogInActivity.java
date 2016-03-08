@@ -15,7 +15,7 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        deleteDB();
+
         setContentView(R.layout.activity_log_in);
         findViewById(R.id.fragment).setOnClickListener(new View.OnClickListener() {
             @Override
