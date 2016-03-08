@@ -59,6 +59,15 @@
         android:textSize="14dp"
         android:layout_margin="8dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Hier das Datum"
+            android:id="@+id/textViewDate"
+            android:layout_marginRight="8dp"
+            android:layout_gravity="right" />
+
     </LinearLayout>
     </RelativeLayout>
 

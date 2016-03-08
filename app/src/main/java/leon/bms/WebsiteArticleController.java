@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 
@@ -20,7 +21,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -87,7 +92,8 @@ Context context;
                 websiteArtikel.title_plain =  Html.fromHtml(einzelnerPost.optString("title_plain")).toString();
                 websiteArtikel.contentArticle = Html.fromHtml(einzelnerPost.optString("content")).toString();
                 websiteArtikel.excerpt =  Html.fromHtml(einzelnerPost.optString("excerpt")).toString();
-                websiteArtikel.date = einzelnerPost.optString("date");
+                String date = einzelnerPost.optString("date");
+                websiteArtikel.date = setUpDate(date);
                 websiteArtikel.modified = einzelnerPost.optString("modified");
                 JSONArray websiteTags = einzelnerPost.getJSONArray("tags");
                 if (websiteTags.length() >0) {
@@ -146,6 +152,19 @@ Context context;
         //updateUI.updateList(generalListForArticles);
 
 
+    }
+
+    private String setUpDate(String date) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        try {
+            calendar.setTime(sdf2.parse(date));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date date1 = calendar.getTime();
+        String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(context, date1.getTime(), DateUtils.DAY_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
+        return zuletztAktualisiert;
     }
 
     public List<WebsiteArtikel> getWebsiteArtikelList() {

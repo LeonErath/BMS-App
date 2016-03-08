@@ -75,6 +75,7 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
         holder.imageView.setImageBitmap(websiteArtikel.getImage());
         holder.textViewHeadline.setText(websiteArtikel.getTitle());
         holder.textViewContent.setText(websiteArtikel.getExcerpt());
+        holder.textViewDate.setText(websiteArtikel.getDate());
 
 
     }
@@ -91,6 +92,7 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
         private static final String TAG = ViewHolder.class.getSimpleName();
         TextView textViewHeadline;
         TextView textViewContent;
+        TextView textViewDate;
         ImageView imageView;
 
 
@@ -101,6 +103,7 @@ public class WebsiteArticleAdapter extends RecyclerView.Adapter<WebsiteArticleAd
 
             textViewHeadline = (TextView) itemView.findViewById(R.id.textViewHeadline);
             textViewContent = (TextView) itemView.findViewById(R.id.textViewExcerpt);
+            textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
             imageView = (ImageView) itemView.findViewById(R.id.imageView);
 
 
