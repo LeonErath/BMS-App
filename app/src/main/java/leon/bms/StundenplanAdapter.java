@@ -32,6 +32,9 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
         this.stundenplan = stundenList;
         Log.d(TAG,stundenList.size()+" ");
     }
+    public List<stunden> getStundenplan(){
+        return stundenplan;
+    }
 
 
 

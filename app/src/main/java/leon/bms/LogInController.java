@@ -18,26 +18,26 @@ import java.util.concurrent.ExecutionException;
  * Created by Leon E on 22.12.2015.
  */
 public class LogInController {
-    SharedPreferences prefs ;
+    SharedPreferences prefs;
     Context mainContext;
     String registrationUrl = "http://app.marienschule.de/files/scripts/login.php";
 
 
-    public LogInController(Context context){
+    public LogInController(Context context) {
         mainContext = context;
     }
 
-    public String login(String user,String pass,String stufe){
-        String result="";
-         Uri.Builder builder = new Uri.Builder()
+    public String login(String user, String pass, String stufe) {
+        String result = "";
+        Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("username", user)
                 .appendQueryParameter("pw", pass)
-                .appendQueryParameter("stufe",stufe);
+                .appendQueryParameter("stufe", stufe);
         String params = builder.build().getEncodedQuery();
 
         atOnline atOnline = new atOnline(registrationUrl, params, mainContext);
         try {
-            result= atOnline.execute().get();
+            result = atOnline.execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -45,25 +45,23 @@ public class LogInController {
         }
 
 
-            return result;
+        return result;
 
 
     }
 
 
-
-    public dbUser createUser(String result){
+    public dbUser createUser(String result) {
 
         try {
             JSONObject jsonObject = new JSONObject(result);
             // json to String
-            String Benutzername = jsonObject.optString("username");
+            String Benutzername = jsonObject.optString("login");
             String Firstname = jsonObject.optString("firstname");
             String Stufe = jsonObject.optString("stufe");
             String Lastname = jsonObject.optString("lastname");
             String lastAppLogin = jsonObject.optString("last_app_login");
             String lastLogin = jsonObject.optString("last_login");
-
 
 
             dbUser.deleteAll(dbUser.class);
@@ -79,16 +77,17 @@ public class LogInController {
             user.save();
 
 
-            Toast.makeText(mainContext, "Herzlich Willkommen "+Firstname+" "+Lastname+" ",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainContext, "Herzlich Willkommen " + Firstname + " " + Lastname + " ", Toast.LENGTH_SHORT).show();
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(mainContext, "Irgendwas ist schief gelaufen...",Toast.LENGTH_SHORT).show();
+            Toast.makeText(mainContext, "Irgendwas ist schief gelaufen...", Toast.LENGTH_SHORT).show();
 
         }
         return null;
     }
-    public Date fromStringtoDate (String stringDate){
+
+    public Date fromStringtoDate(String stringDate) {
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss''");
         try {
@@ -100,27 +99,34 @@ public class LogInController {
         }
     }
 
-    public dbUser getActiveUser(){
-       List<dbUser> userList = dbUser.find(dbUser.class,"logged_In = ?","1");
-        if (userList.size()==1){
+    public dbUser getActiveUser() {
+        List<dbUser> userList = dbUser.find(dbUser.class, "logged_In = ?", "1");
+        if (userList.size() == 1) {
             dbUser user = userList.get(0);
             return user;
-        }else {
+        } else {
             return null;
         }
     }
-    public String getUsername(){
+
+    public String getUsername() {
         dbUser user = getActiveUser();
-        return user.benutzername;
+        if (user == null) {
+            return null;
+        } else {
+            return user.benutzername;
+        }
     }
-    public void  savePass(String pass){
-        prefs =mainContext.getSharedPreferences("leon.bms", Context.MODE_PRIVATE);
+
+    public void savePass(String pass) {
+        prefs = mainContext.getSharedPreferences("leon.bms", Context.MODE_PRIVATE);
         prefs.edit().clear();
-        prefs.edit().putString("PASS",pass).apply();
+        prefs.edit().putString("PASS", pass).apply();
     }
-    public String getPass(){
-        prefs =mainContext.getSharedPreferences("leon.bms", Context.MODE_PRIVATE);
-        return prefs.getString("PASS","-");
+
+    public String getPass() {
+        prefs = mainContext.getSharedPreferences("leon.bms", Context.MODE_PRIVATE);
+        return prefs.getString("PASS", "-");
     }
 
 }

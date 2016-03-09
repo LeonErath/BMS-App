@@ -21,5 +21,6 @@
     <string name="title_activity_website_article">WebsiteArticleActivity</string>
     <string name="title_activity_introduction">IntroductionActivity</string>
     <string name="title_activity_quiz">QuizActivity</string>
+    <string name="title_activity_kurs">KursActivity</string>
 
 </resources>

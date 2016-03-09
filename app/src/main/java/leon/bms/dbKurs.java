@@ -300,6 +300,14 @@ public class dbKurs extends SugarRecord<dbKurs> {
             return null;
         }
     }
+    public dbKurs getKursWithID(long kursid){
+        List<dbKurs> kursList = dbKurs.find(dbKurs.class,"id = ?",String.valueOf(kursid));
+        if (kursList.size()==1){
+            return kursList.get(0);
+        }else {
+            return null;
+        }
+    }
 
 
 

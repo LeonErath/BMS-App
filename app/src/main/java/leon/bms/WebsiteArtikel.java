@@ -17,6 +17,7 @@ public class WebsiteArtikel{
     String contentArticle;
     String excerpt;
     String date;
+    String originalDate;
     String modified;
     String author;
     Bitmap image;
@@ -28,7 +29,7 @@ public class WebsiteArtikel{
         this.relevanz = 0;
     }
 
-    public WebsiteArtikel(int id, String slug, String url, String title, String title_plain, String contentArticle, String excerpt, String date, String modified, String author, Bitmap image, int relevanz, List<String> tags) {
+    public WebsiteArtikel(int id, String slug, String url, String title, String title_plain, String contentArticle, String excerpt, String date, String originalDate, String modified, String author, Bitmap image, int relevanz, List<String> tags) {
         this.id = id;
         this.slug = slug;
         this.url = url;
@@ -37,11 +38,20 @@ public class WebsiteArtikel{
         this.contentArticle = contentArticle;
         this.excerpt = excerpt;
         this.date = date;
+        this.originalDate = originalDate;
         this.modified = modified;
         this.author = author;
         this.image = image;
         this.relevanz = relevanz;
         this.tags = tags;
+    }
+
+    public String getOriginalDate() {
+        return originalDate;
+    }
+
+    public void setOriginalDate(String originalDate) {
+        this.originalDate = originalDate;
     }
 
     public int getRelevanz() {

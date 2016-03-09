@@ -69,6 +69,7 @@ public class Fragment_TabLogin extends AbstractStep  {
             if (result != "Error") {
                 Log.d(TAG, "Login erfolgreich");
                 dbUser user2 = logInController.createUser(result);
+
                 if (user2 != null) {
 
                     // das Passswort des Users wird gespeichert sodass er es nicht beim

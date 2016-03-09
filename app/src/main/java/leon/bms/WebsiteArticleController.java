@@ -25,6 +25,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -92,6 +94,7 @@ Context context;
                 websiteArtikel.title_plain =  Html.fromHtml(einzelnerPost.optString("title_plain")).toString();
                 websiteArtikel.contentArticle = Html.fromHtml(einzelnerPost.optString("content")).toString();
                 websiteArtikel.excerpt =  Html.fromHtml(einzelnerPost.optString("excerpt")).toString();
+                websiteArtikel.originalDate= einzelnerPost.optString("date");
                 String date = einzelnerPost.optString("date");
                 websiteArtikel.date = setUpDate(date);
                 websiteArtikel.modified = einzelnerPost.optString("modified");
@@ -130,6 +133,7 @@ Context context;
                             websiteArtikel.image = loadedImage;
                             finnish = true;
                             websiteArtikelList.add(websiteArtikel);
+                            websiteArtikelList= sortListDate(websiteArtikelList);
                             mListener.updateList(websiteArtikelList);
                             Log.d("WebsiteArticleController","Image successfully loaded.");
                         }
@@ -152,6 +156,28 @@ Context context;
         //updateUI.updateList(generalListForArticles);
 
 
+    }
+
+    private List<WebsiteArtikel> sortListDate(List<WebsiteArtikel> websiteArtikelList) {
+        Collections.sort(websiteArtikelList, new Comparator<WebsiteArtikel>() {
+            public int compare(WebsiteArtikel websiteArtikel, WebsiteArtikel websiteArtikel2) {
+                return stringToCalander(websiteArtikel.originalDate).getTime().compareTo(stringToCalander(websiteArtikel2.originalDate).getTime());
+            }
+        });
+        Collections.reverse(websiteArtikelList);
+        return websiteArtikelList;
+    }
+
+    public Calendar stringToCalander(String date){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        try {
+            calendar.setTime(sdf2.parse(date));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calendar;
     }
 
     private String setUpDate(String date) {

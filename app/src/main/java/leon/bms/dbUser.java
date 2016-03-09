@@ -25,6 +25,8 @@ public class dbUser extends SugarRecord<dbUser> {
     public String nachname;
     public String stufe;
     public String vorname;
+    String email;
+    String geschlecht;
     Boolean blocked;
     int schuljahr;
     public Boolean validData;
@@ -61,7 +63,7 @@ public class dbUser extends SugarRecord<dbUser> {
 
     }
 
-    public dbUser(String benutzername, String geburtstag, String lastAppOpen, String lastDataUpdate, String lastServerConnection, Boolean loggedIn, String nachname, String stufe, String vorname, Boolean blocked, int schuljahr, Boolean validData, dbKurs kurs) {
+    public dbUser(String benutzername, String geburtstag, String lastAppOpen, String lastDataUpdate, String lastServerConnection, Boolean loggedIn, String nachname, String stufe, String vorname, String email, String geschlecht, Boolean blocked, int schuljahr, Boolean validData, dbKurs kurs) {
         this.benutzername = benutzername;
         this.geburtstag = geburtstag;
         this.lastAppOpen = lastAppOpen;
@@ -71,10 +73,28 @@ public class dbUser extends SugarRecord<dbUser> {
         this.nachname = nachname;
         this.stufe = stufe;
         this.vorname = vorname;
+        this.email = email;
+        this.geschlecht = geschlecht;
         this.blocked = blocked;
         this.schuljahr = schuljahr;
         this.validData = validData;
         this.kurs = kurs;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGeschlecht() {
+        return geschlecht;
+    }
+
+    public void setGeschlecht(String geschlecht) {
+        this.geschlecht = geschlecht;
     }
 
     public String getGeburtstag() {

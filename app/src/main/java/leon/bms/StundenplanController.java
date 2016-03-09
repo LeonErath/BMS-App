@@ -23,11 +23,11 @@ public class StundenplanController {
 
     public StundenplanController(Context context) {
         Log.d("CONSTRUCTOR", " StundenlanController erstellt");
-        mainContext=context;
+        mainContext = context;
     }
 
     public String downloadStundenplan() {
-        String result="";
+        String result = "";
         Log.d("DOWNLOAD", " downloadStundenplan()");
         Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("username", "erath")
@@ -35,7 +35,7 @@ public class StundenplanController {
         String params = builder.build().getEncodedQuery();
         atOnline atOnline = new atOnline(registrationUrl, params, mainContext);
         try {
-            result= atOnline.execute().get();
+            result = atOnline.execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -44,7 +44,7 @@ public class StundenplanController {
         return result;
     }
 
-    public void erstelleStundenplan(String result){
+    public void erstelleStundenplan(String result) {
         try {
 
             JSONObject jsonObjectAll = new JSONObject(result);
@@ -53,7 +53,7 @@ public class StundenplanController {
             JSONArray jsonArrayStundenplan = jsonObjectAll.getJSONArray("stundenPlan");
             //Array sortieren
 
-            for (int i=0;i<jsonArrayStundenplan.length();i++){
+            for (int i = 0; i < jsonArrayStundenplan.length(); i++) {
                 JSONObject jsonObject = jsonArrayStundenplan.getJSONObject(i);
                 dbSchulstunde schulstunde = new dbSchulstunde();
                 String LKZ = jsonObject.optString("LKZ");
@@ -64,16 +64,16 @@ public class StundenplanController {
                 String RAUM = jsonObject.optString("RAUM");
 
                 dbLehrer lehrer1 = new dbLehrer();
-                if (!LKZ.equals("")){
-                    lehrer1 = lehrer1.getLehrer("kuerzel",LKZ);
-                }else {
+                if (!LKZ.equals("")) {
+                    lehrer1 = lehrer1.getLehrer("kuerzel", LKZ);
+                } else {
 
                 }
                 schulstunde.lehrer = lehrer1;
                 //List<dbRaum> raum = dbRaum.find(dbRaum.class, "nummer = ?", RAUM);
                 //dbRaum raum1 = raum.get(0);
 
-
+                schulstunde.zuletztAktualisiert = aktualisierungsDatum;
                 schulstunde.wochentag = WOCHENTAG;
                 schulstunde.beginnzeit = STUNDE;
                 schulstunde.kursID = KURSID;
@@ -98,9 +98,9 @@ public class StundenplanController {
     // 4 Kürzel
     // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
     // altualisiert werden können
-    public void checkUpdate(){
+    public void checkUpdate() {
         String Url = "http://app.marienschule.de/files/scripts/getAllDataN.php";
-        String result="";
+        String result = "";
         LogInController logInController = new LogInController(mainContext);
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
@@ -113,12 +113,12 @@ public class StundenplanController {
         Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("username", logInController.getUsername())
                 .appendQueryParameter("pw", logInController.getPass())
-                .appendQueryParameter("date","2015-03-05 12:16:22"); // TODO Kein URi Builder
-        String params = "pw=Ardaturan99&username=erath&date=2015-03-05+12%3A16%3A22";
-
+                .appendQueryParameter("date", "2015-03-05 12:16:22"); // TODO Kein URi Builder
+        String params = "pw=" + logInController.getPass() + "&username=" + logInController.getUsername() + "&date=2015-03-05+12%3A16%3A22";
+        Log.d("STUNDENPLAN", params);
         atOnline atOnline = new atOnline(Url, params, mainContext);
         try {
-            result= atOnline.execute().get();
+            result = atOnline.execute().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -127,10 +127,8 @@ public class StundenplanController {
         Log.d("RESULT", result);
 
 
-
-
         //Hier die Lehrerliste
-        if (new dbLehrer().countLehrer()==0) {
+        if (new dbLehrer().countLehrer() == 0) {
             try {
                 JSONObject jsonObjectAll = new JSONObject(result);
                 JSONObject leherliste = jsonObjectAll.getJSONObject("lehrerliste");
@@ -143,7 +141,7 @@ public class StundenplanController {
             }
         }
         //Hier die AGs und Projektkurse
-        if (new dbKurs().countKurse()==0) {
+        if (new dbKurs().countKurse() == 0) {
             try {
                 JSONObject jsonObjectAll = new JSONObject(result);
                 JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
@@ -156,25 +154,24 @@ public class StundenplanController {
                 e.printStackTrace();
             }
 
-        //Hier der Stundenplan und die Kurse
-        try {
-            JSONObject jsonObjectAll = new JSONObject(result);
-            JSONObject stundenplan = jsonObjectAll.getJSONObject("timetable");
+            //Hier der Stundenplan und die Kurse
+            try {
+                JSONObject jsonObjectAll = new JSONObject(result);
+                JSONObject stundenplan = jsonObjectAll.getJSONObject("timetable");
 
-            erstelleStundenplan(String.valueOf(stundenplan));
-            Log.d("STUNDENPLAN", "Stundenplan wurde erstellt.");
+                erstelleStundenplan(String.valueOf(stundenplan));
+                Log.d("STUNDENPLAN", "Stundenplan wurde erstellt.");
 
-            KurseController kurseController = new KurseController(mainContext);
-            kurseController.erstelltKurse();
-            Log.d("KURSE", "Kurse wurden erstellt.");
-            kurseController.connectKursStunden();
-            Log.d("stundenplan", String.valueOf(stundenplan));
+                KurseController kurseController = new KurseController(mainContext);
+                kurseController.erstelltKurse();
+                Log.d("KURSE", "Kurse wurden erstellt.");
+                kurseController.connectKursStunden();
+                Log.d("stundenplan", String.valueOf(stundenplan));
 
 
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
 
@@ -192,12 +189,13 @@ public class StundenplanController {
         }
 
     }
-    public void erstelleLehrerListe(String result){
+
+    public void erstelleLehrerListe(String result) {
         try {
             JSONObject jsonObjectLehrerliste = new JSONObject(result);
             //JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject("zuletzt Aktualisiert");
             JSONArray jsonArrayLehrer = jsonObjectLehrerliste.getJSONArray("lehrerliste");
-            for (int i=0;i<jsonArrayLehrer.length();i++){
+            for (int i = 0; i < jsonArrayLehrer.length(); i++) {
                 dbLehrer lehrer = new dbLehrer();
                 JSONObject lehrerDaten = jsonArrayLehrer.getJSONObject(i);
                 lehrer.name = lehrerDaten.optString("NAME");
@@ -205,18 +203,16 @@ public class StundenplanController {
                 lehrer.titel = lehrerDaten.optString("TITEL");
                 lehrer.kuerzel = lehrerDaten.optString("KUERZEL");
                 lehrer.Vorname = lehrerDaten.optString("VORNAME");
-                JSONArray lehrerFaecher =lehrerDaten.getJSONArray("faecher");
+                JSONArray lehrerFaecher = lehrerDaten.getJSONArray("faecher");
                 String faecher = "";
-                for (int k=0;k<lehrerFaecher.length();k++){
-                    faecher+= lehrerFaecher.getString(k)+",";
+                for (int k = 0; k < lehrerFaecher.length(); k++) {
+                    faecher += lehrerFaecher.getString(k) + ",";
                 }
                 lehrer.faecher = faecher;
                 lehrer.save();
 
 
-
             }
-
 
 
         } catch (JSONException e) {
@@ -224,10 +220,7 @@ public class StundenplanController {
         }
 
 
-
     }
-
-
 
 
 }

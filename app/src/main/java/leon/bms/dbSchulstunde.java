@@ -16,6 +16,7 @@ public class dbSchulstunde extends SugarRecord<dbSchulstunde> {
     Double dauer;
     public Integer beginnzeit;
     Integer endZeit;
+    String zuletztAktualisiert;
     public String kursID;
     public String raum;
     public Integer wochentag;

@@ -10,11 +10,11 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
-
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@drawable/logo_bms"
@@ -35,7 +35,7 @@
             android:value="BMSDATENBANK2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="42" />
+            android:value="44" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />
@@ -49,14 +49,14 @@
             android:windowSoftInputMode="adjustPan" />
         <activity android:name=".KursauswahlActivity" />
         <activity
-            android:configChanges="orientation|screenSize"
             android:name=".AufgabenActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:hardwareAccelerated="false"
             android:name=".WebsiteArticleActivity"
+            android:hardwareAccelerated="false"
             android:label="@string/title_activity_website_article"
             android:theme="@style/AppTheme" />
         <activity
@@ -66,7 +66,14 @@
         <activity
             android:name=".QuizActivity"
             android:label="@string/title_activity_quiz"
-            android:theme="@style/AppTheme"></activity>
+            android:theme="@style/AppTheme" />
+        <activity
+
+            android:name=".KursActivity"
+            android:label="@string/title_activity_kurs"
+            android:theme="@style/AppTheme">
+
+        </activity>
     </application>
 
 </manifest>

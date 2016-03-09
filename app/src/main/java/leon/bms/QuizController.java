@@ -158,8 +158,11 @@ public class QuizController {
                     int fragen = 0;
                     themenbereichList = sortListASC(themenbereichList);
                     quizkurs.datum = themenbereichList.get(0).zuletztAktualisiert;
+
                     for (dbThemenbereich themenbereich : themenbereichList) {
-                        fragen += new dbThemenbereich().getFragen(themenbereich.getId()).size();
+                        if (new dbThemenbereich().getFragen(themenbereich.getId())!=null) {
+                            fragen += new dbThemenbereich().getFragen(themenbereich.getId()).size();
+                        }
                     }
                     quizkurs.fragen = fragen;
 
@@ -213,10 +216,13 @@ public class QuizController {
                         quizthemen.themenbereich = themenbereich.name;
                         quizthemen.id = themenbereich.getId();
                         quizthemen.datum = themenbereich.zuletztAktualisiert;
-                        quizthemen.fragen = themenbereich.getFragen(themenbereich.getId()).size();
-                        quizthemen.lehrer = kurs.lehrer.titel + " " + kurs.lehrer.name;
-                        quizthemen.kursId = kurs.name;
-                        quizthemenList.add(quizthemen);
+                        if (themenbereich.getFragen(themenbereich.getId())!=null) {
+                            quizthemen.fragen = themenbereich.getFragen(themenbereich.getId()).size();
+                            quizthemen.lehrer = kurs.lehrer.titel + " " + kurs.lehrer.name;
+                            quizthemen.kursId = kurs.name;
+                            quizthemenList.add(quizthemen);
+                        }
+
                     }
                 }
             }

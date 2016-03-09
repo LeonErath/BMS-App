@@ -10,14 +10,24 @@ public class stunden implements Serializable {
     public String lehrer;
     public boolean active;
     public String raum;
+    public long id;
     public int stunde;
 
-    public stunden(String stundenname, String lehrer, boolean active, String raum, int stunde) {
+    public stunden(String stundenname, String lehrer, boolean active, String raum, long id, int stunde) {
         this.stundenname = stundenname;
         this.lehrer = lehrer;
         this.active = active;
         this.raum = raum;
+        this.id = id;
         this.stunde = stunde;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public stunden() {

@@ -229,6 +229,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         // wird der RecyclerView aktualisiert sodass er die Artikel anzeigt
 
         if (list.size()==10) {
+            Log.d(TAG,String.valueOf(list));
             sortedList.addAll(list);
             if (toggleSwitch.getCheckedTogglePosition()==1){
                 list = sortForPersonalInterest(list);

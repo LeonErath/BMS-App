@@ -36,6 +36,7 @@ public class LogInActivity extends AppCompatActivity {
         dbFragen.deleteAll(dbFragen.class);
         dbThemenbereich.deleteAll(dbThemenbereich.class);
         dbAntworten.deleteAll(dbAntworten.class);
+        dbKursTagConnect.deleteAll(dbKursTagConnect.class);
     }
 
     }

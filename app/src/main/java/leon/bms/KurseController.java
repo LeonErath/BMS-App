@@ -79,6 +79,7 @@ public class KurseController {
                 if (kurs1.name.equals(schulstunde.kursID)) {
                     //kurs1.stunde =schulstunde;
                     kurs1.lehrer = schulstunde.lehrer;
+                    kurs1.hinzugefuegtAm = schulstunde.zuletztAktualisiert;
                     kurs1.save();
                     schulstunde.kurs = kurs1;
                     schulstunde.save();
@@ -146,7 +147,7 @@ public class KurseController {
     public void erstelltPKundAGs(String result) {
         try {
             JSONObject jsonObjectAll = new JSONObject(result);
-            //String datum = jsonObjectAll.getString("zuletzt Aktualisiert");
+            String datum = jsonObjectAll.getString("zuletzt Aktualisiert");
             JSONArray jsonArray = jsonObjectAll.getJSONArray("pkuags");
             Log.d("COUNT", jsonArray.length() + "");
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -174,6 +175,7 @@ public class KurseController {
                     kurs.fach = name;
                     if (new dbKurs().kursVorhanden(kurs) == false) {
                         JSONArray Tags = jsonObjectEintrag.getJSONArray("TAGS");
+                        kurs.hinzugefuegtAm = datum;
                         kurs.save();
                         for (int l = 0; l < Tags.length(); l++) {
                             String tag = Tags.getString(l);

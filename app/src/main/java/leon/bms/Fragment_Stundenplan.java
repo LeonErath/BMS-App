@@ -1,5 +1,6 @@
 package leon.bms;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -224,6 +225,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
                     dbSchulstunde schulstunde = wochentagListe.get(l - 1);
                     stunden.setActive(true);
                     stunden.setRaum(schulstunde.raum);
+                    stunden.setId(schulstunde.kurs.getId());
                     stunden.setStundenname(schulstunde.kurs.fach);
                     stunden.setLehrer(schulstunde.lehrer.titel + " " + schulstunde.lehrer.name);
                     stunden.setStunde(schulstunde.beginnzeit);
@@ -246,6 +248,12 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
      */
     @Override
     public void onItemClicked(int position) {
+        stunden stunde = stundenplanAdapter.getStundenplan().get(position);
+        if (stunde.active == true){
+            Intent intent = new Intent(getActivity(), KursActivity.class);
+            intent.putExtra("id", stunde.getId());
+            startActivity(intent);
+        }
 
     }
 
