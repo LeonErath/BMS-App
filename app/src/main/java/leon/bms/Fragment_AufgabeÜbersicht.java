@@ -116,7 +116,12 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                             intent.putExtra("id", aufgabe.getId());
                             startActivity(intent);
                             break;
-                        case R.id.details:
+                        case R.id.share:
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung+"\n"+aufgabe.notizen+"\nAbgabe am:"+aufgabe.abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
                             break;
                         case R.id.delete:
                             alleAufgaben.clear();
@@ -161,7 +166,12 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                             intent.putExtra("id", aufgabe.getId());
                             startActivity(intent);
                             break;
-                        case R.id.details:
+                        case R.id.share:
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung+"\n"+aufgabe.notizen+"\nAbgabe am:"+aufgabe.abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
                             break;
                         case R.id.delete:
                             alleAufgaben.clear();
@@ -211,7 +221,12 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                             intent.putExtra("id", aufgabe.getId());
                             startActivity(intent);
                             break;
-                        case R.id.details:
+                        case R.id.share:
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung+"\n"+aufgabe.notizen+"\nAbgabe am:"+aufgabe.abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
                             break;
                         case R.id.delete:
                             alleAufgaben.clear();
@@ -259,7 +274,12 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                             intent.putExtra("Datum", aufgabe.abgabeDatum);
                             startActivity(intent);
                             break;
-                        case R.id.details:
+                        case R.id.share:
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung+"\n"+aufgabe.notizen+"\nAbgabe am:"+aufgabe.abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
                             break;
                         case R.id.delete:
                             alleAufgaben.clear();
