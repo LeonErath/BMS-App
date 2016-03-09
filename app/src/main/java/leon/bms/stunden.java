@@ -10,16 +10,36 @@ public class stunden implements Serializable {
     public String lehrer;
     public boolean active;
     public String raum;
+    public String timeString;
+    public String wochentag;
     public long id;
     public int stunde;
 
-    public stunden(String stundenname, String lehrer, boolean active, String raum, long id, int stunde) {
+    public stunden(String stundenname, String lehrer, boolean active, String raum, String timeString, String wochentag, long id, int stunde) {
         this.stundenname = stundenname;
         this.lehrer = lehrer;
         this.active = active;
         this.raum = raum;
+        this.timeString = timeString;
+        this.wochentag = wochentag;
         this.id = id;
         this.stunde = stunde;
+    }
+
+    public String getTimeString() {
+        return timeString;
+    }
+
+    public void setTimeString(String timeString) {
+        this.timeString = timeString;
+    }
+
+    public String getWochentag() {
+        return wochentag;
+    }
+
+    public void setWochentag(String wochentag) {
+        this.wochentag = wochentag;
     }
 
     public long getId() {

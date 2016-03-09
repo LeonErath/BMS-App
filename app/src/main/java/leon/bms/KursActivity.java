@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,7 +15,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class KursActivity extends AppCompatActivity implements View.OnTouchListener {
+import java.util.ArrayList;
+import java.util.List;
+
+public class KursActivity extends AppCompatActivity implements View.OnTouchListener, KursAdapter.ViewHolder.ClickListener {
     TextView textViewLehrer, textViewEmail, textViewAufgabe, textViewDate, textViewKurs;
     RecyclerView recyclerView;
     dbKurs kurs;
@@ -36,7 +41,6 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
         textViewEmail.setOnTouchListener(this);
         textViewAufgabe.setOnTouchListener(this);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -61,9 +65,64 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
             }
         }
 
+        setUpRecyclerView();
+
 
     }
 
+    private void setUpRecyclerView() {
+        List<stunden> stundenlist = new ArrayList<>();
+
+        if (setupList(stundenlist) != null){
+            stundenlist = setupList(stundenlist);
+        }
+        KursAdapter kursadapter = new KursAdapter(this,stundenlist);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setAdapter(kursadapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private List<stunden> setupList(List<stunden> stundenlist) {
+        List<stunden> list = new ArrayList<>();
+        String[] time = new String[]{"08.00 Uhr - 08.45 Uhr",
+                "08.45 Uhr - 09.30 Uhr",
+                "09.35 Uhr - 10.20 Uhr",
+                "10.45 Uhr - 11.30 Uhr",
+                "11.35 Uhr - 12.20 Uhr",
+                "12.25 Uhr - 13.10 Uhr",
+                "13.30 Uhr - 14.15 Uhr",
+                "14.15 Uhr - 15.00 Uhr",
+                "15.00 Uhr - 15.45 Uhr",
+                "15.45 Uhr - 16.30 Uhr",};
+        List<dbSchulstunde> schulstundeList = kurs.getSchulStunden(kurs.getId());
+        if (schulstundeList != null && schulstundeList.size() >0){
+            for (dbSchulstunde schulstunde: schulstundeList){
+                stunden stunden = new stunden();
+                stunden.raum = schulstunde.raum;
+                String wochentag;
+                switch (schulstunde.wochentag){
+                    case 1:wochentag = "Montag";break;
+                    case 2:wochentag = "Dienstag";break;
+                    case 3:wochentag = "Mittwoch";break;
+                    case 4:wochentag = "Donnerstag";break;
+                    case 5:wochentag = "Freitag";break;
+                    default:wochentag ="";
+                }
+                stunden.wochentag = wochentag;
+                stunden.stunde = schulstunde.beginnzeit;
+                stunden.timeString = time[schulstunde.beginnzeit-1];
+                list.add(stunden);
+            }
+        }
+        if (list.size() >0){
+            return list;
+        }else {
+            return null;
+        }
+
+    }
 
 
     @Override
@@ -101,6 +160,16 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
             default:break;
         }
         return true;
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        return false;
     }
 }
 
