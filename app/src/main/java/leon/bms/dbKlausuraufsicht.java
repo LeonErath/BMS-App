@@ -8,9 +8,10 @@ import java.util.Date;
  * Created by Leon E on 19.11.2015.
  */
 
-/** @dbKlausuraufsicht ist eine Tabelle der Datenbank für die Klausuraufsicht
- *  Sie verwaltet alle Einträge der Klausuraufsicht und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+/**
+ * @dbKlausuraufsicht ist eine Tabelle der Datenbank für die Klausuraufsicht
+ * Sie verwaltet alle Einträge der Klausuraufsicht und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbKlausuraufsicht extends SugarRecord<dbKlausuraufsicht> {
 
@@ -23,6 +24,7 @@ public class dbKlausuraufsicht extends SugarRecord<dbKlausuraufsicht> {
     dbLehrer lehrer;
 
     public dbKlausuraufsicht() {
+        //empty Constructor needed!
     }
 
     public dbKlausuraufsicht(Date fromDate, Date toDate) {

@@ -12,6 +12,10 @@ import java.util.List;
 /**
  * Created by Leon E on 21.01.2016.
  */
+
+/**
+ * @KursAdapter wird gebraucht für den recylcerview zum anzeigen der Kurse für die KurseActivity.
+ */
 public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private static final String TAG = KursauswahlAdapter.class.getSimpleName();
@@ -24,6 +28,11 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
 
     private ViewHolder.ClickListener clickListener;
 
+    /**
+     * @param clickListener wird gebraucht um auf Click events zu reagieren
+     * @param stundenList   ist die Liste die angezeigt werden soll
+     * @KursAdapter ClickListener und anzuzeigende Liste wird übergeben.
+     */
     public KursAdapter(ViewHolder.ClickListener clickListener, List<stunden> stundenList) {
         super();
         this.clickListener = clickListener;
@@ -42,6 +51,12 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
         return stunden.isActive() ? TYPE_ACTIVE : TYPE_INACTIVE;
     }
 
+    /**
+     * @param parent
+     * @param viewType ist der anzuzeigen Type also hier item_kurs
+     * @return
+     * @onCreatViewHolder legt das design für ein "Item" fest
+     */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final int layout = viewType = R.layout.item_kurs;
@@ -53,22 +68,20 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         final stunden stunden = stundenplan.get(position);
 
-        //Setting text view title
+        //Setting the Data to the Views
         holder.textViewRaum.setText(stunden.getRaum());
-        holder.textViewWeek.setText(stunden.wochentag+", "+stunden.stunde+". Std.");
+        holder.textViewWeek.setText(stunden.wochentag + ", " + stunden.stunde + ". Std.");
         holder.textViewTime.setText(stunden.timeString);
 
 
     }
 
+    /**
+     * @return gibt die Größe der Liste zurück
+     */
     @Override
     public int getItemCount() {
         return stundenplan.size();
-    }
-
-    public void changeWeekDay(List<stunden> finalMontagList) {
-        stundenplan = finalMontagList;
-        notifyDataSetChanged();
     }
 
 
@@ -76,13 +89,14 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
             View.OnLongClickListener {
 
         private static final String TAG = ViewHolder.class.getSimpleName();
+        //views
         TextView textViewTime, textViewWeek, textViewRaum;
 
         private ClickListener listener;
 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
-
+            //initial views
             textViewTime = (TextView) itemView.findViewById(R.id.textViewZeit);
             textViewRaum = (TextView) itemView.findViewById(R.id.textViewRaum);
             textViewWeek = (TextView) itemView.findViewById(R.id.textViewWeek);
@@ -94,6 +108,10 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
             itemView.setOnLongClickListener(this);
         }
 
+        /**
+         * @param v
+         * @onClick wird aufgerufen wenn ein Item angeclickt wird
+         */
         @Override
         public void onClick(View v) {
             if (listener != null) {
@@ -101,6 +119,10 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
             }
         }
 
+        /**
+         * @param v
+         * @onLongClick wird aufgerufen wenn ein Item angeclickt wird
+         */
         @Override
         public boolean onLongClick(View v) {
             if (listener != null) {
@@ -110,6 +132,9 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
             return false;
         }
 
+        /**
+         * Interface for Click Callbacks
+         */
         public interface ClickListener {
             public void onItemClicked(int position);
 

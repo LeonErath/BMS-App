@@ -7,9 +7,11 @@ import java.util.Date;
 /**
  * Created by Leon E on 19.11.2015.
  */
-/** @dbTermin ist eine Tabelle der Datenbank für die Termin
- *  Sie verwaltet alle Einträge der Termin und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+
+/**
+ * @dbTermin ist eine Tabelle der Datenbank für die Termin
+ * Sie verwaltet alle Einträge der Termin und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbTermin extends SugarRecord<dbTermin> {
     //Datensätze des Termines
@@ -23,6 +25,7 @@ public class dbTermin extends SugarRecord<dbTermin> {
     Date zuletztAktualisiert;
 
     public dbTermin() {
+        // empty Constructor needed!
     }
 
     public dbTermin(Boolean beschaeftigt, Date date, Date erinnerungDate, Date hinzugefuegtAm, String quelle, Boolean schulfrei, Integer terminID, Date zuletztAktualisiert) {

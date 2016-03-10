@@ -1,9 +1,12 @@
 package leon.bms;
 
-import java.util.List;
-
 /**
  * Created by Leon E on 28.02.2016.
+ */
+
+/**
+ * @quizkurs klasse die alle Daten für die QuizFach Anzeige bietet. Constructor sowie Getter/Setter
+ * Methode sind implementiert.
  */
 public class quizkurs {
     String kursFach;
@@ -13,8 +16,8 @@ public class quizkurs {
     String datum;
 
 
-
     public quizkurs() {
+        //empty Constructor needed!
     }
 
     public quizkurs(String kursFach, String kursId, String lehrer, int fragen, String datum) {

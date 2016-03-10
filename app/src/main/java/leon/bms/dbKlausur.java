@@ -8,9 +8,10 @@ import java.util.Date;
  * Created by Leon E on 19.11.2015.
  */
 
-/** @dbKlausur ist eine Tabelle der Datenbank für die Klausuren
- *  Sie verwaltet alle Einträge der Klausur und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+/**
+ * @dbKlausur ist eine Tabelle der Datenbank für die Klausuren
+ * Sie verwaltet alle Einträge der Klausur und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbKlausur extends SugarRecord<dbKlausur> {
 
@@ -26,7 +27,9 @@ public class dbKlausur extends SugarRecord<dbKlausur> {
     dbKurs kurs;
     dbNote note;
     dbRaum raum;
+
     public dbKlausur() {
+        //empty Constructor needed!
     }
 
     public dbKlausur(Double dauer, Date nachschreibertermin, String notizen, Boolean restkursFrei, Date zeit) {

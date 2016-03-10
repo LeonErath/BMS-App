@@ -9,6 +9,12 @@ import java.util.List;
 /**
  * Created by Leon E on 21.01.2016.
  */
+
+/**
+ * @param <VH>
+ * @SelecatbleAdapter Wichtiger Adapter für die Anzeige des RecyclerView für die Kursauswahl. Diese Klasse
+ * ermöglicht es Items dea RecyclerView auszuwählen und die ausgewählten Items zurückzubekommen.
+ */
 public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     @SuppressWarnings("unused")
     private static final String TAG = SelectableAdapter.class.getSimpleName();
@@ -21,6 +27,7 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> exte
 
     /**
      * Indicates if the item at position position is selected
+     *
      * @param position Position of the item to check
      * @return true if the item is selected, false otherwise
      */
@@ -30,6 +37,7 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> exte
 
     /**
      * Toggle the selection status of the item at a given position
+     *
      * @param position Position of the item to toggle the selection status for
      */
     public void toggleSelection(int position) {
@@ -55,6 +63,7 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> exte
 
     /**
      * Count the selected items
+     *
      * @return Selected items count
      */
     public int getSelectedItemCount() {
@@ -63,6 +72,7 @@ public abstract class SelectableAdapter<VH extends RecyclerView.ViewHolder> exte
 
     /**
      * Indicates the list of selected items
+     *
      * @return List of selected items ids
      */
     public List<Integer> getSelectedItems() {

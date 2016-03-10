@@ -1,23 +1,21 @@
 package leon.bms;
 
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 
 import com.orm.SugarRecord;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Leon E on 19.11.2015.
  */
 
-/** @dbAufgabe ist eine Tabelle der Datenbank für die Aufgaben
- *  Sie verwaltet alle Einträge der Aufgaben und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+/**
+ * @dbAufgabe ist eine Tabelle der Datenbank für die Aufgaben
+ * Sie verwaltet alle Einträge der Aufgaben und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbAufgabe extends SugarRecord<dbAufgabe>{
+public class dbAufgabe extends SugarRecord<dbAufgabe> {
 
     //Datensätze der Aufgabe
     String abgabeDatum;
@@ -55,8 +53,8 @@ public class dbAufgabe extends SugarRecord<dbAufgabe>{
     }
 
     public dbAufgabe() {
-        this.erledigt=false;
-        this.notizen="";
+        this.erledigt = false;
+        this.notizen = "";
     }
 
     public String getAbgabeDatum() {
@@ -131,39 +129,62 @@ public class dbAufgabe extends SugarRecord<dbAufgabe>{
         this.priorität = priorität;
     }
 
-    /** @getUnerledigtAufgabe gibt alle Aufgabe zurürck die den Boolean "erledigt" auf false stehen
-     *  haben
+    /**
+     * @getUnerledigtAufgabe gibt alle Aufgabe zurürck die den Boolean "erledigt" auf false stehen
+     * haben
      */
-    public List<dbAufgabe> getUnerledigtAufgabe(){
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class,"erledigt = ?","0");
+    public List<dbAufgabe> getUnerledigtAufgabe() {
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "erledigt = ?", "0");
         return dbAufgabeList;
     }
-    /** @getErledigtAufgabe gibt alle Aufgabe zurürck die den Boolean "erledigt" auf true stehen
-     *  haben
+
+    /**
+     * @getErledigtAufgabe gibt alle Aufgabe zurürck die den Boolean "erledigt" auf true stehen
+     * haben
      */
-    public List<dbAufgabe> getErledigtAufgabe(){
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class,"erledigt = ?","1");
+    public List<dbAufgabe> getErledigtAufgabe() {
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "erledigt = ?", "1");
         return dbAufgabeList;
     }
-    /** @vorhandeneAufgabe prüft ob entwder die erledigten oder unerledigten Aufgaben vorhanden sind
-     *  dieser Filter wird gebraucht für das Anzeigen der Aufgaben. Er gibt true zurück wenn die Aufgaben
-     *  vorhanden sind / false wenn sie es nicht sind
+
+    /**
+     * @vorhandeneAufgabe prüft ob entwder die erledigten oder unerledigten Aufgaben vorhanden sind
+     * dieser Filter wird gebraucht für das Anzeigen der Aufgaben. Er gibt true zurück wenn die Aufgaben
+     * vorhanden sind / false wenn sie es nicht sind
      */
-    public Boolean vorhandeneAufgaben(int erledigt){
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class,"erledigt = ?", String.valueOf(erledigt));
-        return (dbAufgabeList.size()!=0)? true:false;
+    public Boolean vorhandeneAufgaben(int erledigt) {
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "erledigt = ?", String.valueOf(erledigt));
+        return (dbAufgabeList.size() != 0) ? true : false;
     }
-    public Boolean checkIfErledigtAufgabe(dbAufgabe aufgabe){
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class,"id = ?", String.valueOf(aufgabe.getId()));
+
+    /**
+     * @param aufgabe übergibt eine Aufgabe über deren id überprüft wird ob sie erledigt ist
+     * @checkifErledigtAufgabe überprüft ob bestimmte Aufgabe ist erledigt oder nicht . Wichtig für das
+     * richtig Anzeige der Aufgaben in Fragment_aufgabeÜbersicht
+     */
+    public Boolean checkIfErledigtAufgabe(dbAufgabe aufgabe) {
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "id = ?", String.valueOf(aufgabe.getId()));
         return dbAufgabeList.get(0).erledigt;
     }
-    public dbAufgabe getAufgabe(long id){
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class,"id = ?", String.valueOf(id));
+
+    /**
+     * @param id ist die ID der Aufgabe die rausgesucht werden soll
+     * @return gibt die Aufgabe zurück
+     * @getAufgabe gibt Aufgabe einer bestimmer ID zurück
+     */
+    public dbAufgabe getAufgabe(long id) {
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "id = ?", String.valueOf(id));
         return dbAufgabeList.get(0);
     }
-    public List<dbMediaFile> getMediaFile(long id){
-        List<dbMediaFile> dbMediaFileList = dbMediaFile.find(dbMediaFile.class,"aufgaben = ?", String.valueOf(id));
-        Log.d("MEDIAFILE",dbMediaFileList.size()+"");
+
+    /**
+     * @param id ist die ID der Aufgabe von der die Bilder geladen werden soll
+     * @return gibt wenn Bilder vorhanden eine Liste mit alle Bildern zurück
+     * @getMediaFile gibt alle Bilder(MediaFiles) zurück die eine Aufgabe besitzt
+     */
+    public List<dbMediaFile> getMediaFile(long id) {
+        List<dbMediaFile> dbMediaFileList = dbMediaFile.find(dbMediaFile.class, "aufgaben = ?", String.valueOf(id));
+        Log.d("MEDIAFILE", dbMediaFileList.size() + "");
         return dbMediaFileList;
     }
 

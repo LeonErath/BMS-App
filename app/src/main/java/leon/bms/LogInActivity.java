@@ -1,12 +1,16 @@
 package leon.bms;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+/**
+ * @LogInActivity zeigt das Fragment_Login und wird immer beim Start geladen.
+ * Hier besteht zu Test Zwecken die Methode zum löschen der Datenbank
+ */
 public class LogInActivity extends AppCompatActivity {
 
     ViewPager viewPager;
@@ -24,8 +28,12 @@ public class LogInActivity extends AppCompatActivity {
             }
         });
     }
-    public void deleteDB(){
-        Log.d(LogInActivity.class.getSimpleName(),"Datenbank wurde zurückgesetzt");
+
+    /**
+     * @deleteDB löscht alle Daten der Datenbank
+     */
+    public void deleteDB() {
+        Log.d(LogInActivity.class.getSimpleName(), "Datenbank wurde zurückgesetzt");
         dbUser.deleteAll(dbUser.class);
         dbAufgabe.deleteAll(dbAufgabe.class);
         dbKurs.deleteAll(dbKurs.class);
@@ -39,5 +47,5 @@ public class LogInActivity extends AppCompatActivity {
         dbKursTagConnect.deleteAll(dbKursTagConnect.class);
     }
 
-    }
+}
 

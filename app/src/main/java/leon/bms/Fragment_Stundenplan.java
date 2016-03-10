@@ -24,12 +24,13 @@ import java.util.List;
  * Created by Leon E on 18.11.2015.
  */
 
-/** @Fragment_Stundenplan ist ein Fragment, welches den Stundenplan anzeigt. Dazu verfügt
- *  das Fragment über mehrer Methode zum erstellen des Stundenplannes. Der Stundenplan wird in
- *  einem RecyclerView angezeigt und immer jeweils für einen Wochentag erstellt. Der User kann
- *  den Wochentag durch einen Spinner wechseln.
+/**
+ * @Fragment_Stundenplan ist ein Fragment, welches den Stundenplan anzeigt. Dazu verfügt
+ * das Fragment über mehrer Methode zum erstellen des Stundenplannes. Der Stundenplan wird in
+ * einem RecyclerView angezeigt und immer jeweils für einen Wochentag erstellt. Der User kann
+ * den Wochentag durch einen Spinner wechseln.
  */
-public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter.ViewHolder.ClickListener{
+public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter.ViewHolder.ClickListener {
 
 
     Spinner spinner;
@@ -43,14 +44,19 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     List<dbSchulstunde> freitagList = new ArrayList<>();
 
 
+    public Fragment_Stundenplan() {
+        //empty Constructor needed!
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_stundenplan,container,false);
+        return inflater.inflate(R.layout.fragment_stundenplan, container, false);
     }
-    /** @OnViewCreated hier wird Stundenplan zusammengestellt und an den recyclerView übergegeben
-     *  damit er den darstellen kann.
+
+    /**
+     * @OnViewCreated hier wird Stundenplan zusammengestellt und an den recyclerView übergegeben
+     * damit er den darstellen kann.
      */
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -73,45 +79,55 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
 
         // @setOnItemSelectedListener wird ausgelöst wenn der User einen anderen Wochentag auswählen will
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            // ändert die Anzeige über den stundenplanAdapter nach dem ausgewählten Wochentag
-            switch (position){
-                case 0:stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalMontagList));
-                    break;
-                case 1:stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalDienstagList));
-                    break;
-                case 2:stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalMittwochList));
-                    break;
-                case 3:stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalDonnerstagList));
-                    break;
-                case 4:stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalFreitagList));
-                    break;
-                default:break;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // ändert die Anzeige über den stundenplanAdapter nach dem ausgewählten Wochentag
+                switch (position) {
+                    case 0:
+                        stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalMontagList));
+                        break;
+                    case 1:
+                        stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalDienstagList));
+                        break;
+                    case 2:
+                        stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalMittwochList));
+                        break;
+                    case 3:
+                        stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalDonnerstagList));
+                        break;
+                    case 4:
+                        stundenplanAdapter.changeWeekDay(convertSchulstundenZuStundeListe(finalFreitagList));
+                        break;
+                    default:
+                        break;
 
+                }
             }
-        }
-        @Override
-        public void onNothingSelected(AdapterView<?> parent) {}
-    });
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
 
     }
 
-    /** @setUpRecyclerView erstellt den RecyclerView und erstellt die Anzeige des Stundenplans
-     *  wie er vorher in setUpStundenplan() erstellt worden ist
+    /**
+     * @setUpRecyclerView erstellt den RecyclerView und erstellt die Anzeige des Stundenplans
+     * wie er vorher in setUpStundenplan() erstellt worden ist
      */
-    public void setUpRecyclerView(View view){
+    public void setUpRecyclerView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         recyclerView.setAdapter(stundenplanAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-    /** @setUpStundenplan erstellt die Stundenpläne für die verschiedenen Wochentage und stellt den
-     *  stundenplanAdapter , der für die Anzeige des Stundenplanes zuständig ist , den heutigen
-     *  Wochentag ein.
+    /**
+     * @setUpStundenplan erstellt die Stundenpläne für die verschiedenen Wochentage und stellt den
+     * stundenplanAdapter , der für die Anzeige des Stundenplanes zuständig ist , den heutigen
+     * Wochentag ein.
      */
-    public void setUpStundenplan(){
+    public void setUpStundenplan() {
 
         // zuerst werden alle GK und LK Kurse in eine Liste gespeichert
         List<dbKurs> kursList = new dbKurs().getActiveKurse(0);
@@ -119,7 +135,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
 
         // alle Schulstunden der Kurse werden in die Liste dbSchulstundeList geladen
         List<dbSchulstunde> dbSchulstundeList = new ArrayList<>();
-        for (dbKurs kurs:kursList){
+        for (dbKurs kurs : kursList) {
             dbSchulstundeList.addAll(kurs.getSchulStunden(kurs.getId()));
 
         }
@@ -132,17 +148,22 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         freitagList = new ArrayList<>();
 
         // jeder Schulstunde wird in nachdem Wochentag in die jeweilige Wochentagsliste sortiert
-        for (dbSchulstunde schulstunde:dbSchulstundeList){
-            switch (schulstunde.wochentag){
-                case 1: montagList.add(schulstunde);
+        for (dbSchulstunde schulstunde : dbSchulstundeList) {
+            switch (schulstunde.wochentag) {
+                case 1:
+                    montagList.add(schulstunde);
                     break;
-                case 2: dienstagList.add(schulstunde);
+                case 2:
+                    dienstagList.add(schulstunde);
                     break;
-                case 3: mittwochList.add(schulstunde);
+                case 3:
+                    mittwochList.add(schulstunde);
                     break;
-                case 4: donnerstagList.add(schulstunde);
+                case 4:
+                    donnerstagList.add(schulstunde);
                     break;
-                case 5: freitagList.add(schulstunde);
+                case 5:
+                    freitagList.add(schulstunde);
                     break;
                 default:
                     break;
@@ -162,9 +183,9 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         //Sunday= 1 Monday = 2 ...
         int day = calendar.get(Calendar.DAY_OF_WEEK);
 
-        if (day > 1 && day < 7){
-            spinner.setSelection(day-2);
-        }else {
+        if (day > 1 && day < 7) {
+            spinner.setSelection(day - 2);
+        } else {
             spinner.setSelection(0);
         }
         /** Je nachdem Wochentag wird der Adapter auf diesen eingestellt
@@ -172,21 +193,38 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
          *  der Liste auch Freistunden vorhanden sind und nicht nur die Stunden die man hat. Dazu
          *  wird die Methode converSchulstundenZuStundeListe() benutzt
          */
-        switch (day){
-            case 1:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(montagList));break;
-            case 2:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(montagList));break;
-            case 3:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(dienstagList));break;
-            case 4:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(mittwochList)); break;
-            case 5: stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(donnerstagList));break;
-            case 6:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(freitagList)); break;
-            case 7:stundenplanAdapter = new StundenplanAdapter(this,convertSchulstundenZuStundeListe(montagList));break;
-            default:break;
+        switch (day) {
+            case 1:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(montagList));
+                break;
+            case 2:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(montagList));
+                break;
+            case 3:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(dienstagList));
+                break;
+            case 4:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(mittwochList));
+                break;
+            case 5:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(donnerstagList));
+                break;
+            case 6:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(freitagList));
+                break;
+            case 7:
+                stundenplanAdapter = new StundenplanAdapter(this, convertSchulstundenZuStundeListe(montagList));
+                break;
+            default:
+                break;
         }
 
     }
-    /** @sortListASC sortiert die Übergegebene Schulstunde-Liste nach den Stunden
+
+    /**
+     * @sortListASC sortiert die Übergegebene Schulstunde-Liste nach den Stunden
      */
-    public List<dbSchulstunde> sortListASC(List<dbSchulstunde> list){
+    public List<dbSchulstunde> sortListASC(List<dbSchulstunde> list) {
         Collections.sort(list, new Comparator<dbSchulstunde>() {
             @Override
             public int compare(dbSchulstunde lhs, dbSchulstunde rhs) {
@@ -196,13 +234,14 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         return list;
     }
 
-    /** @convertSchulstundenZuStundeListe guckt wann die letzte Stunden ist und geht dann durch
-     *  ob zu jeder Stunde eine Schulstunde vorhanden ist
-     *      wenn nicht erstellt er eine Freistunde
+    /**
+     * @convertSchulstundenZuStundeListe guckt wann die letzte Stunden ist und geht dann durch
+     * ob zu jeder Stunde eine Schulstunde vorhanden ist
+     * wenn nicht erstellt er eine Freistunde
      */
-    public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe){
+    public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe) {
         // letzteStunde ist die letzte Schulstunde der WochentagListe
-        if (wochentagListe.size()>0) {
+        if (wochentagListe.size() > 0) {
             int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).beginnzeit;
             // stundenplanListe ist nacher die fertige Liste mit alle Schulstunden und Freistunden
             List<stunden> stundenplanListe = new ArrayList<>();
@@ -240,16 +279,18 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
             }
             // gibt die fertige stundenplanListe zurück;
             return stundenplanListe;
-        } else{
+        } else {
             return new ArrayList<>();
         }
     }
-    /** Implementation des ClickListener um Aktionen bei einem Click auszuführen
+
+    /**
+     * Implementation des ClickListener um Aktionen bei einem Click auszuführen
      */
     @Override
     public void onItemClicked(int position) {
         stunden stunde = stundenplanAdapter.getStundenplan().get(position);
-        if (stunde.active == true){
+        if (stunde.active == true) {
             Intent intent = new Intent(getActivity(), KursActivity.class);
             intent.putExtra("id", stunde.getId());
             startActivity(intent);

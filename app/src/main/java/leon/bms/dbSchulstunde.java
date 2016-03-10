@@ -7,9 +7,11 @@ import java.util.List;
 /**
  * Created by Leon E on 19.11.2015.
  */
-/** @dbSchulstunde ist eine Tabelle der Datenbank für die Schulstunde
- *  Sie verwaltet alle Einträge der Schulstunde und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+
+/**
+ * @dbSchulstunde ist eine Tabelle der Datenbank für die Schulstunde
+ * Sie verwaltet alle Einträge der Schulstunde und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbSchulstunde extends SugarRecord<dbSchulstunde> {
     //Datensätze des Schulstunde
@@ -26,6 +28,7 @@ public class dbSchulstunde extends SugarRecord<dbSchulstunde> {
     //dbRaum raum;
 
     public dbSchulstunde() {
+        // empty Constructor needed!
     }
 
     public dbSchulstunde(Double dauer, Integer beginnZeit, Integer endZeit, String kursID, String raum, Integer wochentag, dbKurs kurs, dbLehrer lehrer) {
@@ -103,11 +106,17 @@ public class dbSchulstunde extends SugarRecord<dbSchulstunde> {
         this.raum = raum;
     }
 
-    public dbSchulstunde getSchulstundeByWeekAndTime(int week,int time){
-       List<dbSchulstunde> schulstundeList = dbSchulstunde.find(dbSchulstunde.class, "wochentag = ? and beginnzeit = ?", String.valueOf(week),String.valueOf(time));
-        if (schulstundeList.size() != 0){
+    /**
+     * @param week ist der Wochentag der gesuchten Schulstunde
+     * @param time ist die Zeit dieser Schulstunde
+     * @return gibt diese Schulstunde zurück wenn sie vorhanden ist
+     * @getSchulstundenByWeekAndTime gibt eine Schulstunde in einer Woche zu einer bestimmte Zeit zurück
+     */
+    public dbSchulstunde getSchulstundeByWeekAndTime(int week, int time) {
+        List<dbSchulstunde> schulstundeList = dbSchulstunde.find(dbSchulstunde.class, "wochentag = ? and beginnzeit = ?", String.valueOf(week), String.valueOf(time));
+        if (schulstundeList.size() != 0) {
             return schulstundeList.get(0);
-        }else {
+        } else {
             return null;
         }
     }

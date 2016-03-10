@@ -44,10 +44,13 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     ViewPager viewPager;
     ProgressDialog progressDialog;
     LinearLayout linearLayout;
+    // toogleSwitch zum anzeigen der personalisierten Webseiten
     belka.us.androidtoggleswitch.widgets.ToggleSwitch toggleSwitch;
     int page = 1;
+    //@sortedList enthält alle Article nach dem Datum sortiert
     List<WebsiteArtikel> sortedList = new ArrayList<>();
     private boolean loading = true;
+    // wichtige Daten zum ermitteln ob der RecyclerView neue Article laden muss
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     public Fragment_Article(ViewPager viewPager) {
@@ -60,6 +63,11 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         return inflater.inflate(R.layout.fragment__article, container, false);
     }
 
+    /**
+     * @param isVisibleToUser gibt an ob das Fragment sichtbar ist oder nicht
+     * @setUserVisibleHint prüft ob Fragment sichtbar ist oder nicht. Wenn nicht und keine Article bereits
+     * heruntergeladen worden sind werden neue Artikel geladen.
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -97,6 +105,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(mLayoutManager);
 
+        // guckt wie weit man scrollt
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -107,6 +116,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
                     pastVisiblesItems = mLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
+                        // wenn das Ende erreicht wird werden neue Artikel heruntergeladen
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                             loading = false;
                             articleController = new WebsiteArticleController(getActivity(), Fragment_Article.this);
@@ -119,18 +129,24 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
                 }
             }
         });
-
+        // initiate toggleSwitch
         toggleSwitch = (ToggleSwitch) view.findViewById(R.id.toogleButton);
+        /** wenn die position des toogleSwitch nicht 0 ist werden die personalisierten Artikel angezeigt.
+         *  wird wieder auf 0 geschalten werden wieder die normalen Artikel angezeigt.
+         *  bei jeder Änderung wird der recyclerView wieder nach oben scrolllen
+         */
         toggleSwitch.setOnToggleSwitchChangeListener(new ToggleSwitch.OnToggleSwitchChangeListener() {
             @Override
             public void onToggleSwitchChangeListener(int position) {
                 if (position == 0) {
-                    Log.d(TAG,"trigger");
+                    // zeigt wieder alle Artikel nach dem Datum sortiert an
+                    Log.d(TAG, "trigger");
                     websiteArticleAdapter.changeDataSet(sortedList);
                     recyclerView.smoothScrollToPosition(0);
                     //alle artikel normal
 
                 } else {
+                    // sortiert die Artikel nach persönlichen Vorlieben
                     List<WebsiteArtikel> sortedList = new ArrayList<WebsiteArtikel>();
                     for (int i = 0; i < websiteArticleAdapter.getArtikelList().size() / 10; i++) {
                         List<WebsiteArtikel> tempList = websiteArticleAdapter.getArtikelList().subList(i * 10, (i * 10) + 10);
@@ -150,9 +166,17 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
 
     }
 
+    /**
+     * @param list ist die Liste mit Artikel die sortiert werden soll
+     * @return gibt die sortierte List zurück
+     * @sortForPersonalInterest sortiert Website Listen nach der persönlichen Relevanz ,dazu werden
+     * die TAGs des Artikel mit den persönlichen TAGs verglichen. Außerdem wird geguckt wie oft die
+     * eigenen TAGs im Artikel vorkommen sowie wie oft der eigene Name in dem Artikel vorkommt.
+     */
     public List<WebsiteArtikel> sortForPersonalInterest(List<WebsiteArtikel> list) {
-        for (int i=0;i<list.size();i++) {
+        for (int i = 0; i < list.size(); i++) {
             WebsiteArtikel websiteArtikel = list.get(i);
+            // sucht alle WebsiteTAGs raus
             List<String> tagList = websiteArtikel.getTags();
             int relevanz = 0;
             int count = 0;
@@ -162,30 +186,42 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
             if (tagList != null && tagList.size() > 0) {
                 for (String tag : tagList) {
                     tag = tag.toUpperCase();
+                    // wenn der TAG gleich ist mit dem Artikel TAG wird die relevanz erhöht
                     if (new dbWebsiteTag().tagVorhanden(tag) != false) {
                         dbWebsiteTag websiteTag = new dbWebsiteTag().getWebsiteTag(tag);
                         vorkommen += websiteTag.vorkommen;
                         if (websiteTag.vorkommen != 0) {
+                            // wenn der TAG in dem Artikel vorkommt wird die relevanz um 1 erhöht
                             count += countWord(websiteTag.websitetag, text);
+                            // wenn der Name in dem Artikel vorkommt wird die relevanz um 10 erhöht
+                            count += countWord(new dbUser().getUser().vorname, text) * 10;
                         }
+
                     }
                 }
             }
+            // relevanz wird berechnet
             relevanz += vorkommen + count;
             websiteArtikel.relevanz = relevanz;
         }
-
+        // sortiert die Liste nach der Relavanz aufsteigend
         Collections.sort(list, new Comparator<WebsiteArtikel>() {
             @Override
             public int compare(WebsiteArtikel lhs, WebsiteArtikel rhs) {
                 return lhs.relevanz - rhs.relevanz;
             }
         });
+        // kehrt die Liste um sodass die relevantesten Artikel oben stehen
         Collections.reverse(list);
         return list;
     }
 
-
+    /**
+     * @param word ist das Wort welches nach Häufigkeit überprüft werden soll
+     * @param text ist der Text in dem das Wort vorkommen soll
+     * @return gibt die Anzahl zurück wie oft ein Wort vorkommt
+     * @countWord zählt wie oft ein Wort in einem Text vorkommt
+     */
     public int countWord(String word, String text) {
         int count = 0;
         for (int i = 0; i < text.length(); i++) {
@@ -203,6 +239,8 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
 
     /**
      * Implementation des ClickListener um Aktionen bei einem Click auszuführen
+     * wenn ein Artikel angeclickt wird soll sich die WebsiteArticleActivity öffnen die den
+     * Artikel anzeigt.
      */
     @Override
     public void onItemClicked(int position) {
@@ -223,15 +261,24 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         return false;
     }
 
+    /**
+     * @param list ist die heruntergeladen Liste
+     * @updateList automatische Erstellung beim Implementieren des Interface
+     * @updateList wird aufgerufen wenn der WebsiteArticleController alle Artikel geladen hat
+     * dann werden die Artikel in sortedList geladen , die immer alle Artikel enthält. Wenn der User
+     * im moment sich seiner personlisierten Artikel anguckt wird die List auch nach den persönlichen
+     * Interesse sortiert und dem Adapter hinzugefügt. Artikel werden nur geladen wenn 10 Artikel fertig
+     * sind.
+     */
     @Override
     public void updateList(List<WebsiteArtikel> list) {
         //wenn das Interface ausgelöst wird bzw. der WebsiteController fertig ist
         // wird der RecyclerView aktualisiert sodass er die Artikel anzeigt
 
-        if (list.size()==10) {
-            Log.d(TAG,String.valueOf(list));
+        if (list.size() == 10) {
+            Log.d(TAG, String.valueOf(list));
             sortedList.addAll(list);
-            if (toggleSwitch.getCheckedTogglePosition()==1){
+            if (toggleSwitch.getCheckedTogglePosition() == 1) {
                 list = sortForPersonalInterest(list);
             }
             for (WebsiteArtikel websiteArtikel : list) {
@@ -252,7 +299,5 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         }
     }
 
-    /** @updateList automatische Erstellung beim Implementieren des Interface
-     */
 
 }

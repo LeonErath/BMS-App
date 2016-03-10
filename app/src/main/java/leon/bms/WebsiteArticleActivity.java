@@ -12,9 +12,11 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-
+/**
+ * @WebsiteArticleActivity ist die Activity zum Anzeigen der Webarticle der Webiste
+ */
 public class WebsiteArticleActivity extends AppCompatActivity {
-
+    //views
     TextView textViewHeadline;
     TextView textViewAutor,textViewToolbar;
     WebView webView;
@@ -25,6 +27,7 @@ public class WebsiteArticleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //die Activity lädt die Daten des speziellen Artikel
         Intent intent = getIntent();
         content = intent.getStringExtra("content");
         String url = intent.getStringExtra("url");
@@ -32,6 +35,8 @@ public class WebsiteArticleActivity extends AppCompatActivity {
         String autor = intent.getStringExtra("autor");
         setContentView(R.layout.activity_website_article);
 
+        //stellt den Artikel in einem Webview dar
+        // TODO Performance Problems and no Images
         String message ="<font color=\"" + "#5e5e5e" + "\">" +content+ "</font>";
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         scrollView.setDrawingCacheEnabled(false);

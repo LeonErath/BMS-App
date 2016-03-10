@@ -2,13 +2,17 @@ package leon.bms;
 
 import android.graphics.Bitmap;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Leon E on 13.02.2016.
  */
-public class WebsiteArtikel{
+
+/**
+ * @WebsiteArtikel ist eine Klasse die alle Daten für ein Artikel Objekt enthält und somit perfekt zum
+ * anzeigen in einem RecyclerView ist.
+ */
+public class WebsiteArtikel {
     int id;
     String slug;
     String url;
@@ -26,6 +30,7 @@ public class WebsiteArtikel{
 
 
     public WebsiteArtikel() {
+        //empty Constructor needed!
         this.relevanz = 0;
     }
 
@@ -157,7 +162,6 @@ public class WebsiteArtikel{
     public void setModified(String modified) {
         this.modified = modified;
     }
-
 
 
 }

@@ -3,6 +3,11 @@ package leon.bms;
 /**
  * Created by Leon E on 28.02.2016.
  */
+
+/**
+ * @quizthemen klasse die alle Daten für die QuizThemen Anzeige bietet. Constructor sowie Getter/Setter
+ * Methode sind implementiert.
+ */
 public class quizthemen {
 
     String themenbereich;
@@ -13,6 +18,7 @@ public class quizthemen {
     String datum;
 
     public quizthemen() {
+        //Constructor must be empty"
     }
 
     public quizthemen(String themenbereich, int fragen, Long id, String kursId, String lehrer, String datum) {

@@ -16,18 +16,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 
-/** @Fragment_Highlight ist ein Fragment , welches kompakt alles wichtiges anzeigen soll
- *  Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen
+/**
+ * @Fragment_Highlight ist ein Fragment , welches kompakt alles wichtiges anzeigen soll
+ * Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen
  */
 public class Fragment_Highlight extends Fragment {
 
-    TextView textViewNumber,textViewNumber2,textViewLehrer,textViewLehrer2,textViewStunde,textViewStunde2,textViewRaum,textViewRaum2;
+    // views
+    TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2;
     private static String TAG = Fragment_Highlight.class.getSimpleName();
+    // wichtig für das aktualiseren der Anzeige
     BroadcastReceiver broadcastReceiver;
 
 
@@ -39,6 +41,7 @@ public class Fragment_Highlight extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //initial views
         textViewNumber = (TextView) view.findViewById(R.id.textViewNumber);
         textViewNumber2 = (TextView) view.findViewById(R.id.textViewNumber2);
         textViewLehrer = (TextView) view.findViewById(R.id.textViewLehrer);
@@ -48,7 +51,7 @@ public class Fragment_Highlight extends Fragment {
         textViewRaum = (TextView) view.findViewById(R.id.textViewRaum);
         textViewRaum2 = (TextView) view.findViewById(R.id.textViewRaum2);
 
-      setUpNächsteStunde();
+        setUpNächsteStunde();
 
 
     }
@@ -56,10 +59,11 @@ public class Fragment_Highlight extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        // updates view ever mintute
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0){
+                if (intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == 0) {
                     setUpNächsteStunde();
 
                 }
@@ -67,58 +71,69 @@ public class Fragment_Highlight extends Fragment {
         };
         getActivity().registerReceiver(broadcastReceiver, new IntentFilter(Intent.ACTION_TIME_TICK));
     }
+
     @Override
     public void onStop() {
         super.onStop();
         if (broadcastReceiver != null)
-           getActivity().unregisterReceiver(broadcastReceiver);
+            getActivity().unregisterReceiver(broadcastReceiver);
     }
 
-    public void setUpNächsteStunde(){
-        Log.d(TAG,"Updated Time");
-
+    /**
+     * @setUpNächsteStunde berechnet die jetztige und nächste Stunde und zeigt diese an
+     */
+    public void setUpNächsteStunde() {
+        Log.d(TAG, "Updated Time");
+        // Array mit den Schulstunden
         Calendar calendar = Calendar.getInstance();
         GregorianCalendar[] calendars = new GregorianCalendar[]{
-                new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),8,0,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),8,45,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),9,35,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),10,45,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),11,35,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),12,25,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),13,30,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),14,15,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),15,0,0)
-                ,new GregorianCalendar(calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH),15,45,0)
+                new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 8, 0, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 8, 45, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 9, 35, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 10, 45, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 11, 35, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 12, 25, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 13, 30, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 14, 15, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 15, 0, 0)
+                , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 15, 45, 0)
 
 
         };
 
+        // sucht die aktuelle Stunde heraus
         Calendar date = GregorianCalendar.getInstance();
-        int week = calendar.get(Calendar.DAY_OF_WEEK)-1;
+        int week = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         int aktuelleStunde = 0;
-        for (int i=calendars.length-1;i>=0;i--){
-            if (date.before(calendars[i])){
-                aktuelleStunde =i;
+        for (int i = calendars.length - 1; i >= 0; i--) {
+            //vergleich die aktuelle Zeit mit dem Array um zu gucken in welcher Schulstunde man sich begfindet
+            if (date.before(calendars[i])) {
+                aktuelleStunde = i;
 
             }
         }
-        if (date.after(calendars[calendars.length-1])){
-            aktuelleStunde=99;
+        // wenn die aktuelle Stunde nach den Zeiten des Arrays ist wird die aktuelle Stunde auf 99 gesetzt
+        if (date.after(calendars[calendars.length - 1])) {
+            aktuelleStunde = 99;
         }
 
         Log.d(TAG, "Aktuelle Stunde: " + aktuelleStunde + " wochentag: " + week);
-
-        if (week>0 && week<6){
-            if (aktuelleStunde > 0 && aktuelleStunde <10) {
+        // wenn der wochentag in der schulwoche ist
+        if (week > 0 && week < 6) {
+            // wenn die aktuelleStunde ein Schulstunde ist
+            if (aktuelleStunde > 0 && aktuelleStunde < 10) {
+                // holt sich alle Kurse
                 List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse(0);
                 aktiveKurse.addAll(new dbKurs().getActiveKurse(1));
 
                 List<dbSchulstunde> schulstundeList = new ArrayList<>();
+                // holt sich von den Kursen die entsprechenden schulstunde für die Woche
                 for (dbKurs kurs : aktiveKurse) {
                     if (kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week) != null) {
                         schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week));
                     }
                 }
+                // wenn an dem Tag Unterricht ist also Schulstunden vorhanden sind
                 if (schulstundeList.size() > 0) {
                     List<stunden> stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList));
                     int letzteStunde = stundenList.get(stundenList.size() - 1).stunde;
@@ -127,11 +142,13 @@ public class Fragment_Highlight extends Fragment {
                         if (stunden.stunde == aktuelleStunde) {
                             if (aktuelleStunde != letzteStunde) {
                                 if (stunden.active == true) {
+                                    // wenn die aktuelle Stunde aktiv ist also keine Freistunde
                                     textViewStunde.setText(stunden.getStundenname());
                                     textViewRaum.setText(stunden.getRaum());
                                     textViewLehrer.setText(stunden.getLehrer());
                                     textViewNumber.setText(String.valueOf(stunden.getStunde()));
                                 } else {
+                                    // sonst Freistunde
                                     textViewStunde.setText("Freistunde");
                                     textViewRaum.setText("");
                                     textViewLehrer.setText("");
@@ -150,6 +167,7 @@ public class Fragment_Highlight extends Fragment {
                                     textViewNumber2.setText(String.valueOf(stunden2.getStunde()));
                                 }
                             } else {
+                                // wenn die aktuelle Stunde die letze Stunde ist
                                 textViewStunde.setText(stunden.getStundenname());
                                 textViewRaum.setText(stunden.getRaum());
                                 textViewLehrer.setText(stunden.getLehrer());
@@ -164,17 +182,19 @@ public class Fragment_Highlight extends Fragment {
                     }
 
                 }
-            } else if (aktuelleStunde == 99){
-                    textViewStunde.setText("Kein Unterricht mehr!");
-                    textViewRaum.setText("");
-                    textViewLehrer.setText("");
-                    textViewNumber.setText(String.valueOf(""));
-                    textViewStunde2.setText("Kein Unterricht mehr!");
-                    textViewRaum2.setText("");
-                    textViewLehrer2.setText("");
-                    textViewNumber2.setText(String.valueOf(""));
+            } else if (aktuelleStunde == 99) {
+                // wenn es nachdem Unterrich ist
+                textViewStunde.setText("Kein Unterricht mehr!");
+                textViewRaum.setText("");
+                textViewLehrer.setText("");
+                textViewNumber.setText(String.valueOf(""));
+                textViewStunde2.setText("Kein Unterricht mehr!");
+                textViewRaum2.setText("");
+                textViewLehrer2.setText("");
+                textViewNumber2.setText(String.valueOf(""));
 
-            } else if (aktuelleStunde == 0){
+            } else if (aktuelleStunde == 0) {
+                // wenn es vor dem Unterricht ist
                 textViewStunde.setText("Kein Unterricht!");
                 textViewRaum.setText("");
                 textViewLehrer.setText("");
@@ -189,6 +209,7 @@ public class Fragment_Highlight extends Fragment {
                         schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week));
                     }
                 }
+                // zeigt die erste Stunde an für den Tag
                 if (schulstundeList.size() > 0) {
                     List<stunden> stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList));
                     stunden stunden = stundenList.get(aktuelleStunde);
@@ -201,7 +222,13 @@ public class Fragment_Highlight extends Fragment {
         }
 
     }
-    public List<dbSchulstunde> sortListASC(List<dbSchulstunde> list){
+
+    /**
+     * @param list mit aktuallen Schulstunden wird pbergeben
+     * @return sortierte List wird zurückgegeben
+     * @sortListASC sortiert eine Schulstunde Liste nach der Zeit
+     */
+    public List<dbSchulstunde> sortListASC(List<dbSchulstunde> list) {
         Collections.sort(list, new Comparator<dbSchulstunde>() {
             @Override
             public int compare(dbSchulstunde lhs, dbSchulstunde rhs) {
@@ -211,9 +238,15 @@ public class Fragment_Highlight extends Fragment {
         return list;
     }
 
-    public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe){
+    /**
+     * @param wochentagListe Liste für einen Wochentag wird übergeben
+     * @return gibt die kovertierte List zurück
+     * @covertSchulstundenZuStundeListe konvertiert die Datenbank schulstunde zu normalen Stunden für einer einfachere Anzeige für
+     * den AufgabenAdapter. Die konvertierte List enthält auch Freistunden.
+     */
+    public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe) {
         // letzteStunde ist die letzte Schulstunde der WochentagListe
-        if (wochentagListe.size()>0) {
+        if (wochentagListe.size() > 0) {
             int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).beginnzeit;
             // stundenplanListe ist nacher die fertige Liste mit alle Schulstunden und Freistunden
             List<stunden> stundenplanListe = new ArrayList<>();
@@ -250,7 +283,7 @@ public class Fragment_Highlight extends Fragment {
             }
             // gibt die fertige stundenplanListe zurück;
             return stundenplanListe;
-        } else{
+        } else {
             return new ArrayList<>();
         }
     }

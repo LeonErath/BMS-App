@@ -16,8 +16,14 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Leon E on 21.12.2015.
  */
+
+/**
+ * @StundenplanController ist die Klasse die alles bearbeitet was mit dem Stundenplan zutun hat. Es erstellt den Stundenplan und arbeitet
+ * mit dem Kurs Controller zusammen. Es lädt alle Updates herunter für die Datenbank und parsed die Datein richtig in die Datenbank.
+ */
 public class StundenplanController {
 
+    // unwichtige URL erstmal
     String registrationUrl = "http://app.marienschule.de/files/scripts/getStundenplan.php";
     Context mainContext;
 
@@ -26,6 +32,7 @@ public class StundenplanController {
         mainContext = context;
     }
 
+    // Methode nur für Testzwecke
     public String downloadStundenplan() {
         String result = "";
         Log.d("DOWNLOAD", " downloadStundenplan()");
@@ -44,6 +51,7 @@ public class StundenplanController {
         return result;
     }
 
+    // Methode nur für Testzwecke
     public void erstelleStundenplan(String result) {
         try {
 
@@ -90,18 +98,19 @@ public class StundenplanController {
     }
 
 
-    // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
-    // in folgeneder Reihenfolge:
-    // 1 Lehrerliste
-    // 2 PK und AGs
-    // 3 Stundenplan
-    // 4 Kürzel
-    // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
-    // altualisiert werden können
+    /**
+     * @checkUpdate macht eine Server Anfrage mit dem Datum des letzten Login des Users und überprüft
+     * ob sich Daten verändert haben. Alle Daten werden in einer bestimmten Reihenfolge in die Datenbank
+     * geparsed . Jede große Datenblock wird einzeln geparsed und auf verschiedene Methoden verteilt, sodass
+     * man einen Überblick behält.
+     */
     public void checkUpdate() {
+
+        // WICHTIGE Url für die Anfrage an den Server
         String Url = "http://app.marienschule.de/files/scripts/getAllDataN.php";
         String result = "";
         LogInController logInController = new LogInController(mainContext);
+        // parsed Datum
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         try {
@@ -126,6 +135,14 @@ public class StundenplanController {
         }
         Log.d("RESULT", result);
 
+        // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
+        // in folgeneder Reihenfolge:
+        // 1 Lehrerliste
+        // 2 PK und AGs
+        // 3 Stundenplan
+        // 4 Kürzel
+        // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
+        // altualisiert werden können
 
         //Hier die Lehrerliste
         if (new dbLehrer().countLehrer() == 0) {
@@ -190,6 +207,10 @@ public class StundenplanController {
 
     }
 
+    /**
+     * @param result JSON Daten des Server für die Lehrer
+     * @erstelltLehrerListe parsed die Daten für die Lehrer in die Datenbank
+     */
     public void erstelleLehrerListe(String result) {
         try {
             JSONObject jsonObjectLehrerliste = new JSONObject(result);

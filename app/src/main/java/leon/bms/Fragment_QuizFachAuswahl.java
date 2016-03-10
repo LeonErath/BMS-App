@@ -1,7 +1,6 @@
 package leon.bms;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -18,15 +17,13 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Fragment_QuizFachAuswahl.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * @Fragment_QuizFachAuswahl zeigt die Fächer an die Themenbereich des Quizes enthalten an.
+ * Es lässt sich alle Kurse übergeben die themenbereich besitzen und zeigt diese in einem RecyclerView an.
  */
 public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener {
 
     private OnFragmentInteractionListener mListener;
-    Button buttonBack,buttonQuit;
+    Button buttonBack, buttonQuit;
     RecyclerView recyclerView;
     QuizKursAdapter quizKursAdapter;
     List<quizkurs> quizkursList;
@@ -48,21 +45,23 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
         super.onViewCreated(view, savedInstanceState);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        // bekommt alle Kurse für die Anzeige vom quizController
         QuizController quizController = new QuizController(getActivity());
         quizkursList = new ArrayList<>();
-        if (quizController.getQuizKurse()!=null){
+        // überprüft ob Kurse vorhanden sind die Themenbereiche enthalten
+        if (quizController.getQuizKurse() != null) {
             quizkursList = quizController.getQuizKurse();
-        }else {
+        } else {
             Toast.makeText(getActivity(), "Keine Kurse vorhanden.", Toast.LENGTH_SHORT).show();
         }
 
-        quizKursAdapter = new QuizKursAdapter(this,quizkursList);
+        //setUp recyclerview
+        quizKursAdapter = new QuizKursAdapter(this, quizkursList);
         recyclerView.setAdapter(quizKursAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-
-
+        //setUp Buttons and onClick events
         buttonBack = (Button) view.findViewById(R.id.buttonBack);
         buttonBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +79,11 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
 
     }
 
+    /**
+     * initializes the Interface
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -96,12 +100,20 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
         mListener = null;
     }
 
+    /**
+     * @param position ist die Position welches von dem angeklicktem Item
+     * @onITemClicked wird aufgerufen wenn ein Item des RecyclerView angeclickt wird
+     */
     @Override
     public void onItemClicked(int position) {
         quizkurs quizkurs = quizkursList.get(position);
         mListener.next(quizkurs.kursId);
     }
 
+    /**
+     * @param position ist die Position welches von dem angeklicktem Item
+     * @onITemLongClicked wird aufgerufen wenn ein Item des RecyclerView angeclickt wird
+     */
     @Override
     public boolean onItemLongClicked(int position) {
         quizkurs quizkurs = quizkursList.get(position);
@@ -115,7 +127,7 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p>
+     * <p/>
      * See the Android Training lesson <a href=
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
@@ -123,6 +135,7 @@ public class Fragment_QuizFachAuswahl extends Fragment implements QuizKursAdapte
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void next(String id);
+
         void back();
     }
 }

@@ -12,17 +12,26 @@ import android.widget.Button;
 import android.widget.TextView;
 
 /**
- * A simple {@link Fragment} subclass.
- */
+ * @Fragment_QuizFrage zeigt ein grundlegendes Menü zur Verwaltung des Quizes an. Außerdem
+ * lädt es automatisch die neuen Fragen herunter.
+ **/
 public class Fragment_QuizStart extends Fragment implements View.OnClickListener {
 
-    Button buttonStart, buttonScore,buttonZurück;
+    //Views
+    Button buttonStart, buttonScore, buttonZurück;
     ProgressDialog progressDialog;
     TextView textViewDatum;
     nextFragment next;
 
+    public Fragment_QuizStart() {
+        //empty Constructor needed!
+    }
 
-
+    /**
+     * initializes the Interface
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -49,6 +58,7 @@ public class Fragment_QuizStart extends Fragment implements View.OnClickListener
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //initiate the views
         buttonStart = (Button) view.findViewById(R.id.buttonStart);
         buttonScore = (Button) view.findViewById(R.id.buttonScore);
         buttonZurück = (Button) view.findViewById(R.id.buttonZurück);
@@ -64,23 +74,32 @@ public class Fragment_QuizStart extends Fragment implements View.OnClickListener
             @Override
             public void updateUI(String datum) {
                 progressDialog.dismiss();
-                textViewDatum.setText("Letztes Update "+datum);
+                textViewDatum.setText("Letztes Update " + datum);
             }
 
         });
+        // neue Daten für das Quiz werden heruntergeladen über den QuizController
         quizController.getQuizData();
 
     }
 
+    /**
+     * @param v
+     * @onClick behandelt die click events der Button
+     */
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.buttonStart:
                 next.getNextFragment();
                 break;
-            case R.id.buttonScore:break;
-            case R.id.buttonZurück:getActivity().onBackPressed(); break;
-            default:break;
+            case R.id.buttonScore:
+                break;
+            case R.id.buttonZurück:
+                getActivity().onBackPressed();
+                break;
+            default:
+                break;
 
         }
     }
@@ -88,7 +107,8 @@ public class Fragment_QuizStart extends Fragment implements View.OnClickListener
     public interface nextFragment {
         public void getNextFragment();
     }
-    public void setUpInterface(nextFragment nextFragment){
+
+    public void setUpInterface(nextFragment nextFragment) {
         this.next = nextFragment;
     }
 

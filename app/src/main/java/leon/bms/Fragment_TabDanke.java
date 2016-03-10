@@ -11,7 +11,7 @@ import com.github.franciscan.materialstepper.AbstractStep;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * @Fragment_TabDanke zeigt nur einen Text an . Letzter Schritt bei der Konfiguration des User
  */
 public class Fragment_TabDanke extends AbstractStep {
 

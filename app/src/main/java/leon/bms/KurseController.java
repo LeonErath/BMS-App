@@ -20,6 +20,11 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by Leon E on 21.12.2015.
  */
+
+/**
+ * @KursController ist die Klasse die alles bearbeitet was mit den Kursen zutun hat. Es erstellt alle Kurse sowie
+ * Porjektkurs und AGs und lädt die richtige Bezeichnung nach.
+ */
 public class KurseController {
     Context mainContext;
 
@@ -27,8 +32,13 @@ public class KurseController {
         mainContext = context;
     }
 
+    /**
+     * @erstelltKurse Methode um alle Kurse aus den Schulstunden zu erstellen und in der Datenbank entsprechend
+     * zu speichern
+     */
     public void erstelltKurse() {
 
+        //lädt alle Schulstunden aus der Datenbank
         List<dbSchulstunde> schulstundeList = dbSchulstunde.listAll(dbSchulstunde.class);
         List<String> kursIDList = new ArrayList<>();
 
@@ -36,7 +46,7 @@ public class KurseController {
             kursIDList.add(i, schulstundeList.get(i).kursID);
         }
 
-
+        //löscht alle doppelt vorkommenden kursIDs raus sodass eine Liste mit nur noch den Kursids vorhanden ist
         Set<String> sortetdSet = new TreeSet<String>(new ListComparator());
         for (String value : kursIDList) {
             if (!sortetdSet.add(value)) {
@@ -50,6 +60,7 @@ public class KurseController {
         while (iterator.hasNext()) {
             kursIDList.add(iterator.next());
         }
+        // speicher die Kursids als neue Kurse mit der entsprechenden kursart
         Log.d("COUNT", kursIDList.size() + "");
         for (int i = 0; i < kursIDList.size(); i++) {
             dbKurs kurs = new dbKurs();
@@ -67,6 +78,10 @@ public class KurseController {
         }
     }
 
+    /**
+     * @connectKursStunden verbindet die Kurse mit den Schulstunden und lädt Daten des kurses nach.
+     * Auch die Verbindung zu den Lehrer wird geschaffen.
+     */
     public void connectKursStunden() {
         List<dbSchulstunde> schulstundeList = dbSchulstunde.listAll(dbSchulstunde.class);
         List<dbKurs> kurseList = dbKurs.listAll(dbKurs.class);
@@ -77,7 +92,7 @@ public class KurseController {
             for (int k = 0; k < schulstundeList.size(); k++) {
                 dbSchulstunde schulstunde = schulstundeList.get(k);
                 if (kurs1.name.equals(schulstunde.kursID)) {
-                    //kurs1.stunde =schulstunde;
+                    // creating relationships
                     kurs1.lehrer = schulstunde.lehrer;
                     kurs1.hinzugefuegtAm = schulstunde.zuletztAktualisiert;
                     kurs1.save();
@@ -88,6 +103,7 @@ public class KurseController {
         }
     }
 
+    // überflüssig geworden erstmal
     public void downloadKuerzel() {
         String result = "";
         String url = "http://app.marienschule.de/files/scripts/getFachKuerzel.php";
@@ -114,6 +130,11 @@ public class KurseController {
         }
     }
 
+    /**
+     * @param result beinhaltet zu jedem Kurs eine Kurz und langform
+     * @connectKuerzel lädt mit den results die Langform der Kurse nach und speichert diese in den Kursen
+     * Beispiel M L1 : Mathematik Leistungskurs 1
+     */
     public void connectKuerzel(String result) {
         List<dbKurs> kurseList = dbKurs.listAll(dbKurs.class);
 
@@ -128,6 +149,7 @@ public class KurseController {
                 String mShort = jsonObject.optString("SHORT");
                 for (int k = 0; k < kurseList.size(); k++) {
                     dbKurs kurs = kurseList.get(k);
+                    //kurs wird anhand der Kursform rausgesucht und die Langform gespeichert
                     if (mShort.equals(kurs.name)) {
                         kurs.fach = jsonObject.optString("FULL");
                         kurs.save();
@@ -143,9 +165,14 @@ public class KurseController {
         }
     }
 
-
+    /**
+     * @param result beinhaltet die JSON Daten der PK und AGs
+     * @erstelltPKundAGs erstellt die PK und AGs. Hierbei muss besodners bei den kursarten aufgepasst
+     * werden sowie das doppelt vorkommen da manche PK und AG die gleiche KursID besitzen.
+     */
     public void erstelltPKundAGs(String result) {
         try {
+            // parsed die JSON Daten
             JSONObject jsonObjectAll = new JSONObject(result);
             String datum = jsonObjectAll.getString("zuletzt Aktualisiert");
             JSONArray jsonArray = jsonObjectAll.getJSONArray("pkuags");
@@ -160,6 +187,7 @@ public class KurseController {
                 JSONArray Typ = jsonObjectEintrag.getJSONArray("TYP");
 
                 for (int k = 0; k < Typ.length(); k++) {
+                    //erstellt die Kurse
                     dbKurs kurs = new dbKurs();
                     kurs.name = kuerzel;
                     //Verbindung mit Lehrer schaffen
@@ -167,16 +195,19 @@ public class KurseController {
                     if (!lehrer.equals("")) {
                         kurs.lehrer = lehrer1.sucheLehrer(lehrer);
                     }
+                    //speichert die richtige Kursart
                     // LK 0 GK 1 AG 2 PK 3
                     kurs.kursart = 2;
                     if (Typ.getString(k).substring(0, 2).equals("PK")) {
                         kurs.kursart = 3;
                     }
                     kurs.fach = name;
+                    //überprüft ob Kurs vorhanden ist
                     if (new dbKurs().kursVorhanden(kurs) == false) {
                         JSONArray Tags = jsonObjectEintrag.getJSONArray("TAGS");
                         kurs.hinzugefuegtAm = datum;
                         kurs.save();
+                        //speichert die Website TAGs der Kurse
                         for (int l = 0; l < Tags.length(); l++) {
                             String tag = Tags.getString(l);
                             tag = tag.toUpperCase();
@@ -200,8 +231,6 @@ public class KurseController {
                                 connect.save();
                             }
                         }
-
-
 
 
                     }

@@ -6,9 +6,10 @@ import com.orm.SugarRecord;
  * Created by Leon E on 19.11.2015.
  */
 
-/** @dbNote ist eine Tabelle der Datenbank für die Note
- *  Sie verwaltet alle Einträge der Note und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+/**
+ * @dbNote ist eine Tabelle der Datenbank für die Note
+ * Sie verwaltet alle Einträge der Note und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbNote extends SugarRecord<dbNote> {
     //Datensätze für die Note
@@ -18,7 +19,9 @@ public class dbNote extends SugarRecord<dbNote> {
     // defining a relationship
     dbKlausur klausur;
     dbKurs kurs;
+
     public dbNote() {
+        //empty Constructor needed!
     }
 
     public dbNote(Double klassendurchschnitt, Integer punkte, Boolean schriftlich, dbKlausur klausur, dbKurs kurs) {

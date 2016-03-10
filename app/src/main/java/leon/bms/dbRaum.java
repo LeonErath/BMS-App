@@ -6,9 +6,10 @@ import com.orm.SugarRecord;
  * Created by Leon E on 19.11.2015.
  */
 
-/** @dbRaum ist eine Tabelle der Datenbank für die Raum
- *  Sie verwaltet alle Einträge der Räume und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+/**
+ * @dbRaum ist eine Tabelle der Datenbank für die Raum
+ * Sie verwaltet alle Einträge der Räume und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbRaum extends SugarRecord<dbRaum> {
     //Datensätze des Raumes
@@ -22,7 +23,9 @@ public class dbRaum extends SugarRecord<dbRaum> {
     // defining a relationship
     dbKlausur klausur;
     dbSchulstunde stunden;
+
     public dbRaum() {
+        //empty Contructor needed!
     }
 
     public dbRaum(Boolean beamer, String beschreibung, Boolean computer, String funktion, Integer kapazitaet, Boolean lautsprecher, String nummer) {

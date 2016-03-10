@@ -5,6 +5,11 @@ import java.io.Serializable;
 /**
  * Created by Leon E on 10.02.2016.
  */
+
+/**
+ * @stunden  klasse die alle Daten für die Stundenplan Anzeige bietet. Constructor sowie Getter/Setter
+ * Methode sind implementiert.
+ */
 public class stunden implements Serializable {
     public String stundenname;
     public String lehrer;

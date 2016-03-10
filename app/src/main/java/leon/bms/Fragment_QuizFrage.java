@@ -3,7 +3,6 @@ package leon.bms;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -26,18 +25,22 @@ import io.codetail.animation.ViewAnimationUtils;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Fragment_QuizFrage.OnFragmentInteractionListener} interface
- * to handle interaction events.
+ * @Fragment_QuizFrage zeigt die Fragen sowie die Antwortmöglichkeiten des Quizes an. Bekommt beim
+ * erstellen des Frament einen Themenbereich. Geht alle Fragen des Themenbereiches durch und überprüft
+ * bzw speichert die Ergebnis des Users. Wenn alle Fragen beanwortet worden werden die Ergebnis in
+ * Fragment_QuizErgebnis angezeigt.
  */
 public class Fragment_QuizFrage extends Fragment implements View.OnClickListener {
 
+    //listener to communicate with the acitvity
     private OnFragmentInteractionListener mListener;
+    // important for an Animation
     FrameLayout reveal4;
+    // views
     TextView textViewThemenbereich, textViewFrageID, textViewFrage, textViewCounter;
     TextView textViewAntwort1, textViewAntwort2, textViewAntwort3, textViewAntwort4, textViewContinue;
     ImageView imageViewCancel;
+    // important to check results
     boolean selected1 = false, selected2 = false, selected3 = false, selected4 = false;
     CardView cardView1, cardView2, cardView3, cardView4, cardViewBottombar;
     private static String TAG = Fragment_QuizFrage.class.getSimpleName();
@@ -48,20 +51,34 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     List<dbAntworten> falscheAntworten;
     List<dbAntworten> richtigeAntworten;
     int counter = 1;
-    boolean mAlreadyLoaded=false;
+    boolean mAlreadyLoaded = false;
     Boolean[] placeofAntwort = new Boolean[5];
 
+    public Fragment_QuizFrage() {
+        // Required empty public constructor
+    }
 
     public Fragment_QuizFrage(Long themenbereichID) {
-        // Required empty public constructor
         this.themenbereichID = themenbereichID;
     }
 
     public Fragment_QuizFrage(Long themenbereichID, int position) {
-        // Required empty public constructor
         this.themenbereichID = themenbereichID;
         this.counter = position;
     }
+
+    /**
+     * @param outState
+     * @onSaveInstanceState wird benötigt falls Fragment zerstört wird z.B.: bei ScreenRotations.
+     * Speichert die aktuelle Frage .
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Long id = themenbereichID;
+        outState.putLong("id", id);
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +93,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-            // Do this code only first time, not after rotation or reuse fragment from backstack
+        // Do this code only first time, not after rotation or reuse fragment from backstack
         textViewThemenbereich = (TextView) view.findViewById(R.id.textViewThemenbereich);
         textViewFrageID = (TextView) view.findViewById(R.id.textViewFrageID);
         textViewFrage = (TextView) view.findViewById(R.id.textViewFrage);
@@ -99,16 +116,28 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         cardView4.setOnClickListener(this);
         cardViewBottombar.setOnClickListener(this);
 
+        if (savedInstanceState != null) {
+            //loads Data wenn das Fragment wieder hergestellt wird
+            if (savedInstanceState.containsKey("id")) {
+                Long id = savedInstanceState.getLong("id");
+                this.themenbereichID = id;
+            }
+        }
+
         setUpQuiz();
     }
 
 
-
+    /**
+     * @setUpQuiz lädt die Fragen und zeigt erste Elemente an.
+     */
     public void setUpQuiz() {
         if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
+            // lädt den Themenbereich
             dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(themenbereichID);
             textViewThemenbereich.setText(themenbereich.getName() + " " + themenbereich.kurs.getName());
             if (themenbereich.getFragen(themenbereich.getId()) != null) {
+                //lädt die Fragen des Themenbereiches
                 fragenList = themenbereich.getFragen(themenbereich.getId());
                 if (fragenList.size() > 0) {
                     textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
@@ -118,21 +147,37 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         }
     }
 
+    /**
+     * @param counter    ist der Counter um zu bestimmen bei welcher Frage der User sich befindet
+     * @param fragenList ist die Liste der Fragen des Themenbereiches
+     * @setUpFrage zeigt die Frage an
+     */
     public void setUpFrage(int counter, List<dbFragen> fragenList) {
-        if (counter > 0 && counter-1< fragenList.size()) {
+        if (counter > 0 && counter - 1 < fragenList.size()) {
             frage = fragenList.get(counter - 1);
+            // zeigt die Frage an
             textViewFrage.setText(frage.getFrage());
+            textViewFrageID.setText("Frage ID: " + frage.getServerid());
             setUpAntwort(frage.getId());
-        }else {
+        } else {
 
         }
     }
 
+    /**
+     * @param id ist die Fragen id um die Antworten zu laden
+     * @setUpAntwort zeigt alle Antworten zufällig an. Da die Antworten teilweise mulitpile choice sind werden
+     * zuerst alle richtige Antworten angezeigt und dann die resltichen mit falschen aufgefüllt. Alle Antworten
+     * werden immer an zufälligen Positionen angezigt. Die Position und ob die Frage richtig oder Falsch ist wird
+     * im @placeofAntwort gepseichert um nacher die Lösung einfach anzuzeigen.
+     */
     private void setUpAntwort(Long id) {
         if (new dbFragen().getAnworten(id) != null) {
+            // lädt alle Antworten der Frage
             List<dbAntworten> antwortenList = new dbFragen().getAnworten(id);
             richtigeAntworten = new ArrayList<>();
             falscheAntworten = new ArrayList<>();
+            //unterteilt die Antworten in richtig oder falsch
             for (dbAntworten antworten : antwortenList) {
                 if (antworten.richtig == true) {
                     richtigeAntworten.add(antworten);
@@ -140,17 +185,21 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                     falscheAntworten.add(antworten);
                 }
             }
+            // überprüft ob genug antworten vorhanden sind
             if (richtigeAntworten.size() > 0 && (richtigeAntworten.size() + falscheAntworten.size() >= 4)) {
+                // mischt alle Antworten sowie Positionen zufällig
                 ArrayList<Integer> randomOrder = generateRandom(4);
                 Collections.shuffle(richtigeAntworten);
                 Collections.shuffle(falscheAntworten);
                 for (int i = 0; i < randomOrder.size(); i++) {
                     int randomPosition = randomOrder.get(i);
+                    // befüllt erstmal alle richtige Antowrten
                     if (richtigeAntworten.size() >= i + 1) {
                         setUpCardView(randomPosition, richtigeAntworten.get(i));
                         Log.d(TAG, randomPosition + " richtig");
                         placeofAntwort[randomPosition] = true;
                     } else {
+                        // dann alle falsche Antowrten
                         setUpCardView(randomPosition, falscheAntworten.get(i - richtigeAntworten.size()));
                         Log.d(TAG, randomPosition + " falsch");
                         placeofAntwort[randomPosition] = false;
@@ -160,6 +209,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         }
     }
 
+    /**
+     * @param randomPosition ist die Position der Antwort. Je nach Position wird das richtige CardView
+     *                       ausgeählt und die Lösung anhezeigt
+     * @param antworten      ist die Antwort die auf der entsprechenden Position angezeigt werden soll
+     * @setUpCardView zeigt die Antwort auf dem CardView an
+     */
     public void setUpCardView(int randomPosition, dbAntworten antworten) {
         switch (randomPosition) {
             case 1:
@@ -179,7 +234,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         }
     }
 
-
+    /**
+     * @param maxZahl ist die Reichweite aus der eine Zufällige Kombination erzeugt werden soll
+     * @return gibt ein Array mit der zufälligen Kombination zurück
+     * @generateRandom erstellt zufällig eine Kombination von 1-maxZahl(hier 4) da es immer 4 Antworten gibt die
+     * an verschiedenen Positionen angezeigt werden sollen.
+     */
     public ArrayList<Integer> generateRandom(int maxZahl) {
         ArrayList<Integer> number = new ArrayList<Integer>();
         for (int i = 1; i <= maxZahl; ++i) number.add(i);
@@ -187,7 +247,11 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         return number;
     }
 
-
+    /**
+     * initializes the Interface
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -205,42 +269,55 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         mListener = null;
     }
 
+    /**
+     * @param v ist der übergebene view
+     * @onClick verwaltet die Click-Events und führt die dementsprechende Aktion aus. Bei den vier
+     * Antworten wird eine Animation angezeigt je nachdem ob die Antwort ausgewählt worde oder nicht.
+     * Wenn man das cardViewBottom angeclickt wird dann die Lösung angezeigt.
+     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.cardView:
+                // animation wird angezeigt je nach Auswahl
                 clickCardView(cardView1, textViewAntwort1, selected1, 1);
                 break;
             case R.id.cardView2:
+                // animation wird angezeigt je nach Auswahl
                 clickCardView(cardView2, textViewAntwort2, selected2, 2);
                 break;
             case R.id.cardView3:
+                // animation wird angezeigt je nach Auswahl
                 clickCardView(cardView3, textViewAntwort3, selected3, 3);
                 break;
             case R.id.cardView4:
+                // animation wird angezeigt je nach Auswahl
                 clickCardView(cardView4, textViewAntwort4, selected4, 4);
                 break;
             case R.id.cardViewbottomBar:
+                // prüft in welchem Vorgang der User sich befindet
                 if (textViewContinue.getText().toString().equals("Antwort anzeigen")) {
+                    // wenn der User schon richtige Antworten gesehen hat und jetzt die Lösung sehen will
                     String richtigeAntwortenString = " ";
+                    //überprüft ob ein oder Mehr Antworten ausgewält worden sind
                     if (richtigeAntworten.size() > 0) {
                         for (dbAntworten antworten : richtigeAntworten) {
                             richtigeAntwortenString += antworten.antwort + ", ";
                         }
-                        String deineAntwort=" ";
-                        if (selected1 == true){
-                            deineAntwort+=textViewAntwort1.getText().toString()+", ";
+                        String deineAntwort = " ";
+                        if (selected1 == true) {
+                            deineAntwort += textViewAntwort1.getText().toString() + ", ";
                         }
-                        if (selected2 == true){
-                            deineAntwort+=textViewAntwort2.getText().toString()+", ";
+                        if (selected2 == true) {
+                            deineAntwort += textViewAntwort2.getText().toString() + ", ";
                         }
-                        if (selected3 == true){
-                            deineAntwort+=textViewAntwort3.getText().toString()+", ";
+                        if (selected3 == true) {
+                            deineAntwort += textViewAntwort3.getText().toString() + ", ";
                         }
-                        if (selected4 == true){
-                            deineAntwort+=textViewAntwort4.getText().toString()+", ";
+                        if (selected4 == true) {
+                            deineAntwort += textViewAntwort4.getText().toString() + ", ";
                         }
-
+                        // zeigt die Lösung an
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("Frage: " + frage.frage)
                                 .setCancelable(false)
@@ -250,11 +327,13 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                                 )
                                 .setPositiveButton("Weiter", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
+                                        // lädt dann die nächste Frage
                                         nextQuestion();
                                     }
                                 })
                                 .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
+                                        // man kann sich nochmal die Frage und Antworten angucken
                                         dialog.dismiss();
                                     }
                                 });
@@ -262,13 +341,17 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                         dialog.show();
                     }
                 } else {
+                    // zeigt dem User an welche Antworten die richtigen gewesen wäre und ob seine Auswahl falsch oder richtig war
                     if (selected1 || selected2 || selected3 || selected4) {
                         textViewContinue.setText("Antwort anzeigen");
+                        // onClick events disabled
                         disableCardView();
+                        // zeigt die Lösung farbig an
                         generealCheck(cardView1, selected1, 1, textViewAntwort1);
                         generealCheck(cardView2, selected2, 2, textViewAntwort2);
                         generealCheck(cardView3, selected3, 3, textViewAntwort3);
                         generealCheck(cardView4, selected4, 4, textViewAntwort4);
+                        // speichert die Lösung
                         checkRight();
                     }
                 }
@@ -278,36 +361,64 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
 
         }
     }
-    public void checkRight(){
-        if (richtigOderFalsch == true){
-            Log.d(TAG,"Richtig!");
-            dbFragen fragen = fragenList.get(counter-1);
+
+    /**
+     * @checkRight speichert ob die Frage richtig oder Falsch beanwortet wurde
+     */
+    public void checkRight() {
+        if (richtigOderFalsch == true) {
+            Log.d(TAG, "Richtig!");
+            dbFragen fragen = fragenList.get(counter - 1);
             fragen.richtigCounter++;
             fragen.save();
-        }else {
-            Log.d(TAG,"Falsch!");
+        } else {
+            Log.d(TAG, "Falsch!");
         }
     }
 
-    public void nextQuestion(){
+    /**
+     * @nextQuestion lädt die nächste Frage wenn es eine gibt
+     */
+    public void nextQuestion() {
         counter++;
-        if (fragenList.size()>=counter){
+        if (fragenList.size() >= counter) {
+            // reset views
             richtigOderFalsch = true;
             enableCardView();
             textViewContinue.setText("Lösen");
             textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
-            setUpFrage(counter,fragenList);
-        }else {
+            animateViewRippleOUT(cardView1, textViewAntwort1);
+            animateViewRippleOUT(cardView2, textViewAntwort2);
+            animateViewRippleOUT(cardView3, textViewAntwort3);
+            animateViewRippleOUT(cardView4, textViewAntwort4);
+            selected1 = false;
+            selected2 = false;
+            selected3 = false;
+            selected4 = false;
+
+            setUpFrage(counter, fragenList);
+        } else {
+            // falls es keine Fragen mehr gibt wird das ergebnis angezeigt
             mListener.Fragment_QuizFrageShowErgebnis(themenbereichID);
 
-            Log.d(TAG,"Ergebnis");
+            Log.d(TAG, "Ergebnis");
         }
 
     }
 
+    /**
+     * @param cardView  ist das cardView das sich ausgewählt wurde
+     * @param textView  ist der text der sich farbig verändert
+     * @param Selection zur Bestimmung ob das CardView schon ausgeählt ist oder nicht
+     * @param position  position des CardView
+     * @clickCardView animiert die Auswahl und zeigt sie farbig an. Ändert dabei auch die textFarbe.
+     */
     public void clickCardView(CardView cardView, TextView textView, Boolean Selection, int position) {
         if (Selection == false) {
+            //falls das CardView nicht ausgewählt war
+            //animate rippleeffect
             animateViewRippleIN(cardView);
+            //change view color
             cardView.setCardBackgroundColor(Color.parseColor("#00b9ee"));
             textView.setTextColor(Color.parseColor("#ffffff"));
             switch (position) {
@@ -325,6 +436,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                     break;
             }
         } else {
+            //falls das CardView  ausgewählt war
+            //animate rippleeffect
             animateViewRippleOUT(cardView, textView);
             switch (position) {
                 case 1:
@@ -343,6 +456,14 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         }
     }
 
+    /**
+     * @param cardView  welches je nach Lösung die Farbe verändert
+     * @param selection die Auswahl des Users
+     * @param position  die Position des CardView
+     * @param textView  der TextView der seine TextFarbe ändert je nach Lösung
+     * @generalCheck wird ausgeführt wenn die Lösung angezeigt wird. Überprüft die Auswahl mit der Lösung
+     * wenn die Auswahl richtig ist dann wird das CardView grün gefärbt und wenn die Auswahl falsch ist rot.
+     */
     public void generealCheck(CardView cardView, Boolean selection, int position, TextView textView) {
         if (selection == true) {
             if (selection == placeofAntwort[position]) {
@@ -373,7 +494,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         }
     }
 
-
+    /**
+     * @disavleCardView disables the CardView Clicl-Events
+     */
     public void disableCardView() {
         cardView1.setClickable(false);
         cardView2.setClickable(false);
@@ -381,6 +504,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         cardView4.setClickable(false);
     }
 
+    /**
+     * @enableCardView enables the CardView Clicl-Events
+     */
     public void enableCardView() {
         cardView1.setCardBackgroundColor(Color.parseColor("#ffffff"));
         cardView2.setCardBackgroundColor(Color.parseColor("#ffffff"));
@@ -393,6 +519,11 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         cardView4.setClickable(true);
     }
 
+    /**
+     * applys the animation "in" . Wenn ein CardView ausgewählt wird
+     *
+     * @param view
+     */
     public void animateViewRippleIN(final CardView view) {
         // get the center for the clipping circle
         int cx = (view.getLeft() + view.getRight()) / 2;
@@ -411,7 +542,11 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
 
     }
 
-
+    /**
+     * applys the animation "out" . Wenn ein CardView nicht mehr ausgewählt wird
+     *
+     * @param view
+     */
     public void animateViewRippleOUT(final CardView view, final TextView tv) {
         // get the center for the clipping circle
         int cx = (view.getLeft() + view.getRight()) / 2;
@@ -433,6 +568,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
 
             @Override
             public void onAnimationEnd() {
+                // ändert die Hintergrundfarbe und Textfarbe nachdem die Animation beendet ist
                 view.setCardBackgroundColor(Color.parseColor("#ffffff"));
                 tv.setTextColor(Color.parseColor("#000000"));
             }
@@ -466,6 +602,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void Fragment_QuizFrageShowErgebnis(long themenbereichID);
+
         void Fragment_QuitFrageBACK();
     }
 }

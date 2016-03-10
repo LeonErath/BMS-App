@@ -12,6 +12,7 @@ import android.view.View;
 /**
  * Created by Leon E on 02.03.2016.
  */
+// wird erstmal nicht gebraucht
 public class HeaderDecoration extends RecyclerView.ItemDecoration {
 
     private final View mView;

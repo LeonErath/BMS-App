@@ -1,7 +1,6 @@
 package leon.bms;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,33 +10,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link Fragment_QuizThemenAuswahl.OnFragmentInteractionListener} interface
- * to handle interaction events.
- */
+ * @Fragment_ThemenAuswahl ist das Fragment welches die Themenbereiche anzeigt die ein bestimmter Kurs hat.
+ * Dazu wird ein recyclerView verwendet. Wählt man ein Themenbereich aus wird das Fragment_QuizFrage gestartet
+ * und der Themenbereich übergeben.
+ **/
 public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener, QuizThemenAdapter.ViewHolder.ClickListener {
 
+    //views
     String kursID;
     private OnFragmentInteractionListener mListener;
-    Button buttonBack,buttonQuit;
+    Button buttonBack, buttonQuit;
     RecyclerView recyclerView;
+    //Adapter für die Themenbereiche
     QuizThemenAdapter quizThemenAdapter;
     List<quizthemen> quizthemenList;
 
 
     public Fragment_QuizThemenAuswahl(String kursID) {
-        // Required empty public constructor
         this.kursID = kursID;
     }
 
+    public Fragment_QuizThemenAuswahl() {
+        // Required empty public constructor
+    }
+
+    /**
+     * @param outState
+     * @onSaveInstanceState wird benötigt falls Fragment zerstört wird z.B.: bei ScreenRotations.
+     * Speichert die aktuelle Frage .
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        String id = kursID;
+        outState.putString("id", id);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,13 +63,22 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey("id")) {
+                //lädt Daten falls das Fragment wiederhergestellt wird nachdem es zerstört wurde
+                String id = savedInstanceState.getString("id");
+                this.kursID = id;
+            }
+        }
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        // bekommt alle themen durch den QuizController
         QuizController quizController = new QuizController(getActivity());
         quizthemenList = new ArrayList<>();
-        if (quizController.getThemenbereiche(kursID)!=null){
-                quizthemenList = quizController.getThemenbereiche(kursID);
+        if (quizController.getThemenbereiche(kursID) != null) {
+            quizthemenList = quizController.getThemenbereiche(kursID);
         }
-        quizThemenAdapter = new QuizThemenAdapter(this,quizthemenList);
+        //setUp recylcerView
+        quizThemenAdapter = new QuizThemenAdapter(this, quizthemenList);
         recyclerView.setAdapter(quizThemenAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -75,10 +97,15 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
                 getActivity().finish();
             }
         });
+
     }
 
 
-
+    /**
+     * initializes the Interface
+     *
+     * @param context
+     */
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -96,6 +123,11 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
         mListener = null;
     }
 
+    /**
+     * @param position
+     * @onItemClicked wird aufgerufen wenn ein Themenbereich angeclickt wird.
+     * startet das Fragment_QuizFrage mit der Themenbereich ID
+     */
     @Override
     public void onItemClicked(int position) {
         quizthemen quizthemen = quizthemenList.get(position);
@@ -121,6 +153,7 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void backQuizThemenAuswwahl();
+
         void FragmentQuizThemen_next(Long themenbereichID);
     }
 }

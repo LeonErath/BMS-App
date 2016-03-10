@@ -17,16 +17,25 @@ import java.util.List;
 /**
  * Created by Leon E on 27.02.2016.
  */
+
+/**
+ * @QuizController enthält alle Methode für die Verwaltung der QuizDaten sowie das herunterladen neuer Quiz daten.
+ * Der QuizController wird von allen QuizFragementen benutzt und gibt für jedes Fragment die notwendigen Daten zurück.
+ */
 public class QuizController {
     UpdateUI updateUI;
     Context context;
     Date now;
+    // URL für die Daten des Quizes
     private static String quizUrl = "http://app.marienschule.de/files/scripts/getQuizData.php";
 
     public QuizController(Context context) {
         this.context = context;
     }
 
+    /**
+     * @getQuizData stellt eine Anfrage an das Quiz mit der uizUrl
+     */
     public void getQuizData() {
         now = new Date();
         Uri.Builder builder = new Uri.Builder()
@@ -44,22 +53,29 @@ public class QuizController {
 
     }
 
+    /**
+     * @param result JSON Daten der Server Anfrage
+     * @parseQuizData parsed die JSON Daten vom Server in die Datenbank und stellt die entsprechenden
+     * Relationships zwischen kurs themenbereich frage und Antwort auf.
+     */
     public void parseQuizData(String result) {
 
+        //Momentag zu Testzwecken wird die Datenbank jedesmal zurückgesetzt
         dbThemenbereich.deleteAll(dbThemenbereich.class);
         dbFragen.deleteAll(dbFragen.class);
         dbAntworten.deleteAll(dbAntworten.class);
 
         try {
+            //parsed die Quizdaten
             JSONObject jsonObjectAll = new JSONObject(result);
             JSONArray jsonArrayThemenbereiche = jsonObjectAll.getJSONArray("themes");
 
-
+            // parsed die Themenbereiche
             for (int i = 0; i < jsonArrayThemenbereiche.length(); i++) {
                 JSONObject jsonObject = jsonArrayThemenbereiche.getJSONObject(i);
                 dbThemenbereich themenbereich = new dbThemenbereich();
                 themenbereich.serverid = jsonObject.getInt("id");
-                if (jsonObject.getString("wInfos")!=null){
+                if (jsonObject.getString("wInfos") != null) {
                     themenbereich.infos = jsonObject.getString("wInfos");
                 }
                 themenbereich.name = jsonObject.getString("titel");
@@ -67,6 +83,7 @@ public class QuizController {
                 if (new dbThemenbereich().themenbereichVorhanden(themenbereich.serverid) == false) {
                     String kursID = jsonObject.getString("kursid");
                     if (new dbKurs().getKursWithKursid(kursID) != null) {
+                        //relationships between kurs and themenbereich
                         dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
                         themenbereich.kurs = kurs;
                         themenbereich.save();
@@ -74,6 +91,7 @@ public class QuizController {
 
                 }
             }
+            //parsed die Fragen und Antworten
             JSONArray jsonArrayFragen = jsonObjectAll.getJSONArray("frag");
             for (int i = 0; i < jsonArrayFragen.length(); i++) {
                 JSONObject jsonObject = jsonArrayFragen.getJSONObject(i);
@@ -90,17 +108,19 @@ public class QuizController {
                             String kursID = jsonObject.getString("kursid");
                             if (new dbKurs().getKursWithKursid(kursID) != null) {
                                 dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
+                                //Stellt die Relationships ein
                                 fragen.kurs = kurs;
                                 fragen.save();
 
                                 JSONArray answers = jsonObject.getJSONArray("answers");
-                                for (int l=0;l<answers.length();l++){
+                                for (int l = 0; l < answers.length(); l++) {
                                     JSONObject jsonObjectAnswer = answers.getJSONObject(l);
                                     dbAntworten antworten = new dbAntworten();
                                     antworten.serverid = jsonObjectAnswer.getInt("id");
                                     antworten.antwort = jsonObjectAnswer.getString("text");
                                     antworten.richtig = jsonObjectAnswer.getBoolean("truth");
                                     antworten.langfassung = jsonObjectAnswer.getString("description");
+                                    //Stellt die Relationships ein
                                     antworten.fragen = fragen;
                                     antworten.save();
 
@@ -115,27 +135,34 @@ public class QuizController {
             }
 
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(context, now.getTime(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0));
-        ;
+        // uses Callbacks for the Fragment to notice that the parsing is finnished
         updateUI.updateUI(zuletztAktualisiert);
 
     }
 
+    /**
+     * @return List der quizkurse die einen Themenbereich haben werden zurückgegeben
+     * @getQuizKurs lädt die Kurse mit Themenbereich für da Quiz und konvertiert diese mit den nötigen
+     * Daten in quizkurse und gibt diese zurück
+     */
     public List<quizkurs> getQuizKurse() {
+        // lädt alle Kurse
         List<dbKurs> kursList = new dbKurs().getActiveKurse(0);
         kursList.addAll(new dbKurs().getActiveKurse(1));
 
+        // lädt alle Themenbereich der Kurse
         List<dbThemenbereich> themenbereichList = new ArrayList<>();
         for (dbKurs kurs : kursList) {
             if (kurs.getThemenbereiche(kurs.getId()) != null) {
                 themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
             }
         }
+        // lädt alle Fragen der Themenbereiche
         List<dbFragen> fragenList = new ArrayList<>();
         if (themenbereichList.size() > 0) {
             for (dbThemenbereich themenbereich : themenbereichList) {
@@ -145,6 +172,7 @@ public class QuizController {
             }
 
         }
+        //konvertiert die Daten in ein Quizkurs Objekt
         List<quizkurs> quizkursList = new ArrayList<>();
         if (fragenList.size() > 0) {
             for (dbKurs kurs : kursList) {
@@ -160,12 +188,11 @@ public class QuizController {
                     quizkurs.datum = themenbereichList.get(0).zuletztAktualisiert;
 
                     for (dbThemenbereich themenbereich : themenbereichList) {
-                        if (new dbThemenbereich().getFragen(themenbereich.getId())!=null) {
+                        if (new dbThemenbereich().getFragen(themenbereich.getId()) != null) {
                             fragen += new dbThemenbereich().getFragen(themenbereich.getId()).size();
                         }
                     }
                     quizkurs.fragen = fragen;
-
                     quizkursList.add(quizkurs);
                 }
             }
@@ -173,6 +200,7 @@ public class QuizController {
 
         }
         if (quizkursList.size() > 0) {
+            //quizkurs liste wird zurückgegeben
             return quizkursList;
         } else {
             return null;
@@ -180,6 +208,11 @@ public class QuizController {
 
     }
 
+    /**
+     * @param list ist die Liste die nachdem Datum sortiert werden soll
+     * @return gibt die sortierte Liste zurüc
+     * @sortListASC sortiert die Liste nachdem Datum absteigend
+     */
     public List<dbThemenbereich> sortListASC(List<dbThemenbereich> list) {
         Collections.sort(list, new Comparator<dbThemenbereich>() {
             @Override
@@ -190,16 +223,23 @@ public class QuizController {
         return list;
     }
 
+    /**
+     * @param kursid ist die ID des Kurses dessen Themenbereiche konvertiert werden sollen
+     * @return gibt die Themenbereich als quizthemen liste zurück
+     * @getTehmenbereiche lädt alle Themenbereich eines bestimmten Kurses und kovertiert diese
+     * zu quizthemen objekt , die zum anzeigen im recylcerview benutz werden können.
+     */
     public List<quizthemen> getThemenbereiche(String kursid) {
+        //lädt alle Kurse
         List<dbKurs> kursList = new dbKurs().find(dbKurs.class, "name = ?", kursid);
         if (kursList.size() == 1) {
             dbKurs kurs = kursList.get(0);
-
+            //lädt die Themenbereiche des Kurses
             List<dbThemenbereich> themenbereichList = new ArrayList<>();
             if (kurs.getThemenbereiche(kurs.getId()) != null) {
                 themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
             }
-
+            //lädt die Fragen des Kurses
             List<dbFragen> fragenList = new ArrayList<>();
             if (themenbereichList.size() > 0) {
                 for (dbThemenbereich themenbereich : themenbereichList) {
@@ -208,6 +248,7 @@ public class QuizController {
                     }
                 }
             }
+            // erstellt die Quizthemen Objekte
             List<quizthemen> quizthemenList = new ArrayList<>();
             if (fragenList.size() > 0) {
                 if (kurs.getThemenbereiche(kurs.getId()) != null) {
@@ -216,7 +257,7 @@ public class QuizController {
                         quizthemen.themenbereich = themenbereich.name;
                         quizthemen.id = themenbereich.getId();
                         quizthemen.datum = themenbereich.zuletztAktualisiert;
-                        if (themenbereich.getFragen(themenbereich.getId())!=null) {
+                        if (themenbereich.getFragen(themenbereich.getId()) != null) {
                             quizthemen.fragen = themenbereich.getFragen(themenbereich.getId()).size();
                             quizthemen.lehrer = kurs.lehrer.titel + " " + kurs.lehrer.name;
                             quizthemen.kursId = kurs.name;
@@ -228,6 +269,7 @@ public class QuizController {
             }
 
             if (quizthemenList.size() > 0) {
+                // gibt die Liste der Quizthemen zurück
                 return quizthemenList;
             } else {
                 return null;
@@ -238,7 +280,7 @@ public class QuizController {
 
     }
 
-
+    //Interface Callbacks
     public interface UpdateUI {
         public void updateUI(String datum);
     }

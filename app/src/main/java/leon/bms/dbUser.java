@@ -4,15 +4,16 @@ import android.util.Log;
 
 import com.orm.SugarRecord;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Leon E on 22.12.2015.
  */
-/** @dbUserist eine Tabelle der Datenbank für die User
- *  Sie verwaltet alle Einträge der User und beinhaltet Filter für die weitere
- *  Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+
+/**
+ * @dbUserist eine Tabelle der Datenbank für die User
+ * Sie verwaltet alle Einträge der User und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
 public class dbUser extends SugarRecord<dbUser> {
     // Datensätze der User
@@ -59,7 +60,7 @@ public class dbUser extends SugarRecord<dbUser> {
 
     public dbUser() {
         validData = false;
-
+        //empty Constructor needed!
 
     }
 
@@ -172,27 +173,30 @@ public class dbUser extends SugarRecord<dbUser> {
     public String getVorname() {
         return vorname;
     }
+
     public void setVorname(String vorname) {
         this.vorname = vorname;
     }
-    /** @getUser gibt den aktuelle User zurück
+
+    /**
+     * @getUser gibt den aktuelle User zurück
      */
-    public dbUser getUser(){
+    public dbUser getUser() {
         List<dbUser> dbUserList = dbUser.listAll(dbUser.class);
-        Log.d("dbUSer",dbUserList.size()+"");
+        Log.d("dbUSer", dbUserList.size() + "");
         return dbUserList.get(0);
     }
 
 
-    /** @checkUser guckt ob ein User vorhanden ist und Daten beinhaltet
+    /**
+     * @checkUser guckt ob ein User vorhanden ist und Daten beinhaltet
      */
-    public Boolean checkUser(){
-        if (dbUser.listAll(dbUser.class).size()!=0){
-                return true;
+    public Boolean checkUser() {
+        if (dbUser.listAll(dbUser.class).size() != 0) {
+            return true;
         }
         return false;
     }
-
 
 
 }

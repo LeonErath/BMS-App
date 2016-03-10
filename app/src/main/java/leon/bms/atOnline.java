@@ -1,9 +1,7 @@
 package leon.bms;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,27 +13,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 /**
  * Created by Leon E on 06.12.2015.
  */
 
-/** Universelle Klasse atOnline ist dafür das die Daten vom Server zu laden
- *  Um diese vom Server zu laden benutzt man ein AsyncTask der alles in einem seperaten Thread verarbeitet
- *  und anschließen wenn er fertig ist durch ein Interface an die Activity oder Klasse weitergibt.
- *  Der AsyncTask gibt die bekommenen Daten als String zurück.
- *  WICHTIG: Um diese Klasse zu benutzen müssen vorher die "Permissions" im Manifest geändert werden , sodass
- *  zugang zum Internet überhaupt gestattet wird
+/**
+ * Universelle Klasse atOnline ist dafür das die Daten vom Server zu laden
+ * Um diese vom Server zu laden benutzt man ein AsyncTask der alles in einem seperaten Thread verarbeitet
+ * und anschließen wenn er fertig ist durch ein Interface an die Activity oder Klasse weitergibt.
+ * Der AsyncTask gibt die bekommenen Daten als String zurück.
+ * WICHTIG: Um diese Klasse zu benutzen müssen vorher die "Permissions" im Manifest geändert werden , sodass
+ * zugang zum Internet überhaupt gestattet wird
  */
-public class atOnline extends AsyncTask<String,Void,String> {
+public class atOnline extends AsyncTask<String, Void, String> {
 
     // @parsedString ist nacher der String der die Ergebnisse der Onlline-Abfrage enthält
     String parsedString;
@@ -50,29 +45,32 @@ public class atOnline extends AsyncTask<String,Void,String> {
     Context mainContext;
 
 
-
-    /** Constructor erhält alles was er für die Datenabfrage braucht.
-     *  Bekommen die URL , die Angaben für die POST Anfrage und den Context für potenntielle UI Interaktionen
+    /**
+     * Constructor erhält alles was er für die Datenabfrage braucht.
+     * Bekommen die URL , die Angaben für die POST Anfrage und den Context für potenntielle UI Interaktionen
      */
-    public atOnline(String url, String params,Context context) {
-        this.urlString=url;
+    public atOnline(String url, String params, Context context) {
+        this.urlString = url;
         this.parameter = params;
         this.mainContext = context;
     }
 
 
-    /** Automatische generierte Methode um vorher Dinge vorzubereiten
-     *  Wird hier erstmal nicht gebraucht.
+    /**
+     * Automatische generierte Methode um vorher Dinge vorzubereiten
+     * Wird hier erstmal nicht gebraucht.
      */
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
     }
 
-    /** Wichtigste Methode !
-     *  Hier passiert alles was mit der Datenabfrage zutun hat.
-     *  @doInBackground wird automatisch in einem seperate Thread ausgeführt
-     *  Stellt erst die Verbindung her und dann verarbeitet er die Daten weiter und gibt sie als String zurück
+    /**
+     * Wichtigste Methode !
+     * Hier passiert alles was mit der Datenabfrage zutun hat.
+     *
+     * @doInBackground wird automatisch in einem seperate Thread ausgeführt
+     * Stellt erst die Verbindung her und dann verarbeitet er die Daten weiter und gibt sie als String zurück
      */
     @Override
     protected String doInBackground(String... params) {
@@ -85,7 +83,7 @@ public class atOnline extends AsyncTask<String,Void,String> {
          *  Überprüft erst ob die Internet Verbindung vorhanden ist bevor er die Datenanfrage sendet
          *  @isInternetOn return boolean / true : Internet Verbindung besteht / false : Internet Verbindung ist unterbrochen
          */
-        if (isInternetOn(mainContext)== true){
+        if (isInternetOn(mainContext) == true) {
             URL url = null;
             try {
                 //Verbindung wird aufgebaut bzw. Einstellungen werden festgelegt
@@ -117,8 +115,8 @@ public class atOnline extends AsyncTask<String,Void,String> {
                 /** Wenn der Status "Okay" ist werden die Daten übertragen und in einen String geparsed
                  *  @return parsedString
                  */
-                if (httpStatus == httpConn.HTTP_OK){
-                    Log.d("LOGIN","Verbindung hergestellt.. ");
+                if (httpStatus == httpConn.HTTP_OK) {
+                    Log.d("LOGIN", "Verbindung hergestellt.. ");
                     InputStream is = httpConn.getInputStream();
                     parsedString = convertinputStreamToString(is);
                     return parsedString;
@@ -127,10 +125,10 @@ public class atOnline extends AsyncTask<String,Void,String> {
                     parsedString = "Error";
                 }
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-        } else{
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
             /** Falls keine Internet Verbindung vorhanden ist wird ein Toast an den User gesendet damit er
              *  gegebenfalls drauf reagieren kann .
              */
@@ -140,8 +138,9 @@ public class atOnline extends AsyncTask<String,Void,String> {
         return parsedString;
     }
 
-    /** Methode um einen Input Stream in einen String zu verwandeln
-     *  Erstmal Vernachlässigbar
+    /**
+     * Methode um einen Input Stream in einen String zu verwandeln
+     * Erstmal Vernachlässigbar
      */
     public String convertinputStreamToString(InputStream ists)
             throws IOException {
@@ -165,9 +164,10 @@ public class atOnline extends AsyncTask<String,Void,String> {
     }
 
 
-    /** @onPostExecute wird aufgerufen wenn doInBackground fertig ist
-     *  Diese Methode hat wieder zugriff auf UI Elemente
-     *  Die Methode löst den listener aus der Die Daten weitergibt
+    /**
+     * @onPostExecute wird aufgerufen wenn doInBackground fertig ist
+     * Diese Methode hat wieder zugriff auf UI Elemente
+     * Die Methode löst den listener aus der Die Daten weitergibt
      */
     @Override
     protected void onPostExecute(String s) {
@@ -177,9 +177,12 @@ public class atOnline extends AsyncTask<String,Void,String> {
         }
 
     }
-    /** Methode die die Internet Verbindung überprüft
-     *  Dafür Notwendig ist der Context
-     *  @ConnectivityManager guckt ob Verbindung Vorhanden ist
+
+    /**
+     * Methode die die Internet Verbindung überprüft
+     * Dafür Notwendig ist der Context
+     *
+     * @ConnectivityManager guckt ob Verbindung Vorhanden ist
      */
     public static boolean isInternetOn(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -191,16 +194,18 @@ public class atOnline extends AsyncTask<String,Void,String> {
         }
     }
 
-    /** @Inteface onUpdateListener wird gebraucht um die Daten von dem AsnycTask in die Klasse zu holen
-     *  Beinhaltet nur eine Methode die , die Ergebnis @result übergeben
+    /**
+     * @Inteface onUpdateListener wird gebraucht um die Daten von dem AsnycTask in die Klasse zu holen
+     * Beinhaltet nur eine Methode die , die Ergebnis @result übergeben
      */
     public interface OnUpdateListener {
         public void onUpdate(String result);
     }
 
-    /** Methode MUSS vorher in der Klasse aufgerufen werden
-     *  HIer wird das Interface "initlisiert"
-     *  Wenn dies nicht passiert ist stürtzt die Application ab
+    /**
+     * Methode MUSS vorher in der Klasse aufgerufen werden
+     * HIer wird das Interface "initlisiert"
+     * Wenn dies nicht passiert ist stürtzt die Application ab
      */
     public void setUpdateListener(OnUpdateListener listener) {
         this.listener = listener;

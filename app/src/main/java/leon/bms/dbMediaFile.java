@@ -1,21 +1,26 @@
 package leon.bms;
 
-import android.graphics.Bitmap;
-
 import com.orm.SugarRecord;
 
 /**
  * Created by Leon E on 17.02.2016.
  */
-public class dbMediaFile extends SugarRecord<dbMediaFile> {
-    String path;
 
+/**
+ * @dbMediaFile ist eine Tabelle der Datenbank für die Bilder
+ * Sie verwaltet alle Bilder der Aufgaben und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+ */
+public class dbMediaFile extends SugarRecord<dbMediaFile> {
+
+    String path;
     dbAufgabe aufgaben;
 
     public dbMediaFile() {
+        //empty Constructor needed!
     }
 
-    public dbMediaFile(String path,  dbAufgabe aufgaben) {
+    public dbMediaFile(String path, dbAufgabe aufgaben) {
         this.path = path;
 
         this.aufgaben = aufgaben;

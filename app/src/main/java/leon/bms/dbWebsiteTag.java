@@ -5,7 +5,16 @@ import com.orm.SugarRecord;
 /**
  * Created by Leon E on 06.03.2016.
  */
+
+/**
+ * @dbWebsiteTag eine Tabelle der Datenbank für die WebsiteTAGs
+ * Sie verwaltet alle TAGs der Kurse und beinhaltet Filter für die weitere
+ * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+ */
 public class dbWebsiteTag extends SugarRecord {
+    /**
+     * @vorkommen gibt an wie oft ein TAG ausgewählt worden ist als Kurs
+     */
     String hinzugefuegtAm;
     int relevanz;
     String websitetag;
@@ -16,8 +25,9 @@ public class dbWebsiteTag extends SugarRecord {
     dbKursTagConnect dbKursTagConnect;
 
     public dbWebsiteTag() {
-        this.vorkommen =0;
-        this.relevanz =0;
+        //empty Constructor needed!
+        this.vorkommen = 0;
+        this.relevanz = 0;
     }
 
     public dbWebsiteTag(String hinzugefuegtAm, int relevanz, String websitetag, int vorkommen, dbKurs kurs, dbUser user, leon.bms.dbKursTagConnect dbKursTagConnect) {
@@ -85,13 +95,25 @@ public class dbWebsiteTag extends SugarRecord {
     public void setUser(dbUser user) {
         this.user = user;
     }
-    public boolean tagVorhanden(String tag){
-        if (dbWebsiteTag.find(dbWebsiteTag.class,"websitetag = ?",tag).size() >0){
+
+    /**
+     * @param tag ist der tag der rausgesucht werden soll
+     * @return wenn der TAG vorthanden gibt er true zurück sonst false
+     * @tagVorhanden prüft ob ein TAG vorhanden ist oder nicht
+     */
+    public boolean tagVorhanden(String tag) {
+        if (dbWebsiteTag.find(dbWebsiteTag.class, "websitetag = ?", tag).size() > 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
+
+    /**
+     * @param tag ist der Name des TAGs der rausgesucht werden soll
+     * @return gibt den TAG zurück wenn dieser vorhanden ist sonst null
+     * @getWebsiteTag gibt einen bestimmte WebsiteTag zurück
+     */
     public dbWebsiteTag getWebsiteTag(String tag) {
         if (dbWebsiteTag.find(dbWebsiteTag.class, "websitetag = ?", tag).size() == 1) {
             dbWebsiteTag websiteTag = dbWebsiteTag.find(dbWebsiteTag.class, "websitetag = ?", tag).get(0);

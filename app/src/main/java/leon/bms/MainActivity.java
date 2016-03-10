@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
@@ -26,6 +25,12 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * @MainActivity beinhaltet alle Hauptfunktionen und ist der Hauptangelpunkt der App.
+ * Hier wird alles verwaltet und koordiniert zwischen den Fragmenten. Die MainActivity beinhaltet Fragmente
+ * die es als Tabs anzeigt : Highlight,Stundenplan,Aufgaben und WebsiteArtikel. Außerdem werden in einem
+ * extra NavigationView alle zukünftigen Funktion eingetragen , sowie das Quiz.
+ */
 public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbar;
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 21) {
+            //Exit Animation
             TransitionInflater inflater = TransitionInflater.from(this);
             Transition transition = inflater.inflateTransition(R.anim.transition_enter);
             getWindow().setExitTransition(transition);
@@ -53,11 +59,12 @@ public class MainActivity extends AppCompatActivity {
 
         tabIcons = new int[]{R.drawable.ic_done_white_24dp, R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_timeline_white_24dp};
 
-
+        //setUp Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Highlights");
 
+        //setUP Drawerlayout
         drawerLayoutgesamt = (DrawerLayout) findViewById(R.id.drawerlayoutgesamt);
         drawerToggle = new ActionBarDrawerToggle(MainActivity.this, drawerLayoutgesamt, R.string.auf, R.string.zu);
         drawerLayoutgesamt.setDrawerListener(drawerToggle);
@@ -65,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle.syncState();
 
+        //applying CollapsingToolbar
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         collapsingToolbarLayout.setTitle("Hightlights");
 
@@ -74,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         appBarLayout = (AppBarLayout) findViewById(R.id.AppBarLayout);
 
 
-        //viewpager for tablayout
+        //viewpager for tablayout and to switch between the Fragments
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         final ViewPagerAdapterMain viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager);
         viewPager.setAdapter(viewPagerAdapter);
@@ -109,14 +117,13 @@ public class MainActivity extends AppCompatActivity {
         textViewHeaderName.setText(new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
         textViewHeaderDatum.setText("Deine Stufe: " + new dbUser().getUser().stufe);
 
+        //setUp NavigationView
         navigationView.getMenu().getItem(0).setChecked(true);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
-
                     case R.id.drawerViewItemHome: {
-
                         break;
                     }
 
@@ -125,24 +132,21 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent3);
                         break;
                     }
-
-
                 }
-
                 drawerLayoutgesamt.closeDrawers();
                 item.setChecked(true);
-
 
                 return false;
             }
         });
 
+        // Überprüft ob Daten von einer Anderen Activity übergeben worden ist
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
             final int position = intent.getIntExtra("position", 0);
-            Log.d("TAG","TRIGGER");
-            if (position!=0){
+            Log.d("TAG", "TRIGGER");
+            if (position != 0) {
                 viewPager.postDelayed(new Runnable() {
 
                     @Override
@@ -156,25 +160,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Updates the navigationView if mainAcitivty get restored
+     */
     @Override
     protected void onResume() {
         super.onResume();
         navigationView.getMenu().getItem(0).setChecked(true);
-
-
     }
 
 
-
+    /**
+     * @param tabLayout ist das Layout für das aussehen der tabs
+     * @setUpTabLayout erstellt die Tabs und färbt sie dunkel wenn sie nicht aktiv angezeigt werden
+     */
     public void setupTabLayout(TabLayout tabLayout) {
         tabLayout.getTabAt(0).setIcon(tabIcons[1]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(1).setIcon(tabIcons[2]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(2).setIcon(tabIcons[0]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
         tabLayout.getTabAt(3).setIcon(tabIcons[3]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
+        // lässt den aktuellen Tab weiß
         int i = tabLayout.getSelectedTabPosition();
         tabLayout.getTabAt(i).getIcon().clearColorFilter();
 
-
+        //onClickListener für die Tabs
+        // je nach Tab ändert sich der Title
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -208,10 +218,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
-
+                // färbt jeden Tab wieder dunkel wenn er nicht mehr ausgewählt ist
                 tab.getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-
             }
 
             @Override
@@ -227,6 +235,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @param item
+     * @return
+     * @onOptinItemSelected ist das Menü um sich auszuloggen oder seine Daten zulöschen
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -238,8 +251,10 @@ public class MainActivity extends AppCompatActivity {
         }
         switch (id) {
             case R.id.action_settings:
+                // TODO ADD Settings
                 return true;
             case R.id.action_logout:
+                // User wird augeloggt
                 dbUser user = new dbUser().getUser();
                 user.loggedIn = false;
                 user.save();
@@ -248,12 +263,14 @@ public class MainActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.action_reset:
+                // daten werden gelöscht
                 deleteDB();
                 Intent intent2 = new Intent(this, LogInActivity.class);
                 startActivity(intent2);
                 finish();
                 return true;
             case R.id.menu_add:
+                // neue Aufgabe wird erstellt bzw AufgabenActivity wird geladen
                 Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
                 ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this, null);
                 startActivity(new Intent(this, AufgabenActivity.class), activityOptionsCompat.toBundle());
@@ -263,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * @deleteDB Methode zum löschen aller Daten des Users
+     */
     public void deleteDB() {
         Log.d(LogInActivity.class.getSimpleName(), "Datenbank wurde zurückgesetzt");
         dbUser.deleteAll(dbUser.class);
