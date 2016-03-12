@@ -51,8 +51,10 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     List<dbAntworten> falscheAntworten;
     List<dbAntworten> richtigeAntworten;
     int counter = 1;
-    boolean mAlreadyLoaded = false;
+    boolean fromFragmentErgebnis = false;
     Boolean[] placeofAntwort = new Boolean[5];
+    List<quizfragen> quizfragenList = new ArrayList<>();
+    quizfragen ergebnisQuizFrage;
 
     public Fragment_QuizFrage() {
         // Required empty public constructor
@@ -62,9 +64,10 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         this.themenbereichID = themenbereichID;
     }
 
-    public Fragment_QuizFrage(Long themenbereichID, int position) {
+    public Fragment_QuizFrage(Long themenbereichID, quizfragen quizfragen) {
         this.themenbereichID = themenbereichID;
-        this.counter = position;
+        this.ergebnisQuizFrage = quizfragen;
+        fromFragmentErgebnis = true;
     }
 
     /**
@@ -341,24 +344,59 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                         dialog.show();
                     }
                 } else {
-                    // zeigt dem User an welche Antworten die richtigen gewesen wäre und ob seine Auswahl falsch oder richtig war
-                    if (selected1 || selected2 || selected3 || selected4) {
-                        textViewContinue.setText("Antwort anzeigen");
-                        // onClick events disabled
-                        disableCardView();
-                        // zeigt die Lösung farbig an
-                        generealCheck(cardView1, selected1, 1, textViewAntwort1);
-                        generealCheck(cardView2, selected2, 2, textViewAntwort2);
-                        generealCheck(cardView3, selected3, 3, textViewAntwort3);
-                        generealCheck(cardView4, selected4, 4, textViewAntwort4);
-                        // speichert die Lösung
-                        checkRight();
-                    }
+
+                    showResults();
                 }
                 break;
             default:
                 break;
 
+        }
+    }
+
+    private void setResults(List<quizantworten> quizantwortenList) {
+        if (quizantwortenList != null && quizantwortenList.size() == 4) {
+            for (quizantworten quizantworten : quizantwortenList) {
+                switch (quizantworten.getPositionCard()) {
+                    case 1:
+                        selected1 = quizantworten.isSelection();
+                        textViewAntwort1.setText(quizantworten.antwort);
+                        clickCardView(cardView1, textViewAntwort1, selected1, 1);
+                        break;
+                    case 2:
+                        selected2 = quizantworten.isSelection();
+                        textViewAntwort2.setText(quizantworten.antwort);
+                        clickCardView(cardView2, textViewAntwort2, selected2, 2);
+                        break;
+                    case 3:
+                        selected3 = quizantworten.isSelection();
+                        textViewAntwort1.setText(quizantworten.antwort);
+                        clickCardView(cardView3, textViewAntwort3, selected3, 3);
+                        break;
+                    case 4:
+                        selected4 = quizantworten.isSelection();
+                        textViewAntwort1.setText(quizantworten.antwort);
+                        clickCardView(cardView4, textViewAntwort4, selected4, 4);
+                        break;
+                }
+            }
+        }
+        showResults();
+    }
+
+    private void showResults() {
+        // zeigt dem User an welche Antworten die richtigen gewesen wäre und ob seine Auswahl falsch oder richtig war
+        if (selected1 || selected2 || selected3 || selected4) {
+            textViewContinue.setText("Antwort anzeigen");
+            // onClick events disabled
+            disableCardView();
+            // zeigt die Lösung farbig an
+            generealCheck(cardView1, selected1, 1, textViewAntwort1);
+            generealCheck(cardView2, selected2, 2, textViewAntwort2);
+            generealCheck(cardView3, selected3, 3, textViewAntwort3);
+            generealCheck(cardView4, selected4, 4, textViewAntwort4);
+            // speichert die Lösung
+            checkRight();
         }
     }
 
@@ -382,6 +420,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     public void nextQuestion() {
         counter++;
         if (fragenList.size() >= counter) {
+            quizfragenList.add(getQuizfragen());
+
             // reset views
             richtigOderFalsch = true;
             enableCardView();
@@ -399,11 +439,49 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
             setUpFrage(counter, fragenList);
         } else {
             // falls es keine Fragen mehr gibt wird das ergebnis angezeigt
-            mListener.Fragment_QuizFrageShowErgebnis(themenbereichID);
+            mListener.Fragment_QuizFrageShowErgebnis(themenbereichID, quizfragenList);
 
             Log.d(TAG, "Ergebnis");
         }
 
+    }
+
+    public quizfragen getQuizfragen() {
+        //save results for Fragment_Ergebnis
+        List<quizantworten> quizantwortenList = new ArrayList<>();
+        quizantworten quizantworten1 = new quizantworten();
+        quizantworten1.antwort = textViewAntwort1.getText().toString();
+        quizantworten1.selection = selected1;
+        quizantworten1.positionCard = 1;
+        quizantwortenList.add(quizantworten1);
+
+        quizantworten quizantworten2 = new quizantworten();
+        quizantworten2.antwort = textViewAntwort2.getText().toString();
+        quizantworten2.selection = selected2;
+        quizantworten2.positionCard = 2;
+        quizantwortenList.add(quizantworten2);
+
+        quizantworten quizantworten3 = new quizantworten();
+        quizantworten3.antwort = textViewAntwort3.getText().toString();
+        quizantworten3.selection = selected3;
+        quizantworten3.positionCard = 3;
+        quizantwortenList.add(quizantworten3);
+
+        quizantworten quizantworten4 = new quizantworten();
+        quizantworten4.antwort = textViewAntwort4.getText().toString();
+        quizantworten4.selection = selected4;
+        quizantworten4.positionCard = 4;
+        quizantwortenList.add(quizantworten4);
+
+        quizfragen quizfragen = new quizfragen();
+        quizfragen.frage = frage.frage;
+        quizfragen.langfassung = frage.langfassung;
+        quizfragen.fradeID = frage.getServerid();
+        quizfragen.themenbereichFrage = frage.themenbereich.name;
+        quizfragen.richtigOderFalsch = richtigOderFalsch;
+        quizfragen.setQuizantwortenList(quizantwortenList);
+
+        return quizfragen;
     }
 
     /**
@@ -601,7 +679,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void Fragment_QuizFrageShowErgebnis(long themenbereichID);
+        void Fragment_QuizFrageShowErgebnis(long themenbereichID, List<quizfragen> quizfragenList);
 
         void Fragment_QuitFrageBACK();
     }

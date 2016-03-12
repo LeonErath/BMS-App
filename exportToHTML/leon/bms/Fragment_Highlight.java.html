@@ -7,6 +7,9 @@
 .s0 { color: rgb(0,0,128); font-weight: bold; }
 .s1 { }
 .s2 { color: rgb(128,128,128); font-style: italic; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,0,255); }
+.s5 { color: rgb(0,128,0); font-weight: bold; }
 </style>
 </head>
 <BODY BGCOLOR="#ffffff">
@@ -19,46 +22,294 @@ Fragment_Highlight.java</FONT>
 
 <a name="l1"><span class="ln">1    </span></a><span class="s0">package </span><span class="s1">leon.bms; 
 <a name="l2"><span class="ln">2    </span></a> 
-<a name="l3"><span class="ln">3    </span></a></span><span class="s0">import </span><span class="s1">android.content.Context; 
-<a name="l4"><span class="ln">4    </span></a></span><span class="s0">import </span><span class="s1">android.net.Uri; 
-<a name="l5"><span class="ln">5    </span></a></span><span class="s0">import </span><span class="s1">android.os.Bundle; 
-<a name="l6"><span class="ln">6    </span></a></span><span class="s0">import </span><span class="s1">android.support.v4.app.Fragment; 
-<a name="l7"><span class="ln">7    </span></a></span><span class="s0">import </span><span class="s1">android.support.v7.widget.Toolbar; 
-<a name="l8"><span class="ln">8    </span></a></span><span class="s0">import </span><span class="s1">android.view.LayoutInflater; 
-<a name="l9"><span class="ln">9    </span></a></span><span class="s0">import </span><span class="s1">android.view.View; 
-<a name="l10"><span class="ln">10   </span></a></span><span class="s0">import </span><span class="s1">android.view.ViewGroup; 
-<a name="l11"><span class="ln">11   </span></a> 
-<a name="l12"><span class="ln">12   </span></a> 
-<a name="l13"><span class="ln">13   </span></a> 
-<a name="l14"><span class="ln">14   </span></a></span><span class="s0">public class </span><span class="s1">Fragment_Highlight </span><span class="s0">extends </span><span class="s1">Fragment { 
-<a name="l15"><span class="ln">15   </span></a> 
-<a name="l16"><span class="ln">16   </span></a> 
-<a name="l17"><span class="ln">17   </span></a> 
-<a name="l18"><span class="ln">18   </span></a> 
-<a name="l19"><span class="ln">19   </span></a>    @Override 
-<a name="l20"><span class="ln">20   </span></a>    </span><span class="s0">public void </span><span class="s1">onCreate(Bundle savedInstanceState) { 
-<a name="l21"><span class="ln">21   </span></a>        </span><span class="s0">super</span><span class="s1">.onCreate(savedInstanceState); 
+<a name="l3"><span class="ln">3    </span></a></span><span class="s0">import </span><span class="s1">android.content.BroadcastReceiver; 
+<a name="l4"><span class="ln">4    </span></a></span><span class="s0">import </span><span class="s1">android.content.Context; 
+<a name="l5"><span class="ln">5    </span></a></span><span class="s0">import </span><span class="s1">android.content.Intent; 
+<a name="l6"><span class="ln">6    </span></a></span><span class="s0">import </span><span class="s1">android.content.IntentFilter; 
+<a name="l7"><span class="ln">7    </span></a></span><span class="s0">import </span><span class="s1">android.os.Bundle; 
+<a name="l8"><span class="ln">8    </span></a></span><span class="s0">import </span><span class="s1">android.support.v4.app.Fragment; 
+<a name="l9"><span class="ln">9    </span></a></span><span class="s0">import </span><span class="s1">android.util.Log; 
+<a name="l10"><span class="ln">10   </span></a></span><span class="s0">import </span><span class="s1">android.view.LayoutInflater; 
+<a name="l11"><span class="ln">11   </span></a></span><span class="s0">import </span><span class="s1">android.view.View; 
+<a name="l12"><span class="ln">12   </span></a></span><span class="s0">import </span><span class="s1">android.view.ViewGroup; 
+<a name="l13"><span class="ln">13   </span></a></span><span class="s0">import </span><span class="s1">android.widget.TextView; 
+<a name="l14"><span class="ln">14   </span></a> 
+<a name="l15"><span class="ln">15   </span></a></span><span class="s0">import </span><span class="s1">java.util.ArrayList; 
+<a name="l16"><span class="ln">16   </span></a></span><span class="s0">import </span><span class="s1">java.util.Calendar; 
+<a name="l17"><span class="ln">17   </span></a></span><span class="s0">import </span><span class="s1">java.util.Collections; 
+<a name="l18"><span class="ln">18   </span></a></span><span class="s0">import </span><span class="s1">java.util.Comparator; 
+<a name="l19"><span class="ln">19   </span></a></span><span class="s0">import </span><span class="s1">java.util.GregorianCalendar; 
+<a name="l20"><span class="ln">20   </span></a></span><span class="s0">import </span><span class="s1">java.util.List; 
+<a name="l21"><span class="ln">21   </span></a> 
 <a name="l22"><span class="ln">22   </span></a> 
-<a name="l23"><span class="ln">23   </span></a>    } 
-<a name="l24"><span class="ln">24   </span></a> 
-<a name="l25"><span class="ln">25   </span></a>    @Override 
-<a name="l26"><span class="ln">26   </span></a>    </span><span class="s0">public void </span><span class="s1">onViewCreated(View view, Bundle savedInstanceState) { 
-<a name="l27"><span class="ln">27   </span></a>        </span><span class="s0">super</span><span class="s1">.onViewCreated(view, savedInstanceState); 
+<a name="l23"><span class="ln">23   </span></a></span><span class="s2">/** 
+<a name="l24"><span class="ln">24   </span></a> * </span><span class="s3">@Fragment_Highlight </span><span class="s2">ist ein Fragment , welches kompakt alles wichtiges anzeigen soll 
+<a name="l25"><span class="ln">25   </span></a> * Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen 
+<a name="l26"><span class="ln">26   </span></a> */</span><span class="s1"> 
+<a name="l27"><span class="ln">27   </span></a></span><span class="s0">public class </span><span class="s1">Fragment_Highlight </span><span class="s0">extends </span><span class="s1">Fragment { 
 <a name="l28"><span class="ln">28   </span></a> 
-<a name="l29"><span class="ln">29   </span></a>    } 
-<a name="l30"><span class="ln">30   </span></a> 
-<a name="l31"><span class="ln">31   </span></a>    @Override 
-<a name="l32"><span class="ln">32   </span></a>    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, 
-<a name="l33"><span class="ln">33   </span></a>                             Bundle savedInstanceState) { 
-<a name="l34"><span class="ln">34   </span></a>        </span><span class="s2">// Inflate the layout for this fragment</span><span class="s1"> 
-<a name="l35"><span class="ln">35   </span></a>        </span><span class="s0">return </span><span class="s1">inflater.inflate(R.layout.fragment__highlight, container, </span><span class="s0">false</span><span class="s1">); 
-<a name="l36"><span class="ln">36   </span></a>    } 
-<a name="l37"><span class="ln">37   </span></a> 
-<a name="l38"><span class="ln">38   </span></a> 
+<a name="l29"><span class="ln">29   </span></a>    </span><span class="s2">// views</span><span class="s1"> 
+<a name="l30"><span class="ln">30   </span></a>    TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2; 
+<a name="l31"><span class="ln">31   </span></a>    </span><span class="s0">private static </span><span class="s1">String TAG = Fragment_Highlight.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
+<a name="l32"><span class="ln">32   </span></a>    </span><span class="s2">// wichtig für das aktualiseren der Anzeige</span><span class="s1"> 
+<a name="l33"><span class="ln">33   </span></a>    BroadcastReceiver broadcastReceiver; 
+<a name="l34"><span class="ln">34   </span></a> 
+<a name="l35"><span class="ln">35   </span></a> 
+<a name="l36"><span class="ln">36   </span></a>    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { 
+<a name="l37"><span class="ln">37   </span></a>        </span><span class="s0">return </span><span class="s1">inflater.inflate(R.layout.fragment__highlight, container, </span><span class="s0">false</span><span class="s1">); 
+<a name="l38"><span class="ln">38   </span></a>    } 
 <a name="l39"><span class="ln">39   </span></a> 
-<a name="l40"><span class="ln">40   </span></a> 
-<a name="l41"><span class="ln">41   </span></a> 
-<a name="l42"><span class="ln">42   </span></a>} 
-<a name="l43"><span class="ln">43   </span></a></span></pre>
+<a name="l40"><span class="ln">40   </span></a>    @Override 
+<a name="l41"><span class="ln">41   </span></a>    </span><span class="s0">public void </span><span class="s1">onViewCreated(View view, Bundle savedInstanceState) { 
+<a name="l42"><span class="ln">42   </span></a>        </span><span class="s0">super</span><span class="s1">.onViewCreated(view, savedInstanceState); 
+<a name="l43"><span class="ln">43   </span></a> 
+<a name="l44"><span class="ln">44   </span></a>        </span><span class="s2">//initial views</span><span class="s1"> 
+<a name="l45"><span class="ln">45   </span></a>        textViewNumber = (TextView) view.findViewById(R.id.textViewNumber); 
+<a name="l46"><span class="ln">46   </span></a>        textViewNumber2 = (TextView) view.findViewById(R.id.textViewNumber2); 
+<a name="l47"><span class="ln">47   </span></a>        textViewLehrer = (TextView) view.findViewById(R.id.textViewLehrer); 
+<a name="l48"><span class="ln">48   </span></a>        textViewLehrer2 = (TextView) view.findViewById(R.id.textViewLehrer2); 
+<a name="l49"><span class="ln">49   </span></a>        textViewStunde = (TextView) view.findViewById(R.id.textViewStunde); 
+<a name="l50"><span class="ln">50   </span></a>        textViewStunde2 = (TextView) view.findViewById(R.id.textViewStunde2); 
+<a name="l51"><span class="ln">51   </span></a>        textViewRaum = (TextView) view.findViewById(R.id.textViewRaum); 
+<a name="l52"><span class="ln">52   </span></a>        textViewRaum2 = (TextView) view.findViewById(R.id.textViewRaum2); 
+<a name="l53"><span class="ln">53   </span></a> 
+<a name="l54"><span class="ln">54   </span></a>        setUpNächsteStunde(); 
+<a name="l55"><span class="ln">55   </span></a> 
+<a name="l56"><span class="ln">56   </span></a> 
+<a name="l57"><span class="ln">57   </span></a>    } 
+<a name="l58"><span class="ln">58   </span></a> 
+<a name="l59"><span class="ln">59   </span></a>    @Override 
+<a name="l60"><span class="ln">60   </span></a>    </span><span class="s0">public void </span><span class="s1">onStart() { 
+<a name="l61"><span class="ln">61   </span></a>        </span><span class="s0">super</span><span class="s1">.onStart(); 
+<a name="l62"><span class="ln">62   </span></a>        </span><span class="s2">// updates view ever mintute</span><span class="s1"> 
+<a name="l63"><span class="ln">63   </span></a>        broadcastReceiver = </span><span class="s0">new </span><span class="s1">BroadcastReceiver() { 
+<a name="l64"><span class="ln">64   </span></a>            @Override 
+<a name="l65"><span class="ln">65   </span></a>            </span><span class="s0">public void </span><span class="s1">onReceive(Context context, Intent intent) { 
+<a name="l66"><span class="ln">66   </span></a>                </span><span class="s0">if </span><span class="s1">(intent.getAction().compareTo(Intent.ACTION_TIME_TICK) == </span><span class="s4">0</span><span class="s1">) { 
+<a name="l67"><span class="ln">67   </span></a>                    setUpNächsteStunde(); 
+<a name="l68"><span class="ln">68   </span></a> 
+<a name="l69"><span class="ln">69   </span></a>                } 
+<a name="l70"><span class="ln">70   </span></a>            } 
+<a name="l71"><span class="ln">71   </span></a>        }; 
+<a name="l72"><span class="ln">72   </span></a>        getActivity().registerReceiver(broadcastReceiver, </span><span class="s0">new </span><span class="s1">IntentFilter(Intent.ACTION_TIME_TICK)); 
+<a name="l73"><span class="ln">73   </span></a>    } 
+<a name="l74"><span class="ln">74   </span></a> 
+<a name="l75"><span class="ln">75   </span></a>    @Override 
+<a name="l76"><span class="ln">76   </span></a>    </span><span class="s0">public void </span><span class="s1">onStop() { 
+<a name="l77"><span class="ln">77   </span></a>        </span><span class="s0">super</span><span class="s1">.onStop(); 
+<a name="l78"><span class="ln">78   </span></a>        </span><span class="s0">if </span><span class="s1">(broadcastReceiver != </span><span class="s0">null</span><span class="s1">) 
+<a name="l79"><span class="ln">79   </span></a>            getActivity().unregisterReceiver(broadcastReceiver); 
+<a name="l80"><span class="ln">80   </span></a>    } 
+<a name="l81"><span class="ln">81   </span></a> 
+<a name="l82"><span class="ln">82   </span></a>    </span><span class="s2">/** 
+<a name="l83"><span class="ln">83   </span></a>     * </span><span class="s3">@setUpNächsteStunde </span><span class="s2">berechnet die jetztige und nächste Stunde und zeigt diese an 
+<a name="l84"><span class="ln">84   </span></a>     */</span><span class="s1"> 
+<a name="l85"><span class="ln">85   </span></a>    </span><span class="s0">public void </span><span class="s1">setUpNächsteStunde() { 
+<a name="l86"><span class="ln">86   </span></a>        Log.d(TAG, </span><span class="s5">&quot;Updated Time&quot;</span><span class="s1">); 
+<a name="l87"><span class="ln">87   </span></a>        </span><span class="s2">// Array mit den Schulstunden</span><span class="s1"> 
+<a name="l88"><span class="ln">88   </span></a>        Calendar calendar = Calendar.getInstance(); 
+<a name="l89"><span class="ln">89   </span></a>        GregorianCalendar[] calendars = </span><span class="s0">new </span><span class="s1">GregorianCalendar[]{ 
+<a name="l90"><span class="ln">90   </span></a>                </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">8</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l91"><span class="ln">91   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">8</span><span class="s1">, </span><span class="s4">45</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l92"><span class="ln">92   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">9</span><span class="s1">, </span><span class="s4">35</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l93"><span class="ln">93   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">10</span><span class="s1">, </span><span class="s4">45</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l94"><span class="ln">94   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">11</span><span class="s1">, </span><span class="s4">35</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l95"><span class="ln">95   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">12</span><span class="s1">, </span><span class="s4">25</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l96"><span class="ln">96   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">13</span><span class="s1">, </span><span class="s4">30</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l97"><span class="ln">97   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">14</span><span class="s1">, </span><span class="s4">15</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l98"><span class="ln">98   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">15</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l99"><span class="ln">99   </span></a>                , </span><span class="s0">new </span><span class="s1">GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), </span><span class="s4">15</span><span class="s1">, </span><span class="s4">45</span><span class="s1">, </span><span class="s4">0</span><span class="s1">) 
+<a name="l100"><span class="ln">100  </span></a> 
+<a name="l101"><span class="ln">101  </span></a> 
+<a name="l102"><span class="ln">102  </span></a>        }; 
+<a name="l103"><span class="ln">103  </span></a> 
+<a name="l104"><span class="ln">104  </span></a>        </span><span class="s2">// sucht die aktuelle Stunde heraus</span><span class="s1"> 
+<a name="l105"><span class="ln">105  </span></a>        Calendar date = GregorianCalendar.getInstance(); 
+<a name="l106"><span class="ln">106  </span></a>        </span><span class="s0">int </span><span class="s1">week = calendar.get(Calendar.DAY_OF_WEEK) - </span><span class="s4">1</span><span class="s1">; 
+<a name="l107"><span class="ln">107  </span></a>        </span><span class="s0">int </span><span class="s1">aktuelleStunde = </span><span class="s4">0</span><span class="s1">; 
+<a name="l108"><span class="ln">108  </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = calendars.length - </span><span class="s4">1</span><span class="s1">; i &gt;= </span><span class="s4">0</span><span class="s1">; i--) { 
+<a name="l109"><span class="ln">109  </span></a>            </span><span class="s2">//vergleich die aktuelle Zeit mit dem Array um zu gucken in welcher Schulstunde man sich begfindet</span><span class="s1"> 
+<a name="l110"><span class="ln">110  </span></a>            </span><span class="s0">if </span><span class="s1">(date.before(calendars[i])) { 
+<a name="l111"><span class="ln">111  </span></a>                aktuelleStunde = i; 
+<a name="l112"><span class="ln">112  </span></a> 
+<a name="l113"><span class="ln">113  </span></a>            } 
+<a name="l114"><span class="ln">114  </span></a>        } 
+<a name="l115"><span class="ln">115  </span></a>        </span><span class="s2">// wenn die aktuelle Stunde nach den Zeiten des Arrays ist wird die aktuelle Stunde auf 99 gesetzt</span><span class="s1"> 
+<a name="l116"><span class="ln">116  </span></a>        </span><span class="s0">if </span><span class="s1">(date.after(calendars[calendars.length - </span><span class="s4">1</span><span class="s1">])) { 
+<a name="l117"><span class="ln">117  </span></a>            aktuelleStunde = </span><span class="s4">99</span><span class="s1">; 
+<a name="l118"><span class="ln">118  </span></a>        } 
+<a name="l119"><span class="ln">119  </span></a> 
+<a name="l120"><span class="ln">120  </span></a>        Log.d(TAG, </span><span class="s5">&quot;Aktuelle Stunde: &quot; </span><span class="s1">+ aktuelleStunde + </span><span class="s5">&quot; wochentag: &quot; </span><span class="s1">+ week); 
+<a name="l121"><span class="ln">121  </span></a>        </span><span class="s2">// wenn der wochentag in der schulwoche ist</span><span class="s1"> 
+<a name="l122"><span class="ln">122  </span></a>        </span><span class="s0">if </span><span class="s1">(week &gt; </span><span class="s4">0 </span><span class="s1">&amp;&amp; week &lt; </span><span class="s4">6</span><span class="s1">) { 
+<a name="l123"><span class="ln">123  </span></a>            </span><span class="s2">// wenn die aktuelleStunde ein Schulstunde ist</span><span class="s1"> 
+<a name="l124"><span class="ln">124  </span></a>            </span><span class="s0">if </span><span class="s1">(aktuelleStunde &gt; </span><span class="s4">0 </span><span class="s1">&amp;&amp; aktuelleStunde &lt; </span><span class="s4">10</span><span class="s1">) { 
+<a name="l125"><span class="ln">125  </span></a>                </span><span class="s2">// holt sich alle Kurse</span><span class="s1"> 
+<a name="l126"><span class="ln">126  </span></a>                List&lt;dbKurs&gt; aktiveKurse = </span><span class="s0">new </span><span class="s1">dbKurs().getActiveKurse(</span><span class="s4">0</span><span class="s1">); 
+<a name="l127"><span class="ln">127  </span></a>                aktiveKurse.addAll(</span><span class="s0">new </span><span class="s1">dbKurs().getActiveKurse(</span><span class="s4">1</span><span class="s1">)); 
+<a name="l128"><span class="ln">128  </span></a> 
+<a name="l129"><span class="ln">129  </span></a>                List&lt;dbSchulstunde&gt; schulstundeList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+<a name="l130"><span class="ln">130  </span></a>                </span><span class="s2">// holt sich von den Kursen die entsprechenden schulstunde für die Woche</span><span class="s1"> 
+<a name="l131"><span class="ln">131  </span></a>                </span><span class="s0">for </span><span class="s1">(dbKurs kurs : aktiveKurse) { 
+<a name="l132"><span class="ln">132  </span></a>                    </span><span class="s0">if </span><span class="s1">(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week) != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l133"><span class="ln">133  </span></a>                        schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week)); 
+<a name="l134"><span class="ln">134  </span></a>                    } 
+<a name="l135"><span class="ln">135  </span></a>                } 
+<a name="l136"><span class="ln">136  </span></a>                </span><span class="s2">// wenn an dem Tag Unterricht ist also Schulstunden vorhanden sind</span><span class="s1"> 
+<a name="l137"><span class="ln">137  </span></a>                </span><span class="s0">if </span><span class="s1">(schulstundeList.size() &gt; </span><span class="s4">0</span><span class="s1">) { 
+<a name="l138"><span class="ln">138  </span></a>                    List&lt;stunden&gt; stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList)); 
+<a name="l139"><span class="ln">139  </span></a>                    </span><span class="s0">int </span><span class="s1">letzteStunde = stundenList.get(stundenList.size() - </span><span class="s4">1</span><span class="s1">).stunde; 
+<a name="l140"><span class="ln">140  </span></a>                    </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; stundenList.size(); i++) { 
+<a name="l141"><span class="ln">141  </span></a>                        stunden stunden = stundenList.get(i); 
+<a name="l142"><span class="ln">142  </span></a>                        </span><span class="s0">if </span><span class="s1">(stunden.stunde == aktuelleStunde) { 
+<a name="l143"><span class="ln">143  </span></a>                            </span><span class="s0">if </span><span class="s1">(aktuelleStunde != letzteStunde) { 
+<a name="l144"><span class="ln">144  </span></a>                                </span><span class="s0">if </span><span class="s1">(stunden.active == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l145"><span class="ln">145  </span></a>                                    </span><span class="s2">// wenn die aktuelle Stunde aktiv ist also keine Freistunde</span><span class="s1"> 
+<a name="l146"><span class="ln">146  </span></a>                                    textViewStunde.setText(stunden.getStundenname()); 
+<a name="l147"><span class="ln">147  </span></a>                                    textViewRaum.setText(stunden.getRaum()); 
+<a name="l148"><span class="ln">148  </span></a>                                    textViewLehrer.setText(stunden.getLehrer()); 
+<a name="l149"><span class="ln">149  </span></a>                                    textViewNumber.setText(String.valueOf(stunden.getStunde())); 
+<a name="l150"><span class="ln">150  </span></a>                                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l151"><span class="ln">151  </span></a>                                    </span><span class="s2">// sonst Freistunde</span><span class="s1"> 
+<a name="l152"><span class="ln">152  </span></a>                                    textViewStunde.setText(</span><span class="s5">&quot;Freistunde&quot;</span><span class="s1">); 
+<a name="l153"><span class="ln">153  </span></a>                                    textViewRaum.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l154"><span class="ln">154  </span></a>                                    textViewLehrer.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l155"><span class="ln">155  </span></a>                                    textViewNumber.setText(String.valueOf(stunden.getStunde())); 
+<a name="l156"><span class="ln">156  </span></a>                                } 
+<a name="l157"><span class="ln">157  </span></a>                                stunden stunden2 = stundenList.get(i + </span><span class="s4">1</span><span class="s1">); 
+<a name="l158"><span class="ln">158  </span></a>                                </span><span class="s0">if </span><span class="s1">(stunden2.active == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l159"><span class="ln">159  </span></a>                                    textViewStunde2.setText(stunden2.getStundenname()); 
+<a name="l160"><span class="ln">160  </span></a>                                    textViewRaum2.setText(stunden2.getRaum()); 
+<a name="l161"><span class="ln">161  </span></a>                                    textViewLehrer2.setText(stunden2.getLehrer()); 
+<a name="l162"><span class="ln">162  </span></a>                                    textViewNumber2.setText(String.valueOf(stunden2.getStunde())); 
+<a name="l163"><span class="ln">163  </span></a>                                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l164"><span class="ln">164  </span></a>                                    textViewStunde2.setText(</span><span class="s5">&quot;Freistunde&quot;</span><span class="s1">); 
+<a name="l165"><span class="ln">165  </span></a>                                    textViewRaum2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l166"><span class="ln">166  </span></a>                                    textViewLehrer2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l167"><span class="ln">167  </span></a>                                    textViewNumber2.setText(String.valueOf(stunden2.getStunde())); 
+<a name="l168"><span class="ln">168  </span></a>                                } 
+<a name="l169"><span class="ln">169  </span></a>                            } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l170"><span class="ln">170  </span></a>                                </span><span class="s2">// wenn die aktuelle Stunde die letze Stunde ist</span><span class="s1"> 
+<a name="l171"><span class="ln">171  </span></a>                                textViewStunde.setText(stunden.getStundenname()); 
+<a name="l172"><span class="ln">172  </span></a>                                textViewRaum.setText(stunden.getRaum()); 
+<a name="l173"><span class="ln">173  </span></a>                                textViewLehrer.setText(stunden.getLehrer()); 
+<a name="l174"><span class="ln">174  </span></a>                                textViewNumber.setText(String.valueOf(stunden.getStunde())); 
+<a name="l175"><span class="ln">175  </span></a> 
+<a name="l176"><span class="ln">176  </span></a>                                textViewStunde2.setText(</span><span class="s5">&quot;Kein Unterricht mehr!&quot;</span><span class="s1">); 
+<a name="l177"><span class="ln">177  </span></a>                                textViewRaum2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l178"><span class="ln">178  </span></a>                                textViewLehrer2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l179"><span class="ln">179  </span></a>                                textViewNumber2.setText(String.valueOf(</span><span class="s5">&quot;&quot;</span><span class="s1">)); 
+<a name="l180"><span class="ln">180  </span></a>                            } 
+<a name="l181"><span class="ln">181  </span></a>                        } 
+<a name="l182"><span class="ln">182  </span></a>                    } 
+<a name="l183"><span class="ln">183  </span></a> 
+<a name="l184"><span class="ln">184  </span></a>                } 
+<a name="l185"><span class="ln">185  </span></a>            } </span><span class="s0">else if </span><span class="s1">(aktuelleStunde == </span><span class="s4">99</span><span class="s1">) { 
+<a name="l186"><span class="ln">186  </span></a>                </span><span class="s2">// wenn es nachdem Unterrich ist</span><span class="s1"> 
+<a name="l187"><span class="ln">187  </span></a>                textViewStunde.setText(</span><span class="s5">&quot;Kein Unterricht mehr!&quot;</span><span class="s1">); 
+<a name="l188"><span class="ln">188  </span></a>                textViewRaum.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l189"><span class="ln">189  </span></a>                textViewLehrer.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l190"><span class="ln">190  </span></a>                textViewNumber.setText(String.valueOf(</span><span class="s5">&quot;&quot;</span><span class="s1">)); 
+<a name="l191"><span class="ln">191  </span></a>                textViewStunde2.setText(</span><span class="s5">&quot;Kein Unterricht mehr!&quot;</span><span class="s1">); 
+<a name="l192"><span class="ln">192  </span></a>                textViewRaum2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l193"><span class="ln">193  </span></a>                textViewLehrer2.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l194"><span class="ln">194  </span></a>                textViewNumber2.setText(String.valueOf(</span><span class="s5">&quot;&quot;</span><span class="s1">)); 
+<a name="l195"><span class="ln">195  </span></a> 
+<a name="l196"><span class="ln">196  </span></a>            } </span><span class="s0">else if </span><span class="s1">(aktuelleStunde == </span><span class="s4">0</span><span class="s1">) { 
+<a name="l197"><span class="ln">197  </span></a>                </span><span class="s2">// wenn es vor dem Unterricht ist</span><span class="s1"> 
+<a name="l198"><span class="ln">198  </span></a>                textViewStunde.setText(</span><span class="s5">&quot;Kein Unterricht!&quot;</span><span class="s1">); 
+<a name="l199"><span class="ln">199  </span></a>                textViewRaum.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l200"><span class="ln">200  </span></a>                textViewLehrer.setText(</span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l201"><span class="ln">201  </span></a>                textViewNumber.setText(String.valueOf(</span><span class="s5">&quot;&quot;</span><span class="s1">)); 
+<a name="l202"><span class="ln">202  </span></a> 
+<a name="l203"><span class="ln">203  </span></a>                List&lt;dbKurs&gt; aktiveKurse = </span><span class="s0">new </span><span class="s1">dbKurs().getActiveKurse(</span><span class="s4">0</span><span class="s1">); 
+<a name="l204"><span class="ln">204  </span></a>                aktiveKurse.addAll(</span><span class="s0">new </span><span class="s1">dbKurs().getActiveKurse(</span><span class="s4">1</span><span class="s1">)); 
+<a name="l205"><span class="ln">205  </span></a> 
+<a name="l206"><span class="ln">206  </span></a>                List&lt;dbSchulstunde&gt; schulstundeList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+<a name="l207"><span class="ln">207  </span></a>                </span><span class="s0">for </span><span class="s1">(dbKurs kurs : aktiveKurse) { 
+<a name="l208"><span class="ln">208  </span></a>                    </span><span class="s0">if </span><span class="s1">(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week) != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l209"><span class="ln">209  </span></a>                        schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week)); 
+<a name="l210"><span class="ln">210  </span></a>                    } 
+<a name="l211"><span class="ln">211  </span></a>                } 
+<a name="l212"><span class="ln">212  </span></a>                </span><span class="s2">// zeigt die erste Stunde an für den Tag</span><span class="s1"> 
+<a name="l213"><span class="ln">213  </span></a>                </span><span class="s0">if </span><span class="s1">(schulstundeList.size() &gt; </span><span class="s4">0</span><span class="s1">) { 
+<a name="l214"><span class="ln">214  </span></a>                    List&lt;stunden&gt; stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList)); 
+<a name="l215"><span class="ln">215  </span></a>                    stunden stunden = stundenList.get(aktuelleStunde); 
+<a name="l216"><span class="ln">216  </span></a>                    textViewStunde2.setText(stunden.getStundenname()); 
+<a name="l217"><span class="ln">217  </span></a>                    textViewRaum2.setText(stunden.getRaum()); 
+<a name="l218"><span class="ln">218  </span></a>                    textViewLehrer2.setText(stunden.getLehrer()); 
+<a name="l219"><span class="ln">219  </span></a>                    textViewNumber2.setText(String.valueOf(stunden.getStunde())); 
+<a name="l220"><span class="ln">220  </span></a>                } 
+<a name="l221"><span class="ln">221  </span></a>            } 
+<a name="l222"><span class="ln">222  </span></a>        } 
+<a name="l223"><span class="ln">223  </span></a> 
+<a name="l224"><span class="ln">224  </span></a>    } 
+<a name="l225"><span class="ln">225  </span></a> 
+<a name="l226"><span class="ln">226  </span></a>    </span><span class="s2">/** 
+<a name="l227"><span class="ln">227  </span></a>     * </span><span class="s3">@param </span><span class="s2">list mit aktuallen Schulstunden wird pbergeben 
+<a name="l228"><span class="ln">228  </span></a>     * </span><span class="s3">@return </span><span class="s2">sortierte List wird zurückgegeben 
+<a name="l229"><span class="ln">229  </span></a>     * </span><span class="s3">@sortListASC </span><span class="s2">sortiert eine Schulstunde Liste nach der Zeit 
+<a name="l230"><span class="ln">230  </span></a>     */</span><span class="s1"> 
+<a name="l231"><span class="ln">231  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbSchulstunde&gt; sortListASC(List&lt;dbSchulstunde&gt; list) { 
+<a name="l232"><span class="ln">232  </span></a>        Collections.sort(list, </span><span class="s0">new </span><span class="s1">Comparator&lt;dbSchulstunde&gt;() { 
+<a name="l233"><span class="ln">233  </span></a>            @Override 
+<a name="l234"><span class="ln">234  </span></a>            </span><span class="s0">public int </span><span class="s1">compare(dbSchulstunde lhs, dbSchulstunde rhs) { 
+<a name="l235"><span class="ln">235  </span></a>                </span><span class="s0">return </span><span class="s1">lhs.getBeginnzeit().compareTo(rhs.getBeginnzeit()); 
+<a name="l236"><span class="ln">236  </span></a>            } 
+<a name="l237"><span class="ln">237  </span></a>        }); 
+<a name="l238"><span class="ln">238  </span></a>        </span><span class="s0">return </span><span class="s1">list; 
+<a name="l239"><span class="ln">239  </span></a>    } 
+<a name="l240"><span class="ln">240  </span></a> 
+<a name="l241"><span class="ln">241  </span></a>    </span><span class="s2">/** 
+<a name="l242"><span class="ln">242  </span></a>     * </span><span class="s3">@param </span><span class="s2">wochentagListe Liste für einen Wochentag wird übergeben 
+<a name="l243"><span class="ln">243  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt die kovertierte List zurück 
+<a name="l244"><span class="ln">244  </span></a>     * </span><span class="s3">@covertSchulstundenZuStundeListe </span><span class="s2">konvertiert die Datenbank schulstunde zu normalen Stunden für einer einfachere Anzeige für 
+<a name="l245"><span class="ln">245  </span></a>     * den AufgabenAdapter. Die konvertierte List enthält auch Freistunden. 
+<a name="l246"><span class="ln">246  </span></a>     */</span><span class="s1"> 
+<a name="l247"><span class="ln">247  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;stunden&gt; convertSchulstundenZuStundeListe(List&lt;dbSchulstunde&gt; wochentagListe) { 
+<a name="l248"><span class="ln">248  </span></a>        </span><span class="s2">// letzteStunde ist die letzte Schulstunde der WochentagListe</span><span class="s1"> 
+<a name="l249"><span class="ln">249  </span></a>        </span><span class="s0">if </span><span class="s1">(wochentagListe.size() &gt; </span><span class="s4">0</span><span class="s1">) { 
+<a name="l250"><span class="ln">250  </span></a>            </span><span class="s0">int </span><span class="s1">letzteStunde = wochentagListe.get(wochentagListe.size() - </span><span class="s4">1</span><span class="s1">).beginnzeit; 
+<a name="l251"><span class="ln">251  </span></a>            </span><span class="s2">// stundenplanListe ist nacher die fertige Liste mit alle Schulstunden und Freistunden</span><span class="s1"> 
+<a name="l252"><span class="ln">252  </span></a>            List&lt;stunden&gt; stundenplanListe = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+<a name="l253"><span class="ln">253  </span></a>            </span><span class="s2">// geht alle Stunden von 1 bis zu letzten Stunde durch</span><span class="s1"> 
+<a name="l254"><span class="ln">254  </span></a> 
+<a name="l255"><span class="ln">255  </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">1</span><span class="s1">; i &lt;= letzteStunde; i++) { 
+<a name="l256"><span class="ln">256  </span></a>                stunden stunden = </span><span class="s0">new </span><span class="s1">stunden(); 
+<a name="l257"><span class="ln">257  </span></a>                </span><span class="s0">int </span><span class="s1">l = </span><span class="s4">0</span><span class="s1">; 
+<a name="l258"><span class="ln">258  </span></a>                </span><span class="s2">// überprüft ob die Stunden vorhanden ist</span><span class="s1"> 
+<a name="l259"><span class="ln">259  </span></a>                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s4">0</span><span class="s1">; k &lt; wochentagListe.size(); k++) { 
+<a name="l260"><span class="ln">260  </span></a>                    </span><span class="s0">if </span><span class="s1">(wochentagListe.get(k).getBeginnzeit() == i) { 
+<a name="l261"><span class="ln">261  </span></a>                        </span><span class="s2">// wenn die wochentagsListe die Zeit i beinhaltet wir l addiert;</span><span class="s1"> 
+<a name="l262"><span class="ln">262  </span></a>                        l = k + </span><span class="s4">1</span><span class="s1">; 
+<a name="l263"><span class="ln">263  </span></a>                    } 
+<a name="l264"><span class="ln">264  </span></a>                } 
+<a name="l265"><span class="ln">265  </span></a>                </span><span class="s2">// wenn l größer als 0 ist die Stunden vorhanden</span><span class="s1"> 
+<a name="l266"><span class="ln">266  </span></a>                </span><span class="s2">// wenn l nicht größer aks 0 ist wird eine Freistunde erstellt</span><span class="s1"> 
+<a name="l267"><span class="ln">267  </span></a>                </span><span class="s0">if </span><span class="s1">(l &gt; </span><span class="s4">0</span><span class="s1">) { 
+<a name="l268"><span class="ln">268  </span></a>                    Log.d(</span><span class="s5">&quot;MAIN&quot;</span><span class="s1">, </span><span class="s5">&quot;stunde erstellt&quot;</span><span class="s1">); 
+<a name="l269"><span class="ln">269  </span></a>                    dbSchulstunde schulstunde = wochentagListe.get(l - </span><span class="s4">1</span><span class="s1">); 
+<a name="l270"><span class="ln">270  </span></a>                    stunden.setActive(</span><span class="s0">true</span><span class="s1">); 
+<a name="l271"><span class="ln">271  </span></a>                    stunden.setRaum(schulstunde.raum); 
+<a name="l272"><span class="ln">272  </span></a>                    stunden.setStundenname(schulstunde.kurs.fach); 
+<a name="l273"><span class="ln">273  </span></a>                    stunden.setLehrer(schulstunde.lehrer.titel + </span><span class="s5">&quot; &quot; </span><span class="s1">+ schulstunde.lehrer.name); 
+<a name="l274"><span class="ln">274  </span></a>                    stunden.setStunde(schulstunde.beginnzeit); 
+<a name="l275"><span class="ln">275  </span></a>                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l276"><span class="ln">276  </span></a>                    Log.d(</span><span class="s5">&quot;MAIN&quot;</span><span class="s1">, </span><span class="s5">&quot;freistunde erstellt&quot;</span><span class="s1">); 
+<a name="l277"><span class="ln">277  </span></a>                    stunden.setStunde(i); 
+<a name="l278"><span class="ln">278  </span></a>                    stunden.setActive(</span><span class="s0">false</span><span class="s1">); 
+<a name="l279"><span class="ln">279  </span></a> 
+<a name="l280"><span class="ln">280  </span></a>                } 
+<a name="l281"><span class="ln">281  </span></a>                stundenplanListe.add(stunden); 
+<a name="l282"><span class="ln">282  </span></a> 
+<a name="l283"><span class="ln">283  </span></a>            } 
+<a name="l284"><span class="ln">284  </span></a>            </span><span class="s2">// gibt die fertige stundenplanListe zurück;</span><span class="s1"> 
+<a name="l285"><span class="ln">285  </span></a>            </span><span class="s0">return </span><span class="s1">stundenplanListe; 
+<a name="l286"><span class="ln">286  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l287"><span class="ln">287  </span></a>            </span><span class="s0">return new </span><span class="s1">ArrayList&lt;&gt;(); 
+<a name="l288"><span class="ln">288  </span></a>        } 
+<a name="l289"><span class="ln">289  </span></a>    } 
+<a name="l290"><span class="ln">290  </span></a>} 
+<a name="l291"><span class="ln">291  </span></a></span></pre>
 </body>
 </html>

@@ -7,8 +7,9 @@
 .s0 { color: rgb(0,0,128); font-weight: bold; }
 .s1 { }
 .s2 { color: rgb(128,128,128); font-style: italic; }
-.s3 { color: rgb(0,128,0); font-weight: bold; }
-.s4 { color: rgb(0,0,255); }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
 </style>
 </head>
 <BODY BGCOLOR="#ffffff">
@@ -38,113 +39,160 @@ LogInController.java</FONT>
 <a name="l17"><span class="ln">17   </span></a></span><span class="s2">/** 
 <a name="l18"><span class="ln">18   </span></a> * Created by Leon E on 22.12.2015. 
 <a name="l19"><span class="ln">19   </span></a> */</span><span class="s1"> 
-<a name="l20"><span class="ln">20   </span></a></span><span class="s0">public class </span><span class="s1">LogInController { 
-<a name="l21"><span class="ln">21   </span></a>    SharedPreferences prefs ; 
-<a name="l22"><span class="ln">22   </span></a>    Context mainContext; 
-<a name="l23"><span class="ln">23   </span></a>    String registrationUrl = </span><span class="s3">&quot;http://app.marienschule.de/files/scripts/login.php&quot;</span><span class="s1">; 
-<a name="l24"><span class="ln">24   </span></a> 
-<a name="l25"><span class="ln">25   </span></a> 
-<a name="l26"><span class="ln">26   </span></a>    </span><span class="s0">public </span><span class="s1">LogInController(Context context){ 
-<a name="l27"><span class="ln">27   </span></a>        mainContext = context; 
-<a name="l28"><span class="ln">28   </span></a>    } 
-<a name="l29"><span class="ln">29   </span></a> 
-<a name="l30"><span class="ln">30   </span></a>    </span><span class="s0">public </span><span class="s1">String login(String user,String pass,String stufe){ 
-<a name="l31"><span class="ln">31   </span></a>        String result=</span><span class="s3">&quot;&quot;</span><span class="s1">; 
-<a name="l32"><span class="ln">32   </span></a>         Uri.Builder builder = </span><span class="s0">new </span><span class="s1">Uri.Builder() 
-<a name="l33"><span class="ln">33   </span></a>                .appendQueryParameter(</span><span class="s3">&quot;username&quot;</span><span class="s1">, user) 
-<a name="l34"><span class="ln">34   </span></a>                .appendQueryParameter(</span><span class="s3">&quot;pw&quot;</span><span class="s1">, pass) 
-<a name="l35"><span class="ln">35   </span></a>                .appendQueryParameter(</span><span class="s3">&quot;stufe&quot;</span><span class="s1">,stufe); 
-<a name="l36"><span class="ln">36   </span></a>        String params = builder.build().getEncodedQuery(); 
-<a name="l37"><span class="ln">37   </span></a> 
-<a name="l38"><span class="ln">38   </span></a>        atOnline atOnline = </span><span class="s0">new </span><span class="s1">atOnline(registrationUrl, params, mainContext); 
-<a name="l39"><span class="ln">39   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l40"><span class="ln">40   </span></a>            result= atOnline.execute().get(); 
-<a name="l41"><span class="ln">41   </span></a>        } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
-<a name="l42"><span class="ln">42   </span></a>            e.printStackTrace(); 
-<a name="l43"><span class="ln">43   </span></a>        } </span><span class="s0">catch </span><span class="s1">(ExecutionException e) { 
-<a name="l44"><span class="ln">44   </span></a>            e.printStackTrace(); 
-<a name="l45"><span class="ln">45   </span></a>        } 
-<a name="l46"><span class="ln">46   </span></a> 
-<a name="l47"><span class="ln">47   </span></a> 
-<a name="l48"><span class="ln">48   </span></a>            </span><span class="s0">return </span><span class="s1">result; 
-<a name="l49"><span class="ln">49   </span></a> 
-<a name="l50"><span class="ln">50   </span></a> 
-<a name="l51"><span class="ln">51   </span></a>    } 
+<a name="l20"><span class="ln">20   </span></a> 
+<a name="l21"><span class="ln">21   </span></a></span><span class="s2">/** 
+<a name="l22"><span class="ln">22   </span></a> * </span><span class="s3">@LoginController </span><span class="s2">ist dafür zuständig um den Login zu vollziehen sowie nach erfolgreichem Login den User 
+<a name="l23"><span class="ln">23   </span></a> * zu aktualiseren bzw zu speichern. Der LoginController enthält alle notwendigen Methoden für den 
+<a name="l24"><span class="ln">24   </span></a> * Login. 
+<a name="l25"><span class="ln">25   </span></a> */</span><span class="s1"> 
+<a name="l26"><span class="ln">26   </span></a></span><span class="s0">public class </span><span class="s1">LogInController { 
+<a name="l27"><span class="ln">27   </span></a>    SharedPreferences prefs; 
+<a name="l28"><span class="ln">28   </span></a>    Context mainContext; 
+<a name="l29"><span class="ln">29   </span></a>    </span><span class="s2">// URL für den LOGIN</span><span class="s1"> 
+<a name="l30"><span class="ln">30   </span></a>    String registrationUrl = </span><span class="s4">&quot;http://app.marienschule.de/files/scripts/login.php&quot;</span><span class="s1">; 
+<a name="l31"><span class="ln">31   </span></a> 
+<a name="l32"><span class="ln">32   </span></a> 
+<a name="l33"><span class="ln">33   </span></a>    </span><span class="s0">public </span><span class="s1">LogInController(Context context) { 
+<a name="l34"><span class="ln">34   </span></a>        mainContext = context; 
+<a name="l35"><span class="ln">35   </span></a>    } 
+<a name="l36"><span class="ln">36   </span></a> 
+<a name="l37"><span class="ln">37   </span></a>    </span><span class="s2">/** 
+<a name="l38"><span class="ln">38   </span></a>     * </span><span class="s3">@param </span><span class="s2">user  ist der Username der , der User in einem textfeld eingibt 
+<a name="l39"><span class="ln">39   </span></a>     * </span><span class="s3">@param </span><span class="s2">pass  ist das Passwort des Users 
+<a name="l40"><span class="ln">40   </span></a>     * </span><span class="s3">@param </span><span class="s2">stufe ist die Stufe des Users 
+<a name="l41"><span class="ln">41   </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt das Resultat der Anfrage zurück. Wenn die Anfrage nicht erfolgreich war 
+<a name="l42"><span class="ln">42   </span></a>     * kriegt man &quot;Error&quot; zurück. 
+<a name="l43"><span class="ln">43   </span></a>     * </span><span class="s3">@login </span><span class="s2">stellt ein Login Anfrage an den Server durch die atOnline Klasse 
+<a name="l44"><span class="ln">44   </span></a>     */</span><span class="s1"> 
+<a name="l45"><span class="ln">45   </span></a>    </span><span class="s0">public </span><span class="s1">String login(String user, String pass, String stufe) { 
+<a name="l46"><span class="ln">46   </span></a>        String result = </span><span class="s4">&quot;&quot;</span><span class="s1">; 
+<a name="l47"><span class="ln">47   </span></a>        Uri.Builder builder = </span><span class="s0">new </span><span class="s1">Uri.Builder() 
+<a name="l48"><span class="ln">48   </span></a>                .appendQueryParameter(</span><span class="s4">&quot;username&quot;</span><span class="s1">, user) 
+<a name="l49"><span class="ln">49   </span></a>                .appendQueryParameter(</span><span class="s4">&quot;pw&quot;</span><span class="s1">, pass) 
+<a name="l50"><span class="ln">50   </span></a>                .appendQueryParameter(</span><span class="s4">&quot;stufe&quot;</span><span class="s1">, stufe); 
+<a name="l51"><span class="ln">51   </span></a>        String params = builder.build().getEncodedQuery(); 
 <a name="l52"><span class="ln">52   </span></a> 
-<a name="l53"><span class="ln">53   </span></a> 
-<a name="l54"><span class="ln">54   </span></a> 
-<a name="l55"><span class="ln">55   </span></a>    </span><span class="s0">public </span><span class="s1">dbUser createUser(String result){ 
-<a name="l56"><span class="ln">56   </span></a> 
-<a name="l57"><span class="ln">57   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l58"><span class="ln">58   </span></a>            JSONObject jsonObject = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
-<a name="l59"><span class="ln">59   </span></a>            </span><span class="s2">// json to String</span><span class="s1"> 
-<a name="l60"><span class="ln">60   </span></a>            String Benutzername = jsonObject.optString(</span><span class="s3">&quot;username&quot;</span><span class="s1">); 
-<a name="l61"><span class="ln">61   </span></a>            String Firstname = jsonObject.optString(</span><span class="s3">&quot;firstname&quot;</span><span class="s1">); 
-<a name="l62"><span class="ln">62   </span></a>            String Stufe = jsonObject.optString(</span><span class="s3">&quot;stufe&quot;</span><span class="s1">); 
-<a name="l63"><span class="ln">63   </span></a>            String Lastname = jsonObject.optString(</span><span class="s3">&quot;lastname&quot;</span><span class="s1">); 
-<a name="l64"><span class="ln">64   </span></a>            String lastAppLogin = jsonObject.optString(</span><span class="s3">&quot;last_app_login&quot;</span><span class="s1">); 
-<a name="l65"><span class="ln">65   </span></a>            String lastLogin = jsonObject.optString(</span><span class="s3">&quot;last_login&quot;</span><span class="s1">); 
-<a name="l66"><span class="ln">66   </span></a> 
+<a name="l53"><span class="ln">53   </span></a>        atOnline atOnline = </span><span class="s0">new </span><span class="s1">atOnline(registrationUrl, params, mainContext); 
+<a name="l54"><span class="ln">54   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l55"><span class="ln">55   </span></a>            result = atOnline.execute().get(); 
+<a name="l56"><span class="ln">56   </span></a>        } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
+<a name="l57"><span class="ln">57   </span></a>            e.printStackTrace(); 
+<a name="l58"><span class="ln">58   </span></a>        } </span><span class="s0">catch </span><span class="s1">(ExecutionException e) { 
+<a name="l59"><span class="ln">59   </span></a>            e.printStackTrace(); 
+<a name="l60"><span class="ln">60   </span></a>        } 
+<a name="l61"><span class="ln">61   </span></a> 
+<a name="l62"><span class="ln">62   </span></a> 
+<a name="l63"><span class="ln">63   </span></a>        </span><span class="s0">return </span><span class="s1">result; 
+<a name="l64"><span class="ln">64   </span></a> 
+<a name="l65"><span class="ln">65   </span></a> 
+<a name="l66"><span class="ln">66   </span></a>    } 
 <a name="l67"><span class="ln">67   </span></a> 
-<a name="l68"><span class="ln">68   </span></a> 
-<a name="l69"><span class="ln">69   </span></a>            dbUser.deleteAll(dbUser.</span><span class="s0">class</span><span class="s1">); 
-<a name="l70"><span class="ln">70   </span></a> 
-<a name="l71"><span class="ln">71   </span></a>            dbUser user = </span><span class="s0">new </span><span class="s1">dbUser(); 
-<a name="l72"><span class="ln">72   </span></a>            user.vorname = Firstname; 
-<a name="l73"><span class="ln">73   </span></a>            user.nachname = Lastname; 
-<a name="l74"><span class="ln">74   </span></a>            user.loggedIn = </span><span class="s0">true</span><span class="s1">; 
-<a name="l75"><span class="ln">75   </span></a>            user.stufe = Stufe; 
-<a name="l76"><span class="ln">76   </span></a>            user.lastAppOpen = lastAppLogin; 
-<a name="l77"><span class="ln">77   </span></a>            user.lastServerConnection = lastLogin; 
-<a name="l78"><span class="ln">78   </span></a>            user.benutzername = Benutzername; 
-<a name="l79"><span class="ln">79   </span></a>            user.save(); 
-<a name="l80"><span class="ln">80   </span></a> 
-<a name="l81"><span class="ln">81   </span></a> 
-<a name="l82"><span class="ln">82   </span></a>            Toast.makeText(mainContext, </span><span class="s3">&quot;Herzlich Willkommen &quot;</span><span class="s1">+Firstname+</span><span class="s3">&quot; &quot;</span><span class="s1">+Lastname+</span><span class="s3">&quot; &quot;</span><span class="s1">,Toast.LENGTH_SHORT).show(); 
-<a name="l83"><span class="ln">83   </span></a>            </span><span class="s0">return </span><span class="s1">user; 
-<a name="l84"><span class="ln">84   </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
-<a name="l85"><span class="ln">85   </span></a>            e.printStackTrace(); 
-<a name="l86"><span class="ln">86   </span></a>            Toast.makeText(mainContext, </span><span class="s3">&quot;Irgendwas ist schief gelaufen...&quot;</span><span class="s1">,Toast.LENGTH_SHORT).show(); 
-<a name="l87"><span class="ln">87   </span></a> 
-<a name="l88"><span class="ln">88   </span></a>        } 
-<a name="l89"><span class="ln">89   </span></a>        </span><span class="s0">return null</span><span class="s1">; 
-<a name="l90"><span class="ln">90   </span></a>    } 
-<a name="l91"><span class="ln">91   </span></a>    </span><span class="s0">public </span><span class="s1">Date fromStringtoDate (String stringDate){ 
-<a name="l92"><span class="ln">92   </span></a> 
-<a name="l93"><span class="ln">93   </span></a>        SimpleDateFormat format = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s3">&quot;yyyy-MM-dd' 'HH:mm:ss''&quot;</span><span class="s1">); 
-<a name="l94"><span class="ln">94   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l95"><span class="ln">95   </span></a>            Date date = format.parse(stringDate); 
-<a name="l96"><span class="ln">96   </span></a>            </span><span class="s0">return </span><span class="s1">date; 
-<a name="l97"><span class="ln">97   </span></a>        } </span><span class="s0">catch </span><span class="s1">(ParseException e) { 
-<a name="l98"><span class="ln">98   </span></a>            e.printStackTrace(); 
-<a name="l99"><span class="ln">99   </span></a>            </span><span class="s0">return null</span><span class="s1">; 
-<a name="l100"><span class="ln">100  </span></a>        } 
-<a name="l101"><span class="ln">101  </span></a>    } 
-<a name="l102"><span class="ln">102  </span></a> 
-<a name="l103"><span class="ln">103  </span></a>    </span><span class="s0">public </span><span class="s1">dbUser getActiveUser(){ 
-<a name="l104"><span class="ln">104  </span></a>       List&lt;dbUser&gt; userList = dbUser.find(dbUser.</span><span class="s0">class</span><span class="s1">,</span><span class="s3">&quot;logged_In = ?&quot;</span><span class="s1">,</span><span class="s3">&quot;1&quot;</span><span class="s1">); 
-<a name="l105"><span class="ln">105  </span></a>        </span><span class="s0">if </span><span class="s1">(userList.size()==</span><span class="s4">1</span><span class="s1">){ 
-<a name="l106"><span class="ln">106  </span></a>            dbUser user = userList.get(</span><span class="s4">0</span><span class="s1">); 
-<a name="l107"><span class="ln">107  </span></a>            </span><span class="s0">return </span><span class="s1">user; 
-<a name="l108"><span class="ln">108  </span></a>        }</span><span class="s0">else </span><span class="s1">{ 
-<a name="l109"><span class="ln">109  </span></a>            </span><span class="s0">return null</span><span class="s1">; 
-<a name="l110"><span class="ln">110  </span></a>        } 
-<a name="l111"><span class="ln">111  </span></a>    } 
-<a name="l112"><span class="ln">112  </span></a>    </span><span class="s0">public </span><span class="s1">String getUsername(){ 
-<a name="l113"><span class="ln">113  </span></a>        dbUser user = getActiveUser(); 
-<a name="l114"><span class="ln">114  </span></a>        </span><span class="s0">return </span><span class="s1">user.benutzername; 
-<a name="l115"><span class="ln">115  </span></a>    } 
-<a name="l116"><span class="ln">116  </span></a>    </span><span class="s0">public void  </span><span class="s1">savePass(String pass){ 
-<a name="l117"><span class="ln">117  </span></a>        prefs =mainContext.getSharedPreferences(</span><span class="s3">&quot;leon.bms&quot;</span><span class="s1">, Context.MODE_PRIVATE); 
-<a name="l118"><span class="ln">118  </span></a>        prefs.edit().clear(); 
-<a name="l119"><span class="ln">119  </span></a>        prefs.edit().putString(</span><span class="s3">&quot;PASS&quot;</span><span class="s1">,pass).apply(); 
-<a name="l120"><span class="ln">120  </span></a>    } 
-<a name="l121"><span class="ln">121  </span></a>    </span><span class="s0">public </span><span class="s1">String getPass(){ 
-<a name="l122"><span class="ln">122  </span></a>        prefs =mainContext.getSharedPreferences(</span><span class="s3">&quot;leon.bms&quot;</span><span class="s1">, Context.MODE_PRIVATE); 
-<a name="l123"><span class="ln">123  </span></a>        </span><span class="s0">return </span><span class="s1">prefs.getString(</span><span class="s3">&quot;PASS&quot;</span><span class="s1">,</span><span class="s3">&quot;Ardaturan99&quot;</span><span class="s1">); 
-<a name="l124"><span class="ln">124  </span></a>    } 
-<a name="l125"><span class="ln">125  </span></a> 
-<a name="l126"><span class="ln">126  </span></a>} 
-<a name="l127"><span class="ln">127  </span></a></span></pre>
+<a name="l68"><span class="ln">68   </span></a>    </span><span class="s2">/** 
+<a name="l69"><span class="ln">69   </span></a>     * </span><span class="s3">@param </span><span class="s2">result beinhaltet die JSON Daten des User 
+<a name="l70"><span class="ln">70   </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt den erstellten User zurück 
+<a name="l71"><span class="ln">71   </span></a>     * </span><span class="s3">@createUser </span><span class="s2">erstellt den user anhand der JSON Daten die man vom Server bekommt 
+<a name="l72"><span class="ln">72   </span></a>     * Speichert den username,vorname,nachname,stufe,zuletztaktualisiert in die Datenbank. 
+<a name="l73"><span class="ln">73   </span></a>     */</span><span class="s1"> 
+<a name="l74"><span class="ln">74   </span></a>    </span><span class="s0">public </span><span class="s1">dbUser createUser(String result) { 
+<a name="l75"><span class="ln">75   </span></a> 
+<a name="l76"><span class="ln">76   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l77"><span class="ln">77   </span></a>            JSONObject jsonObject = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
+<a name="l78"><span class="ln">78   </span></a>            </span><span class="s2">// json to String</span><span class="s1"> 
+<a name="l79"><span class="ln">79   </span></a>            String Benutzername = jsonObject.optString(</span><span class="s4">&quot;login&quot;</span><span class="s1">); 
+<a name="l80"><span class="ln">80   </span></a>            String Firstname = jsonObject.optString(</span><span class="s4">&quot;firstname&quot;</span><span class="s1">); 
+<a name="l81"><span class="ln">81   </span></a>            String Stufe = jsonObject.optString(</span><span class="s4">&quot;stufe&quot;</span><span class="s1">); 
+<a name="l82"><span class="ln">82   </span></a>            String Lastname = jsonObject.optString(</span><span class="s4">&quot;lastname&quot;</span><span class="s1">); 
+<a name="l83"><span class="ln">83   </span></a>            String lastAppLogin = jsonObject.optString(</span><span class="s4">&quot;last_app_login&quot;</span><span class="s1">); 
+<a name="l84"><span class="ln">84   </span></a>            String lastLogin = jsonObject.optString(</span><span class="s4">&quot;last_login&quot;</span><span class="s1">); 
+<a name="l85"><span class="ln">85   </span></a> 
+<a name="l86"><span class="ln">86   </span></a> 
+<a name="l87"><span class="ln">87   </span></a>            dbUser.deleteAll(dbUser.</span><span class="s0">class</span><span class="s1">); 
+<a name="l88"><span class="ln">88   </span></a> 
+<a name="l89"><span class="ln">89   </span></a>            dbUser user = </span><span class="s0">new </span><span class="s1">dbUser(); 
+<a name="l90"><span class="ln">90   </span></a>            user.vorname = Firstname; 
+<a name="l91"><span class="ln">91   </span></a>            user.nachname = Lastname; 
+<a name="l92"><span class="ln">92   </span></a>            user.loggedIn = </span><span class="s0">true</span><span class="s1">; 
+<a name="l93"><span class="ln">93   </span></a>            user.stufe = Stufe; 
+<a name="l94"><span class="ln">94   </span></a>            user.lastAppOpen = lastAppLogin; 
+<a name="l95"><span class="ln">95   </span></a>            user.lastServerConnection = lastLogin; 
+<a name="l96"><span class="ln">96   </span></a>            user.benutzername = Benutzername; 
+<a name="l97"><span class="ln">97   </span></a>            user.save(); 
+<a name="l98"><span class="ln">98   </span></a> 
+<a name="l99"><span class="ln">99   </span></a> 
+<a name="l100"><span class="ln">100  </span></a>            Toast.makeText(mainContext, </span><span class="s4">&quot;Herzlich Willkommen &quot; </span><span class="s1">+ Firstname + </span><span class="s4">&quot; &quot; </span><span class="s1">+ Lastname + </span><span class="s4">&quot; &quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+<a name="l101"><span class="ln">101  </span></a>            </span><span class="s0">return </span><span class="s1">user; 
+<a name="l102"><span class="ln">102  </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
+<a name="l103"><span class="ln">103  </span></a>            e.printStackTrace(); 
+<a name="l104"><span class="ln">104  </span></a>            </span><span class="s2">//error message beim parsen</span><span class="s1"> 
+<a name="l105"><span class="ln">105  </span></a>            Toast.makeText(mainContext, </span><span class="s4">&quot;Irgendwas ist schief gelaufen...&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+<a name="l106"><span class="ln">106  </span></a> 
+<a name="l107"><span class="ln">107  </span></a>        } 
+<a name="l108"><span class="ln">108  </span></a>        </span><span class="s0">return null</span><span class="s1">; 
+<a name="l109"><span class="ln">109  </span></a>    } 
+<a name="l110"><span class="ln">110  </span></a> 
+<a name="l111"><span class="ln">111  </span></a>    </span><span class="s2">/** 
+<a name="l112"><span class="ln">112  </span></a>     * </span><span class="s3">@param </span><span class="s2">stringDate ist das Datum als String 
+<a name="l113"><span class="ln">113  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt den String als Datum zurück 
+<a name="l114"><span class="ln">114  </span></a>     * </span><span class="s3">@fromStringtoDate </span><span class="s2">Methode zum parsen vom String zu einem Date 
+<a name="l115"><span class="ln">115  </span></a>     */</span><span class="s1"> 
+<a name="l116"><span class="ln">116  </span></a>    </span><span class="s0">public </span><span class="s1">Date fromStringtoDate(String stringDate) { 
+<a name="l117"><span class="ln">117  </span></a> 
+<a name="l118"><span class="ln">118  </span></a>        SimpleDateFormat format = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s4">&quot;yyyy-MM-dd' 'HH:mm:ss''&quot;</span><span class="s1">); 
+<a name="l119"><span class="ln">119  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l120"><span class="ln">120  </span></a>            Date date = format.parse(stringDate); 
+<a name="l121"><span class="ln">121  </span></a>            </span><span class="s0">return </span><span class="s1">date; 
+<a name="l122"><span class="ln">122  </span></a>        } </span><span class="s0">catch </span><span class="s1">(ParseException e) { 
+<a name="l123"><span class="ln">123  </span></a>            e.printStackTrace(); 
+<a name="l124"><span class="ln">124  </span></a>            </span><span class="s0">return null</span><span class="s1">; 
+<a name="l125"><span class="ln">125  </span></a>        } 
+<a name="l126"><span class="ln">126  </span></a>    } 
+<a name="l127"><span class="ln">127  </span></a> 
+<a name="l128"><span class="ln">128  </span></a>    </span><span class="s2">/** 
+<a name="l129"><span class="ln">129  </span></a>     * </span><span class="s3">@return </span><span class="s2">wenn kein user eingeloggt ist dann null sonst den aktuelle User 
+<a name="l130"><span class="ln">130  </span></a>     * </span><span class="s3">@getActiveUser </span><span class="s2">gibt den aktuellenUser zurück der gerade eingeloggt ist. 
+<a name="l131"><span class="ln">131  </span></a>     */</span><span class="s1"> 
+<a name="l132"><span class="ln">132  </span></a>    </span><span class="s0">public </span><span class="s1">dbUser getActiveUser() { 
+<a name="l133"><span class="ln">133  </span></a>        List&lt;dbUser&gt; userList = dbUser.find(dbUser.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;logged_In = ?&quot;</span><span class="s1">, </span><span class="s4">&quot;1&quot;</span><span class="s1">); 
+<a name="l134"><span class="ln">134  </span></a>        </span><span class="s0">if </span><span class="s1">(userList.size() == </span><span class="s5">1</span><span class="s1">) { 
+<a name="l135"><span class="ln">135  </span></a>            dbUser user = userList.get(</span><span class="s5">0</span><span class="s1">); 
+<a name="l136"><span class="ln">136  </span></a>            </span><span class="s0">return </span><span class="s1">user; 
+<a name="l137"><span class="ln">137  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l138"><span class="ln">138  </span></a>            </span><span class="s0">return null</span><span class="s1">; 
+<a name="l139"><span class="ln">139  </span></a>        } 
+<a name="l140"><span class="ln">140  </span></a>    } 
+<a name="l141"><span class="ln">141  </span></a> 
+<a name="l142"><span class="ln">142  </span></a>    </span><span class="s2">/** 
+<a name="l143"><span class="ln">143  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt den aktuelle Usernamen des Users zurück 
+<a name="l144"><span class="ln">144  </span></a>     */</span><span class="s1"> 
+<a name="l145"><span class="ln">145  </span></a>    </span><span class="s0">public </span><span class="s1">String getUsername() { 
+<a name="l146"><span class="ln">146  </span></a>        dbUser user = getActiveUser(); 
+<a name="l147"><span class="ln">147  </span></a>        </span><span class="s0">if </span><span class="s1">(user == </span><span class="s0">null</span><span class="s1">) { 
+<a name="l148"><span class="ln">148  </span></a>            </span><span class="s0">return null</span><span class="s1">; 
+<a name="l149"><span class="ln">149  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l150"><span class="ln">150  </span></a>            </span><span class="s0">return </span><span class="s1">user.benutzername; 
+<a name="l151"><span class="ln">151  </span></a>        } 
+<a name="l152"><span class="ln">152  </span></a>    } 
+<a name="l153"><span class="ln">153  </span></a> 
+<a name="l154"><span class="ln">154  </span></a>    </span><span class="s2">/** 
+<a name="l155"><span class="ln">155  </span></a>     * </span><span class="s3">@param </span><span class="s2">pass ist das Passwort als String 
+<a name="l156"><span class="ln">156  </span></a>     * </span><span class="s3">@savePass </span><span class="s2">wird benötigt um das Passswort zuspeichern um es nicht als Klartext im der Datenbank zu speichern, wird es 
+<a name="l157"><span class="ln">157  </span></a>     * hier über die savepreferences gespeichert 
+<a name="l158"><span class="ln">158  </span></a>     */</span><span class="s1"> 
+<a name="l159"><span class="ln">159  </span></a>    </span><span class="s0">public void </span><span class="s1">savePass(String pass) { 
+<a name="l160"><span class="ln">160  </span></a>        prefs = mainContext.getSharedPreferences(</span><span class="s4">&quot;leon.bms&quot;</span><span class="s1">, Context.MODE_PRIVATE); 
+<a name="l161"><span class="ln">161  </span></a>        prefs.edit().clear(); 
+<a name="l162"><span class="ln">162  </span></a>        prefs.edit().putString(</span><span class="s4">&quot;PASS&quot;</span><span class="s1">, pass).apply(); 
+<a name="l163"><span class="ln">163  </span></a>    } 
+<a name="l164"><span class="ln">164  </span></a> 
+<a name="l165"><span class="ln">165  </span></a>    </span><span class="s2">/** 
+<a name="l166"><span class="ln">166  </span></a>     * </span><span class="s3">@return </span><span class="s2">lädt das passwort 
+<a name="l167"><span class="ln">167  </span></a>     */</span><span class="s1"> 
+<a name="l168"><span class="ln">168  </span></a>    </span><span class="s0">public </span><span class="s1">String getPass() { 
+<a name="l169"><span class="ln">169  </span></a>        prefs = mainContext.getSharedPreferences(</span><span class="s4">&quot;leon.bms&quot;</span><span class="s1">, Context.MODE_PRIVATE); 
+<a name="l170"><span class="ln">170  </span></a>        </span><span class="s0">return </span><span class="s1">prefs.getString(</span><span class="s4">&quot;PASS&quot;</span><span class="s1">, </span><span class="s4">&quot;-&quot;</span><span class="s1">); 
+<a name="l171"><span class="ln">171  </span></a>    } 
+<a name="l172"><span class="ln">172  </span></a> 
+<a name="l173"><span class="ln">173  </span></a>} 
+<a name="l174"><span class="ln">174  </span></a></span></pre>
 </body>
 </html>

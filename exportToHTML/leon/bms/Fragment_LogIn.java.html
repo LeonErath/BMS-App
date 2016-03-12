@@ -7,8 +7,9 @@
 .s0 { color: rgb(0,0,128); font-weight: bold; }
 .s1 { }
 .s2 { color: rgb(128,128,128); font-style: italic; }
-.s3 { color: rgb(0,128,0); font-weight: bold; }
-.s4 { color: rgb(0,0,255); }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
 </style>
 </head>
 <BODY BGCOLOR="#ffffff">
@@ -33,91 +34,221 @@ Fragment_LogIn.java</FONT>
 <a name="l12"><span class="ln">12   </span></a></span><span class="s0">import </span><span class="s1">android.widget.EditText; 
 <a name="l13"><span class="ln">13   </span></a></span><span class="s0">import </span><span class="s1">android.widget.Toast; 
 <a name="l14"><span class="ln">14   </span></a> 
-<a name="l15"><span class="ln">15   </span></a></span><span class="s2">/** 
-<a name="l16"><span class="ln">16   </span></a> * Created by Leon E on 13.11.2015. 
-<a name="l17"><span class="ln">17   </span></a> */</span><span class="s1"> 
-<a name="l18"><span class="ln">18   </span></a></span><span class="s0">public class </span><span class="s1">Fragment_LogIn </span><span class="s0">extends </span><span class="s1">Fragment { 
-<a name="l19"><span class="ln">19   </span></a>    EditText user; 
-<a name="l20"><span class="ln">20   </span></a>    EditText pass; 
-<a name="l21"><span class="ln">21   </span></a>    String User; 
-<a name="l22"><span class="ln">22   </span></a>    String Pass; 
-<a name="l23"><span class="ln">23   </span></a>    Button btnLogIn; 
-<a name="l24"><span class="ln">24   </span></a> 
-<a name="l25"><span class="ln">25   </span></a>    @Nullable 
-<a name="l26"><span class="ln">26   </span></a>    @Override 
-<a name="l27"><span class="ln">27   </span></a>    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { 
-<a name="l28"><span class="ln">28   </span></a>        </span><span class="s0">return </span><span class="s1">inflater.inflate(R.layout.fragment_login,container,</span><span class="s0">false</span><span class="s1">); 
-<a name="l29"><span class="ln">29   </span></a>    } 
-<a name="l30"><span class="ln">30   </span></a> 
-<a name="l31"><span class="ln">31   </span></a>    @Override 
-<a name="l32"><span class="ln">32   </span></a>    </span><span class="s0">public void </span><span class="s1">onViewCreated(View view, @Nullable </span><span class="s0">final </span><span class="s1">Bundle savedInstanceState) { 
-<a name="l33"><span class="ln">33   </span></a>        </span><span class="s0">super</span><span class="s1">.onViewCreated(view, savedInstanceState); 
-<a name="l34"><span class="ln">34   </span></a> 
-<a name="l35"><span class="ln">35   </span></a>        user = (EditText) view.findViewById(R.id.editText); 
-<a name="l36"><span class="ln">36   </span></a>        pass = (EditText) view.findViewById(R.id.editText2); 
-<a name="l37"><span class="ln">37   </span></a> 
-<a name="l38"><span class="ln">38   </span></a>        user.setText(</span><span class="s3">&quot;erath&quot;</span><span class="s1">); 
-<a name="l39"><span class="ln">39   </span></a>        pass.setText(</span><span class="s3">&quot;Ardaturan99&quot;</span><span class="s1">); 
+<a name="l15"><span class="ln">15   </span></a></span><span class="s0">import </span><span class="s1">org.json.JSONException; 
+<a name="l16"><span class="ln">16   </span></a></span><span class="s0">import </span><span class="s1">org.json.JSONObject; 
+<a name="l17"><span class="ln">17   </span></a> 
+<a name="l18"><span class="ln">18   </span></a></span><span class="s2">/** 
+<a name="l19"><span class="ln">19   </span></a> * Created by Leon E on 13.11.2015. 
+<a name="l20"><span class="ln">20   </span></a> */</span><span class="s1"> 
+<a name="l21"><span class="ln">21   </span></a> 
+<a name="l22"><span class="ln">22   </span></a></span><span class="s2">/** 
+<a name="l23"><span class="ln">23   </span></a> * </span><span class="s3">@Fragment_LogIN </span><span class="s2">ist ein Fragment , welches den LogIn behandelt sowie das nach potentiellen 
+<a name="l24"><span class="ln">24   </span></a> * Daten updates zu kümmern. Dieses Fragment wird immer beim ersten Start der App gezeigt. Es sorgt 
+<a name="l25"><span class="ln">25   </span></a> * für einen sicheren Login und leitet einen dann dementsprechend weiter ob der User schon seinen 
+<a name="l26"><span class="ln">26   </span></a> * Stundenplan erstellt hat oder nicht. 
+<a name="l27"><span class="ln">27   </span></a> */</span><span class="s1"> 
+<a name="l28"><span class="ln">28   </span></a></span><span class="s0">public class </span><span class="s1">Fragment_LogIn </span><span class="s0">extends </span><span class="s1">Fragment { 
+<a name="l29"><span class="ln">29   </span></a> 
+<a name="l30"><span class="ln">30   </span></a>    </span><span class="s2">// defining the Views</span><span class="s1"> 
+<a name="l31"><span class="ln">31   </span></a>    EditText user; 
+<a name="l32"><span class="ln">32   </span></a>    EditText pass; 
+<a name="l33"><span class="ln">33   </span></a>    EditText stufe; 
+<a name="l34"><span class="ln">34   </span></a>    String User; 
+<a name="l35"><span class="ln">35   </span></a>    String Pass; 
+<a name="l36"><span class="ln">36   </span></a>    Button btnLogIn; 
+<a name="l37"><span class="ln">37   </span></a>    String Stufe; 
+<a name="l38"><span class="ln">38   </span></a>    String result; 
+<a name="l39"><span class="ln">39   </span></a>    </span><span class="s0">private static final </span><span class="s1">String TAG = Fragment_LogIn.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
 <a name="l40"><span class="ln">40   </span></a> 
-<a name="l41"><span class="ln">41   </span></a>        btnLogIn = (Button) view.findViewById(R.id.LogIn); 
-<a name="l42"><span class="ln">42   </span></a> 
-<a name="l43"><span class="ln">43   </span></a> 
-<a name="l44"><span class="ln">44   </span></a> 
-<a name="l45"><span class="ln">45   </span></a>        btnLogIn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
-<a name="l46"><span class="ln">46   </span></a>            @Override 
-<a name="l47"><span class="ln">47   </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
-<a name="l48"><span class="ln">48   </span></a>                </span><span class="s0">if </span><span class="s1">(isEmpty(user)==</span><span class="s0">false </span><span class="s1">&amp;&amp; isEmpty(pass)==</span><span class="s0">false</span><span class="s1">){ 
-<a name="l49"><span class="ln">49   </span></a> 
-<a name="l50"><span class="ln">50   </span></a>                User = user.getText().toString(); 
-<a name="l51"><span class="ln">51   </span></a>                Pass = pass.getText().toString(); 
-<a name="l52"><span class="ln">52   </span></a>                </span><span class="s2">//login website</span><span class="s1"> 
-<a name="l53"><span class="ln">53   </span></a>                    LogInController logInController=</span><span class="s0">new </span><span class="s1">LogInController(getActivity()); 
-<a name="l54"><span class="ln">54   </span></a>                    String result = logInController.login(User, Pass, </span><span class="s3">&quot;Q2&quot;</span><span class="s1">); 
-<a name="l55"><span class="ln">55   </span></a>                    </span><span class="s0">if </span><span class="s1">(result==</span><span class="s3">&quot;Error&quot;</span><span class="s1">){ 
-<a name="l56"><span class="ln">56   </span></a>                        Toast.makeText(getActivity(),</span><span class="s3">&quot;Login fehlgeschlagen..&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
-<a name="l57"><span class="ln">57   </span></a>                    }</span><span class="s0">else </span><span class="s1">{ 
-<a name="l58"><span class="ln">58   </span></a>                        Log.d(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s1">, </span><span class="s3">&quot;Login erfolgreich!&quot;</span><span class="s1">); 
-<a name="l59"><span class="ln">59   </span></a> 
-<a name="l60"><span class="ln">60   </span></a>                        dbUser user = logInController.createUser(result); 
-<a name="l61"><span class="ln">61   </span></a>                        </span><span class="s0">if </span><span class="s1">(user != </span><span class="s0">null</span><span class="s1">){ 
-<a name="l62"><span class="ln">62   </span></a> 
-<a name="l63"><span class="ln">63   </span></a>                            Log.d(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s1">, </span><span class="s3">&quot;User wurde erstellt.&quot;</span><span class="s1">); 
-<a name="l64"><span class="ln">64   </span></a>                            logInController.savePass(Pass); 
-<a name="l65"><span class="ln">65   </span></a> 
-<a name="l66"><span class="ln">66   </span></a>                            StundenplanController stundenplanController = </span><span class="s0">new </span><span class="s1">StundenplanController(getActivity()); 
-<a name="l67"><span class="ln">67   </span></a> 
-<a name="l68"><span class="ln">68   </span></a>                            stundenplanController.checkUpdate(); 
-<a name="l69"><span class="ln">69   </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(),KursauswahlActivity.</span><span class="s0">class</span><span class="s1">); 
-<a name="l70"><span class="ln">70   </span></a>                            startActivity(intent); 
-<a name="l71"><span class="ln">71   </span></a> 
-<a name="l72"><span class="ln">72   </span></a>                        }</span><span class="s0">else</span><span class="s1">{ 
-<a name="l73"><span class="ln">73   </span></a>                            Log.d(</span><span class="s3">&quot;LOGIN&quot;</span><span class="s1">, </span><span class="s3">&quot;User konnte nicht erstellt werden.&quot;</span><span class="s1">); 
-<a name="l74"><span class="ln">74   </span></a>                        } 
-<a name="l75"><span class="ln">75   </span></a> 
-<a name="l76"><span class="ln">76   </span></a>                    } 
-<a name="l77"><span class="ln">77   </span></a> 
-<a name="l78"><span class="ln">78   </span></a>                    } </span><span class="s0">else </span><span class="s1">{ 
-<a name="l79"><span class="ln">79   </span></a>                       </span><span class="s2">// Benutzer oder User feld Leer</span><span class="s1"> 
-<a name="l80"><span class="ln">80   </span></a>                    Toast.makeText(getActivity(),</span><span class="s3">&quot;Bitte Username und Passwort eingeben&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
-<a name="l81"><span class="ln">81   </span></a>                    } 
-<a name="l82"><span class="ln">82   </span></a>                } 
-<a name="l83"><span class="ln">83   </span></a> 
-<a name="l84"><span class="ln">84   </span></a> 
-<a name="l85"><span class="ln">85   </span></a>        }); 
-<a name="l86"><span class="ln">86   </span></a> 
-<a name="l87"><span class="ln">87   </span></a> 
-<a name="l88"><span class="ln">88   </span></a>    } 
-<a name="l89"><span class="ln">89   </span></a> 
-<a name="l90"><span class="ln">90   </span></a>    </span><span class="s0">private boolean </span><span class="s1">isEmpty(EditText etText) { 
-<a name="l91"><span class="ln">91   </span></a>        </span><span class="s0">return </span><span class="s1">etText.getText().toString().trim().length() == </span><span class="s4">0</span><span class="s1">; 
-<a name="l92"><span class="ln">92   </span></a>    } 
-<a name="l93"><span class="ln">93   </span></a> 
-<a name="l94"><span class="ln">94   </span></a> 
-<a name="l95"><span class="ln">95   </span></a> 
-<a name="l96"><span class="ln">96   </span></a> 
-<a name="l97"><span class="ln">97   </span></a> 
-<a name="l98"><span class="ln">98   </span></a> 
-<a name="l99"><span class="ln">99   </span></a>} 
-<a name="l100"><span class="ln">100  </span></a></span></pre>
+<a name="l41"><span class="ln">41   </span></a>    @Nullable 
+<a name="l42"><span class="ln">42   </span></a>    @Override 
+<a name="l43"><span class="ln">43   </span></a>    </span><span class="s0">public </span><span class="s1">View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { 
+<a name="l44"><span class="ln">44   </span></a>        </span><span class="s0">return </span><span class="s1">inflater.inflate(R.layout.fragment_login, container, </span><span class="s0">false</span><span class="s1">); 
+<a name="l45"><span class="ln">45   </span></a>    } 
+<a name="l46"><span class="ln">46   </span></a> 
+<a name="l47"><span class="ln">47   </span></a> 
+<a name="l48"><span class="ln">48   </span></a>    </span><span class="s2">/** 
+<a name="l49"><span class="ln">49   </span></a>     * </span><span class="s3">@onViewCreated </span><span class="s2">beschäftigt sich mit allen Aufgaben des Framentes 
+<a name="l50"><span class="ln">50   </span></a>     */</span><span class="s1"> 
+<a name="l51"><span class="ln">51   </span></a>    @Override 
+<a name="l52"><span class="ln">52   </span></a>    </span><span class="s0">public void </span><span class="s1">onViewCreated(View view, @Nullable </span><span class="s0">final </span><span class="s1">Bundle savedInstanceState) { 
+<a name="l53"><span class="ln">53   </span></a>        </span><span class="s0">super</span><span class="s1">.onViewCreated(view, savedInstanceState); 
+<a name="l54"><span class="ln">54   </span></a> 
+<a name="l55"><span class="ln">55   </span></a> 
+<a name="l56"><span class="ln">56   </span></a>        user = (EditText) view.findViewById(R.id.editText); 
+<a name="l57"><span class="ln">57   </span></a>        pass = (EditText) view.findViewById(R.id.editText2); 
+<a name="l58"><span class="ln">58   </span></a>        stufe = (EditText) view.findViewById(R.id.editText3); 
+<a name="l59"><span class="ln">59   </span></a>        btnLogIn = (Button) view.findViewById(R.id.LogIn); 
+<a name="l60"><span class="ln">60   </span></a> 
+<a name="l61"><span class="ln">61   </span></a>        checkUser(); 
+<a name="l62"><span class="ln">62   </span></a>        </span><span class="s2">/** </span><span class="s3">@setOnClickListener </span><span class="s2">wird ausgelöst wenn der User den LogIn Button clickt 
+<a name="l63"><span class="ln">63   </span></a>         *  die eingegeben Daten des User werden an den LogInController weitergegeben der diese 
+<a name="l64"><span class="ln">64   </span></a>         *  dann überprüft 
+<a name="l65"><span class="ln">65   </span></a>         *      wenn der LogIn korrekt war wird man auf die nächste Activity weitergeleitet 
+<a name="l66"><span class="ln">66   </span></a>         *      wenn der LogIn nicht korrekt war wird es dem User mitgeteilt sodass er darauf 
+<a name="l67"><span class="ln">67   </span></a>         *          reagieren kann 
+<a name="l68"><span class="ln">68   </span></a>         */</span><span class="s1"> 
+<a name="l69"><span class="ln">69   </span></a>        btnLogIn.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+<a name="l70"><span class="ln">70   </span></a>            @Override 
+<a name="l71"><span class="ln">71   </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+<a name="l72"><span class="ln">72   </span></a>                Log.d(TAG, </span><span class="s4">&quot;User login started&quot;</span><span class="s1">); 
+<a name="l73"><span class="ln">73   </span></a>                </span><span class="s2">// erstmal überprüfen ob beide Textfelder für den Benutzername und das Passwort</span><span class="s1"> 
+<a name="l74"><span class="ln">74   </span></a>                </span><span class="s2">// nicht leer sind</span><span class="s1"> 
+<a name="l75"><span class="ln">75   </span></a>                </span><span class="s0">if </span><span class="s1">(isEmpty(user) == </span><span class="s0">false </span><span class="s1">&amp;&amp; isEmpty(pass) == </span><span class="s0">false</span><span class="s1">) { 
+<a name="l76"><span class="ln">76   </span></a>                    Log.d(TAG, </span><span class="s4">&quot;Textfelder nicht leer&quot;</span><span class="s1">); 
+<a name="l77"><span class="ln">77   </span></a>                    User = user.getText().toString(); 
+<a name="l78"><span class="ln">78   </span></a>                    Pass = pass.getText().toString(); 
+<a name="l79"><span class="ln">79   </span></a>                    Stufe = stufe.getText().toString(); 
+<a name="l80"><span class="ln">80   </span></a>                    </span><span class="s2">//login website</span><span class="s1"> 
+<a name="l81"><span class="ln">81   </span></a>                    LogInController logInController = </span><span class="s0">new </span><span class="s1">LogInController(getActivity()); 
+<a name="l82"><span class="ln">82   </span></a>                    </span><span class="s2">// dem LogInConroller werden die Daten der Textfelder übermittelt</span><span class="s1"> 
+<a name="l83"><span class="ln">83   </span></a>                    result = logInController.login(User, Pass, Stufe); 
+<a name="l84"><span class="ln">84   </span></a>                    </span><span class="s2">// Es wird überprüft ob der LogIn korrekt war</span><span class="s1"> 
+<a name="l85"><span class="ln">85   </span></a>                    </span><span class="s0">if </span><span class="s1">(result != </span><span class="s4">&quot;Error&quot;</span><span class="s1">) { 
+<a name="l86"><span class="ln">86   </span></a>                        Log.d(TAG, </span><span class="s4">&quot;Login erfolgreich&quot;</span><span class="s1">); 
+<a name="l87"><span class="ln">87   </span></a>                        </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbUser().checkUser() == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l88"><span class="ln">88   </span></a>                            Log.d(TAG, </span><span class="s4">&quot;User vorhanden&quot;</span><span class="s1">); 
+<a name="l89"><span class="ln">89   </span></a>                            dbUser vorhandenerUser = </span><span class="s0">new </span><span class="s1">dbUser().getUser(); 
+<a name="l90"><span class="ln">90   </span></a>                            JSONObject jsonObject = </span><span class="s0">null</span><span class="s1">; 
+<a name="l91"><span class="ln">91   </span></a>                            </span><span class="s0">try </span><span class="s1">{ 
+<a name="l92"><span class="ln">92   </span></a>                                jsonObject = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
+<a name="l93"><span class="ln">93   </span></a>                            } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
+<a name="l94"><span class="ln">94   </span></a>                                e.printStackTrace(); 
+<a name="l95"><span class="ln">95   </span></a>                            } 
+<a name="l96"><span class="ln">96   </span></a>                            </span><span class="s0">if </span><span class="s1">(jsonObject != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l97"><span class="ln">97   </span></a>                                String Benutzername = jsonObject.optString(</span><span class="s4">&quot;username&quot;</span><span class="s1">); 
+<a name="l98"><span class="ln">98   </span></a>                                Log.d(TAG, </span><span class="s4">&quot;username: &quot; </span><span class="s1">+ Benutzername + </span><span class="s4">&quot; &quot; </span><span class="s1">+ vorhandenerUser.getBenutzername()); 
+<a name="l99"><span class="ln">99   </span></a>                                </span><span class="s0">if </span><span class="s1">(Benutzername.equals(vorhandenerUser.getBenutzername())) { 
+<a name="l100"><span class="ln">100  </span></a>                                    Log.d(TAG, </span><span class="s4">&quot;vorhandener User ist der gleiche wie der angemeldete User&quot;</span><span class="s1">); 
+<a name="l101"><span class="ln">101  </span></a>                                    </span><span class="s0">if </span><span class="s1">(vorhandenerUser.validData == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l102"><span class="ln">102  </span></a>                                        Log.d(TAG, </span><span class="s4">&quot;ValidData = true -&gt; MainActivity&quot;</span><span class="s1">); 
+<a name="l103"><span class="ln">103  </span></a>                                        Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), MainActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l104"><span class="ln">104  </span></a>                                        startActivity(intent); 
+<a name="l105"><span class="ln">105  </span></a>                                        getActivity().finish(); 
+<a name="l106"><span class="ln">106  </span></a>                                    } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l107"><span class="ln">107  </span></a>                                        Log.d(TAG, </span><span class="s4">&quot;ValidData = false -&gt; KursauswahlActivity&quot;</span><span class="s1">); 
+<a name="l108"><span class="ln">108  </span></a>                                        Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), KursauswahlActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l109"><span class="ln">109  </span></a>                                        startActivity(intent); 
+<a name="l110"><span class="ln">110  </span></a>                                        getActivity().finish(); 
+<a name="l111"><span class="ln">111  </span></a>                                    } 
+<a name="l112"><span class="ln">112  </span></a>                                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l113"><span class="ln">113  </span></a>                                    Log.d(TAG, </span><span class="s4">&quot;vorhandener User ist NICHT der gleiche wie der angemeldete&quot;</span><span class="s1">); 
+<a name="l114"><span class="ln">114  </span></a>                                    deleteDB(); 
+<a name="l115"><span class="ln">115  </span></a>                                    dbUser user2 = logInController.createUser(result); 
+<a name="l116"><span class="ln">116  </span></a>                                    </span><span class="s0">if </span><span class="s1">(user2 != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l117"><span class="ln">117  </span></a>                                        </span><span class="s2">// das Passswort des Users wird gespeichert sodass er es nicht beim</span><span class="s1"> 
+<a name="l118"><span class="ln">118  </span></a>                                        </span><span class="s2">// nächsten Login eingeben muss</span><span class="s1"> 
+<a name="l119"><span class="ln">119  </span></a>                                        logInController.savePass(Pass); 
+<a name="l120"><span class="ln">120  </span></a>                                        StundenplanController stundenplanController = </span><span class="s0">new </span><span class="s1">StundenplanController(getActivity()); 
+<a name="l121"><span class="ln">121  </span></a>                                        </span><span class="s2">// es wird geguckt ob neue Updates vorhanden sind</span><span class="s1"> 
+<a name="l122"><span class="ln">122  </span></a>                                        stundenplanController.checkUpdate(); 
+<a name="l123"><span class="ln">123  </span></a>                                        </span><span class="s2">// danach wird der User weitergeleitet auf die Kursauswahl</span><span class="s1"> 
+<a name="l124"><span class="ln">124  </span></a>                                        Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), KursauswahlActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l125"><span class="ln">125  </span></a>                                        startActivity(intent); 
+<a name="l126"><span class="ln">126  </span></a> 
+<a name="l127"><span class="ln">127  </span></a>                                    } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l128"><span class="ln">128  </span></a>                                        Log.d(TAG, </span><span class="s4">&quot;neuer User konnte nicht erstellt werden&quot;</span><span class="s1">); 
+<a name="l129"><span class="ln">129  </span></a>                                    } 
+<a name="l130"><span class="ln">130  </span></a>                                } 
+<a name="l131"><span class="ln">131  </span></a>                            } 
+<a name="l132"><span class="ln">132  </span></a>                        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l133"><span class="ln">133  </span></a>                            Log.d(TAG, </span><span class="s4">&quot;Kein User vorhanden&quot;</span><span class="s1">); 
+<a name="l134"><span class="ln">134  </span></a>                            dbUser user2 = logInController.createUser(result); 
+<a name="l135"><span class="ln">135  </span></a>                            </span><span class="s0">if </span><span class="s1">(user2 != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l136"><span class="ln">136  </span></a> 
+<a name="l137"><span class="ln">137  </span></a>                                </span><span class="s2">// das Passswort des Users wird gespeichert sodass er es nicht beim</span><span class="s1"> 
+<a name="l138"><span class="ln">138  </span></a>                                </span><span class="s2">// nächsten Login eingeben muss</span><span class="s1"> 
+<a name="l139"><span class="ln">139  </span></a>                                logInController.savePass(Pass); 
+<a name="l140"><span class="ln">140  </span></a>                                StundenplanController stundenplanController = </span><span class="s0">new </span><span class="s1">StundenplanController(getActivity()); 
+<a name="l141"><span class="ln">141  </span></a>                                </span><span class="s2">// es wird geguckt ob neue Updates vorhanden sind</span><span class="s1"> 
+<a name="l142"><span class="ln">142  </span></a>                                stundenplanController.checkUpdate(); 
+<a name="l143"><span class="ln">143  </span></a>                                </span><span class="s2">// danach wird der User weitergeleitet auf die Kursauswahl</span><span class="s1"> 
+<a name="l144"><span class="ln">144  </span></a>                                Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), KursauswahlActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l145"><span class="ln">145  </span></a>                                startActivity(intent); 
+<a name="l146"><span class="ln">146  </span></a> 
+<a name="l147"><span class="ln">147  </span></a>                            } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l148"><span class="ln">148  </span></a>                                Log.d(TAG, </span><span class="s4">&quot;neuer User konnte nicht erstellt werden&quot;</span><span class="s1">); 
+<a name="l149"><span class="ln">149  </span></a>                            } 
+<a name="l150"><span class="ln">150  </span></a>                        } 
+<a name="l151"><span class="ln">151  </span></a>                    } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l152"><span class="ln">152  </span></a>                        Log.d(TAG, </span><span class="s4">&quot;Login fehlgeschlagen&quot;</span><span class="s1">); 
+<a name="l153"><span class="ln">153  </span></a>                        Toast.makeText(getActivity(), </span><span class="s4">&quot;Login fehlgeschlagen&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+<a name="l154"><span class="ln">154  </span></a>                    } 
+<a name="l155"><span class="ln">155  </span></a> 
+<a name="l156"><span class="ln">156  </span></a>                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l157"><span class="ln">157  </span></a>                    Log.d(TAG, </span><span class="s4">&quot;Testfelder nicht korrekt&quot;</span><span class="s1">); 
+<a name="l158"><span class="ln">158  </span></a>                    </span><span class="s2">// Benutzer oder User feld Leer</span><span class="s1"> 
+<a name="l159"><span class="ln">159  </span></a>                    Toast.makeText(getActivity(), </span><span class="s4">&quot;Bitte Username und Passwort eingeben&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+<a name="l160"><span class="ln">160  </span></a>                } 
+<a name="l161"><span class="ln">161  </span></a>            } 
+<a name="l162"><span class="ln">162  </span></a> 
+<a name="l163"><span class="ln">163  </span></a> 
+<a name="l164"><span class="ln">164  </span></a>        }); 
+<a name="l165"><span class="ln">165  </span></a> 
+<a name="l166"><span class="ln">166  </span></a> 
+<a name="l167"><span class="ln">167  </span></a>    } 
+<a name="l168"><span class="ln">168  </span></a> 
+<a name="l169"><span class="ln">169  </span></a>    </span><span class="s2">/** 
+<a name="l170"><span class="ln">170  </span></a>     * </span><span class="s3">@checkUser </span><span class="s2">überprüft ob es ein User gibt und in welchem Konfigurationsprozess er sich befindet 
+<a name="l171"><span class="ln">171  </span></a>     */</span><span class="s1"> 
+<a name="l172"><span class="ln">172  </span></a>    </span><span class="s0">public void </span><span class="s1">checkUser() { 
+<a name="l173"><span class="ln">173  </span></a>        Log.d(TAG, </span><span class="s4">&quot;User-Check beginnt&quot;</span><span class="s1">); 
+<a name="l174"><span class="ln">174  </span></a>        </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbUser().checkUser() == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l175"><span class="ln">175  </span></a>            Log.d(TAG, </span><span class="s4">&quot;User vorhanden&quot;</span><span class="s1">); 
+<a name="l176"><span class="ln">176  </span></a>            dbUser vorhandenerUser = </span><span class="s0">new </span><span class="s1">dbUser().getUser(); 
+<a name="l177"><span class="ln">177  </span></a>            </span><span class="s0">if </span><span class="s1">(vorhandenerUser.loggedIn == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l178"><span class="ln">178  </span></a>                Log.d(TAG, </span><span class="s4">&quot;User ist schon angemeldet&quot;</span><span class="s1">); 
+<a name="l179"><span class="ln">179  </span></a>                </span><span class="s0">if </span><span class="s1">(vorhandenerUser.validData != </span><span class="s0">null </span><span class="s1">&amp;&amp; vorhandenerUser.validData == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l180"><span class="ln">180  </span></a>                    Log.d(TAG, </span><span class="s4">&quot;ValidData = true -&gt; MainActivity&quot;</span><span class="s1">); 
+<a name="l181"><span class="ln">181  </span></a>                    Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), MainActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l182"><span class="ln">182  </span></a>                    startActivity(intent); 
+<a name="l183"><span class="ln">183  </span></a>                    getActivity().finish(); 
+<a name="l184"><span class="ln">184  </span></a>                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l185"><span class="ln">185  </span></a>                    Log.d(TAG, </span><span class="s4">&quot;ValidData = false -&gt; KursauswahlActivity&quot;</span><span class="s1">); 
+<a name="l186"><span class="ln">186  </span></a>                    StundenplanController stundenplanController = </span><span class="s0">new </span><span class="s1">StundenplanController(getActivity()); 
+<a name="l187"><span class="ln">187  </span></a>                    stundenplanController.checkUpdate(); 
+<a name="l188"><span class="ln">188  </span></a>                    Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), KursauswahlActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l189"><span class="ln">189  </span></a>                    startActivity(intent); 
+<a name="l190"><span class="ln">190  </span></a>                } 
+<a name="l191"><span class="ln">191  </span></a>            } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l192"><span class="ln">192  </span></a>                Log.d(TAG, </span><span class="s4">&quot;User hat sich vorher abgemeldet&quot;</span><span class="s1">); 
+<a name="l193"><span class="ln">193  </span></a>                pass.setText(</span><span class="s0">new </span><span class="s1">LogInController(getActivity()).getPass()); 
+<a name="l194"><span class="ln">194  </span></a>                user.setText(vorhandenerUser.getBenutzername()); 
+<a name="l195"><span class="ln">195  </span></a>                stufe.setText(vorhandenerUser.getStufe()); 
+<a name="l196"><span class="ln">196  </span></a>            } 
+<a name="l197"><span class="ln">197  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l198"><span class="ln">198  </span></a>            Log.d(TAG, </span><span class="s4">&quot;Kein User vorhanden&quot;</span><span class="s1">); 
+<a name="l199"><span class="ln">199  </span></a>            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), IntroductionActivity.</span><span class="s0">class</span><span class="s1">); 
+<a name="l200"><span class="ln">200  </span></a>            startActivity(intent); 
+<a name="l201"><span class="ln">201  </span></a>            getActivity().finish(); 
+<a name="l202"><span class="ln">202  </span></a>        } 
+<a name="l203"><span class="ln">203  </span></a> 
+<a name="l204"><span class="ln">204  </span></a> 
+<a name="l205"><span class="ln">205  </span></a>    } 
+<a name="l206"><span class="ln">206  </span></a> 
+<a name="l207"><span class="ln">207  </span></a>    </span><span class="s2">/** 
+<a name="l208"><span class="ln">208  </span></a>     * </span><span class="s3">@deleteDB </span><span class="s2">ist für das löschen der Datenbank zuständig falls sich ein neuer User anmeldet 
+<a name="l209"><span class="ln">209  </span></a>     */</span><span class="s1"> 
+<a name="l210"><span class="ln">210  </span></a>    </span><span class="s0">public void </span><span class="s1">deleteDB() { 
+<a name="l211"><span class="ln">211  </span></a>        Log.d(TAG, </span><span class="s4">&quot;Datenbank wurde zurückgesetzt&quot;</span><span class="s1">); 
+<a name="l212"><span class="ln">212  </span></a>        dbUser.deleteAll(dbUser.</span><span class="s0">class</span><span class="s1">); 
+<a name="l213"><span class="ln">213  </span></a>        dbAufgabe.deleteAll(dbAufgabe.</span><span class="s0">class</span><span class="s1">); 
+<a name="l214"><span class="ln">214  </span></a>        dbKurs.deleteAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
+<a name="l215"><span class="ln">215  </span></a>        dbSchulstunde.deleteAll(dbSchulstunde.</span><span class="s0">class</span><span class="s1">); 
+<a name="l216"><span class="ln">216  </span></a>        dbMediaFile.deleteAll(dbMediaFile.</span><span class="s0">class</span><span class="s1">); 
+<a name="l217"><span class="ln">217  </span></a>        dbLehrer.deleteAll(dbLehrer.</span><span class="s0">class</span><span class="s1">); 
+<a name="l218"><span class="ln">218  </span></a>    } 
+<a name="l219"><span class="ln">219  </span></a> 
+<a name="l220"><span class="ln">220  </span></a> 
+<a name="l221"><span class="ln">221  </span></a>    </span><span class="s2">/** 
+<a name="l222"><span class="ln">222  </span></a>     * </span><span class="s3">@isEmpty </span><span class="s2">überprüft ob das Textfeld leer ist 
+<a name="l223"><span class="ln">223  </span></a>     */</span><span class="s1"> 
+<a name="l224"><span class="ln">224  </span></a>    </span><span class="s0">private boolean </span><span class="s1">isEmpty(EditText etText) { 
+<a name="l225"><span class="ln">225  </span></a>        </span><span class="s0">return </span><span class="s1">etText.getText().toString().trim().length() == </span><span class="s5">0</span><span class="s1">; 
+<a name="l226"><span class="ln">226  </span></a>    } 
+<a name="l227"><span class="ln">227  </span></a> 
+<a name="l228"><span class="ln">228  </span></a> 
+<a name="l229"><span class="ln">229  </span></a>} 
+<a name="l230"><span class="ln">230  </span></a></span></pre>
 </body>
 </html>

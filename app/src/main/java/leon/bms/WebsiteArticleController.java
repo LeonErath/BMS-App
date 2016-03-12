@@ -128,10 +128,9 @@ public class WebsiteArticleController {
                 }
 
                 JSONObject custom_fields = einzelnerPost.getJSONObject("custom_fields");
-                JSONArray autorArray = custom_fields.getJSONArray("Autor");
-                for (int k = 0; k < autorArray.length(); k++) {
-                    websiteArtikel.author = autorArray.getString(0);
-                }
+                JSONObject jsonAuthor = einzelnerPost.getJSONObject("author");
+                websiteArtikel.author = jsonAuthor.getString("name");
+
                 //lädt die Bilder herunter mit der zusätzlichen libary
                 JSONArray imageArray = custom_fields.getJSONArray("leadimage");
                 for (int k = 0; k < imageArray.length(); k++) {

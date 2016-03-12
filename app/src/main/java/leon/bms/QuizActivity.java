@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import java.util.List;
+
 /**
  * @QuizActivity ist die Activity für das Verwalten des Quizes sowie das Anzeigen der Fragment für das Quiz.
  */
@@ -15,6 +17,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     int counter = 0;
     String kursid;
     Long themenbereichID;
+    List<quizfragen> quizfragenList;
 
 
     @Override
@@ -94,9 +97,9 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                 }
                 break;
             case 4:
-                if (themenbereichID != null) {
+                if (themenbereichID != null && quizfragenList != null && quizfragenList.size() != 0) {
                     // und nach dem Quiz wird das Ergebnis angezeigt
-                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID);
+                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID,quizfragenList);
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
 
                     // Replace whatever is in the fragment_container view with this fragment,
@@ -173,9 +176,11 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
 
 
     @Override
-    public void Fragment_QuizFrageShowErgebnis(long themenbereichID) {
+    public void Fragment_QuizFrageShowErgebnis(long themenbereichID, List<quizfragen> quizfragenList) {
         this.themenbereichID = themenbereichID;
+        this.quizfragenList = quizfragenList;
         next();
+
     }
 
     @Override

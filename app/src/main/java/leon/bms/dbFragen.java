@@ -26,6 +26,7 @@ public class dbFragen extends SugarRecord {
     String path;
     int serverid;
     int richtigCounter;
+    int falschCounter;
     int schwirigkeit;
     String langfassung;
     String date;
@@ -39,16 +40,43 @@ public class dbFragen extends SugarRecord {
         //empty Constructor needed!
     }
 
-    public dbFragen(String frage, String path, int idLocal, int richtigCounter, int schwirigkeit, String langfassung, dbKurs kurs, dbAntworten antworten, dbThemenbereich themenbereich) {
+    public dbFragen(String frage, String path, int serverid, int richtigCounter, int falschCounter, int schwirigkeit, String langfassung, String date, String stufe, dbKurs kurs, dbAntworten antworten, dbThemenbereich themenbereich) {
         this.frage = frage;
         this.path = path;
-        this.serverid = idLocal;
+        this.serverid = serverid;
         this.richtigCounter = richtigCounter;
+        this.falschCounter = falschCounter;
         this.schwirigkeit = schwirigkeit;
         this.langfassung = langfassung;
+        this.date = date;
+        this.stufe = stufe;
         this.kurs = kurs;
         this.antworten = antworten;
         this.themenbereich = themenbereich;
+    }
+
+    public int getFalschCounter() {
+        return falschCounter;
+    }
+
+    public void setFalschCounter(int falschCounter) {
+        this.falschCounter = falschCounter;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getStufe() {
+        return stufe;
+    }
+
+    public void setStufe(String stufe) {
+        this.stufe = stufe;
     }
 
     public String getLangfassung() {

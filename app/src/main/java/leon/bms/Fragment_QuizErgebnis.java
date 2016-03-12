@@ -3,6 +3,9 @@ package leon.bms;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,22 +20,27 @@ import java.util.List;
  * welches der USer abgeschlossen hat. Anhand der Fragen wird das Ergebnis berechnet wie viele Richtig
  * oder Falsch waren sowie die Schwierigkeit mit einbezogen.
  */
-public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListener {
+public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListener, QuizErgebnisAdapter.ViewHolder.ClickListener {
 
     //Listener für das zurück gehen
     private OnFragmentInteractionListener mListener;
     // views
+    RecyclerView recyclerView;
     TextView textViewName, textViewStufe, textViewThemenbereich, textViewRichtig, textViewFalsch;
     // themenbereich den man abgeschlossen hat
     Long themenbereichID;
     ImageView imageViewCancel;
     List<dbFragen> fragenList;
+    List<quizfragen> quizfragenList;
 
-    public Fragment_QuizErgebnis(long themenbereichID) {
+
+    public Fragment_QuizErgebnis(long themenbereichID,List<quizfragen> quizfragenList) {
         this.themenbereichID = themenbereichID;
+        this.quizfragenList = quizfragenList;
     }
 
-    public Fragment_QuizErgebnis() {// Required empty public constructor
+    public Fragment_QuizErgebnis() {
+    // Required empty public constructor
     }
 
     @Override
@@ -52,9 +60,15 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         textViewThemenbereich = (TextView) view.findViewById(R.id.textViewThemenbereich);
         textViewRichtig = (TextView) view.findViewById(R.id.textViewFrageRichtig);
         textViewFalsch = (TextView) view.findViewById(R.id.textViewFrageFalsch);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         // zeigt das Ergebnis an
         setUpERGEBNIS();
         imageViewCancel.setOnClickListener(this);
+        //setUp recylcerView
+        QuizErgebnisAdapter quizErgebnisAdapter = new QuizErgebnisAdapter(this, quizfragenList);
+        recyclerView.setAdapter(quizErgebnisAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     /**
@@ -140,6 +154,16 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemClicked(int position) {
+
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        return false;
     }
 
     /**

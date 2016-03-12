@@ -7,8 +7,9 @@
 .s0 { color: rgb(0,0,128); font-weight: bold; }
 .s1 { }
 .s2 { color: rgb(128,128,128); font-style: italic; }
-.s3 { color: rgb(0,128,0); font-weight: bold; }
-.s4 { color: rgb(0,0,255); }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s5 { color: rgb(0,0,255); }
 </style>
 </head>
 <BODY BGCOLOR="#ffffff">
@@ -34,168 +35,213 @@ KursauswahlAdapter.java</FONT>
 <a name="l13"><span class="ln">13   </span></a></span><span class="s2">/** 
 <a name="l14"><span class="ln">14   </span></a> * Created by Leon E on 21.01.2016. 
 <a name="l15"><span class="ln">15   </span></a> */</span><span class="s1"> 
-<a name="l16"><span class="ln">16   </span></a></span><span class="s0">public class </span><span class="s1">KursauswahlAdapter </span><span class="s0">extends </span><span class="s1">SelectableAdapter&lt;KursauswahlAdapter.ViewHolder&gt; { 
-<a name="l17"><span class="ln">17   </span></a>    @SuppressWarnings(</span><span class="s3">&quot;unused&quot;</span><span class="s1">) 
-<a name="l18"><span class="ln">18   </span></a>    </span><span class="s0">private static final </span><span class="s1">String TAG = KursauswahlAdapter.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
-<a name="l19"><span class="ln">19   </span></a> 
-<a name="l20"><span class="ln">20   </span></a> 
-<a name="l21"><span class="ln">21   </span></a> 
-<a name="l22"><span class="ln">22   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; kurse; 
-<a name="l23"><span class="ln">23   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; schriftlichList; 
-<a name="l24"><span class="ln">24   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; mündlichList; 
-<a name="l25"><span class="ln">25   </span></a> 
-<a name="l26"><span class="ln">26   </span></a>    </span><span class="s0">private </span><span class="s1">ViewHolder.ClickListener clickListener; 
-<a name="l27"><span class="ln">27   </span></a> 
-<a name="l28"><span class="ln">28   </span></a>    </span><span class="s0">public </span><span class="s1">KursauswahlAdapter(ViewHolder.ClickListener clickListener, List&lt;dbKurs&gt; kursList) { 
-<a name="l29"><span class="ln">29   </span></a>        </span><span class="s0">super</span><span class="s1">(); 
-<a name="l30"><span class="ln">30   </span></a>        </span><span class="s0">this</span><span class="s1">.clickListener = clickListener; 
-<a name="l31"><span class="ln">31   </span></a>        </span><span class="s0">this</span><span class="s1">.kurse = kursList; 
-<a name="l32"><span class="ln">32   </span></a>        Log.d(TAG,kursList.size()+</span><span class="s3">&quot; &quot;</span><span class="s1">); 
-<a name="l33"><span class="ln">33   </span></a> 
-<a name="l34"><span class="ln">34   </span></a>        schriftlichList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
-<a name="l35"><span class="ln">35   </span></a>        mündlichList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
-<a name="l36"><span class="ln">36   </span></a> 
-<a name="l37"><span class="ln">37   </span></a>    } 
-<a name="l38"><span class="ln">38   </span></a> 
-<a name="l39"><span class="ln">39   </span></a> 
-<a name="l40"><span class="ln">40   </span></a> 
-<a name="l41"><span class="ln">41   </span></a>    </span><span class="s0">public void </span><span class="s1">switchMS(</span><span class="s0">int </span><span class="s1">position,</span><span class="s0">boolean </span><span class="s1">schriftlich){ 
-<a name="l42"><span class="ln">42   </span></a>        dbKurs kurs = kurse.get(position); 
-<a name="l43"><span class="ln">43   </span></a> 
+<a name="l16"><span class="ln">16   </span></a> 
+<a name="l17"><span class="ln">17   </span></a></span><span class="s2">/** 
+<a name="l18"><span class="ln">18   </span></a> * </span><span class="s3">@KursauswahlAdapter </span><span class="s2">wird benötigt für das Anzeigen der Kursauswahl bzw der Kurse für die Kursauswahl. 
+<a name="l19"><span class="ln">19   </span></a> */</span><span class="s1"> 
+<a name="l20"><span class="ln">20   </span></a></span><span class="s0">public class </span><span class="s1">KursauswahlAdapter </span><span class="s0">extends </span><span class="s1">SelectableAdapter&lt;KursauswahlAdapter.ViewHolder&gt; { 
+<a name="l21"><span class="ln">21   </span></a>    @SuppressWarnings(</span><span class="s4">&quot;unused&quot;</span><span class="s1">) 
+<a name="l22"><span class="ln">22   </span></a>    </span><span class="s0">private static final </span><span class="s1">String TAG = KursauswahlAdapter.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
+<a name="l23"><span class="ln">23   </span></a> 
+<a name="l24"><span class="ln">24   </span></a> 
+<a name="l25"><span class="ln">25   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; kurse; 
+<a name="l26"><span class="ln">26   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; schriftlichList; 
+<a name="l27"><span class="ln">27   </span></a>    </span><span class="s0">private </span><span class="s1">List&lt;dbKurs&gt; mündlichList; 
+<a name="l28"><span class="ln">28   </span></a> 
+<a name="l29"><span class="ln">29   </span></a>    </span><span class="s0">private </span><span class="s1">ViewHolder.ClickListener clickListener; 
+<a name="l30"><span class="ln">30   </span></a> 
+<a name="l31"><span class="ln">31   </span></a>    </span><span class="s2">/** 
+<a name="l32"><span class="ln">32   </span></a>     * </span><span class="s3">@param </span><span class="s2">clickListener wird gebraucht um auf Click events zu reagieren 
+<a name="l33"><span class="ln">33   </span></a>     * </span><span class="s3">@param </span><span class="s2">kursList      ist die Liste die angezeigt werden soll 
+<a name="l34"><span class="ln">34   </span></a>     * </span><span class="s3">@KursAdapter </span><span class="s2">ClickListener und anzuzeigende Liste wird übergeben. 
+<a name="l35"><span class="ln">35   </span></a>     */</span><span class="s1"> 
+<a name="l36"><span class="ln">36   </span></a>    </span><span class="s0">public </span><span class="s1">KursauswahlAdapter(ViewHolder.ClickListener clickListener, List&lt;dbKurs&gt; kursList) { 
+<a name="l37"><span class="ln">37   </span></a>        </span><span class="s0">super</span><span class="s1">(); 
+<a name="l38"><span class="ln">38   </span></a>        </span><span class="s0">this</span><span class="s1">.clickListener = clickListener; 
+<a name="l39"><span class="ln">39   </span></a>        </span><span class="s0">this</span><span class="s1">.kurse = kursList; 
+<a name="l40"><span class="ln">40   </span></a>        Log.d(TAG, kursList.size() + </span><span class="s4">&quot; &quot;</span><span class="s1">); 
+<a name="l41"><span class="ln">41   </span></a> 
+<a name="l42"><span class="ln">42   </span></a>        schriftlichList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
+<a name="l43"><span class="ln">43   </span></a>        mündlichList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
 <a name="l44"><span class="ln">44   </span></a> 
-<a name="l45"><span class="ln">45   </span></a>                </span><span class="s0">if </span><span class="s1">(schriftlich == </span><span class="s0">true</span><span class="s1">) { 
-<a name="l46"><span class="ln">46   </span></a>                    </span><span class="s0">if </span><span class="s1">(!schriftlichList.contains(kurs)) { 
-<a name="l47"><span class="ln">47   </span></a>                        schriftlichList.add(kurs); 
-<a name="l48"><span class="ln">48   </span></a>                        Log.d(TAG, </span><span class="s3">&quot;schriftlichList.add &quot; </span><span class="s1">+ kurs.name); 
-<a name="l49"><span class="ln">49   </span></a>                    } 
-<a name="l50"><span class="ln">50   </span></a>                    </span><span class="s0">if </span><span class="s1">(mündlichList.contains(kurs)){ 
-<a name="l51"><span class="ln">51   </span></a>                        mündlichList.remove(mündlichList.indexOf(kurs)); 
-<a name="l52"><span class="ln">52   </span></a>                        Log.d(TAG, </span><span class="s3">&quot;Changed &quot; </span><span class="s1">+ kurs.name); 
-<a name="l53"><span class="ln">53   </span></a>                    } 
-<a name="l54"><span class="ln">54   </span></a>                } </span><span class="s0">else </span><span class="s1">{ 
-<a name="l55"><span class="ln">55   </span></a>                    </span><span class="s0">if </span><span class="s1">(!mündlichList.contains(kurs)) { 
-<a name="l56"><span class="ln">56   </span></a>                        mündlichList.add(kurs); 
-<a name="l57"><span class="ln">57   </span></a>                        Log.d(TAG, </span><span class="s3">&quot;mündlichList.add &quot; </span><span class="s1">+ kurs.name); 
-<a name="l58"><span class="ln">58   </span></a>                    } 
-<a name="l59"><span class="ln">59   </span></a>                    </span><span class="s0">if </span><span class="s1">(schriftlichList.contains(kurs)){ 
-<a name="l60"><span class="ln">60   </span></a>                        schriftlichList.remove(schriftlichList.indexOf(kurs)); 
-<a name="l61"><span class="ln">61   </span></a>                        Log.d(TAG, </span><span class="s3">&quot;Changed &quot; </span><span class="s1">+ kurs.name); 
-<a name="l62"><span class="ln">62   </span></a>                    } 
-<a name="l63"><span class="ln">63   </span></a> 
-<a name="l64"><span class="ln">64   </span></a>                } 
-<a name="l65"><span class="ln">65   </span></a>    } 
-<a name="l66"><span class="ln">66   </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; getSchriftlichList(){ 
-<a name="l67"><span class="ln">67   </span></a>        </span><span class="s0">return </span><span class="s1">schriftlichList; 
-<a name="l68"><span class="ln">68   </span></a>    } 
-<a name="l69"><span class="ln">69   </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; getMündlichList(){ 
-<a name="l70"><span class="ln">70   </span></a>        </span><span class="s0">return </span><span class="s1">mündlichList; 
-<a name="l71"><span class="ln">71   </span></a>    } 
-<a name="l72"><span class="ln">72   </span></a> 
-<a name="l73"><span class="ln">73   </span></a> 
-<a name="l74"><span class="ln">74   </span></a>    </span><span class="s0">public void </span><span class="s1">removeMS (</span><span class="s0">int </span><span class="s1">position){ 
-<a name="l75"><span class="ln">75   </span></a>        dbKurs kurs = kurse.get(position); 
-<a name="l76"><span class="ln">76   </span></a>        </span><span class="s0">if </span><span class="s1">(schriftlichList.contains(kurs)) { 
-<a name="l77"><span class="ln">77   </span></a>            schriftlichList.remove(kurs); 
-<a name="l78"><span class="ln">78   </span></a>        } 
-<a name="l79"><span class="ln">79   </span></a>        </span><span class="s0">if </span><span class="s1">(mündlichList.contains(kurs)) { 
-<a name="l80"><span class="ln">80   </span></a>            mündlichList.remove(kurs); 
-<a name="l81"><span class="ln">81   </span></a>        } 
-<a name="l82"><span class="ln">82   </span></a>        Log.d(TAG, </span><span class="s3">&quot;Removed &quot;</span><span class="s1">+kurs.name); 
-<a name="l83"><span class="ln">83   </span></a>    } 
-<a name="l84"><span class="ln">84   </span></a> 
-<a name="l85"><span class="ln">85   </span></a> 
+<a name="l45"><span class="ln">45   </span></a>    } 
+<a name="l46"><span class="ln">46   </span></a> 
+<a name="l47"><span class="ln">47   </span></a> 
+<a name="l48"><span class="ln">48   </span></a>    </span><span class="s2">/** 
+<a name="l49"><span class="ln">49   </span></a>     * </span><span class="s3">@param </span><span class="s2">position    ist die Position des Items welches die Liste wechselt 
+<a name="l50"><span class="ln">50   </span></a>     * </span><span class="s3">@param </span><span class="s2">schriftlich ist die Angabe zu welcher Liste es wechselt entweder zu schriftlich oder mündlich 
+<a name="l51"><span class="ln">51   </span></a>     * </span><span class="s3">@switchMS </span><span class="s2">Ändert den Kurs von einer Liste zur anderen. 
+<a name="l52"><span class="ln">52   </span></a>     * Speichert den Kurs in der entsprechende Liste für Schriftlich oder Mündlich 
+<a name="l53"><span class="ln">53   </span></a>     */</span><span class="s1"> 
+<a name="l54"><span class="ln">54   </span></a>    </span><span class="s0">public void </span><span class="s1">switchMS(</span><span class="s0">int </span><span class="s1">position, </span><span class="s0">boolean </span><span class="s1">schriftlich) { 
+<a name="l55"><span class="ln">55   </span></a>        dbKurs kurs = kurse.get(position); 
+<a name="l56"><span class="ln">56   </span></a> 
+<a name="l57"><span class="ln">57   </span></a> 
+<a name="l58"><span class="ln">58   </span></a>        </span><span class="s0">if </span><span class="s1">(schriftlich == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l59"><span class="ln">59   </span></a>            </span><span class="s0">if </span><span class="s1">(!schriftlichList.contains(kurs)) { 
+<a name="l60"><span class="ln">60   </span></a>                schriftlichList.add(kurs); 
+<a name="l61"><span class="ln">61   </span></a>                Log.d(TAG, </span><span class="s4">&quot;schriftlichList.add &quot; </span><span class="s1">+ kurs.name); 
+<a name="l62"><span class="ln">62   </span></a>            } 
+<a name="l63"><span class="ln">63   </span></a>            </span><span class="s0">if </span><span class="s1">(mündlichList.contains(kurs)) { 
+<a name="l64"><span class="ln">64   </span></a>                mündlichList.remove(mündlichList.indexOf(kurs)); 
+<a name="l65"><span class="ln">65   </span></a>                Log.d(TAG, </span><span class="s4">&quot;Changed &quot; </span><span class="s1">+ kurs.name); 
+<a name="l66"><span class="ln">66   </span></a>            } 
+<a name="l67"><span class="ln">67   </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l68"><span class="ln">68   </span></a>            </span><span class="s0">if </span><span class="s1">(!mündlichList.contains(kurs)) { 
+<a name="l69"><span class="ln">69   </span></a>                mündlichList.add(kurs); 
+<a name="l70"><span class="ln">70   </span></a>                Log.d(TAG, </span><span class="s4">&quot;mündlichList.add &quot; </span><span class="s1">+ kurs.name); 
+<a name="l71"><span class="ln">71   </span></a>            } 
+<a name="l72"><span class="ln">72   </span></a>            </span><span class="s0">if </span><span class="s1">(schriftlichList.contains(kurs)) { 
+<a name="l73"><span class="ln">73   </span></a>                schriftlichList.remove(schriftlichList.indexOf(kurs)); 
+<a name="l74"><span class="ln">74   </span></a>                Log.d(TAG, </span><span class="s4">&quot;Changed &quot; </span><span class="s1">+ kurs.name); 
+<a name="l75"><span class="ln">75   </span></a>            } 
+<a name="l76"><span class="ln">76   </span></a> 
+<a name="l77"><span class="ln">77   </span></a>        } 
+<a name="l78"><span class="ln">78   </span></a>    } 
+<a name="l79"><span class="ln">79   </span></a> 
+<a name="l80"><span class="ln">80   </span></a>    </span><span class="s2">/** 
+<a name="l81"><span class="ln">81   </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt alle schriftliche Kurse zurück bzw die schriftlichList 
+<a name="l82"><span class="ln">82   </span></a>     */</span><span class="s1"> 
+<a name="l83"><span class="ln">83   </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; getSchriftlichList() { 
+<a name="l84"><span class="ln">84   </span></a>        </span><span class="s0">return </span><span class="s1">schriftlichList; 
+<a name="l85"><span class="ln">85   </span></a>    } 
 <a name="l86"><span class="ln">86   </span></a> 
-<a name="l87"><span class="ln">87   </span></a> 
-<a name="l88"><span class="ln">88   </span></a> 
-<a name="l89"><span class="ln">89   </span></a>    @Override 
-<a name="l90"><span class="ln">90   </span></a>    </span><span class="s0">public </span><span class="s1">ViewHolder onCreateViewHolder(ViewGroup parent, </span><span class="s0">int </span><span class="s1">viewType) { 
-<a name="l91"><span class="ln">91   </span></a> 
-<a name="l92"><span class="ln">92   </span></a>        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_kursauswahl, parent, </span><span class="s0">false</span><span class="s1">); 
-<a name="l93"><span class="ln">93   </span></a>        </span><span class="s0">return new </span><span class="s1">ViewHolder(v, clickListener); 
-<a name="l94"><span class="ln">94   </span></a>    } 
-<a name="l95"><span class="ln">95   </span></a> 
-<a name="l96"><span class="ln">96   </span></a>    @Override 
-<a name="l97"><span class="ln">97   </span></a>    </span><span class="s0">public void </span><span class="s1">onBindViewHolder(ViewHolder holder, </span><span class="s0">int </span><span class="s1">position) { 
-<a name="l98"><span class="ln">98   </span></a>        </span><span class="s0">final </span><span class="s1">dbKurs kurs = kurse.get(position); 
-<a name="l99"><span class="ln">99   </span></a> 
-<a name="l100"><span class="ln">100  </span></a>        </span><span class="s2">//Setting text view title</span><span class="s1"> 
-<a name="l101"><span class="ln">101  </span></a>        holder.textViewFachname.setText(kurs.fach); 
-<a name="l102"><span class="ln">102  </span></a>        holder.textViewFachid.setText(kurs.name); 
-<a name="l103"><span class="ln">103  </span></a> 
-<a name="l104"><span class="ln">104  </span></a>        String lehrerString=</span><span class="s3">&quot;&quot;</span><span class="s1">; 
-<a name="l105"><span class="ln">105  </span></a>        </span><span class="s0">if </span><span class="s1">(kurs.lehrer.name!= </span><span class="s0">null</span><span class="s1">){ 
-<a name="l106"><span class="ln">106  </span></a>            </span><span class="s0">if </span><span class="s1">(kurs.lehrer.titel!=</span><span class="s0">null</span><span class="s1">){ 
-<a name="l107"><span class="ln">107  </span></a>                lehrerString+= kurs.lehrer.titel+</span><span class="s3">&quot; &quot;</span><span class="s1">; 
-<a name="l108"><span class="ln">108  </span></a>            } 
-<a name="l109"><span class="ln">109  </span></a>            lehrerString+= kurs.lehrer.name+</span><span class="s3">&quot; &quot;</span><span class="s1">; 
-<a name="l110"><span class="ln">110  </span></a>        } 
-<a name="l111"><span class="ln">111  </span></a>        holder.textViewLehrer.setText(lehrerString); 
-<a name="l112"><span class="ln">112  </span></a>        </span><span class="s0">switch </span><span class="s1">(kurs.kursart){ 
-<a name="l113"><span class="ln">113  </span></a>            </span><span class="s0">case </span><span class="s4">0</span><span class="s1">:holder.textViewArt.setText(</span><span class="s3">&quot;LK&quot;</span><span class="s1">);</span><span class="s0">break</span><span class="s1">; 
-<a name="l114"><span class="ln">114  </span></a>            </span><span class="s0">case </span><span class="s4">1</span><span class="s1">:holder.textViewArt.setText(</span><span class="s3">&quot;GK&quot;</span><span class="s1">);</span><span class="s0">break</span><span class="s1">; 
-<a name="l115"><span class="ln">115  </span></a>            </span><span class="s0">case </span><span class="s4">2</span><span class="s1">:holder.textViewArt.setText(</span><span class="s3">&quot;AG&quot;</span><span class="s1">);</span><span class="s0">break</span><span class="s1">; 
-<a name="l116"><span class="ln">116  </span></a>            </span><span class="s0">case </span><span class="s4">3</span><span class="s1">:holder.textViewArt.setText(</span><span class="s3">&quot;PK&quot;</span><span class="s1">);</span><span class="s0">break</span><span class="s1">; 
-<a name="l117"><span class="ln">117  </span></a>        } 
-<a name="l118"><span class="ln">118  </span></a> 
-<a name="l119"><span class="ln">119  </span></a>        </span><span class="s2">// Highlight the item if it's selected</span><span class="s1"> 
-<a name="l120"><span class="ln">120  </span></a>        holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE); 
-<a name="l121"><span class="ln">121  </span></a>    } 
-<a name="l122"><span class="ln">122  </span></a> 
-<a name="l123"><span class="ln">123  </span></a>    @Override 
-<a name="l124"><span class="ln">124  </span></a>    </span><span class="s0">public int </span><span class="s1">getItemCount() { 
-<a name="l125"><span class="ln">125  </span></a>        </span><span class="s0">return </span><span class="s1">kurse.size(); 
-<a name="l126"><span class="ln">126  </span></a>    } 
-<a name="l127"><span class="ln">127  </span></a> 
-<a name="l128"><span class="ln">128  </span></a> 
-<a name="l129"><span class="ln">129  </span></a> 
-<a name="l130"><span class="ln">130  </span></a>    </span><span class="s0">public static class </span><span class="s1">ViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder </span><span class="s0">implements </span><span class="s1">View.OnClickListener, 
-<a name="l131"><span class="ln">131  </span></a>            View.OnLongClickListener { 
-<a name="l132"><span class="ln">132  </span></a> 
-<a name="l133"><span class="ln">133  </span></a>        </span><span class="s0">private static final </span><span class="s1">String TAG = ViewHolder.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
-<a name="l134"><span class="ln">134  </span></a>        TextView textViewFachname; 
-<a name="l135"><span class="ln">135  </span></a>        TextView textViewFachid; 
-<a name="l136"><span class="ln">136  </span></a>        TextView textViewLehrer; 
-<a name="l137"><span class="ln">137  </span></a>        TextView textViewArt; 
-<a name="l138"><span class="ln">138  </span></a>        View selectedOverlay; 
-<a name="l139"><span class="ln">139  </span></a> 
-<a name="l140"><span class="ln">140  </span></a>        </span><span class="s0">private </span><span class="s1">ClickListener listener; 
-<a name="l141"><span class="ln">141  </span></a> 
-<a name="l142"><span class="ln">142  </span></a>        </span><span class="s0">public </span><span class="s1">ViewHolder(View itemView, ClickListener listener) { 
-<a name="l143"><span class="ln">143  </span></a>            </span><span class="s0">super</span><span class="s1">(itemView); 
-<a name="l144"><span class="ln">144  </span></a> 
-<a name="l145"><span class="ln">145  </span></a>            textViewFachname = (TextView) itemView.findViewById(R.id.textViewFachname); 
-<a name="l146"><span class="ln">146  </span></a>            textViewFachid = (TextView) itemView.findViewById(R.id.textViewFachid); 
-<a name="l147"><span class="ln">147  </span></a>            textViewLehrer= (TextView) itemView.findViewById(R.id.textViewFachlehrer); 
-<a name="l148"><span class="ln">148  </span></a>            textViewArt= (TextView) itemView.findViewById(R.id.textViewArt); 
-<a name="l149"><span class="ln">149  </span></a>            selectedOverlay =  itemView.findViewById(R.id.selected_overlay); 
-<a name="l150"><span class="ln">150  </span></a> 
-<a name="l151"><span class="ln">151  </span></a>            </span><span class="s0">this</span><span class="s1">.listener = listener; 
-<a name="l152"><span class="ln">152  </span></a> 
-<a name="l153"><span class="ln">153  </span></a>            itemView.setOnClickListener(</span><span class="s0">this</span><span class="s1">); 
-<a name="l154"><span class="ln">154  </span></a>            itemView.setOnLongClickListener(</span><span class="s0">this</span><span class="s1">); 
-<a name="l155"><span class="ln">155  </span></a>        } 
-<a name="l156"><span class="ln">156  </span></a> 
-<a name="l157"><span class="ln">157  </span></a>        @Override 
-<a name="l158"><span class="ln">158  </span></a>        </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
-<a name="l159"><span class="ln">159  </span></a>            </span><span class="s0">if </span><span class="s1">(listener != </span><span class="s0">null</span><span class="s1">) { 
-<a name="l160"><span class="ln">160  </span></a>                listener.onItemClicked(getAdapterPosition()); 
-<a name="l161"><span class="ln">161  </span></a>            } 
-<a name="l162"><span class="ln">162  </span></a>        } 
-<a name="l163"><span class="ln">163  </span></a> 
-<a name="l164"><span class="ln">164  </span></a>        @Override 
-<a name="l165"><span class="ln">165  </span></a>        </span><span class="s0">public boolean </span><span class="s1">onLongClick(View v) { 
-<a name="l166"><span class="ln">166  </span></a>            </span><span class="s0">if </span><span class="s1">(listener != </span><span class="s0">null</span><span class="s1">) { 
-<a name="l167"><span class="ln">167  </span></a>                </span><span class="s0">return </span><span class="s1">listener.onItemLongClicked(getAdapterPosition()); 
-<a name="l168"><span class="ln">168  </span></a>            } 
-<a name="l169"><span class="ln">169  </span></a> 
-<a name="l170"><span class="ln">170  </span></a>            </span><span class="s0">return false</span><span class="s1">; 
-<a name="l171"><span class="ln">171  </span></a>        } 
+<a name="l87"><span class="ln">87   </span></a>    </span><span class="s2">/** 
+<a name="l88"><span class="ln">88   </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt alle mündliche Kurse zurück bzw die mündlichLIst 
+<a name="l89"><span class="ln">89   </span></a>     */</span><span class="s1"> 
+<a name="l90"><span class="ln">90   </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; getMündlichList() { 
+<a name="l91"><span class="ln">91   </span></a>        </span><span class="s0">return </span><span class="s1">mündlichList; 
+<a name="l92"><span class="ln">92   </span></a>    } 
+<a name="l93"><span class="ln">93   </span></a> 
+<a name="l94"><span class="ln">94   </span></a>    </span><span class="s2">/** 
+<a name="l95"><span class="ln">95   </span></a>     * </span><span class="s3">@param </span><span class="s2">position ist die Position von dem Kurs der entfernt werden soll 
+<a name="l96"><span class="ln">96   </span></a>     * </span><span class="s3">@removeMS </span><span class="s2">entfernt einen Kurs von der Schriftlich oder Mündlich List 
+<a name="l97"><span class="ln">97   </span></a>     */</span><span class="s1"> 
+<a name="l98"><span class="ln">98   </span></a>    </span><span class="s0">public void </span><span class="s1">removeMS(</span><span class="s0">int </span><span class="s1">position) { 
+<a name="l99"><span class="ln">99   </span></a>        dbKurs kurs = kurse.get(position); 
+<a name="l100"><span class="ln">100  </span></a>        </span><span class="s0">if </span><span class="s1">(schriftlichList.contains(kurs)) { 
+<a name="l101"><span class="ln">101  </span></a>            schriftlichList.remove(kurs); 
+<a name="l102"><span class="ln">102  </span></a>        } 
+<a name="l103"><span class="ln">103  </span></a>        </span><span class="s0">if </span><span class="s1">(mündlichList.contains(kurs)) { 
+<a name="l104"><span class="ln">104  </span></a>            mündlichList.remove(kurs); 
+<a name="l105"><span class="ln">105  </span></a>        } 
+<a name="l106"><span class="ln">106  </span></a>        Log.d(TAG, </span><span class="s4">&quot;Removed &quot; </span><span class="s1">+ kurs.name); 
+<a name="l107"><span class="ln">107  </span></a>    } 
+<a name="l108"><span class="ln">108  </span></a> 
+<a name="l109"><span class="ln">109  </span></a> 
+<a name="l110"><span class="ln">110  </span></a>    @Override 
+<a name="l111"><span class="ln">111  </span></a>    </span><span class="s0">public </span><span class="s1">ViewHolder onCreateViewHolder(ViewGroup parent, </span><span class="s0">int </span><span class="s1">viewType) { 
+<a name="l112"><span class="ln">112  </span></a> 
+<a name="l113"><span class="ln">113  </span></a>        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_kursauswahl, parent, </span><span class="s0">false</span><span class="s1">); 
+<a name="l114"><span class="ln">114  </span></a>        </span><span class="s0">return new </span><span class="s1">ViewHolder(v, clickListener); 
+<a name="l115"><span class="ln">115  </span></a>    } 
+<a name="l116"><span class="ln">116  </span></a> 
+<a name="l117"><span class="ln">117  </span></a>    @Override 
+<a name="l118"><span class="ln">118  </span></a>    </span><span class="s0">public void </span><span class="s1">onBindViewHolder(ViewHolder holder, </span><span class="s0">int </span><span class="s1">position) { 
+<a name="l119"><span class="ln">119  </span></a>        </span><span class="s0">final </span><span class="s1">dbKurs kurs = kurse.get(position); 
+<a name="l120"><span class="ln">120  </span></a> 
+<a name="l121"><span class="ln">121  </span></a>        </span><span class="s2">//Setting the Data to the views</span><span class="s1"> 
+<a name="l122"><span class="ln">122  </span></a>        holder.textViewFachname.setText(kurs.fach); 
+<a name="l123"><span class="ln">123  </span></a>        holder.textViewFachid.setText(kurs.name); 
+<a name="l124"><span class="ln">124  </span></a> 
+<a name="l125"><span class="ln">125  </span></a>        String lehrerString = </span><span class="s4">&quot;&quot;</span><span class="s1">; 
+<a name="l126"><span class="ln">126  </span></a> 
+<a name="l127"><span class="ln">127  </span></a>        </span><span class="s0">if </span><span class="s1">(kurs.lehrer != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l128"><span class="ln">128  </span></a>            </span><span class="s0">if </span><span class="s1">(kurs.lehrer.name != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l129"><span class="ln">129  </span></a>                </span><span class="s0">if </span><span class="s1">(kurs.lehrer.titel != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l130"><span class="ln">130  </span></a>                    </span><span class="s2">//zeigt den Lehrer nur an wenn er vorhanden ist</span><span class="s1"> 
+<a name="l131"><span class="ln">131  </span></a>                    lehrerString += kurs.lehrer.titel + </span><span class="s4">&quot; &quot;</span><span class="s1">; 
+<a name="l132"><span class="ln">132  </span></a>                } 
+<a name="l133"><span class="ln">133  </span></a>                lehrerString += kurs.lehrer.name + </span><span class="s4">&quot; &quot;</span><span class="s1">; 
+<a name="l134"><span class="ln">134  </span></a>            } 
+<a name="l135"><span class="ln">135  </span></a>        } 
+<a name="l136"><span class="ln">136  </span></a>        holder.textViewLehrer.setText(lehrerString); 
+<a name="l137"><span class="ln">137  </span></a>        </span><span class="s0">switch </span><span class="s1">(kurs.kursart) { 
+<a name="l138"><span class="ln">138  </span></a>            </span><span class="s0">case </span><span class="s5">0</span><span class="s1">: 
+<a name="l139"><span class="ln">139  </span></a>                holder.textViewArt.setText(</span><span class="s4">&quot;LK&quot;</span><span class="s1">); 
+<a name="l140"><span class="ln">140  </span></a>                </span><span class="s0">break</span><span class="s1">; 
+<a name="l141"><span class="ln">141  </span></a>            </span><span class="s0">case </span><span class="s5">1</span><span class="s1">: 
+<a name="l142"><span class="ln">142  </span></a>                holder.textViewArt.setText(</span><span class="s4">&quot;GK&quot;</span><span class="s1">); 
+<a name="l143"><span class="ln">143  </span></a>                </span><span class="s0">break</span><span class="s1">; 
+<a name="l144"><span class="ln">144  </span></a>            </span><span class="s0">case </span><span class="s5">2</span><span class="s1">: 
+<a name="l145"><span class="ln">145  </span></a>                holder.textViewArt.setText(</span><span class="s4">&quot;AG&quot;</span><span class="s1">); 
+<a name="l146"><span class="ln">146  </span></a>                </span><span class="s0">break</span><span class="s1">; 
+<a name="l147"><span class="ln">147  </span></a>            </span><span class="s0">case </span><span class="s5">3</span><span class="s1">: 
+<a name="l148"><span class="ln">148  </span></a>                holder.textViewArt.setText(</span><span class="s4">&quot;PK&quot;</span><span class="s1">); 
+<a name="l149"><span class="ln">149  </span></a>                </span><span class="s0">break</span><span class="s1">; 
+<a name="l150"><span class="ln">150  </span></a>        } 
+<a name="l151"><span class="ln">151  </span></a> 
+<a name="l152"><span class="ln">152  </span></a>        </span><span class="s2">// Highlight the item if it's selected</span><span class="s1"> 
+<a name="l153"><span class="ln">153  </span></a>        holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE); 
+<a name="l154"><span class="ln">154  </span></a>    } 
+<a name="l155"><span class="ln">155  </span></a> 
+<a name="l156"><span class="ln">156  </span></a>    @Override 
+<a name="l157"><span class="ln">157  </span></a>    </span><span class="s0">public int </span><span class="s1">getItemCount() { 
+<a name="l158"><span class="ln">158  </span></a>        </span><span class="s0">return </span><span class="s1">kurse.size(); 
+<a name="l159"><span class="ln">159  </span></a>    } 
+<a name="l160"><span class="ln">160  </span></a> 
+<a name="l161"><span class="ln">161  </span></a> 
+<a name="l162"><span class="ln">162  </span></a>    </span><span class="s0">public static class </span><span class="s1">ViewHolder </span><span class="s0">extends </span><span class="s1">RecyclerView.ViewHolder </span><span class="s0">implements </span><span class="s1">View.OnClickListener, 
+<a name="l163"><span class="ln">163  </span></a>            View.OnLongClickListener { 
+<a name="l164"><span class="ln">164  </span></a> 
+<a name="l165"><span class="ln">165  </span></a>        </span><span class="s0">private static final </span><span class="s1">String TAG = ViewHolder.</span><span class="s0">class</span><span class="s1">.getSimpleName(); 
+<a name="l166"><span class="ln">166  </span></a>        </span><span class="s2">//views</span><span class="s1"> 
+<a name="l167"><span class="ln">167  </span></a>        TextView textViewFachname; 
+<a name="l168"><span class="ln">168  </span></a>        TextView textViewFachid; 
+<a name="l169"><span class="ln">169  </span></a>        TextView textViewLehrer; 
+<a name="l170"><span class="ln">170  </span></a>        TextView textViewArt; 
+<a name="l171"><span class="ln">171  </span></a>        View selectedOverlay; 
 <a name="l172"><span class="ln">172  </span></a> 
-<a name="l173"><span class="ln">173  </span></a>        </span><span class="s0">public interface </span><span class="s1">ClickListener { 
-<a name="l174"><span class="ln">174  </span></a>            </span><span class="s0">public void </span><span class="s1">onItemClicked(</span><span class="s0">int </span><span class="s1">position); 
-<a name="l175"><span class="ln">175  </span></a>            </span><span class="s0">public boolean </span><span class="s1">onItemLongClicked(</span><span class="s0">int </span><span class="s1">position); 
-<a name="l176"><span class="ln">176  </span></a>        } 
-<a name="l177"><span class="ln">177  </span></a>    } 
-<a name="l178"><span class="ln">178  </span></a>}</span></pre>
+<a name="l173"><span class="ln">173  </span></a>        </span><span class="s0">private </span><span class="s1">ClickListener listener; 
+<a name="l174"><span class="ln">174  </span></a> 
+<a name="l175"><span class="ln">175  </span></a>        </span><span class="s0">public </span><span class="s1">ViewHolder(View itemView, ClickListener listener) { 
+<a name="l176"><span class="ln">176  </span></a>            </span><span class="s0">super</span><span class="s1">(itemView); 
+<a name="l177"><span class="ln">177  </span></a>            </span><span class="s2">//initial the Views</span><span class="s1"> 
+<a name="l178"><span class="ln">178  </span></a>            textViewFachname = (TextView) itemView.findViewById(R.id.textViewFachname); 
+<a name="l179"><span class="ln">179  </span></a>            textViewFachid = (TextView) itemView.findViewById(R.id.textViewFachid); 
+<a name="l180"><span class="ln">180  </span></a>            textViewLehrer = (TextView) itemView.findViewById(R.id.textViewFachlehrer); 
+<a name="l181"><span class="ln">181  </span></a>            textViewArt = (TextView) itemView.findViewById(R.id.textViewArt); 
+<a name="l182"><span class="ln">182  </span></a>            selectedOverlay = itemView.findViewById(R.id.selected_overlay); 
+<a name="l183"><span class="ln">183  </span></a> 
+<a name="l184"><span class="ln">184  </span></a>            </span><span class="s0">this</span><span class="s1">.listener = listener; 
+<a name="l185"><span class="ln">185  </span></a> 
+<a name="l186"><span class="ln">186  </span></a>            itemView.setOnClickListener(</span><span class="s0">this</span><span class="s1">); 
+<a name="l187"><span class="ln">187  </span></a>            itemView.setOnLongClickListener(</span><span class="s0">this</span><span class="s1">); 
+<a name="l188"><span class="ln">188  </span></a>        } 
+<a name="l189"><span class="ln">189  </span></a> 
+<a name="l190"><span class="ln">190  </span></a>        </span><span class="s2">/** 
+<a name="l191"><span class="ln">191  </span></a>         * </span><span class="s3">@param </span><span class="s2">v 
+<a name="l192"><span class="ln">192  </span></a>         * </span><span class="s3">@onClick </span><span class="s2">wird aufgerufen wenn ein Item angeclickt wird 
+<a name="l193"><span class="ln">193  </span></a>         */</span><span class="s1"> 
+<a name="l194"><span class="ln">194  </span></a>        @Override 
+<a name="l195"><span class="ln">195  </span></a>        </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
+<a name="l196"><span class="ln">196  </span></a>            </span><span class="s0">if </span><span class="s1">(listener != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l197"><span class="ln">197  </span></a>                listener.onItemClicked(getAdapterPosition()); 
+<a name="l198"><span class="ln">198  </span></a>            } 
+<a name="l199"><span class="ln">199  </span></a>        } 
+<a name="l200"><span class="ln">200  </span></a> 
+<a name="l201"><span class="ln">201  </span></a>        </span><span class="s2">/** 
+<a name="l202"><span class="ln">202  </span></a>         * </span><span class="s3">@param </span><span class="s2">v 
+<a name="l203"><span class="ln">203  </span></a>         * </span><span class="s3">@onLongClick </span><span class="s2">wird aufgerufen wenn ein Item angeclickt wird 
+<a name="l204"><span class="ln">204  </span></a>         */</span><span class="s1"> 
+<a name="l205"><span class="ln">205  </span></a>        @Override 
+<a name="l206"><span class="ln">206  </span></a>        </span><span class="s0">public boolean </span><span class="s1">onLongClick(View v) { 
+<a name="l207"><span class="ln">207  </span></a>            </span><span class="s0">if </span><span class="s1">(listener != </span><span class="s0">null</span><span class="s1">) { 
+<a name="l208"><span class="ln">208  </span></a>                </span><span class="s0">return </span><span class="s1">listener.onItemLongClicked(getAdapterPosition()); 
+<a name="l209"><span class="ln">209  </span></a>            } 
+<a name="l210"><span class="ln">210  </span></a> 
+<a name="l211"><span class="ln">211  </span></a>            </span><span class="s0">return false</span><span class="s1">; 
+<a name="l212"><span class="ln">212  </span></a>        } 
+<a name="l213"><span class="ln">213  </span></a> 
+<a name="l214"><span class="ln">214  </span></a>        </span><span class="s2">/** 
+<a name="l215"><span class="ln">215  </span></a>         * Interface for Click Callbacks 
+<a name="l216"><span class="ln">216  </span></a>         */</span><span class="s1"> 
+<a name="l217"><span class="ln">217  </span></a>        </span><span class="s0">public interface </span><span class="s1">ClickListener { 
+<a name="l218"><span class="ln">218  </span></a>            </span><span class="s0">public void </span><span class="s1">onItemClicked(</span><span class="s0">int </span><span class="s1">position); 
+<a name="l219"><span class="ln">219  </span></a> 
+<a name="l220"><span class="ln">220  </span></a>            </span><span class="s0">public boolean </span><span class="s1">onItemLongClicked(</span><span class="s0">int </span><span class="s1">position); 
+<a name="l221"><span class="ln">221  </span></a>        } 
+<a name="l222"><span class="ln">222  </span></a>    } 
+<a name="l223"><span class="ln">223  </span></a>}</span></pre>
 </body>
 </html>

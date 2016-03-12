@@ -7,8 +7,9 @@
 .s0 { color: rgb(0,0,128); font-weight: bold; }
 .s1 { }
 .s2 { color: rgb(128,128,128); font-style: italic; }
-.s3 { color: rgb(0,0,255); }
-.s4 { color: rgb(0,128,0); font-weight: bold; }
+.s3 { color: rgb(128,128,128); font-weight: bold; font-style: italic; }
+.s4 { color: rgb(0,0,255); }
+.s5 { color: rgb(0,128,0); font-weight: bold; }
 </style>
 </head>
 <BODY BGCOLOR="#ffffff">
@@ -41,184 +42,246 @@ KurseController.java</FONT>
 <a name="l20"><span class="ln">20   </span></a></span><span class="s2">/** 
 <a name="l21"><span class="ln">21   </span></a> * Created by Leon E on 21.12.2015. 
 <a name="l22"><span class="ln">22   </span></a> */</span><span class="s1"> 
-<a name="l23"><span class="ln">23   </span></a></span><span class="s0">public class </span><span class="s1">KurseController { 
-<a name="l24"><span class="ln">24   </span></a>    Context mainContext; 
-<a name="l25"><span class="ln">25   </span></a> 
-<a name="l26"><span class="ln">26   </span></a>    </span><span class="s0">public </span><span class="s1">KurseController(Context context) { 
-<a name="l27"><span class="ln">27   </span></a>        mainContext = context; 
-<a name="l28"><span class="ln">28   </span></a>    } 
-<a name="l29"><span class="ln">29   </span></a>    </span><span class="s0">public void </span><span class="s1">erstelltKurse() { 
-<a name="l30"><span class="ln">30   </span></a>        List&lt;dbSchulstunde&gt; schulstundeList = dbSchulstunde.listAll(dbSchulstunde.</span><span class="s0">class</span><span class="s1">); 
-<a name="l31"><span class="ln">31   </span></a>        List&lt;String&gt; kursIDList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
-<a name="l32"><span class="ln">32   </span></a> 
-<a name="l33"><span class="ln">33   </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s1">; i &lt; schulstundeList.size(); i++) { 
-<a name="l34"><span class="ln">34   </span></a>            kursIDList.add(i, schulstundeList.get(i).kursID); 
-<a name="l35"><span class="ln">35   </span></a>        } 
-<a name="l36"><span class="ln">36   </span></a> 
-<a name="l37"><span class="ln">37   </span></a> 
-<a name="l38"><span class="ln">38   </span></a>        Set&lt;String&gt; sortetdSet = </span><span class="s0">new </span><span class="s1">TreeSet&lt;String&gt;(</span><span class="s0">new </span><span class="s1">ListComparator()); 
-<a name="l39"><span class="ln">39   </span></a>        </span><span class="s0">for </span><span class="s1">(String value : kursIDList) { 
-<a name="l40"><span class="ln">40   </span></a>            </span><span class="s0">if </span><span class="s1">(!sortetdSet.add(value)) { 
-<a name="l41"><span class="ln">41   </span></a>            </span><span class="s2">//do nothing</span><span class="s1"> 
-<a name="l42"><span class="ln">42   </span></a>            } 
-<a name="l43"><span class="ln">43   </span></a>        } 
+<a name="l23"><span class="ln">23   </span></a> 
+<a name="l24"><span class="ln">24   </span></a></span><span class="s2">/** 
+<a name="l25"><span class="ln">25   </span></a> * </span><span class="s3">@KursController </span><span class="s2">ist die Klasse die alles bearbeitet was mit den Kursen zutun hat. Es erstellt alle Kurse sowie 
+<a name="l26"><span class="ln">26   </span></a> * Porjektkurs und AGs und lädt die richtige Bezeichnung nach. 
+<a name="l27"><span class="ln">27   </span></a> */</span><span class="s1"> 
+<a name="l28"><span class="ln">28   </span></a></span><span class="s0">public class </span><span class="s1">KurseController { 
+<a name="l29"><span class="ln">29   </span></a>    Context mainContext; 
+<a name="l30"><span class="ln">30   </span></a> 
+<a name="l31"><span class="ln">31   </span></a>    </span><span class="s0">public </span><span class="s1">KurseController(Context context) { 
+<a name="l32"><span class="ln">32   </span></a>        mainContext = context; 
+<a name="l33"><span class="ln">33   </span></a>    } 
+<a name="l34"><span class="ln">34   </span></a> 
+<a name="l35"><span class="ln">35   </span></a>    </span><span class="s2">/** 
+<a name="l36"><span class="ln">36   </span></a>     * </span><span class="s3">@erstelltKurse </span><span class="s2">Methode um alle Kurse aus den Schulstunden zu erstellen und in der Datenbank entsprechend 
+<a name="l37"><span class="ln">37   </span></a>     * zu speichern 
+<a name="l38"><span class="ln">38   </span></a>     */</span><span class="s1"> 
+<a name="l39"><span class="ln">39   </span></a>    </span><span class="s0">public void </span><span class="s1">erstelltKurse() { 
+<a name="l40"><span class="ln">40   </span></a> 
+<a name="l41"><span class="ln">41   </span></a>        </span><span class="s2">//lädt alle Schulstunden aus der Datenbank</span><span class="s1"> 
+<a name="l42"><span class="ln">42   </span></a>        List&lt;dbSchulstunde&gt; schulstundeList = dbSchulstunde.listAll(dbSchulstunde.</span><span class="s0">class</span><span class="s1">); 
+<a name="l43"><span class="ln">43   </span></a>        List&lt;String&gt; kursIDList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
 <a name="l44"><span class="ln">44   </span></a> 
-<a name="l45"><span class="ln">45   </span></a>            Iterator&lt;String&gt; iterator = sortetdSet.iterator(); 
-<a name="l46"><span class="ln">46   </span></a>            kursIDList.clear(); 
-<a name="l47"><span class="ln">47   </span></a> 
-<a name="l48"><span class="ln">48   </span></a>            </span><span class="s0">while </span><span class="s1">(iterator.hasNext()) { 
-<a name="l49"><span class="ln">49   </span></a>                kursIDList.add(iterator.next()); 
-<a name="l50"><span class="ln">50   </span></a>            } 
-<a name="l51"><span class="ln">51   </span></a>            Log.d(</span><span class="s4">&quot;COUNT&quot;</span><span class="s1">,kursIDList.size()+</span><span class="s4">&quot;&quot;</span><span class="s1">); 
-<a name="l52"><span class="ln">52   </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s1">; i &lt; kursIDList.size(); i++) { 
-<a name="l53"><span class="ln">53   </span></a>                dbKurs kurs = </span><span class="s0">new </span><span class="s1">dbKurs(); 
-<a name="l54"><span class="ln">54   </span></a>                kurs.name = kursIDList.get(i); 
-<a name="l55"><span class="ln">55   </span></a>                </span><span class="s0">if </span><span class="s1">(kurs.kursVorhanden(kurs)!= </span><span class="s0">true</span><span class="s1">){ 
+<a name="l45"><span class="ln">45   </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; schulstundeList.size(); i++) { 
+<a name="l46"><span class="ln">46   </span></a>            kursIDList.add(i, schulstundeList.get(i).kursID); 
+<a name="l47"><span class="ln">47   </span></a>        } 
+<a name="l48"><span class="ln">48   </span></a> 
+<a name="l49"><span class="ln">49   </span></a>        </span><span class="s2">//löscht alle doppelt vorkommenden kursIDs raus sodass eine Liste mit nur noch den Kursids vorhanden ist</span><span class="s1"> 
+<a name="l50"><span class="ln">50   </span></a>        Set&lt;String&gt; sortetdSet = </span><span class="s0">new </span><span class="s1">TreeSet&lt;String&gt;(</span><span class="s0">new </span><span class="s1">ListComparator()); 
+<a name="l51"><span class="ln">51   </span></a>        </span><span class="s0">for </span><span class="s1">(String value : kursIDList) { 
+<a name="l52"><span class="ln">52   </span></a>            </span><span class="s0">if </span><span class="s1">(!sortetdSet.add(value)) { 
+<a name="l53"><span class="ln">53   </span></a>                </span><span class="s2">//do nothing</span><span class="s1"> 
+<a name="l54"><span class="ln">54   </span></a>            } 
+<a name="l55"><span class="ln">55   </span></a>        } 
 <a name="l56"><span class="ln">56   </span></a> 
-<a name="l57"><span class="ln">57   </span></a>                    </span><span class="s2">// LK 0 GK 1 PK 2 AG 3</span><span class="s1"> 
-<a name="l58"><span class="ln">58   </span></a>                    </span><span class="s0">if </span><span class="s1">(kursIDList.get(i).charAt(</span><span class="s3">3</span><span class="s1">)==</span><span class="s4">'L'</span><span class="s1">){ 
-<a name="l59"><span class="ln">59   </span></a>                        kurs.kursart =</span><span class="s3">0</span><span class="s1">; 
-<a name="l60"><span class="ln">60   </span></a>                    }</span><span class="s0">else </span><span class="s1">{ 
-<a name="l61"><span class="ln">61   </span></a>                        kurs.kursart=</span><span class="s3">1</span><span class="s1">; 
-<a name="l62"><span class="ln">62   </span></a>                    } 
-<a name="l63"><span class="ln">63   </span></a>                    kurs.save(); 
-<a name="l64"><span class="ln">64   </span></a>                } 
-<a name="l65"><span class="ln">65   </span></a>            } 
-<a name="l66"><span class="ln">66   </span></a>    } 
-<a name="l67"><span class="ln">67   </span></a> 
-<a name="l68"><span class="ln">68   </span></a>    </span><span class="s0">public void </span><span class="s1">connectKursStunden(){ 
-<a name="l69"><span class="ln">69   </span></a>        List&lt;dbSchulstunde&gt; schulstundeList = dbSchulstunde.listAll(dbSchulstunde.</span><span class="s0">class</span><span class="s1">); 
-<a name="l70"><span class="ln">70   </span></a>        List&lt;dbKurs&gt; kurseList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
-<a name="l71"><span class="ln">71   </span></a> 
-<a name="l72"><span class="ln">72   </span></a> 
-<a name="l73"><span class="ln">73   </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">;i&lt;kurseList.size();i++){ 
-<a name="l74"><span class="ln">74   </span></a>            dbKurs kurs1 = kurseList.get(i); 
-<a name="l75"><span class="ln">75   </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k=</span><span class="s3">0</span><span class="s1">;k&lt;schulstundeList.size();k++){ 
-<a name="l76"><span class="ln">76   </span></a>                dbSchulstunde schulstunde =schulstundeList.get(k); 
-<a name="l77"><span class="ln">77   </span></a>               </span><span class="s0">if </span><span class="s1">(kurs1.name.equals(schulstunde.kursID)){ 
-<a name="l78"><span class="ln">78   </span></a>                </span><span class="s2">//kurs1.stunde =schulstunde;</span><span class="s1"> 
-<a name="l79"><span class="ln">79   </span></a>                kurs1.lehrer = schulstunde.lehrer; 
-<a name="l80"><span class="ln">80   </span></a>                kurs1.save(); 
-<a name="l81"><span class="ln">81   </span></a>                 schulstunde.kurs = kurs1; 
-<a name="l82"><span class="ln">82   </span></a>                 schulstunde.save(); 
-<a name="l83"><span class="ln">83   </span></a>             } 
-<a name="l84"><span class="ln">84   </span></a>            } 
-<a name="l85"><span class="ln">85   </span></a>        } 
-<a name="l86"><span class="ln">86   </span></a>    } 
-<a name="l87"><span class="ln">87   </span></a> 
-<a name="l88"><span class="ln">88   </span></a>    </span><span class="s0">public void </span><span class="s1">downloadKuerzel(){ 
-<a name="l89"><span class="ln">89   </span></a>        String result=</span><span class="s4">&quot;&quot;</span><span class="s1">; 
-<a name="l90"><span class="ln">90   </span></a>        String url = </span><span class="s4">&quot;http://app.marienschule.de/files/scripts/getFachKuerzel.php&quot;</span><span class="s1">; 
-<a name="l91"><span class="ln">91   </span></a>        LogInController logInController = </span><span class="s0">new </span><span class="s1">LogInController(mainContext); 
-<a name="l92"><span class="ln">92   </span></a>        String user = logInController.getUsername(); 
-<a name="l93"><span class="ln">93   </span></a>        String pass = logInController.getPass(); 
-<a name="l94"><span class="ln">94   </span></a>        Uri.Builder builder = </span><span class="s0">new </span><span class="s1">Uri.Builder() 
-<a name="l95"><span class="ln">95   </span></a>                .appendQueryParameter(</span><span class="s4">&quot;username&quot;</span><span class="s1">, user) 
-<a name="l96"><span class="ln">96   </span></a>                .appendQueryParameter(</span><span class="s4">&quot;pw&quot;</span><span class="s1">,pass); 
-<a name="l97"><span class="ln">97   </span></a>        String params = builder.build().getEncodedQuery(); 
-<a name="l98"><span class="ln">98   </span></a>        atOnline atOnline = </span><span class="s0">new </span><span class="s1">atOnline(url,params,mainContext); 
-<a name="l99"><span class="ln">99   </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l100"><span class="ln">100  </span></a>            result= atOnline.execute().get(); 
-<a name="l101"><span class="ln">101  </span></a>        } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
-<a name="l102"><span class="ln">102  </span></a>            e.printStackTrace(); 
-<a name="l103"><span class="ln">103  </span></a>        } </span><span class="s0">catch </span><span class="s1">(ExecutionException e) { 
-<a name="l104"><span class="ln">104  </span></a>            e.printStackTrace(); 
-<a name="l105"><span class="ln">105  </span></a>        } 
-<a name="l106"><span class="ln">106  </span></a> 
-<a name="l107"><span class="ln">107  </span></a>        </span><span class="s0">if </span><span class="s1">(result==</span><span class="s4">&quot;Error&quot;</span><span class="s1">){ 
-<a name="l108"><span class="ln">108  </span></a>            Toast.makeText(mainContext, </span><span class="s4">&quot;Download fehlgeschlagen..&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
-<a name="l109"><span class="ln">109  </span></a>        }</span><span class="s0">else </span><span class="s1">{ 
-<a name="l110"><span class="ln">110  </span></a>           connectKuerzel(result); 
-<a name="l111"><span class="ln">111  </span></a>        } 
-<a name="l112"><span class="ln">112  </span></a>    } 
-<a name="l113"><span class="ln">113  </span></a> 
-<a name="l114"><span class="ln">114  </span></a>    </span><span class="s0">public void </span><span class="s1">connectKuerzel(String result){ 
-<a name="l115"><span class="ln">115  </span></a>        List&lt;dbKurs&gt; kurseList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
-<a name="l116"><span class="ln">116  </span></a> 
-<a name="l117"><span class="ln">117  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l118"><span class="ln">118  </span></a>            JSONObject jsonObjectAll = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
-<a name="l119"><span class="ln">119  </span></a>            </span><span class="s2">//JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject(&quot;zuletzt Aktualisiert&quot;);</span><span class="s1"> 
-<a name="l120"><span class="ln">120  </span></a>            </span><span class="s2">//Array mit allen Fach Kürzeln</span><span class="s1"> 
-<a name="l121"><span class="ln">121  </span></a>            JSONArray jsonArrayKuerzel = jsonObjectAll.getJSONArray(</span><span class="s4">&quot;facherkuerzel&quot;</span><span class="s1">); 
-<a name="l122"><span class="ln">122  </span></a> 
-<a name="l123"><span class="ln">123  </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">;i&lt;jsonArrayKuerzel.length();i++){ 
-<a name="l124"><span class="ln">124  </span></a>                JSONObject jsonObject = jsonArrayKuerzel.getJSONObject(i); 
-<a name="l125"><span class="ln">125  </span></a>                String mShort = jsonObject.optString(</span><span class="s4">&quot;SHORT&quot;</span><span class="s1">); 
-<a name="l126"><span class="ln">126  </span></a>                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k=</span><span class="s3">0</span><span class="s1">;k&lt;kurseList.size();k++){ 
-<a name="l127"><span class="ln">127  </span></a>                    dbKurs kurs = kurseList.get(k); 
-<a name="l128"><span class="ln">128  </span></a>                    </span><span class="s0">if </span><span class="s1">(mShort.equals(kurs.name)){ 
-<a name="l129"><span class="ln">129  </span></a>                        kurs.fach= jsonObject.optString(</span><span class="s4">&quot;FULL&quot;</span><span class="s1">); 
-<a name="l130"><span class="ln">130  </span></a>                        kurs.save(); 
-<a name="l131"><span class="ln">131  </span></a>                    } 
+<a name="l57"><span class="ln">57   </span></a>        Iterator&lt;String&gt; iterator = sortetdSet.iterator(); 
+<a name="l58"><span class="ln">58   </span></a>        kursIDList.clear(); 
+<a name="l59"><span class="ln">59   </span></a> 
+<a name="l60"><span class="ln">60   </span></a>        </span><span class="s0">while </span><span class="s1">(iterator.hasNext()) { 
+<a name="l61"><span class="ln">61   </span></a>            kursIDList.add(iterator.next()); 
+<a name="l62"><span class="ln">62   </span></a>        } 
+<a name="l63"><span class="ln">63   </span></a>        </span><span class="s2">// speicher die Kursids als neue Kurse mit der entsprechenden kursart</span><span class="s1"> 
+<a name="l64"><span class="ln">64   </span></a>        Log.d(</span><span class="s5">&quot;COUNT&quot;</span><span class="s1">, kursIDList.size() + </span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l65"><span class="ln">65   </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; kursIDList.size(); i++) { 
+<a name="l66"><span class="ln">66   </span></a>            dbKurs kurs = </span><span class="s0">new </span><span class="s1">dbKurs(); 
+<a name="l67"><span class="ln">67   </span></a>            kurs.name = kursIDList.get(i); 
+<a name="l68"><span class="ln">68   </span></a>            </span><span class="s0">if </span><span class="s1">(kurs.kursVorhanden(kurs) != </span><span class="s0">true</span><span class="s1">) { 
+<a name="l69"><span class="ln">69   </span></a> 
+<a name="l70"><span class="ln">70   </span></a>                </span><span class="s2">// LK 0 GK 1 PK 2 AG 3</span><span class="s1"> 
+<a name="l71"><span class="ln">71   </span></a>                </span><span class="s0">if </span><span class="s1">(kursIDList.get(i).charAt(</span><span class="s4">3</span><span class="s1">) == </span><span class="s5">'L'</span><span class="s1">) { 
+<a name="l72"><span class="ln">72   </span></a>                    kurs.kursart = </span><span class="s4">0</span><span class="s1">; 
+<a name="l73"><span class="ln">73   </span></a>                } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l74"><span class="ln">74   </span></a>                    kurs.kursart = </span><span class="s4">1</span><span class="s1">; 
+<a name="l75"><span class="ln">75   </span></a>                } 
+<a name="l76"><span class="ln">76   </span></a>                kurs.save(); 
+<a name="l77"><span class="ln">77   </span></a>            } 
+<a name="l78"><span class="ln">78   </span></a>        } 
+<a name="l79"><span class="ln">79   </span></a>    } 
+<a name="l80"><span class="ln">80   </span></a> 
+<a name="l81"><span class="ln">81   </span></a>    </span><span class="s2">/** 
+<a name="l82"><span class="ln">82   </span></a>     * </span><span class="s3">@connectKursStunden </span><span class="s2">verbindet die Kurse mit den Schulstunden und lädt Daten des kurses nach. 
+<a name="l83"><span class="ln">83   </span></a>     * Auch die Verbindung zu den Lehrer wird geschaffen. 
+<a name="l84"><span class="ln">84   </span></a>     */</span><span class="s1"> 
+<a name="l85"><span class="ln">85   </span></a>    </span><span class="s0">public void </span><span class="s1">connectKursStunden() { 
+<a name="l86"><span class="ln">86   </span></a>        List&lt;dbSchulstunde&gt; schulstundeList = dbSchulstunde.listAll(dbSchulstunde.</span><span class="s0">class</span><span class="s1">); 
+<a name="l87"><span class="ln">87   </span></a>        List&lt;dbKurs&gt; kurseList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
+<a name="l88"><span class="ln">88   </span></a> 
+<a name="l89"><span class="ln">89   </span></a> 
+<a name="l90"><span class="ln">90   </span></a>        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; kurseList.size(); i++) { 
+<a name="l91"><span class="ln">91   </span></a>            dbKurs kurs1 = kurseList.get(i); 
+<a name="l92"><span class="ln">92   </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s4">0</span><span class="s1">; k &lt; schulstundeList.size(); k++) { 
+<a name="l93"><span class="ln">93   </span></a>                dbSchulstunde schulstunde = schulstundeList.get(k); 
+<a name="l94"><span class="ln">94   </span></a>                </span><span class="s0">if </span><span class="s1">(kurs1.name.equals(schulstunde.kursID)) { 
+<a name="l95"><span class="ln">95   </span></a>                    </span><span class="s2">// creating relationships</span><span class="s1"> 
+<a name="l96"><span class="ln">96   </span></a>                    kurs1.lehrer = schulstunde.lehrer; 
+<a name="l97"><span class="ln">97   </span></a>                    kurs1.hinzugefuegtAm = schulstunde.zuletztAktualisiert; 
+<a name="l98"><span class="ln">98   </span></a>                    kurs1.save(); 
+<a name="l99"><span class="ln">99   </span></a>                    schulstunde.kurs = kurs1; 
+<a name="l100"><span class="ln">100  </span></a>                    schulstunde.save(); 
+<a name="l101"><span class="ln">101  </span></a>                } 
+<a name="l102"><span class="ln">102  </span></a>            } 
+<a name="l103"><span class="ln">103  </span></a>        } 
+<a name="l104"><span class="ln">104  </span></a>    } 
+<a name="l105"><span class="ln">105  </span></a> 
+<a name="l106"><span class="ln">106  </span></a>    </span><span class="s2">// überflüssig geworden erstmal</span><span class="s1"> 
+<a name="l107"><span class="ln">107  </span></a>    </span><span class="s0">public void </span><span class="s1">downloadKuerzel() { 
+<a name="l108"><span class="ln">108  </span></a>        String result = </span><span class="s5">&quot;&quot;</span><span class="s1">; 
+<a name="l109"><span class="ln">109  </span></a>        String url = </span><span class="s5">&quot;http://app.marienschule.de/files/scripts/getFachKuerzel.php&quot;</span><span class="s1">; 
+<a name="l110"><span class="ln">110  </span></a>        LogInController logInController = </span><span class="s0">new </span><span class="s1">LogInController(mainContext); 
+<a name="l111"><span class="ln">111  </span></a>        String user = logInController.getUsername(); 
+<a name="l112"><span class="ln">112  </span></a>        String pass = logInController.getPass(); 
+<a name="l113"><span class="ln">113  </span></a>        Uri.Builder builder = </span><span class="s0">new </span><span class="s1">Uri.Builder() 
+<a name="l114"><span class="ln">114  </span></a>                .appendQueryParameter(</span><span class="s5">&quot;username&quot;</span><span class="s1">, user) 
+<a name="l115"><span class="ln">115  </span></a>                .appendQueryParameter(</span><span class="s5">&quot;pw&quot;</span><span class="s1">, pass); 
+<a name="l116"><span class="ln">116  </span></a>        String params = builder.build().getEncodedQuery(); 
+<a name="l117"><span class="ln">117  </span></a>        atOnline atOnline = </span><span class="s0">new </span><span class="s1">atOnline(url, params, mainContext); 
+<a name="l118"><span class="ln">118  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l119"><span class="ln">119  </span></a>            result = atOnline.execute().get(); 
+<a name="l120"><span class="ln">120  </span></a>        } </span><span class="s0">catch </span><span class="s1">(InterruptedException e) { 
+<a name="l121"><span class="ln">121  </span></a>            e.printStackTrace(); 
+<a name="l122"><span class="ln">122  </span></a>        } </span><span class="s0">catch </span><span class="s1">(ExecutionException e) { 
+<a name="l123"><span class="ln">123  </span></a>            e.printStackTrace(); 
+<a name="l124"><span class="ln">124  </span></a>        } 
+<a name="l125"><span class="ln">125  </span></a> 
+<a name="l126"><span class="ln">126  </span></a>        </span><span class="s0">if </span><span class="s1">(result == </span><span class="s5">&quot;Error&quot;</span><span class="s1">) { 
+<a name="l127"><span class="ln">127  </span></a>            Toast.makeText(mainContext, </span><span class="s5">&quot;Download fehlgeschlagen..&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
+<a name="l128"><span class="ln">128  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l129"><span class="ln">129  </span></a>            connectKuerzel(result); 
+<a name="l130"><span class="ln">130  </span></a>        } 
+<a name="l131"><span class="ln">131  </span></a>    } 
 <a name="l132"><span class="ln">132  </span></a> 
-<a name="l133"><span class="ln">133  </span></a>                } 
-<a name="l134"><span class="ln">134  </span></a> 
-<a name="l135"><span class="ln">135  </span></a>            } 
-<a name="l136"><span class="ln">136  </span></a> 
-<a name="l137"><span class="ln">137  </span></a> 
-<a name="l138"><span class="ln">138  </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
-<a name="l139"><span class="ln">139  </span></a>            e.printStackTrace(); 
-<a name="l140"><span class="ln">140  </span></a>        } 
-<a name="l141"><span class="ln">141  </span></a>    } 
-<a name="l142"><span class="ln">142  </span></a> 
-<a name="l143"><span class="ln">143  </span></a> 
-<a name="l144"><span class="ln">144  </span></a> 
-<a name="l145"><span class="ln">145  </span></a>    </span><span class="s0">public void </span><span class="s1">erstelltPKundAGs(String result){ 
-<a name="l146"><span class="ln">146  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
-<a name="l147"><span class="ln">147  </span></a>            JSONObject jsonObjectAll = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
-<a name="l148"><span class="ln">148  </span></a>            </span><span class="s2">//JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject(&quot;zuletzt Aktualisiert&quot;);</span><span class="s1"> 
-<a name="l149"><span class="ln">149  </span></a>            JSONArray jsonArray = jsonObjectAll.getJSONArray(</span><span class="s4">&quot;pkuags&quot;</span><span class="s1">); 
-<a name="l150"><span class="ln">150  </span></a>            Log.d(</span><span class="s4">&quot;COUNT&quot;</span><span class="s1">,jsonArray.length()+</span><span class="s4">&quot;&quot;</span><span class="s1">); 
-<a name="l151"><span class="ln">151  </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i=</span><span class="s3">0</span><span class="s1">;i&lt;jsonArray.length();i++){ 
-<a name="l152"><span class="ln">152  </span></a> 
-<a name="l153"><span class="ln">153  </span></a>                JSONObject jsonObjectEintrag = jsonArray.getJSONObject(i); 
-<a name="l154"><span class="ln">154  </span></a> 
-<a name="l155"><span class="ln">155  </span></a>                String name = jsonObjectEintrag.optString(</span><span class="s4">&quot;BESCHREIBUNG&quot;</span><span class="s1">); 
-<a name="l156"><span class="ln">156  </span></a>                String kuerzel = jsonObjectEintrag.optString(</span><span class="s4">&quot;KUERZEL&quot;</span><span class="s1">); 
-<a name="l157"><span class="ln">157  </span></a>                String lehrer = jsonObjectEintrag.optString(</span><span class="s4">&quot;LEHRERKUERZEL&quot;</span><span class="s1">); 
-<a name="l158"><span class="ln">158  </span></a>                JSONArray Typ = jsonObjectEintrag.getJSONArray(</span><span class="s4">&quot;TYP&quot;</span><span class="s1">); 
+<a name="l133"><span class="ln">133  </span></a>    </span><span class="s2">/** 
+<a name="l134"><span class="ln">134  </span></a>     * </span><span class="s3">@param </span><span class="s2">result beinhaltet zu jedem Kurs eine Kurz und langform 
+<a name="l135"><span class="ln">135  </span></a>     * </span><span class="s3">@connectKuerzel </span><span class="s2">lädt mit den results die Langform der Kurse nach und speichert diese in den Kursen 
+<a name="l136"><span class="ln">136  </span></a>     * Beispiel M L1 : Mathematik Leistungskurs 1 
+<a name="l137"><span class="ln">137  </span></a>     */</span><span class="s1"> 
+<a name="l138"><span class="ln">138  </span></a>    </span><span class="s0">public void </span><span class="s1">connectKuerzel(String result) { 
+<a name="l139"><span class="ln">139  </span></a>        List&lt;dbKurs&gt; kurseList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
+<a name="l140"><span class="ln">140  </span></a> 
+<a name="l141"><span class="ln">141  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l142"><span class="ln">142  </span></a>            JSONObject jsonObjectAll = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
+<a name="l143"><span class="ln">143  </span></a>            </span><span class="s2">//JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject(&quot;zuletzt Aktualisiert&quot;);</span><span class="s1"> 
+<a name="l144"><span class="ln">144  </span></a>            </span><span class="s2">//Array mit allen Fach Kürzeln</span><span class="s1"> 
+<a name="l145"><span class="ln">145  </span></a>            JSONArray jsonArrayKuerzel = jsonObjectAll.getJSONArray(</span><span class="s5">&quot;facherkuerzel&quot;</span><span class="s1">); 
+<a name="l146"><span class="ln">146  </span></a> 
+<a name="l147"><span class="ln">147  </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; jsonArrayKuerzel.length(); i++) { 
+<a name="l148"><span class="ln">148  </span></a>                JSONObject jsonObject = jsonArrayKuerzel.getJSONObject(i); 
+<a name="l149"><span class="ln">149  </span></a>                String mShort = jsonObject.optString(</span><span class="s5">&quot;SHORT&quot;</span><span class="s1">); 
+<a name="l150"><span class="ln">150  </span></a>                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s4">0</span><span class="s1">; k &lt; kurseList.size(); k++) { 
+<a name="l151"><span class="ln">151  </span></a>                    dbKurs kurs = kurseList.get(k); 
+<a name="l152"><span class="ln">152  </span></a>                    </span><span class="s2">//kurs wird anhand der Kursform rausgesucht und die Langform gespeichert</span><span class="s1"> 
+<a name="l153"><span class="ln">153  </span></a>                    </span><span class="s0">if </span><span class="s1">(mShort.equals(kurs.name)) { 
+<a name="l154"><span class="ln">154  </span></a>                        kurs.fach = jsonObject.optString(</span><span class="s5">&quot;FULL&quot;</span><span class="s1">); 
+<a name="l155"><span class="ln">155  </span></a>                        kurs.save(); 
+<a name="l156"><span class="ln">156  </span></a>                    } 
+<a name="l157"><span class="ln">157  </span></a> 
+<a name="l158"><span class="ln">158  </span></a>                } 
 <a name="l159"><span class="ln">159  </span></a> 
-<a name="l160"><span class="ln">160  </span></a>                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k=</span><span class="s3">0</span><span class="s1">;k&lt;Typ.length();k++){ 
-<a name="l161"><span class="ln">161  </span></a>                    dbKurs kurs = </span><span class="s0">new </span><span class="s1">dbKurs(); 
-<a name="l162"><span class="ln">162  </span></a>                    kurs.name = kuerzel; 
-<a name="l163"><span class="ln">163  </span></a>                        </span><span class="s2">//Verbindung mit Lehrer schaffen</span><span class="s1"> 
-<a name="l164"><span class="ln">164  </span></a>                        dbLehrer lehrer1 = </span><span class="s0">new </span><span class="s1">dbLehrer(); 
-<a name="l165"><span class="ln">165  </span></a>                        kurs.lehrer = lehrer1.sucheLehrer(lehrer); 
-<a name="l166"><span class="ln">166  </span></a>                        </span><span class="s2">// LK 0 GK 1 AG 2 PK 3</span><span class="s1"> 
-<a name="l167"><span class="ln">167  </span></a>                    kurs.kursart =</span><span class="s3">2</span><span class="s1">; 
-<a name="l168"><span class="ln">168  </span></a>                        </span><span class="s0">if </span><span class="s1">(Typ.getString(k).substring(</span><span class="s3">0</span><span class="s1">,</span><span class="s3">2</span><span class="s1">).equals(</span><span class="s4">&quot;PK&quot;</span><span class="s1">)) { 
-<a name="l169"><span class="ln">169  </span></a>                        kurs.kursart = </span><span class="s3">3</span><span class="s1">; 
-<a name="l170"><span class="ln">170  </span></a>                        } 
-<a name="l171"><span class="ln">171  </span></a>                        kurs.fach = name; 
-<a name="l172"><span class="ln">172  </span></a>                    </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbKurs().kursVorhanden(kurs)== </span><span class="s0">false</span><span class="s1">){ 
-<a name="l173"><span class="ln">173  </span></a>                    kurs.save();} 
-<a name="l174"><span class="ln">174  </span></a> 
-<a name="l175"><span class="ln">175  </span></a> 
-<a name="l176"><span class="ln">176  </span></a>                } 
-<a name="l177"><span class="ln">177  </span></a>            } 
-<a name="l178"><span class="ln">178  </span></a> 
-<a name="l179"><span class="ln">179  </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
-<a name="l180"><span class="ln">180  </span></a>            e.printStackTrace(); 
-<a name="l181"><span class="ln">181  </span></a>        } 
-<a name="l182"><span class="ln">182  </span></a>    } 
-<a name="l183"><span class="ln">183  </span></a> 
-<a name="l184"><span class="ln">184  </span></a> 
+<a name="l160"><span class="ln">160  </span></a>            } 
+<a name="l161"><span class="ln">161  </span></a> 
+<a name="l162"><span class="ln">162  </span></a> 
+<a name="l163"><span class="ln">163  </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
+<a name="l164"><span class="ln">164  </span></a>            e.printStackTrace(); 
+<a name="l165"><span class="ln">165  </span></a>        } 
+<a name="l166"><span class="ln">166  </span></a>    } 
+<a name="l167"><span class="ln">167  </span></a> 
+<a name="l168"><span class="ln">168  </span></a>    </span><span class="s2">/** 
+<a name="l169"><span class="ln">169  </span></a>     * </span><span class="s3">@param </span><span class="s2">result beinhaltet die JSON Daten der PK und AGs 
+<a name="l170"><span class="ln">170  </span></a>     * </span><span class="s3">@erstelltPKundAGs </span><span class="s2">erstellt die PK und AGs. Hierbei muss besodners bei den kursarten aufgepasst 
+<a name="l171"><span class="ln">171  </span></a>     * werden sowie das doppelt vorkommen da manche PK und AG die gleiche KursID besitzen. 
+<a name="l172"><span class="ln">172  </span></a>     */</span><span class="s1"> 
+<a name="l173"><span class="ln">173  </span></a>    </span><span class="s0">public void </span><span class="s1">erstelltPKundAGs(String result) { 
+<a name="l174"><span class="ln">174  </span></a>        </span><span class="s0">try </span><span class="s1">{ 
+<a name="l175"><span class="ln">175  </span></a>            </span><span class="s2">// parsed die JSON Daten</span><span class="s1"> 
+<a name="l176"><span class="ln">176  </span></a>            JSONObject jsonObjectAll = </span><span class="s0">new </span><span class="s1">JSONObject(result); 
+<a name="l177"><span class="ln">177  </span></a>            String datum = jsonObjectAll.getString(</span><span class="s5">&quot;zuletzt Aktualisiert&quot;</span><span class="s1">); 
+<a name="l178"><span class="ln">178  </span></a>            JSONArray jsonArray = jsonObjectAll.getJSONArray(</span><span class="s5">&quot;pkuags&quot;</span><span class="s1">); 
+<a name="l179"><span class="ln">179  </span></a>            Log.d(</span><span class="s5">&quot;COUNT&quot;</span><span class="s1">, jsonArray.length() + </span><span class="s5">&quot;&quot;</span><span class="s1">); 
+<a name="l180"><span class="ln">180  </span></a>            </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s4">0</span><span class="s1">; i &lt; jsonArray.length(); i++) { 
+<a name="l181"><span class="ln">181  </span></a>                JSONObject jsonObjectEintrag = jsonArray.getJSONObject(i); 
+<a name="l182"><span class="ln">182  </span></a>                String name = jsonObjectEintrag.optString(</span><span class="s5">&quot;BESCHREIBUNG&quot;</span><span class="s1">); 
+<a name="l183"><span class="ln">183  </span></a>                String kuerzel = jsonObjectEintrag.optString(</span><span class="s5">&quot;KUERZEL&quot;</span><span class="s1">); 
+<a name="l184"><span class="ln">184  </span></a>                String lehrer = jsonObjectEintrag.optString(</span><span class="s5">&quot;LEHRERKUERZEL&quot;</span><span class="s1">); 
 <a name="l185"><span class="ln">185  </span></a> 
 <a name="l186"><span class="ln">186  </span></a> 
-<a name="l187"><span class="ln">187  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; gibtKurseZurück(){ 
-<a name="l188"><span class="ln">188  </span></a>        List&lt;dbKurs&gt; kursList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
-<a name="l189"><span class="ln">189  </span></a>        </span><span class="s0">return </span><span class="s1">kursList; 
-<a name="l190"><span class="ln">190  </span></a>    } 
-<a name="l191"><span class="ln">191  </span></a> 
-<a name="l192"><span class="ln">192  </span></a>} 
-<a name="l193"><span class="ln">193  </span></a></span><span class="s0">class </span><span class="s1">ListComparator </span><span class="s0">implements </span><span class="s1">Comparator&lt;String&gt;{ 
-<a name="l194"><span class="ln">194  </span></a> 
-<a name="l195"><span class="ln">195  </span></a>    @Override 
-<a name="l196"><span class="ln">196  </span></a>    </span><span class="s0">public int </span><span class="s1">compare(String lhs, String rhs) { 
-<a name="l197"><span class="ln">197  </span></a>        </span><span class="s0">return </span><span class="s1">lhs.compareTo(rhs); 
-<a name="l198"><span class="ln">198  </span></a>    } 
-<a name="l199"><span class="ln">199  </span></a>} 
-<a name="l200"><span class="ln">200  </span></a> 
-<a name="l201"><span class="ln">201  </span></a></span></pre>
+<a name="l187"><span class="ln">187  </span></a>                JSONArray Typ = jsonObjectEintrag.getJSONArray(</span><span class="s5">&quot;TYP&quot;</span><span class="s1">); 
+<a name="l188"><span class="ln">188  </span></a> 
+<a name="l189"><span class="ln">189  </span></a>                </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">k = </span><span class="s4">0</span><span class="s1">; k &lt; Typ.length(); k++) { 
+<a name="l190"><span class="ln">190  </span></a>                    </span><span class="s2">//erstellt die Kurse</span><span class="s1"> 
+<a name="l191"><span class="ln">191  </span></a>                    dbKurs kurs = </span><span class="s0">new </span><span class="s1">dbKurs(); 
+<a name="l192"><span class="ln">192  </span></a>                    kurs.name = kuerzel; 
+<a name="l193"><span class="ln">193  </span></a>                    </span><span class="s2">//Verbindung mit Lehrer schaffen</span><span class="s1"> 
+<a name="l194"><span class="ln">194  </span></a>                    dbLehrer lehrer1 = </span><span class="s0">new </span><span class="s1">dbLehrer(); 
+<a name="l195"><span class="ln">195  </span></a>                    </span><span class="s0">if </span><span class="s1">(!lehrer.equals(</span><span class="s5">&quot;&quot;</span><span class="s1">)) { 
+<a name="l196"><span class="ln">196  </span></a>                        kurs.lehrer = lehrer1.sucheLehrer(lehrer); 
+<a name="l197"><span class="ln">197  </span></a>                    } 
+<a name="l198"><span class="ln">198  </span></a>                    </span><span class="s2">//speichert die richtige Kursart</span><span class="s1"> 
+<a name="l199"><span class="ln">199  </span></a>                    </span><span class="s2">// LK 0 GK 1 AG 2 PK 3</span><span class="s1"> 
+<a name="l200"><span class="ln">200  </span></a>                    kurs.kursart = </span><span class="s4">2</span><span class="s1">; 
+<a name="l201"><span class="ln">201  </span></a>                    </span><span class="s0">if </span><span class="s1">(Typ.getString(k).substring(</span><span class="s4">0</span><span class="s1">, </span><span class="s4">2</span><span class="s1">).equals(</span><span class="s5">&quot;PK&quot;</span><span class="s1">)) { 
+<a name="l202"><span class="ln">202  </span></a>                        kurs.kursart = </span><span class="s4">3</span><span class="s1">; 
+<a name="l203"><span class="ln">203  </span></a>                    } 
+<a name="l204"><span class="ln">204  </span></a>                    kurs.fach = name; 
+<a name="l205"><span class="ln">205  </span></a>                    </span><span class="s2">//überprüft ob Kurs vorhanden ist</span><span class="s1"> 
+<a name="l206"><span class="ln">206  </span></a>                    </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbKurs().kursVorhanden(kurs) == </span><span class="s0">false</span><span class="s1">) { 
+<a name="l207"><span class="ln">207  </span></a>                        JSONArray Tags = jsonObjectEintrag.getJSONArray(</span><span class="s5">&quot;TAGS&quot;</span><span class="s1">); 
+<a name="l208"><span class="ln">208  </span></a>                        kurs.hinzugefuegtAm = datum; 
+<a name="l209"><span class="ln">209  </span></a>                        kurs.save(); 
+<a name="l210"><span class="ln">210  </span></a>                        </span><span class="s2">//speichert die Website TAGs der Kurse</span><span class="s1"> 
+<a name="l211"><span class="ln">211  </span></a>                        </span><span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">l = </span><span class="s4">0</span><span class="s1">; l &lt; Tags.length(); l++) { 
+<a name="l212"><span class="ln">212  </span></a>                            String tag = Tags.getString(l); 
+<a name="l213"><span class="ln">213  </span></a>                            tag = tag.toUpperCase(); 
+<a name="l214"><span class="ln">214  </span></a>                            dbKursTagConnect connect = </span><span class="s0">new </span><span class="s1">dbKursTagConnect(); 
+<a name="l215"><span class="ln">215  </span></a>                            </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbWebsiteTag().tagVorhanden(tag) == </span><span class="s0">true</span><span class="s1">) { 
+<a name="l216"><span class="ln">216  </span></a>                                dbWebsiteTag websiteTag = </span><span class="s0">new </span><span class="s1">dbWebsiteTag().getWebsiteTag(tag); 
+<a name="l217"><span class="ln">217  </span></a>                                websiteTag.kurs = kurs; 
+<a name="l218"><span class="ln">218  </span></a>                                </span><span class="s2">//websiteTag.hinzugefuegtAm = datum;</span><span class="s1"> 
+<a name="l219"><span class="ln">219  </span></a>                                connect.kurs = kurs; 
+<a name="l220"><span class="ln">220  </span></a>                                connect.tag = websiteTag; 
+<a name="l221"><span class="ln">221  </span></a>                                websiteTag.save(); 
+<a name="l222"><span class="ln">222  </span></a>                                connect.save(); 
+<a name="l223"><span class="ln">223  </span></a>                            } </span><span class="s0">else </span><span class="s1">{ 
+<a name="l224"><span class="ln">224  </span></a>                                dbWebsiteTag websiteTag = </span><span class="s0">new </span><span class="s1">dbWebsiteTag(); 
+<a name="l225"><span class="ln">225  </span></a>                                websiteTag.websitetag = tag; 
+<a name="l226"><span class="ln">226  </span></a>                                websiteTag.kurs = kurs; 
+<a name="l227"><span class="ln">227  </span></a>                                connect.kurs = kurs; 
+<a name="l228"><span class="ln">228  </span></a>                                connect.tag = websiteTag; 
+<a name="l229"><span class="ln">229  </span></a>                                </span><span class="s2">//websiteTag.hinzugefuegtAm = datum;</span><span class="s1"> 
+<a name="l230"><span class="ln">230  </span></a>                                websiteTag.save(); 
+<a name="l231"><span class="ln">231  </span></a>                                connect.save(); 
+<a name="l232"><span class="ln">232  </span></a>                            } 
+<a name="l233"><span class="ln">233  </span></a>                        } 
+<a name="l234"><span class="ln">234  </span></a> 
+<a name="l235"><span class="ln">235  </span></a> 
+<a name="l236"><span class="ln">236  </span></a>                    } 
+<a name="l237"><span class="ln">237  </span></a> 
+<a name="l238"><span class="ln">238  </span></a> 
+<a name="l239"><span class="ln">239  </span></a>                } 
+<a name="l240"><span class="ln">240  </span></a>            } 
+<a name="l241"><span class="ln">241  </span></a> 
+<a name="l242"><span class="ln">242  </span></a>        } </span><span class="s0">catch </span><span class="s1">(JSONException e) { 
+<a name="l243"><span class="ln">243  </span></a>            e.printStackTrace(); 
+<a name="l244"><span class="ln">244  </span></a>        } 
+<a name="l245"><span class="ln">245  </span></a>    } 
+<a name="l246"><span class="ln">246  </span></a> 
+<a name="l247"><span class="ln">247  </span></a> 
+<a name="l248"><span class="ln">248  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbKurs&gt; gibtKurseZurück() { 
+<a name="l249"><span class="ln">249  </span></a>        List&lt;dbKurs&gt; kursList = dbKurs.listAll(dbKurs.</span><span class="s0">class</span><span class="s1">); 
+<a name="l250"><span class="ln">250  </span></a>        </span><span class="s0">return </span><span class="s1">kursList; 
+<a name="l251"><span class="ln">251  </span></a>    } 
+<a name="l252"><span class="ln">252  </span></a> 
+<a name="l253"><span class="ln">253  </span></a>} 
+<a name="l254"><span class="ln">254  </span></a> 
+<a name="l255"><span class="ln">255  </span></a></span><span class="s0">class </span><span class="s1">ListComparator </span><span class="s0">implements </span><span class="s1">Comparator&lt;String&gt; { 
+<a name="l256"><span class="ln">256  </span></a> 
+<a name="l257"><span class="ln">257  </span></a>    @Override 
+<a name="l258"><span class="ln">258  </span></a>    </span><span class="s0">public int </span><span class="s1">compare(String lhs, String rhs) { 
+<a name="l259"><span class="ln">259  </span></a>        </span><span class="s0">return </span><span class="s1">lhs.compareTo(rhs); 
+<a name="l260"><span class="ln">260  </span></a>    } 
+<a name="l261"><span class="ln">261  </span></a>} 
+<a name="l262"><span class="ln">262  </span></a> 
+<a name="l263"><span class="ln">263  </span></a></span></pre>
 </body>
 </html>

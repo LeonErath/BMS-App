@@ -1,13 +1,18 @@
 package leon.bms;
 
+import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -23,7 +28,7 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
     private static final int TYPE_INACTIVE = 0;
     private static final int TYPE_ACTIVE = 1;
 
-    private List<dbFragen> fragenList;
+    private List<quizfragen> fragenList;
 
 
     private ViewHolder.ClickListener clickListener;
@@ -32,7 +37,7 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
      * @param clickListener clickListener wird übergeben um auf Clickevents zu reagieren
      * @param fragenList    Liste der zu anzeigenden Fragen wird übergeben
      */
-    public QuizErgebnisAdapter(ViewHolder.ClickListener clickListener, List<dbFragen> fragenList) {
+    public QuizErgebnisAdapter(ViewHolder.ClickListener clickListener, List<quizfragen> fragenList) {
         super();
         this.clickListener = clickListener;
         this.fragenList = fragenList;
@@ -42,17 +47,29 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final int layout = viewType = R.layout.item_quiz_kursauswahl;
+        final int layout = viewType = R.layout.item_quizergebnis;
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(v, clickListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final dbFragen fragen = fragenList.get(position);
+        final quizfragen fragen = fragenList.get(position);
 
         //set the Data to the views
-
+        holder.textViewFrage.setText(fragen.getFrage());
+        holder.textViewFrageID.setText("Frage ID: "+String.valueOf(fragen.getFradeID()));
+        if (fragen.richtigOderFalsch == true){
+            holder.container.setBackgroundColor(Color.parseColor("#b7d167"));
+            holder.imageView.setImageResource(R.drawable.ic_done_white_48dp);
+            holder.imageView.setBorderColor(Color.parseColor("#ffffff"));
+            holder.imageView.setBorderWidth(1);
+        }else {
+            holder.container.setBackgroundColor(Color.parseColor("#e30613"));
+            holder.imageView.setImageResource(R.drawable.ic_clear_white_48dp);
+            holder.imageView.setBorderColor(Color.parseColor("#ffffff"));
+            holder.imageView.setBorderWidth(1);
+        }
 
     }
 
@@ -70,7 +87,9 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
 
         private static final String TAG = ViewHolder.class.getSimpleName();
         //views
-        TextView textViewKurs;
+        TextView textViewFrage,textViewFrageID;
+        CircleImageView imageView;
+        CardView container;
 
 
         private ClickListener listener;
@@ -78,7 +97,10 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
             //initial view
-            textViewKurs = (TextView) itemView.findViewById(R.id.textViewKurs);
+            textViewFrage= (TextView) itemView.findViewById(R.id.textViewFrage);
+            textViewFrageID = (TextView) itemView.findViewById(R.id.textViewFrageID);
+            imageView = (CircleImageView) itemView.findViewById(R.id.imageViewIcon);
+            container = (CardView) itemView.findViewById(R.id.container);
 
 
             this.listener = listener;
