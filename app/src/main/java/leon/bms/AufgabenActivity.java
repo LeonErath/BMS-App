@@ -1,6 +1,10 @@
 package leon.bms;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,6 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,6 +44,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -52,6 +59,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     private static String TAG = AufgabenActivity.class.getSimpleName();
     // @datePickerDialog wird gebraucht für die Auswahl der Datums
     DatePickerDialog datePickerDialog;
+    private PendingIntent pendingIntent;
     // @dateString hier wird das Datum als String gespeichert
     String dateString, dateAnzeige;
     // @dateCalendar ist das heutige Datum @calendar2 ist das Datum welches der User auswählt
@@ -474,6 +482,9 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                     }
 
 
+                    createNotification(this,aufgabeLoad);
+
+
                     Log.d("AufgabeActitviy", "Aufgabe wurde erstellt");
                     // Activity wird geschlossen
                     exitAcitivity();
@@ -487,6 +498,53 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void createNotification(Context context,dbAufgabe aufgabeLoad){
+        Log.d("onRecieve","trigger");
+        //create an Notification
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.drawable.ic_done_white_48dp)
+                .setContentTitle(aufgabeLoad.beschreibung)
+                .setSubText(aufgabeLoad.kurs.fach)
+                .setTicker("Neue Hausaufgabe !")
+                .setCategory(Notification.CATEGORY_EVENT)
+                .setContentText(aufgabeLoad.notizen);
+        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+
+        String multiLines = aufgabeLoad.notizen;
+        String[] text;
+        String delimiter = "\n";
+        text = multiLines.split(delimiter);
+        // Sets a title for the Inbox in expanded layout
+        inboxStyle.setBigContentTitle("Details: ");
+        // Moves events into the expanded layout
+        for (int i = 0; i < text.length; i++) {
+            inboxStyle.addLine(text[i]);
+        }
+        // Moves the expanded layout object into the notification object.
+        mBuilder.setStyle(inboxStyle);
+
+        // Creates an explicit intent for an Activity in your app
+        Intent resultIntent = new Intent(context, AufgabenActivity.class);
+        resultIntent.putExtra("id", aufgabeLoad.getId());
+        // The stack builder object will contain an artificial back stack for the
+        // started Activity.
+        // This ensures that navigating backward from the Activity leads out of
+        // your application to the Home screen.
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        // Adds the back stack for the Intent (but not the Intent itself)
+        stackBuilder.addParentStack(AufgabenActivity.class);
+        // Adds the Intent that starts the Activity to the top of the stack
+        stackBuilder.addNextIntent(resultIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // mId allows you to update the notification later on.
+
+        mNotificationManager.notify(1, mBuilder.build());
+    }
+
+
 
 
     /**
