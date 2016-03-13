@@ -97,14 +97,22 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
      * seaches for the aufgabe and changes it with the new aufgabe
      * @notifyItemChanged for a nice Animation and updates the UI
      */
-    public void changeAufgabe(dbAufgabe aufgabe) {
-        if (aufgabenList.contains(aufgabe)) {
-            int index = aufgabenList.indexOf(aufgabe);
-            aufgabenList.remove(index);
-            aufgabenList.add(index, aufgabe);
+    public void changeAufgabe(dbAufgabe aufgabeNew) {
+        if (aufgabenList.contains(aufgabeNew)) {
+            int index = aufgabenList.indexOf(aufgabeNew);
+            dbAufgabe aufgabe = aufgabenList.get(index);
+            aufgabe = aufgabeNew;
             notifyItemChanged(index);
         }
     }
+    public void deleteAufgabe(dbAufgabe aufgabe){
+        if (aufgabenList.contains(aufgabe)) {
+            int index = aufgabenList.indexOf(aufgabe);
+            aufgabenList.remove(index);
+            notifyItemChanged(index);
+        }
+    }
+
 
 
     @Override
