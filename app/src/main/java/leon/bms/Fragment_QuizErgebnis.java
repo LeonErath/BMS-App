@@ -34,15 +34,25 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
     ImageView imageViewCancel;
     List<dbFragen> fragenList;
     List<quizfragen> quizfragenList;
+    List<dbFragen> fragenListNew;
+    String kursid;
+    QuizErgebnisAdapter quizErgebnisAdapter;
 
 
-    public Fragment_QuizErgebnis(long themenbereichID,List<quizfragen> quizfragenList) {
+    public Fragment_QuizErgebnis(long themenbereichID, List<quizfragen> quizfragenList) {
         this.themenbereichID = themenbereichID;
         this.quizfragenList = quizfragenList;
     }
 
+    public Fragment_QuizErgebnis(String kursid, List<quizfragen> quizfragenList, List<dbFragen> fragenList) {
+        this.kursid = kursid;
+        this.quizfragenList = quizfragenList;
+        this.fragenListNew = fragenList;
+    }
+
+
     public Fragment_QuizErgebnis() {
-    // Required empty public constructor
+        // Required empty public constructor
     }
 
     @Override
@@ -67,7 +77,7 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         setUpERGEBNIS();
         imageViewCancel.setOnClickListener(this);
         //setUp recylcerView
-        QuizErgebnisAdapter quizErgebnisAdapter = new QuizErgebnisAdapter(this, quizfragenList);
+        quizErgebnisAdapter = new QuizErgebnisAdapter(this, quizfragenList);
         recyclerView.setAdapter(quizErgebnisAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -80,8 +90,11 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         textViewName.setText("Name: " + new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
         textViewStufe.setText("Stufe: " + new dbUser().getUser().stufe);
 
-
-        if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
+        if (kursid != null && quizfragenList != null && quizfragenList.size() > 0 && fragenListNew != null && fragenListNew.size() > 0) {
+            textViewThemenbereich.setText("Themenbereich: " + kursid);
+            fragenList = fragenListNew;
+            setUpFragen(fragenList);
+        } else if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
             dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(themenbereichID);
             textViewThemenbereich.setText("Themenbereich: " + themenbereich.getName());
             if (themenbereich.getFragen(themenbereich.getId()) != null) {
@@ -111,13 +124,14 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         }
         if ((fragenRichtig + fragenFalsch) == fragen.size()) {
             // für die Anzeige von Prozenten wird der Datentyp double verlangt
-            double prozenRichtig = round((fragenRichtig / fragen.size()) * 100,2);
-            double prozenFalsch = round((fragenFalsch / fragen.size()) * 100,2);
+            double prozenRichtig = round((fragenRichtig / fragen.size()) * 100, 2);
+            double prozenFalsch = round((fragenFalsch / fragen.size()) * 100, 2);
             // zeigt die Ergebnis an
             textViewRichtig.setText("Fragen richtig Beantwortet: " + fragenRichtig + " (" + prozenRichtig + "%)");
             textViewFalsch.setText("Fragen richtig Beantwortet: " + fragenFalsch + " (" + prozenFalsch + "%)");
         }
     }
+
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -167,6 +181,12 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
 
     @Override
     public void onItemClicked(int position) {
+        if (kursid != null && quizfragenList != null && quizfragenList.size() > 0 && fragenListNew != null && fragenListNew.size() > 0) {
+           mListener.Fragment_QuizErgebnisZuFrageSpecial(kursid,fragenListNew,quizfragenList,position);
+        } else if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
+            mListener.Fragment_QuizErgebnisZuFrage(themenbereichID,quizfragenList,position);
+        }
+
 
     }
 
@@ -189,8 +209,8 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         // TODO: Update argument type and name
         void Fragment_QuizErgebnisBACK();
 
-        void Fragment_QuizErgebnisZuFrage(long themenbereichID, int FrageID);
-
+        void Fragment_QuizErgebnisZuFrage(long themenbereichID,List<quizfragen> quizfragenList, int FrageID);
+        void Fragment_QuizErgebnisZuFrageSpecial(String kursid,List<dbFragen> fragenListNew,List<quizfragen> quizfragenList, int FrageID);
     }
 
 }

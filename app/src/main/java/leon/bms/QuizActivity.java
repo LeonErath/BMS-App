@@ -20,6 +20,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     List<quizfragen> quizfragenList;
     String kursString;
     List<dbFragen> fragenList;
+    int position;
 
 
     @Override
@@ -96,8 +97,10 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
 
                     // Commit the transaction
                     transaction2.commit();
-                }
-                if (themenbereichID != null) {
+
+                    kursString = null;
+                    fragenList = null;
+                }else if (themenbereichID != null) {
                     // dann wird das Quiz gestartet
                     Fragment_QuizFrage fragment = new Fragment_QuizFrage(themenbereichID);
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -115,7 +118,25 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                 }
                 break;
             case 4:
-                if (themenbereichID != null && quizfragenList != null && quizfragenList.size() != 0) {
+                if (kursString != null && fragenList != null && fragenList.size()>0&& quizfragenList != null && quizfragenList.size() != 0){
+                    // und nach dem Quiz wird das Ergebnis angezeigt
+                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(kursString, quizfragenList,fragenList);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment, "4");
+                    transaction2.addToBackStack("4");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+
+                    kursString = null;
+                    fragenList = null;
+                }else if (themenbereichID != null && quizfragenList != null && quizfragenList.size() != 0) {
                     // und nach dem Quiz wird das Ergebnis angezeigt
                     Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID, quizfragenList);
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -133,7 +154,44 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                 }
                 break;
             case 5:
+                if (kursString != null && fragenList != null && fragenList.size()>0 && quizfragenList != null ){
+                    // dann wird das Quiz gestartet
+                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(kursString,fragenList,quizfragenList,position);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment, "5");
+                    transaction2.addToBackStack("5");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+
+                    kursString = null;
+                    fragenList = null;
+                }else if (themenbereichID != null) {
+                    // dann wird das Quiz gestartet
+                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(themenbereichID,quizfragenList,position);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment, "5");
+                    transaction2.addToBackStack("5");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+                }else {
+                    counter--;
+                }
                 break;
+            default:break;
         }
 
 
@@ -209,6 +267,14 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     }
 
     @Override
+    public void Fragment_QuizFrageShowErgebnisSpecial(String kursid, List<quizfragen> quizfragenList, List<dbFragen> fragenList) {
+        this.kursString = kursid;
+        this.quizfragenList = quizfragenList;
+        this.fragenList = fragenList;
+        next();
+    }
+
+    @Override
     public void Fragment_QuitFrageBACK() {
         onBackPressed();
     }
@@ -220,7 +286,21 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     }
 
     @Override
-    public void Fragment_QuizErgebnisZuFrage(long themenbereichID, int FrageID) {
-
+    public void Fragment_QuizErgebnisZuFrage(long themenbereichID, List<quizfragen> quizfragenList, int FrageID) {
+        this.themenbereichID = themenbereichID;
+        this.quizfragenList = quizfragenList;
+        this.position = FrageID;
+        next();
     }
+
+    @Override
+    public void Fragment_QuizErgebnisZuFrageSpecial(String kursid, List<dbFragen> fragenListNew, List<quizfragen> quizfragenList, int FrageID) {
+        this.kursString = kursid;
+        this.fragenList = fragenListNew;
+        this.quizfragenList = quizfragenList;
+        this.position = FrageID;
+        next();
+    }
+
+
 }

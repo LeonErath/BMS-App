@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -161,11 +162,30 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.cardViewAll:
-                mListener.FragmentQuizThemen_nextSpecial(kursID,new QuizController(getActivity()).getAll(kursID));
+                if (new QuizController(getActivity()).getAll(kursID) != null) {
+                    mListener.FragmentQuizThemen_nextSpecial(kursID, new QuizController(getActivity()).getAll(kursID));
+                }else {
+                    Toast.makeText(getActivity(), "Ein Fehler ist aufgetreten.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.cardViewNew:
+                if (new QuizController(getActivity()).getNewest(kursID) != null) {
+                    mListener.FragmentQuizThemen_nextSpecial(kursID, new QuizController(getActivity()).getNewest(kursID));
+                }else {
+                    Toast.makeText(getActivity(), "Ein Fehler ist aufgetreten.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.cardViewWrong:
+                if (new QuizController(getActivity()).getWrong(kursID) != null) {
+                    if (new QuizController(getActivity()).getWrong(kursID).size() >0){
+                        mListener.FragmentQuizThemen_nextSpecial(kursID, new QuizController(getActivity()).getWrong(kursID));
+                    }else {
+                        Toast.makeText(getActivity(), "Du hast keine falschen Fragen.", Toast.LENGTH_SHORT).show();
+                    }
+
+                }else {
+                    Toast.makeText(getActivity(), "Ein Fehler ist aufgetreten.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:break;
         }

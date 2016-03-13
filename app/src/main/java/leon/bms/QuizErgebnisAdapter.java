@@ -44,6 +44,9 @@ public class QuizErgebnisAdapter extends RecyclerView.Adapter<QuizErgebnisAdapte
         Log.d(TAG, fragenList.size() + " ");
     }
 
+    public List<quizfragen> getFragenList() {
+        return fragenList;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

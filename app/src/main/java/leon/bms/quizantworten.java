@@ -7,16 +7,26 @@ public class quizantworten {
     int positionCard;
     String antwort;
     boolean selection;
+    boolean ausgewählt;
     boolean richtigOderFalsch;
 
     public quizantworten() {
     }
 
-    public quizantworten(int positionCard, String antwort, boolean selection, boolean richtigOderFalsch) {
+    public quizantworten(int positionCard, String antwort, boolean selection, boolean ausgewählt, boolean richtigOderFalsch) {
         this.positionCard = positionCard;
         this.antwort = antwort;
         this.selection = selection;
+        this.ausgewählt = ausgewählt;
         this.richtigOderFalsch = richtigOderFalsch;
+    }
+
+    public boolean isAusgewählt() {
+        return ausgewählt;
+    }
+
+    public void setAusgewählt(boolean ausgewählt) {
+        this.ausgewählt = ausgewählt;
     }
 
     public int getPositionCard() {

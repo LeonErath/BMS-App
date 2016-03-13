@@ -11,7 +11,10 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -102,6 +105,7 @@ public class QuizController {
                 if (new dbThemenbereich().getThemenbereich(jsonObject.getInt("themenbereich")) != null) {
                     fragen.frage = jsonObject.getString("frage");
                     fragen.schwirigkeit = jsonObject.getInt("schwierigkeit");
+                    fragen.date = jsonObject.getString("date");
                     fragen.serverid = jsonObject.getInt("id");
                     fragen.stufe = jsonObject.getString("stufe");
                     if (fragen.stufe.equals(new dbUser().getUser().stufe)) {
@@ -333,6 +337,102 @@ public class QuizController {
             return null;
         }
         return null;
+    }
+
+    public List<dbFragen> getNewest(String kursID) {
+
+        List<dbKurs> kursList = new dbKurs().find(dbKurs.class, "name = ?", kursID);
+        if (kursList.size() == 1) {
+            dbKurs kurs = kursList.get(0);
+            //lädt die Themenbereiche des Kurses
+            List<dbThemenbereich> themenbereichList = new ArrayList<>();
+            if (kurs.getThemenbereiche(kurs.getId()) != null) {
+                themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
+            }
+            //lädt die Fragen des Kurses
+            List<dbFragen> fragenList = new ArrayList<>();
+            if (themenbereichList.size() > 0) {
+                for (dbThemenbereich themenbereich : themenbereichList) {
+                    if (themenbereich.getFragen(themenbereich.getId()) != null) {
+                        fragenList.addAll(themenbereich.getFragen(themenbereich.getId()));
+                    }
+                }
+
+            }
+            if (fragenList.size() > 0) {
+
+                return sortListDate(fragenList);
+            }
+
+        } else {
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * @param fragenList Liste die nach dem Datum sortiert werden soll
+     * @return gibt die sortierte Liste zurück
+     * @sortListDate sortiert die Liste nach ihrem Datum absteigen
+     */
+    private List<dbFragen> sortListDate(List<dbFragen> fragenList) {
+        Collections.sort(fragenList, new Comparator<dbFragen>() {
+            public int compare(dbFragen fragen1, dbFragen fragen2) {
+                return stringToCalander(fragen1.getDate()).getTime().compareTo(stringToCalander(fragen2.getDate()).getTime());
+            }
+        });
+        Collections.reverse(fragenList);
+        return fragenList;
+    }
+
+    /**
+     * @param date date in String
+     * @return gibt Date in Calendar zurück
+     * @stringToCalander parsed ein Datum vom Datentyp String zum Datentyp Calendar, dies
+     * ist wichtig für das sortieren nach dem Datum
+     */
+    public Calendar stringToCalander(String date) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            calendar.setTime(sdf2.parse(date));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calendar;
+    }
+
+    public List<dbFragen> getWrong(String kursID) {
+
+        List<dbKurs> kursList = new dbKurs().find(dbKurs.class, "name = ?", kursID);
+        if (kursList.size() == 1) {
+            dbKurs kurs = kursList.get(0);
+            //lädt die Themenbereiche des Kurses
+            List<dbThemenbereich> themenbereichList = new ArrayList<>();
+            if (kurs.getThemenbereiche(kurs.getId()) != null) {
+                themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
+            }
+            //lädt die Fragen des Kurses
+            List<dbFragen> fragenList = new ArrayList<>();
+            if (themenbereichList.size() > 0) {
+                for (dbThemenbereich themenbereich : themenbereichList) {
+                    if (themenbereich.getFragen(themenbereich.getId()) != null) {
+                        List<dbFragen> fragenListAlle = themenbereich.getFragen(themenbereich.getId());
+                        for (dbFragen fragen : fragenListAlle) {
+                            if (fragen.falschCounter > fragen.richtigCounter) {
+                                Log.d("QuizController","falsch: "+fragen.falschCounter+" richtig: "+fragen.richtigCounter);
+                                fragenList.add(fragen);
+                            }
+                        }
+
+                    }
+                }
+                return fragenList;
+            }
+        }
+        return null;
+
     }
 
     //Interface Callbacks
