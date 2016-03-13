@@ -30,7 +30,8 @@
             android:layout_width="0dp"
             android:layout_weight="0.5"
             android:layout_height="wrap_content"
-            android:text="Wähle einen Themenbereich: "
+            android:text="Dein Kurs"
+            android:id="@+id/textViewKurs"
             android:textSize="16dp"
             android:textColor="#fff"
             android:gravity="center_horizontal"
@@ -40,13 +41,118 @@
             android:layout_width="0dp"
             android:layout_weight="0.25"
             android:layout_height="wrap_content"
-            android:text="Beenden"
+            android:text=""
             android:layout_gravity="center_vertical"
             android:id="@+id/buttonQuit"
             android:background="@color/colorPrimary"
             />
 
     </LinearLayout>
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/cardViewAll">
+    <LinearLayout
+        android:layout_margin="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="0.1"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_shuffle_black_48dp"
+            />
+
+        <TextView
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.9"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="alle Fragen des Kurses"
+            android:id="@+id/textView11" />
+
+
+    </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/cardViewNew">
+        <LinearLayout
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="0.1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_fiber_new_black_48dp"
+                />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="neuste Fragen"
+                android:id="@+id/textView1" />
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="0dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:id="@+id/cardViewWrong">
+        <LinearLayout
+            android:layout_margin="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:layout_weight="0.1"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_error_outline_black_48dp"
+                />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.9"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="alle falschen Fragen"
+                android:id="@+id/textView2" />
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

@@ -3,11 +3,14 @@ package leon.bms;
 import android.content.Context;
 import android.net.Uri;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -253,12 +256,26 @@ public class QuizController {
             if (fragenList.size() > 0) {
                 if (kurs.getThemenbereiche(kurs.getId()) != null) {
                     for (dbThemenbereich themenbereich : kurs.getThemenbereiche(kurs.getId())) {
+                        int counterRichtig = 0;
+                        int size;
+
                         quizthemen quizthemen = new quizthemen();
                         quizthemen.themenbereich = themenbereich.name;
                         quizthemen.id = themenbereich.getId();
                         quizthemen.datum = themenbereich.zuletztAktualisiert;
                         if (themenbereich.getFragen(themenbereich.getId()) != null) {
-                            quizthemen.fragen = themenbereich.getFragen(themenbereich.getId()).size();
+                            size = themenbereich.getFragen(themenbereich.getId()).size();
+                            quizthemen.fragen = size;
+                            for (dbFragen fragen : themenbereich.getFragen(themenbereich.getId())) {
+                                if (fragen.richtigCounter > 0) {
+                                    counterRichtig++;
+                                    Log.d("QuizController", "counter: " + counterRichtig);
+                                }
+                            }
+                            if (size != 0) {
+                                quizthemen.richtig = round(((double) counterRichtig / (double) size) * 100, 2);
+                                Log.d("QuizController", "richtig: " + round((counterRichtig / size) * 100, 2));
+                            }
                             quizthemen.lehrer = kurs.lehrer.titel + " " + kurs.lehrer.name;
                             quizthemen.kursId = kurs.name;
                             quizthemenList.add(quizthemen);
@@ -278,6 +295,44 @@ public class QuizController {
             return null;
         }
 
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
+    public List<dbFragen> getAll(String kursID) {
+
+        List<dbKurs> kursList = new dbKurs().find(dbKurs.class, "name = ?", kursID);
+        if (kursList.size() == 1) {
+            dbKurs kurs = kursList.get(0);
+            //lädt die Themenbereiche des Kurses
+            List<dbThemenbereich> themenbereichList = new ArrayList<>();
+            if (kurs.getThemenbereiche(kurs.getId()) != null) {
+                themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
+            }
+            //lädt die Fragen des Kurses
+            List<dbFragen> fragenList = new ArrayList<>();
+            if (themenbereichList.size() > 0) {
+                for (dbThemenbereich themenbereich : themenbereichList) {
+                    if (themenbereich.getFragen(themenbereich.getId()) != null) {
+                        fragenList.addAll(themenbereich.getFragen(themenbereich.getId()));
+                    }
+                }
+
+            }
+            if (fragenList.size() > 0) {
+                return fragenList;
+            }
+
+        } else {
+            return null;
+        }
+        return null;
     }
 
     //Interface Callbacks

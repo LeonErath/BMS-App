@@ -114,6 +114,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Fragen richtig beantwortet: 10(10%)"
                         android:textColor="#fff"
+                        android:maxLines="1"
                         android:textSize="20dp"
                         />
                     <TextView
@@ -123,6 +124,7 @@
                         android:layout_marginTop="8dp"
                         android:text="Fragen falsche beantwortet: 90(90%)"
                         android:textColor="#fff"
+                        android:maxLines="1"
                         android:textSize="20dp"
                         />
 

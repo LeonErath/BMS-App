@@ -53,10 +53,16 @@ public class QuizThemenAdapter extends RecyclerView.Adapter<QuizThemenAdapter.Vi
 
         //Set the Data to the views
         holder.textViewThemen.setText(quizthemen.themenbereich);
-        holder.textViewLehrer.setText(quizthemen.lehrer);
-        holder.textViewKursID.setText(quizthemen.kursId);
-        holder.textViewFragen.setText(String.valueOf(quizthemen.fragen) + " F.");
-        holder.textViewDatum.setText(quizthemen.datum);
+        String subline = "";
+        if (quizthemen.getFragen()>1) {
+            subline += quizthemen.getFragen()+" Fragen verfügbar, ";
+        }else {
+            subline +=quizthemen.getFragen()+" Frage verfügbar, ";
+        }
+        subline+=quizthemen.getRichtig()+"%; ";
+        subline+="zuletzt Aktualisiert: "+quizthemen.getDatum();
+        holder.textViewSub.setText(subline);
+
 
 
     }
@@ -76,10 +82,7 @@ public class QuizThemenAdapter extends RecyclerView.Adapter<QuizThemenAdapter.Vi
         private static final String TAG = ViewHolder.class.getSimpleName();
         //views
         TextView textViewThemen;
-        TextView textViewLehrer;
-        TextView textViewKursID;
-        TextView textViewFragen;
-        TextView textViewDatum;
+        TextView textViewSub;
 
         private ClickListener listener;
 
@@ -87,11 +90,7 @@ public class QuizThemenAdapter extends RecyclerView.Adapter<QuizThemenAdapter.Vi
             super(itemView);
             //initial views
             textViewThemen = (TextView) itemView.findViewById(R.id.textViewThemen);
-            textViewLehrer = (TextView) itemView.findViewById(R.id.textViewLehrer);
-            textViewKursID = (TextView) itemView.findViewById(R.id.textViewKursID);
-            textViewFragen = (TextView) itemView.findViewById(R.id.textViewFragen);
-            textViewDatum = (TextView) itemView.findViewById(R.id.textViewDatum);
-
+            textViewSub = (TextView) itemView.findViewById(R.id.textViewSub);
             this.listener = listener;
 
             itemView.setOnClickListener(this);

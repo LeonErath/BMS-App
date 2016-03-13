@@ -12,6 +12,7 @@ public class quizthemen {
 
     String themenbereich;
     int fragen;
+    double richtig;
     Long id;
     String kursId;
     String lehrer;
@@ -21,13 +22,22 @@ public class quizthemen {
         //Constructor must be empty"
     }
 
-    public quizthemen(String themenbereich, int fragen, Long id, String kursId, String lehrer, String datum) {
+    public quizthemen(String themenbereich, int fragen, double richtig, Long id, String kursId, String lehrer, String datum) {
         this.themenbereich = themenbereich;
         this.fragen = fragen;
+        this.richtig = richtig;
         this.id = id;
         this.kursId = kursId;
         this.lehrer = lehrer;
         this.datum = datum;
+    }
+
+    public double getRichtig() {
+        return richtig;
+    }
+
+    public void setRichtig(double richtig) {
+        this.richtig = richtig;
     }
 
     public Long getId() {

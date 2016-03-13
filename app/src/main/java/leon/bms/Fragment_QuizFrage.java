@@ -55,6 +55,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     Boolean[] placeofAntwort = new Boolean[5];
     List<quizfragen> quizfragenList = new ArrayList<>();
     quizfragen ergebnisQuizFrage;
+    String kursString;
+    List<dbFragen> fragenList2;
 
     public Fragment_QuizFrage() {
         // Required empty public constructor
@@ -64,6 +66,10 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         this.themenbereichID = themenbereichID;
     }
 
+    public Fragment_QuizFrage(String kursID,List<dbFragen> fragenList) {
+        this.kursString = kursID;
+        this.fragenList2 = fragenList;
+    }
     public Fragment_QuizFrage(Long themenbereichID, quizfragen quizfragen) {
         this.themenbereichID = themenbereichID;
         this.ergebnisQuizFrage = quizfragen;
@@ -135,6 +141,12 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      * @setUpQuiz lädt die Fragen und zeigt erste Elemente an.
      */
     public void setUpQuiz() {
+        if (fragenList2!= null && fragenList2.size() > 0 && kursString != null){
+            fragenList = fragenList2;
+            textViewThemenbereich.setText(kursString);
+            textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
+            setUpFrage(counter, fragenList);
+        }else {
         if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
             // lädt den Themenbereich
             dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(themenbereichID);
@@ -147,6 +159,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                     setUpFrage(counter, fragenList);
                 }
             }
+        }
         }
     }
 
@@ -419,8 +432,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      */
     public void nextQuestion() {
         counter++;
+        quizfragenList.add(getQuizfragen());
+
         if (fragenList.size() >= counter) {
-            quizfragenList.add(getQuizfragen());
 
             // reset views
             richtigOderFalsch = true;

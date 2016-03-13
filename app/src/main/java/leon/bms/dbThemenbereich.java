@@ -127,6 +127,15 @@ public class dbThemenbereich extends SugarRecord {
             return null;
         }
     }
+    public dbThemenbereich getThemenbereichWithNamen(String name) {
+        List<dbThemenbereich> dbThemenbereichList = dbThemenbereich.find(dbThemenbereich.class, "name = ?", String.valueOf(name));
+        if (dbThemenbereichList.size() == 1) {
+            return dbThemenbereichList.get(0);
+        } else {
+            Log.d("dbThhemenbereich", "Keinen Themenbereich gefuden");
+            return null;
+        }
+    }
 
     /**
      * @param idlocal ist die serverid mit der der Themenbreich rausgesucht werden soll

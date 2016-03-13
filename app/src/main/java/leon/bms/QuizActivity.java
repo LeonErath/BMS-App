@@ -18,6 +18,8 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     String kursid;
     Long themenbereichID;
     List<quizfragen> quizfragenList;
+    String kursString;
+    List<dbFragen> fragenList;
 
 
     @Override
@@ -79,6 +81,22 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
                 }
                 break;
             case 3:
+                if (kursString != null && fragenList != null && fragenList.size()>0){
+                    // dann wird das Quiz gestartet
+                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(kursString,fragenList);
+                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+
+                    // Replace whatever is in the fragment_container view with this fragment,
+                    // and add the transaction to the back stack so the user can navigate back
+                    transaction2.replace(R.id.fragemntContainer, fragment, "3");
+                    transaction2.addToBackStack("3");
+                    // Addd Custom Animations
+
+                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
+
+                    // Commit the transaction
+                    transaction2.commit();
+                }
                 if (themenbereichID != null) {
                     // dann wird das Quiz gestartet
                     Fragment_QuizFrage fragment = new Fragment_QuizFrage(themenbereichID);
@@ -99,7 +117,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
             case 4:
                 if (themenbereichID != null && quizfragenList != null && quizfragenList.size() != 0) {
                     // und nach dem Quiz wird das Ergebnis angezeigt
-                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID,quizfragenList);
+                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID, quizfragenList);
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
 
                     // Replace whatever is in the fragment_container view with this fragment,
@@ -171,6 +189,13 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     @Override
     public void FragmentQuizThemen_next(Long themenbereichID) {
         this.themenbereichID = themenbereichID;
+        next();
+    }
+
+    @Override
+    public void FragmentQuizThemen_nextSpecial(String kursString, List<dbFragen> fragenList) {
+        this.kursString = kursString;
+        this.fragenList = fragenList;
         next();
     }
 

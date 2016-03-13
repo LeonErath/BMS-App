@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 
@@ -109,12 +111,19 @@ public class Fragment_QuizErgebnis extends Fragment implements View.OnClickListe
         }
         if ((fragenRichtig + fragenFalsch) == fragen.size()) {
             // für die Anzeige von Prozenten wird der Datentyp double verlangt
-            double prozenRichtig = (fragenRichtig / fragen.size()) * 100;
-            double prozenFalsch = (fragenFalsch / fragen.size()) * 100;
+            double prozenRichtig = round((fragenRichtig / fragen.size()) * 100,2);
+            double prozenFalsch = round((fragenFalsch / fragen.size()) * 100,2);
             // zeigt die Ergebnis an
             textViewRichtig.setText("Fragen richtig Beantwortet: " + fragenRichtig + " (" + prozenRichtig + "%)");
             textViewFalsch.setText("Fragen richtig Beantwortet: " + fragenFalsch + " (" + prozenFalsch + "%)");
         }
+    }
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     /**

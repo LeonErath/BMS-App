@@ -3,6 +3,7 @@ package leon.bms;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +24,15 @@ import java.util.List;
  * Dazu wird ein recyclerView verwendet. Wählt man ein Themenbereich aus wird das Fragment_QuizFrage gestartet
  * und der Themenbereich übergeben.
  **/
-public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener, QuizThemenAdapter.ViewHolder.ClickListener {
+public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdapter.ViewHolder.ClickListener, QuizThemenAdapter.ViewHolder.ClickListener, View.OnClickListener {
 
     //views
     String kursID;
     private OnFragmentInteractionListener mListener;
     Button buttonBack, buttonQuit;
     RecyclerView recyclerView;
+    CardView cardViewAll,cardViewNew,cardViewWrong;
+    TextView textViewKurs;
     //Adapter für die Themenbereiche
     QuizThemenAdapter quizThemenAdapter;
     List<quizthemen> quizthemenList;
@@ -98,6 +104,17 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
             }
         });
 
+        cardViewAll = (CardView) view.findViewById(R.id.cardViewAll);
+        cardViewNew = (CardView) view.findViewById(R.id.cardViewNew);
+        cardViewWrong = (CardView) view.findViewById(R.id.cardViewWrong);
+
+        cardViewAll.setOnClickListener(this);
+        cardViewNew.setOnClickListener(this);
+        cardViewWrong.setOnClickListener(this);
+
+        textViewKurs = (TextView) view.findViewById(R.id.textViewKurs);
+        textViewKurs.setText(kursID);
+
     }
 
 
@@ -140,6 +157,20 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
         return false;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.cardViewAll:
+                mListener.FragmentQuizThemen_nextSpecial(kursID,new QuizController(getActivity()).getAll(kursID));
+                break;
+            case R.id.cardViewNew:
+                break;
+            case R.id.cardViewWrong:
+                break;
+            default:break;
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -155,5 +186,6 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
         void backQuizThemenAuswwahl();
 
         void FragmentQuizThemen_next(Long themenbereichID);
+        void FragmentQuizThemen_nextSpecial(String kursString,List<dbFragen> fragenList);
     }
 }

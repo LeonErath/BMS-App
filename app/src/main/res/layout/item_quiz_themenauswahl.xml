@@ -27,40 +27,15 @@
                 android:layout_height="wrap_content"
                 android:text="Hier der Themenbereich"
                 android:id="@+id/textViewThemen"/>
+
             <TextView
-                android:textSize="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hier der Lehrer"
-                android:id="@+id/textViewLehrer"/>
-            <TextView
-                android:textSize="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hier die kurs id"
-                android:id="@+id/textViewKursID"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="0.3"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <TextView
-                android:layout_gravity="end"
-                android:textSize="20dp"
-                android:layout_weight="1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Fragen"
-                android:id="@+id/textViewFragen"/>
-            <TextView
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
                 android:textSize="12dp"
-                android:gravity="end"
-                android:layout_gravity="end"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Datum"
-                android:id="@+id/textViewDatum"/>
+                android:maxLines="1"
+                android:id="@+id/textViewSub" />
         </LinearLayout>
 
 
