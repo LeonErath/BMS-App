@@ -4,18 +4,33 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -24,10 +39,16 @@ import java.util.List;
  * @Fragment_Highlight ist ein Fragment , welches kompakt alles wichtiges anzeigen soll
  * Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen
  */
-public class Fragment_Highlight extends Fragment {
+public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.ViewHolder.ClickListener {
 
     // views
     TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2;
+    RecyclerView recyclerView;
+    Snackbar snackbar;
+    LinearLayout linearLayout;
+    List<nachrichten> nachrichtenList = new ArrayList<>();
+    NachrichtenAdapter nachrichtenAdapter;
+
     private static String TAG = Fragment_Highlight.class.getSimpleName();
     // wichtig für das aktualiseren der Anzeige
     BroadcastReceiver broadcastReceiver;
@@ -50,10 +71,92 @@ public class Fragment_Highlight extends Fragment {
         textViewStunde2 = (TextView) view.findViewById(R.id.textViewStunde2);
         textViewRaum = (TextView) view.findViewById(R.id.textViewRaum);
         textViewRaum2 = (TextView) view.findViewById(R.id.textViewRaum2);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
+
+        snackbar = Snackbar.make(linearLayout, "Loading News..", Snackbar.LENGTH_LONG);
+        snackbar.show();
+        getNews();
+
+
+        // setUp recylcerView
+        final LinearLayoutManager mLayoutManager;
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        nachrichtenAdapter = new NachrichtenAdapter(this, nachrichtenList);
+        recyclerView.setAdapter(nachrichtenAdapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setLayoutManager(mLayoutManager);
 
         setUpNächsteStunde();
 
 
+    }
+
+
+    public void getNews() {
+        // URL für die Server Anfrage
+        String Url = "http://app.marienschule.de/files/scripts/nachrichten.php";
+        Uri.Builder builder = new Uri.Builder()
+                .appendQueryParameter("username", new dbUser().getUser().benutzername)
+                .appendQueryParameter("pw", new LogInController(getActivity()).getPass())
+                .appendQueryParameter("stufe", new dbUser().getUser().stufe);
+        String params = builder.build().getEncodedQuery();
+
+        atOnline atOnline2 = new atOnline(Url, params, getActivity());
+        atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
+            @Override
+            public void onUpdate(String result) {
+                setUpNews(result);
+                if (snackbar.isShown()) {
+                    snackbar.dismiss();
+                }
+            }
+        });
+        atOnline2.execute();
+
+    }
+
+    public void setUpNews(String result) {
+        if (result == "404") {
+            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        } else {
+
+            try {
+                JSONArray jsonArrayAll = new JSONArray(result);
+                for (int i = 0; i < jsonArrayAll.length(); i++) {
+                    JSONObject jsonObject = jsonArrayAll.getJSONObject(i);
+                    nachrichten nachrichten = new nachrichten();
+                    nachrichten.serverid = jsonObject.getInt("id");
+                    nachrichten.titel = jsonObject.getString("titel");
+                    nachrichten.nachricht = jsonObject.getString("nachricht");
+                    nachrichten.hinzugefuegtAm = jsonObject.getString("hinzugefuegtAm");
+                    nachrichten.geandertAm = jsonObject.getString("geaendertAm");
+                    nachrichten.dateString = setUpDate(jsonObject.getString("geaendertAm"));
+                    nachrichten.geloescht = jsonObject.getInt("geloescht");
+                    if (!nachrichtenList.contains(nachrichten)) {
+                        nachrichtenList.add(nachrichten);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            nachrichtenAdapter.addList(sortListDate(nachrichtenList));
+
+        }
+    }
+
+    private String setUpDate(String date) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        try {
+            calendar.setTime(sdf2.parse(date));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Date date1 = calendar.getTime();
+        //YEAR_IN_MILLIS wenn das Datum mehr als ein Jahr zurück liegt wird das ganze Datum angezeigt
+        String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(getActivity(), date1.getTime(), DateUtils.DAY_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
+        return zuletztAktualisiert;
     }
 
     @Override
@@ -119,6 +222,7 @@ public class Fragment_Highlight extends Fragment {
 
         Log.d(TAG, "Aktuelle Stunde: " + aktuelleStunde + " wochentag: " + week);
         // wenn der wochentag in der schulwoche ist
+
         if (week > 0 && week < 6) {
             // wenn die aktuelleStunde ein Schulstunde ist
             if (aktuelleStunde > 0 && aktuelleStunde < 10) {
@@ -173,9 +277,9 @@ public class Fragment_Highlight extends Fragment {
                                 textViewLehrer.setText(stunden.getLehrer());
                                 textViewNumber.setText(String.valueOf(stunden.getStunde()));
 
-                                textViewStunde2.setText("Kein Unterricht mehr!");
+                                textViewStunde2.setText("Danach kein Unterricht mehr.");
                                 textViewRaum2.setText("");
-                                textViewLehrer2.setText("");
+                                textViewLehrer2.setText("Schule aus!");
                                 textViewNumber2.setText(String.valueOf(""));
                             }
                         }
@@ -186,7 +290,7 @@ public class Fragment_Highlight extends Fragment {
                 // wenn es nachdem Unterrich ist
                 textViewStunde.setText("Kein Unterricht mehr!");
                 textViewRaum.setText("");
-                textViewLehrer.setText("");
+                textViewLehrer.setText("Denk an deine Hausaufgaben.");
                 textViewNumber.setText(String.valueOf(""));
                 textViewStunde2.setText("Kein Unterricht mehr!");
                 textViewRaum2.setText("");
@@ -197,7 +301,7 @@ public class Fragment_Highlight extends Fragment {
                 // wenn es vor dem Unterricht ist
                 textViewStunde.setText("Kein Unterricht!");
                 textViewRaum.setText("");
-                textViewLehrer.setText("");
+                textViewLehrer.setText("Denk an deine Hausaufgaben.");
                 textViewNumber.setText(String.valueOf(""));
 
                 List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse(0);
@@ -212,13 +316,33 @@ public class Fragment_Highlight extends Fragment {
                 // zeigt die erste Stunde an für den Tag
                 if (schulstundeList.size() > 0) {
                     List<stunden> stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList));
-                    stunden stunden = stundenList.get(aktuelleStunde);
+                    stunden stunden = stundenList.get(0);
                     textViewStunde2.setText(stunden.getStundenname());
                     textViewRaum2.setText(stunden.getRaum());
                     textViewLehrer2.setText(stunden.getLehrer());
                     textViewNumber2.setText(String.valueOf(stunden.getStunde()));
                 }
             }
+        } else if (week == 6) {
+            textViewStunde.setText("Heute ist Samstag ");
+            textViewRaum.setText("");
+            textViewLehrer.setText("Unterrichtsfrei");
+            textViewNumber.setText("");
+
+            textViewStunde2.setText("Heute ist Samstag ");
+            textViewRaum2.setText("");
+            textViewLehrer2.setText("Unterrichtsfrei");
+            textViewNumber2.setText(" ");
+        } else if (week == 0) {
+            textViewStunde.setText("Heute ist Sonntag ");
+            textViewRaum.setText("");
+            textViewLehrer.setText("Unterrichtsfrei");
+            textViewNumber.setText("");
+
+            textViewStunde2.setText("Heute ist Sonntag ");
+            textViewRaum2.setText("");
+            textViewLehrer2.setText("Unterrichtsfrei");
+            textViewNumber2.setText(" ");
         }
 
     }
@@ -286,5 +410,53 @@ public class Fragment_Highlight extends Fragment {
         } else {
             return new ArrayList<>();
         }
+    }
+
+    /**
+     * @param websiteArtikelList Liste die nach dem Datum sortiert werden soll
+     * @return gibt die sortierte Liste zurück
+     * @sortListDate sortiert die Liste nach ihrem Datum absteigen
+     */
+    private List<nachrichten> sortListDate(List<nachrichten> websiteArtikelList) {
+        Collections.sort(nachrichtenList, new Comparator<nachrichten>() {
+            public int compare(nachrichten nachrichten1, nachrichten nachrichten2) {
+                return stringToCalander(nachrichten1.geandertAm).getTime().compareTo(stringToCalander(nachrichten2.geandertAm).getTime());
+            }
+        });
+        Collections.reverse(websiteArtikelList);
+        return nachrichtenList;
+    }
+
+    /**
+     * @param date date in String
+     * @return gibt Date in Calendar zurück
+     * @stringToCalander parsed ein Datum vom Datentyp String zum Datentyp Calendar, dies
+     * ist wichtig für das sortieren nach dem Datum
+     */
+    public Calendar stringToCalander(String date) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
+        try {
+            calendar.setTime(sdf2.parse(date));// all done
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return calendar;
+    }
+
+
+    @Override
+    public void onItemClicked(int position) {
+        nachrichten nachrichten = nachrichtenAdapter.getArtikelList().get(position);
+        Intent intent = new Intent(getActivity(), NachrichtenActivity.class);
+        intent.putExtra("content", nachrichten.nachricht);
+        intent.putExtra("titel", nachrichten.titel);
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClicked(int position) {
+        return false;
     }
 }

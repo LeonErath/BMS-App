@@ -122,7 +122,7 @@ public class atOnline extends AsyncTask<String, Void, String> {
                     return parsedString;
                 } else {
                     // Falls die Internet Verbindung Fehlerhaft war wird erstmal Error zurückgegeben
-                    parsedString = "Error";
+                    parsedString = "404";
                 }
 
             } catch (IOException e) {
@@ -132,7 +132,8 @@ public class atOnline extends AsyncTask<String, Void, String> {
             /** Falls keine Internet Verbindung vorhanden ist wird ein Toast an den User gesendet damit er
              *  gegebenfalls drauf reagieren kann .
              */
-            Toast.makeText(mainContext, "NO INTERNET CONNECTION", Toast.LENGTH_SHORT).show();
+
+            return "Error";
         }
         // Falls die Anfrage nicht geklappt hat gibt er den leeren String zurück bzw. "Error"
         return parsedString;

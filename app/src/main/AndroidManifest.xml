@@ -68,12 +68,10 @@
             android:label="@string/title_activity_quiz"
             android:theme="@style/AppTheme" />
         <activity
-
             android:name=".KursActivity"
             android:label="@string/title_activity_kurs"
-            android:theme="@style/AppTheme">
-
-        </activity>
+            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".NachrichtenActivity"></activity>
     </application>
 
 </manifest>

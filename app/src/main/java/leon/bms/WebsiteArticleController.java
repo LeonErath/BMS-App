@@ -170,6 +170,7 @@ public class WebsiteArticleController {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            mListener.error();
         }
         //updateUI.updateList(generalListForArticles);
 
@@ -245,6 +246,7 @@ public class WebsiteArticleController {
 
     public interface UpdateUI {
         public void updateList(List<WebsiteArtikel> list);
+        public  void error();
     }
 
 

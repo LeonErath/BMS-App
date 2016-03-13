@@ -67,23 +67,25 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         this.themenbereichID = themenbereichID;
     }
 
-    public Fragment_QuizFrage(String kursID,List<dbFragen> fragenList) {
+    public Fragment_QuizFrage(String kursID, List<dbFragen> fragenList) {
         this.kursString = kursID;
         this.fragenList2 = fragenList;
     }
-    public Fragment_QuizFrage(Long themenbereichID, List<quizfragen> quizfragenList,int position) {
+
+    public Fragment_QuizFrage(Long themenbereichID, List<quizfragen> quizfragenList, int position) {
         this.themenbereichID = themenbereichID;
         this.ergebnisQuizFrage = quizfragenList;
         this.position = position;
-        counter = position+1;
+        counter = position + 1;
         fromFragmentErgebnis = true;
     }
-    public Fragment_QuizFrage(String kursString,List<dbFragen> fragenList, List<quizfragen> quizfragenList,int position) {
+
+    public Fragment_QuizFrage(String kursString, List<dbFragen> fragenList, List<quizfragen> quizfragenList, int position) {
         this.kursString = kursString;
         this.ergebnisQuizFrage = quizfragenList;
         this.position = position;
         this.fragenList2 = fragenList;
-        counter = position+1;
+        counter = position + 1;
         fromFragmentErgebnis = true;
     }
 
@@ -130,6 +132,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
         cardView4 = (CardView) view.findViewById(R.id.cardView4);
         cardViewBottombar = (CardView) view.findViewById(R.id.cardViewbottomBar);
         reveal4 = (FrameLayout) view.findViewById(R.id.reveal4);
+        imageViewCancel = (ImageView) view.findViewById(R.id.imageViewCancel);
+        imageViewCancel.setOnClickListener(this);
         cardView1.setOnClickListener(this);
         cardView2.setOnClickListener(this);
         cardView3.setOnClickListener(this);
@@ -152,25 +156,25 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      * @setUpQuiz lädt die Fragen und zeigt erste Elemente an.
      */
     public void setUpQuiz() {
-       if (fragenList2!= null && fragenList2.size() > 0 && kursString != null){
+        if (fragenList2 != null && fragenList2.size() > 0 && kursString != null) {
             fragenList = fragenList2;
             textViewThemenbereich.setText(kursString);
             textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
             setUpFrage(counter, fragenList);
-        }else {
-        if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
-            // lädt den Themenbereich
-            dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(themenbereichID);
-            textViewThemenbereich.setText(themenbereich.getName() + " " + themenbereich.kurs.getName());
-            if (themenbereich.getFragen(themenbereich.getId()) != null) {
-                //lädt die Fragen des Themenbereiches
-                fragenList = themenbereich.getFragen(themenbereich.getId());
-                if (fragenList.size() > 0) {
-                    textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
-                    setUpFrage(counter, fragenList);
+        } else {
+            if (new dbThemenbereich().getThemenbereich(themenbereichID) != null) {
+                // lädt den Themenbereich
+                dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(themenbereichID);
+                textViewThemenbereich.setText(themenbereich.getName() + " " + themenbereich.kurs.getName());
+                if (themenbereich.getFragen(themenbereich.getId()) != null) {
+                    //lädt die Fragen des Themenbereiches
+                    fragenList = themenbereich.getFragen(themenbereich.getId());
+                    if (fragenList.size() > 0) {
+                        textViewCounter.setText("Frage " + counter + " von " + fragenList.size());
+                        setUpFrage(counter, fragenList);
+                    }
                 }
             }
-        }
         }
     }
 
@@ -180,14 +184,14 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
      * @setUpFrage zeigt die Frage an
      */
     public void setUpFrage(int counter, List<dbFragen> fragenList) {
-        if (fromFragmentErgebnis== true){
-            if (ergebnisQuizFrage != null && ergebnisQuizFrage.size() >0){
+        if (fromFragmentErgebnis == true) {
+            if (ergebnisQuizFrage != null && ergebnisQuizFrage.size() > 0) {
                 textViewFrage.setText(ergebnisQuizFrage.get(position).getFrage());
                 textViewFrageID.setText("Frage ID: " + ergebnisQuizFrage.get(position).getFradeID());
                 setResults(ergebnisQuizFrage.get(position).getQuizantwortenList());
                 frage = fragenList.get(counter - 1);
             }
-        }else if (counter > 0 && counter - 1 < fragenList.size()) {
+        } else if (counter > 0 && counter - 1 < fragenList.size()) {
             frage = fragenList.get(counter - 1);
             // zeigt die Frage an
             textViewFrage.setText(frage.getFrage());
@@ -328,6 +332,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                 // animation wird angezeigt je nach Auswahl
                 clickCardView(cardView4, textViewAntwort4, selected4, 4);
                 break;
+            case R.id.imageViewCancel:
+                mListener.Fragment_QuitFrageBACK();
+                break;
             case R.id.cardViewbottomBar:
                 // prüft in welchem Vorgang der User sich befindet
                 if (textViewContinue.getText().toString().equals("Antwort anzeigen")) {
@@ -362,9 +369,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                                 .setPositiveButton("Weiter", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         // lädt dann die nächste Frage
-                                        if (fromFragmentErgebnis == true){
+                                        if (fromFragmentErgebnis == true) {
                                             mListener.Fragment_QuitFrageBACK();
-                                        }else {
+                                        } else {
                                             nextQuestion();
                                         }
 
@@ -398,36 +405,36 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                 switch (quizantworten.getPositionCard()) {
                     case 1:
                         placeofAntwort[1] = quizantworten.isRichtigOderFalsch();
-                        if (placeofAntwort[1] == true){
+                        if (placeofAntwort[1] == true) {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             richtigeAntwortenList.add(antworten);
-                        }else {
+                        } else {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             falscheAntworten.add(antworten);
                         }
                         selected1 = quizantworten.isSelection();
                         textViewAntwort1.setText(quizantworten.antwort);
-                        if (selected1 == true){
+                        if (selected1 == true) {
                             selected1 = false;
                             clickCardView(cardView1, textViewAntwort1, selected1, 1);
                         }
                         break;
                     case 2:
                         placeofAntwort[2] = quizantworten.isRichtigOderFalsch();
-                        if (placeofAntwort[2] == true){
+                        if (placeofAntwort[2] == true) {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             richtigeAntwortenList.add(antworten);
-                        }else {
+                        } else {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             falscheAntworten.add(antworten);
                         }
                         selected2 = quizantworten.isSelection();
                         textViewAntwort2.setText(quizantworten.antwort);
-                        if (selected2 == true){
+                        if (selected2 == true) {
                             selected2 = false;
                             clickCardView(cardView2, textViewAntwort2, selected2, 2);
                         }
@@ -435,11 +442,11 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                         break;
                     case 3:
                         placeofAntwort[3] = quizantworten.isRichtigOderFalsch();
-                        if (placeofAntwort[3] == true){
+                        if (placeofAntwort[3] == true) {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             richtigeAntwortenList.add(antworten);
-                        }else {
+                        } else {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             falscheAntworten.add(antworten);
@@ -453,18 +460,18 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                         break;
                     case 4:
                         placeofAntwort[4] = quizantworten.isRichtigOderFalsch();
-                        if (placeofAntwort[4] == true){
+                        if (placeofAntwort[4] == true) {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             richtigeAntwortenList.add(antworten);
-                        }else {
+                        } else {
                             dbAntworten antworten = new dbAntworten();
                             antworten.antwort = quizantworten.antwort;
                             falscheAntworten.add(antworten);
                         }
                         selected4 = quizantworten.isSelection();
                         textViewAntwort4.setText(quizantworten.antwort);
-                        if (selected4 == true ){
+                        if (selected4 == true) {
                             selected4 = false;
                             clickCardView(cardView4, textViewAntwort4, selected4, 4);
                         }
@@ -472,7 +479,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                 }
             }
         }
-        richtigeAntworten= richtigeAntwortenList;
+        richtigeAntworten = richtigeAntwortenList;
         showResults();
     }
 
@@ -535,9 +542,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
             setUpFrage(counter, fragenList);
         } else {
             // falls es keine Fragen mehr gibt wird das ergebnis angezeigt
-            if (fragenList2!= null && fragenList2.size() > 0 && kursString != null){
-                mListener.Fragment_QuizFrageShowErgebnisSpecial(kursString,quizfragenList,fragenList);
-            }else {
+            if (fragenList2 != null && fragenList2.size() > 0 && kursString != null) {
+                mListener.Fragment_QuizFrageShowErgebnisSpecial(kursString, quizfragenList, fragenList);
+            } else {
                 mListener.Fragment_QuizFrageShowErgebnis(themenbereichID, quizfragenList);
             }
 
@@ -785,7 +792,9 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void Fragment_QuizFrageShowErgebnis(long themenbereichID, List<quizfragen> quizfragenList);
-        void Fragment_QuizFrageShowErgebnisSpecial(String kursid, List<quizfragen> quizfragenList,List<dbFragen> fragenList);
+
+        void Fragment_QuizFrageShowErgebnisSpecial(String kursid, List<quizfragen> quizfragenList, List<dbFragen> fragenList);
+
         void Fragment_QuitFrageBACK();
     }
 }

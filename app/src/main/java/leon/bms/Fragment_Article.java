@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -296,6 +297,17 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
 
             page++;
 
+        }
+    }
+
+    @Override
+    public void error() {
+        Toast.makeText(getActivity(), "Error", Toast.LENGTH_SHORT).show();
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
         }
     }
 
