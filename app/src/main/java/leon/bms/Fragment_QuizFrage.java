@@ -339,32 +339,29 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
                 // prüft in welchem Vorgang der User sich befindet
                 if (textViewContinue.getText().toString().equals("Antwort anzeigen")) {
                     // wenn der User schon richtige Antworten gesehen hat und jetzt die Lösung sehen will
-                    String richtigeAntwortenString = " ";
+                    String richtigeAntwortenString = "";
+                    String beschreibung = "";
                     //überprüft ob ein oder Mehr Antworten ausgewält worden sind
                     if (richtigeAntworten.size() > 0) {
-                        for (dbAntworten antworten : richtigeAntworten) {
-                            richtigeAntwortenString += antworten.antwort + ", ";
+                        for (int i = 0;i< richtigeAntworten.size();i++) {
+                            String antwort = richtigeAntworten.get(i).antwort;
+                            if (i !=0){
+                                richtigeAntwortenString += "\n"+antwort;
+                            }else {
+                                richtigeAntwortenString+= antwort;
+                            }
+                           if (richtigeAntworten.get(i).langfassung != null &&richtigeAntworten.get(i).langfassung!="null"){
+                               beschreibung+="Langfassung Nr."+i+": \n"+richtigeAntworten.get(i).langfassung+"\n";
+                           }
                         }
-                        String deineAntwort = " ";
-                        if (selected1 == true) {
-                            deineAntwort += textViewAntwort1.getText().toString() + ", ";
-                        }
-                        if (selected2 == true) {
-                            deineAntwort += textViewAntwort2.getText().toString() + ", ";
-                        }
-                        if (selected3 == true) {
-                            deineAntwort += textViewAntwort3.getText().toString() + ", ";
-                        }
-                        if (selected4 == true) {
-                            deineAntwort += textViewAntwort4.getText().toString() + ", ";
-                        }
+
                         // zeigt die Lösung an
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle("Frage: " + frage.frage)
                                 .setCancelable(false)
-                                .setMessage("Richtige Antworten: " + richtigeAntwortenString
-                                                + "\n\nBeschreibung: " + richtigeAntworten.get(0).langfassung
-                                                + "\n\nDeine Antwort: " + deineAntwort
+                                .setMessage("Richtige Antworten: \n" + richtigeAntwortenString
+                                                + "\n\n"+beschreibung
+
                                 )
                                 .setPositiveButton("Weiter", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
