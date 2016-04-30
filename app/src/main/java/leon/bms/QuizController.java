@@ -49,9 +49,14 @@ public class QuizController {
         String params = builder.build().getEncodedQuery();
         atOnline atOnline = new atOnline(quizUrl, params, context);
         atOnline.setUpdateListener(new atOnline.OnUpdateListener() {
+
             @Override
-            public void onUpdate(String result) {
+            public void onSuccesss(String result) {
                 parseQuizData(result);
+            }
+
+            @Override
+            public void onFailure(String result) {
 
             }
         });

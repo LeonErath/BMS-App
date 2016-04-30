@@ -25,5 +25,8 @@
     <style name="RobotoToolbarStylee" parent="android:Widget.Toolbar">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
-
+    <style name="TextAppearance.ExpandedTitle"
+        parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">26sp</item>
+    </style>
 </resources>

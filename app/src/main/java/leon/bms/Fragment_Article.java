@@ -54,6 +54,9 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     // wichtige Daten zum ermitteln ob der RecyclerView neue Article laden muss
     int pastVisiblesItems, visibleItemCount, totalItemCount;
 
+    public Fragment_Article() {
+    }
+
     public Fragment_Article(ViewPager viewPager) {
         this.viewPager = viewPager;
     }
@@ -77,7 +80,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
             articleController = new WebsiteArticleController(getActivity(), this);
             if (generalListForArticles == null || generalListForArticles.size() == 0) {
                 progressDialog = ProgressDialog.show(getActivity(), "Load Articles", "Loading..", true, false);
-                progressDialog.setCancelable(false);
+                progressDialog.setCancelable(true);
                 // das Interface des articleControllers wird Initialisiert
                 articleController.getRecentPosts(page);
             } else {

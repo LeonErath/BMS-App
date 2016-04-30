@@ -1,6 +1,7 @@
 package leon.bms;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.github.franciscan.materialstepper.AbstractStep;
 
@@ -22,6 +24,7 @@ public class Fragment_TabLogin extends AbstractStep {
     String User;
     String Stufe;
     String result;
+    ProgressDialog progressDialog;
     private static final String TAG = Fragment_LogIn.class.getSimpleName();
 
     public Fragment_TabLogin() {
@@ -64,35 +67,53 @@ public class Fragment_TabLogin extends AbstractStep {
      */
     @Override
     public boolean nextIf() {
-        User = user.getText().toString();
-        Pass = pass.getText().toString();
-        Stufe = stufe.getText().toString();
-        //login website
-        LogInController logInController = new LogInController(getActivity());
-        // dem LogInConroller werden die Daten der Textfelder übermittelt
-        result = logInController.login(User, Pass, Stufe);
-        // Es wird überprüft ob der LogIn korrekt war
-        if (result != "Error") {
-            // login erfolgreich
-            Log.d(TAG, "Login erfolgreich");
-            dbUser user2 = logInController.createUser(result);
+        if (i== 1) {
+            User = user.getText().toString();
+            Pass = pass.getText().toString();
+            Stufe = stufe.getText().toString();
+            //login website
+            LogInController logInController = new LogInController(getActivity());
+            // dem LogInConroller werden die Daten der Textfelder übermittelt
+            result = logInController.login(User, Pass, Stufe);
+            // Es wird überprüft ob der LogIn korrekt war
+            if (result != "Error") {
+                // login erfolgreich
+                Log.d(TAG, "Login erfolgreich");
+                dbUser user2 = logInController.createUser(result);
 
-            if (user2 != null) {
+                if (user2 != null) {
 
-                // das Passswort des Users wird gespeichert sodass er es nicht beim
-                // nächsten Login eingeben muss
-                logInController.savePass(Pass);
-                StundenplanController stundenplanController = new StundenplanController(getActivity());
-                // es wird geguckt ob neue Updates vorhanden sind
-                stundenplanController.checkUpdate();
-                // danach wird der User weitergeleitet auf die Kursauswahl
-                i++;
+                    // das Passswort des Users wird gespeichert sodass er es nicht beim
+                    // nächsten Login eingeben muss
+                    logInController.savePass(Pass);
+                    StundenplanController stundenplanController = new StundenplanController(getActivity());
+                    stundenplanController.setUpdateListener(new StundenplanController.OnUpdateListener() {
+                        @Override
+                        public void onSuccesss() {
+                            i++;
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                            nextIf();
+                        }
 
-            } else {
-                Log.d(TAG, "neuer User konnte nicht erstellt werden");
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(getActivity(), "Es ist ein Fehler aufgetreten", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                    // es wird geguckt ob neue Updates vorhanden sind
+                    stundenplanController.checkUpdate();
+                    progressDialog = ProgressDialog.show(getActivity(), "Loading..", "Check for Updates..", true, false);
+                    progressDialog.setCancelable(false);
+                    // danach wird der User weitergeleitet auf die Kursauswahl
+
+
+                } else {
+                    Log.d(TAG, "neuer User konnte nicht erstellt werden");
+                }
             }
         }
-
         return i > 1;
     }
 

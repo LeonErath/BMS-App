@@ -76,7 +76,7 @@ public class atOnline extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
 
         // @parsedString wird erstmal initilisiert damit nacher NullPointerExeption auftreten
-        parsedString = "";
+        parsedString = "Error";
 
 
         /** Sehr Wichtig!
@@ -122,11 +122,12 @@ public class atOnline extends AsyncTask<String, Void, String> {
                     return parsedString;
                 } else {
                     // Falls die Internet Verbindung Fehlerhaft war wird erstmal Error zurückgegeben
-                    parsedString = "404";
+                    parsedString = "Error";
                 }
 
             } catch (IOException e) {
                 e.printStackTrace();
+                return "Error";
             }
         } else {
             /** Falls keine Internet Verbindung vorhanden ist wird ein Toast an den User gesendet damit er
@@ -174,7 +175,12 @@ public class atOnline extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         //listener muss vorher in der Klasse initilisiert sein
         if (listener != null) {
-            listener.onUpdate(s);
+            if (!s.equals("Error")){
+                listener.onSuccesss(s);
+            }else{
+                listener.onFailure(s);
+            }
+
         }
 
     }
@@ -200,7 +206,8 @@ public class atOnline extends AsyncTask<String, Void, String> {
      * Beinhaltet nur eine Methode die , die Ergebnis @result übergeben
      */
     public interface OnUpdateListener {
-        public void onUpdate(String result);
+        public void onSuccesss(String result);
+        public void onFailure(String result);
     }
 
     /**

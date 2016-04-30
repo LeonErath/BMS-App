@@ -1,13 +1,16 @@
 package leon.bms;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,7 +48,9 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2;
     RecyclerView recyclerView;
     Snackbar snackbar;
+    private static boolean m_iAmVisible;
     LinearLayout linearLayout;
+    NestedScrollView scrollView;
     List<nachrichten> nachrichtenList = new ArrayList<>();
     NachrichtenAdapter nachrichtenAdapter;
 
@@ -59,9 +64,17 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        scrollView.scrollTo(0,0);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
+        scrollView = (NestedScrollView) view.findViewById(R.id.nestedScroll);
         //initial views
         textViewNumber = (TextView) view.findViewById(R.id.textViewNumber);
         textViewNumber2 = (TextView) view.findViewById(R.id.textViewNumber2);
@@ -74,9 +87,8 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
 
-        snackbar = Snackbar.make(linearLayout, "Loading News..", Snackbar.LENGTH_LONG);
-        snackbar.show();
-        getNews();
+
+
 
 
         // setUp recylcerView
@@ -88,7 +100,9 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         recyclerView.setLayoutManager(mLayoutManager);
 
         setUpNächsteStunde();
-
+        snackbar = Snackbar.make(linearLayout, "Loading News..", Snackbar.LENGTH_LONG);
+        snackbar.show();
+        getNews();
 
     }
 
@@ -104,12 +118,18 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
 
         atOnline atOnline2 = new atOnline(Url, params, getActivity());
         atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
+
             @Override
-            public void onUpdate(String result) {
+            public void onSuccesss(String result) {
                 setUpNews(result);
                 if (snackbar.isShown()) {
                     snackbar.dismiss();
                 }
+            }
+
+            @Override
+            public void onFailure(String result) {
+
             }
         });
         atOnline2.execute();
@@ -157,6 +177,28 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         //YEAR_IN_MILLIS wenn das Datum mehr als ein Jahr zurück liegt wird das ganze Datum angezeigt
         String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(getActivity(), date1.getTime(), DateUtils.DAY_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
         return zuletztAktualisiert;
+    }
+
+
+    /**
+     * @param isVisibleToUser gibt an ob das Fragment sichtbar ist oder nicht
+     * @setUserVisibleHint prüft ob Fragment sichtbar ist oder nicht. Wenn nicht und keine Article bereits
+     * heruntergeladen worden sind werden neue Artikel geladen.
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        m_iAmVisible = isVisibleToUser;
+        if (m_iAmVisible) {
+            Log.d(TAG, "this fragment is now visible");
+
+
+
+
+
+        } else {
+            Log.d(TAG, "this fragment is now invisible");
+        }
     }
 
     @Override

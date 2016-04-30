@@ -21,12 +21,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_log_in);
-        findViewById(R.id.fragment).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LogInActivity.this, MainActivity.class));
-            }
-        });
+
     }
 
     /**

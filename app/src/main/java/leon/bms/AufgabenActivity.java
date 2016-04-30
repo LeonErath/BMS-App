@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,10 +26,14 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
 import android.transition.Fade;
 import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -36,6 +41,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.github.pwittchen.swipe.library.Swipe;
+import com.github.pwittchen.swipe.library.SwipeListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,6 +85,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     // @fabVisible wichtig für die Animation vom ein und ausblenden von FAB
     boolean fabVisible = false;
     String picturePath;
+    Swipe swipe;
     // @picturePaths speichert alle Pfade für die Bilder
     List<String> picturePaths = new ArrayList<>();
     // Wichtiger Code für das machen von Fotos
@@ -94,6 +103,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     private ActionModeCallback actionModeCallback = new ActionModeCallback(this);
     private ActionMode actionMode;
     File photoFile = null;
+    View mView;
 
     /**
      * Automatische generierte Methode
@@ -102,12 +112,9 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Verbindung zum layout acitivity_aufgaben
-        if (Build.VERSION.SDK_INT >= 21) {
-            // Animation
-            getWindow().setEnterTransition(new Fade().setDuration(1000).setInterpolator(new AccelerateDecelerateInterpolator()));
-        }
-        setContentView(R.layout.activity_aufgaben);
+
+        mView = LayoutInflater.from(this).inflate(R.layout.activity_aufgaben,null);
+        setContentView(mView);
 
         // setUp der toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -354,6 +361,10 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             }
 
 
+        }else {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editTextNotizen, InputMethodManager.SHOW_IMPLICIT);
+
         }
         findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -362,7 +373,63 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 startActivity(new Intent(AufgabenActivity.this, MainActivity.class));
             }
         });
+
+        final Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        final int height = size.y;
+
+        Log.d("COO",height+" Höhe");
+        swipe = new Swipe();
+        swipe.addListener(new SwipeListener() {
+            @Override
+            public void onSwipingLeft(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipedLeft(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipingRight(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipedRight(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipingUp(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipedUp(MotionEvent event) {
+
+            }
+
+            @Override
+            public void onSwipingDown(MotionEvent event) {
+
+
+            }
+
+            @Override
+            public void onSwipedDown(MotionEvent event) {
+            onBackPressed();
+            }
+        });
+
     }
+    @Override public boolean dispatchTouchEvent(MotionEvent event) {
+        swipe.dispatchTouchEvent(event);
+        return super.dispatchTouchEvent(event);
+    }
+
 
 
     /**
@@ -582,9 +649,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
     // applys exit animation if you leave the Activity
     public void exitAcitivity() {
-        Fade fade = new Fade();
-        fade.setDuration(500);
-        getWindow().setEnterTransition(fade);
         onBackPressed();
     }
 

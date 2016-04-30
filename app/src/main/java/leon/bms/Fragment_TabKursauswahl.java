@@ -317,6 +317,8 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
         /** Überprüft die LK : man MUSS 2 LKS haben und die Schulstunden dürfen nicht gleich
          *  sein
          */
+
+
         if (new dbUser().getUser().stufe.equals("Q2") || new dbUser().getUser().stufe.equals("Q1")) {
             if (lkList.size() == 2) {
                 List<dbSchulstunde> stundenList = lkList.get(0).getSchulStunden(lkList.get(0).getId());
@@ -328,7 +330,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                 }
             } else {
                 Log.d("CHECK", "LKs sind zu wenige oder zu viele");
-                return false;
+                return true;
             }
         }
 

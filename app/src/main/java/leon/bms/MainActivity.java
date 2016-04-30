@@ -3,7 +3,7 @@ package leon.bms;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -25,6 +25,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+
+import java.util.ArrayList;
+
 /**
  * @MainActivity beinhaltet alle Hauptfunktionen und ist der Hauptangelpunkt der App.
  * Hier wird alles verwaltet und koordiniert zwischen den Fragmenten. Die MainActivity beinhaltet Fragmente
@@ -43,26 +48,22 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayoutgesamt;
     ActionBarDrawerToggle drawerToggle;
     CollapsingToolbarLayout collapsingToolbarLayout;
+    AHBottomNavigation bottomNavigation;
     int[] tabIcons;
-
+    private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= 21) {
-            //Exit Animation
-            TransitionInflater inflater = TransitionInflater.from(this);
-            Transition transition = inflater.inflateTransition(R.anim.transition_enter);
-            getWindow().setExitTransition(transition);
-        }
-        setContentView(R.layout.activity_main);
 
+        setContentView(R.layout.activity_main);
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
         tabIcons = new int[]{R.drawable.ic_done_white_24dp, R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_timeline_white_24dp};
 
         //setUp Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Highlights");
+
 
         //setUP Drawerlayout
         drawerLayoutgesamt = (DrawerLayout) findViewById(R.id.drawerlayoutgesamt);
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
         //applying CollapsingToolbar
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbarLayout.setTitle("Hightlights");
+
 
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        textViewTitle.setText("Highlights");
+        textViewTitle.setText("");
 
         appBarLayout = (AppBarLayout) findViewById(R.id.AppBarLayout);
 
@@ -86,20 +87,28 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         final ViewPagerAdapterMain viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager);
         viewPager.setAdapter(viewPagerAdapter);
-        tabLayout = (TabLayout) findViewById(R.id.tablayout); //tabaylout
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL); //tabs fill the width
-        tabLayout.setupWithViewPager(viewPager);
-        setupTabLayout(tabLayout);
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                bottomNavigation.setCurrentItem(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+
         findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, KursauswahlActivity.class));
-            }
-        });
-        findViewById(R.id.tablayout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, AufgabenActivity.class));
             }
         });
         findViewById(R.id.viewpager).setOnClickListener(new View.OnClickListener() {
@@ -156,6 +165,41 @@ public class MainActivity extends AppCompatActivity {
                 }, 500);
             }
         }
+        setUpBottombar();
+    }
+
+    private void setUpBottombar() {
+        // Create items
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Highlight", tabIcons[1], Color.parseColor("#4CAF50"));
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Stundenplan", tabIcons[2], Color.parseColor("#009688"));
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Aufgaben", tabIcons[0], Color.parseColor("#03A9F4"));
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Website", tabIcons[3], Color.parseColor("#E91E63"));
+
+        // Add items
+        bottomNavigationItems.add(item1);
+        bottomNavigationItems.add(item2);
+        bottomNavigationItems.add(item3);
+        bottomNavigationItems.add(item4);
+
+        bottomNavigation.addItems(bottomNavigationItems);
+
+
+        // Set background color
+        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
+        bottomNavigation.setColored(true);
+        bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#FFFFFF"));
+        bottomNavigation.setNotificationTextColor(Color.parseColor("#000000"));
+        bottomNavigation.setCurrentItem(0);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(0).getColor(MainActivity.this)));
+
+
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(int position, boolean wasSelected) {
+                viewPager.setCurrentItem(position);
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(position).getColor(MainActivity.this)));
+            }
+        });
 
     }
 
@@ -169,64 +213,6 @@ public class MainActivity extends AppCompatActivity {
         navigationView.getMenu().getItem(0).setChecked(true);
     }
 
-
-    /**
-     * @param tabLayout ist das Layout für das aussehen der tabs
-     * @setUpTabLayout erstellt die Tabs und färbt sie dunkel wenn sie nicht aktiv angezeigt werden
-     */
-    public void setupTabLayout(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setIcon(tabIcons[1]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(1).setIcon(tabIcons[2]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(2).setIcon(tabIcons[0]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-        tabLayout.getTabAt(3).setIcon(tabIcons[3]).getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-        // lässt den aktuellen Tab weiß
-        int i = tabLayout.getSelectedTabPosition();
-        tabLayout.getTabAt(i).getIcon().clearColorFilter();
-
-        //onClickListener für die Tabs
-        // je nach Tab ändert sich der Title
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                tab.getIcon().clearColorFilter();
-
-                switch (tab.getPosition()) {
-                    case 0:
-                        getSupportActionBar().setTitle("Highlights");
-                        collapsingToolbarLayout.setTitle("Highlights");
-                        textViewTitle.setText("Highlights");
-                        break;
-                    case 1:
-                        getSupportActionBar().setTitle("Stundenplan");
-                        collapsingToolbarLayout.setTitle("Stundenplan");
-                        textViewTitle.setText("Stundenplan");
-                        break;
-                    case 2:
-                        getSupportActionBar().setTitle("Aufgaben");
-                        collapsingToolbarLayout.setTitle("Aufgaben");
-                        textViewTitle.setText("Aufgaben");
-                        break;
-                    case 3:
-                        getSupportActionBar().setTitle("News");
-                        collapsingToolbarLayout.setTitle("News");
-                        textViewTitle.setText("News");
-                        break;
-                }
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-                // färbt jeden Tab wieder dunkel wenn er nicht mehr ausgewählt ist
-                tab.getIcon().mutate().setColorFilter(Color.parseColor("#0d0d0d"), PorterDuff.Mode.SRC_IN);
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -269,12 +255,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent2);
                 finish();
                 return true;
-            case R.id.menu_add:
-                // neue Aufgabe wird erstellt bzw AufgabenActivity wird geladen
-                Toast.makeText(MainActivity.this, "clicked", Toast.LENGTH_SHORT).show();
-                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(this, null);
-                startActivity(new Intent(this, AufgabenActivity.class), activityOptionsCompat.toBundle());
-                return true;
+
         }
 
         return super.onOptionsItemSelected(item);

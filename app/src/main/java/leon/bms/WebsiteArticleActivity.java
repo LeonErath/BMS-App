@@ -1,6 +1,7 @@
 package leon.bms;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -8,9 +9,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 
 /**
  * @WebsiteArticleActivity ist die Activity zum Anzeigen der Webarticle der Webiste
@@ -19,8 +23,10 @@ public class WebsiteArticleActivity extends AppCompatActivity {
     //views
     TextView textViewHeadline;
     TextView textViewAutor,textViewToolbar;
+    ImageView imageView;
     WebView webView;
     ScrollView scrollView;
+    CollapsingToolbarLayout collapsingToolbarLayout;
     String content;
 
     @Override
@@ -33,13 +39,16 @@ public class WebsiteArticleActivity extends AppCompatActivity {
         String url = intent.getStringExtra("url");
         String headline = intent.getStringExtra("headline");
         String autor = intent.getStringExtra("autor");
+        Bitmap bild =  (Bitmap) intent.getParcelableExtra("bild");
         setContentView(R.layout.activity_website_article);
 
+
+        imageView = (ImageView) findViewById(R.id.imageView);
+        imageView.setImageBitmap(bild);
         //stellt den Artikel in einem Webview dar
         // TODO Performance Problems and no Images
         String message ="<font color=\"" + "#5e5e5e" + "\">" +content+ "</font>";
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
-        scrollView.setDrawingCacheEnabled(false);
+
         webView = (WebView) findViewById(R.id.webView);
         webView.setDrawingCacheEnabled(false);
         webView.clearCache(true);
@@ -59,14 +68,13 @@ public class WebsiteArticleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        textViewToolbar = (TextView) findViewById(R.id.textViewToolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbarLayout.setTitle(headline);
         textViewAutor = (TextView) findViewById(R.id.textViewAutor);
-        textViewHeadline = (TextView) findViewById(R.id.textViewHeadline);
-        toolbar.setNavigationIcon(R.drawable.ic_clear_white_18dp);
+        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
 
         textViewAutor.setText(autor);
-        textViewHeadline.setText(headline);
-        textViewToolbar.setText("");
+
         getSupportActionBar().setTitle("");
 
     }

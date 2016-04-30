@@ -1,8 +1,10 @@
 package leon.bms;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +28,9 @@ public class StundenplanController {
     // unwichtige URL erstmal
     String registrationUrl = "http://app.marienschule.de/files/scripts/getStundenplan.php";
     Context mainContext;
+    String result = "";
+    ProgressDialog progressDialog;
+    OnUpdateListener listener;
 
     public StundenplanController(Context context) {
         Log.d("CONSTRUCTOR", " StundenlanController erstellt");
@@ -105,106 +110,116 @@ public class StundenplanController {
      * man einen Überblick behält.
      */
     public void checkUpdate() {
-
         // WICHTIGE Url für die Anfrage an den Server
         String Url = "http://app.marienschule.de/files/scripts/getAllDataN.php";
-        String result = "";
         LogInController logInController = new LogInController(mainContext);
         // parsed Datum
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
         try {
-            calendar.setTime(sdf2.parse("2015-03-05 12:16:22"));// all done
+            calendar.setTime(sdf2.parse("1960-02-22 01:30:22"));// all done
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("username", logInController.getUsername())
-                .appendQueryParameter("pw", logInController.getPass())
-                .appendQueryParameter("date", "2015-03-05 12:16:22"); // TODO Kein URi Builder
-        String params = "pw=" + logInController.getPass() + "&username=" + logInController.getUsername() + "&date=2015-03-05+12%3A16%3A22";
+        String date = calendar.get(Calendar.DAY_OF_MONTH)+"."+calendar.get(Calendar.MONTH)+"."+calendar.get(Calendar.YEAR)+" "+calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE);
+        Log.d("TIME",date);
+        String params = "pw=" + logInController.getPass() + "&username=" + logInController.getUsername() + "&date="+date;
         Log.d("STUNDENPLAN", params);
-        atOnline atOnline = new atOnline(Url, params, mainContext);
-        try {
-            result = atOnline.execute().get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        atOnline atOnline2 = new atOnline(Url, params, mainContext);
+        atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
+
+            @Override
+            public void onSuccesss(String result2) {
+                parseData(result2);
+            }
+
+            @Override
+            public void onFailure(String result2) {
+                result = "";
+            }
+        });
+        atOnline2.execute();
+    }
+    public void parseData(String result){
         Log.d("RESULT", result);
+        if (!result.equals("")) {
 
-        // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
-        // in folgeneder Reihenfolge:
-        // 1 Lehrerliste
-        // 2 PK und AGs
-        // 3 Stundenplan
-        // 4 Kürzel
-        // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
-        // altualisiert werden können
+            // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
+            // in folgeneder Reihenfolge:
+            // 1 Lehrerliste
+            // 2 PK und AGs
+            // 3 Stundenplan
+            // 4 Kürzel
+            // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
+            // altualisiert werden können
 
-        //Hier die Lehrerliste
-        if (new dbLehrer().countLehrer() == 0) {
-            try {
-                JSONObject jsonObjectAll = new JSONObject(result);
-                JSONObject leherliste = jsonObjectAll.getJSONObject("lehrerliste");
-                erstelleLehrerListe(String.valueOf(leherliste));
-                Log.d("leherliste", String.valueOf(leherliste));
+            //Hier die Lehrerliste
+            if (new dbLehrer().countLehrer() == 0) {
+                try {
+                    JSONObject jsonObjectAll = new JSONObject(result);
+                    JSONObject leherliste = jsonObjectAll.getJSONObject("lehrerliste");
+                    erstelleLehrerListe(String.valueOf(leherliste));
+                    Log.d("leherliste", String.valueOf(leherliste));
 
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        //Hier die AGs und Projektkurse
-        if (new dbKurs().countKurse() == 0) {
+            //Hier die AGs und Projektkurse
+            if (new dbKurs().countKurse() == 0) {
+                try {
+                    JSONObject jsonObjectAll = new JSONObject(result);
+                    JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
+
+                    KurseController kurseController = new KurseController(mainContext);
+                    Log.d("pkuags", String.valueOf(pkuags));
+                    kurseController.erstelltPKundAGs(String.valueOf(pkuags));
+                    Log.d("COUNT", new dbKurs().countKurse() + " ");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                //Hier der Stundenplan und die Kurse
+                try {
+                    JSONObject jsonObjectAll = new JSONObject(result);
+                    JSONObject stundenplan = jsonObjectAll.getJSONObject("timetable");
+
+                    erstelleStundenplan(String.valueOf(stundenplan));
+                    Log.d("STUNDENPLAN", "Stundenplan wurde erstellt.");
+
+                    KurseController kurseController = new KurseController(mainContext);
+                    kurseController.erstelltKurse();
+                    Log.d("KURSE", "Kurse wurden erstellt.");
+                    kurseController.connectKursStunden();
+                    Log.d("stundenplan", String.valueOf(stundenplan));
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+            //Hier die Fachkuerzel
             try {
                 JSONObject jsonObjectAll = new JSONObject(result);
-                JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
+                JSONObject fachkz = jsonObjectAll.getJSONObject("fachkuerzel");
 
                 KurseController kurseController = new KurseController(mainContext);
-                Log.d("pkuags", String.valueOf(pkuags));
-                kurseController.erstelltPKundAGs(String.valueOf(pkuags));
-                Log.d("COUNT", new dbKurs().countKurse() + " ");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            //Hier der Stundenplan und die Kurse
-            try {
-                JSONObject jsonObjectAll = new JSONObject(result);
-                JSONObject stundenplan = jsonObjectAll.getJSONObject("timetable");
-
-                erstelleStundenplan(String.valueOf(stundenplan));
-                Log.d("STUNDENPLAN", "Stundenplan wurde erstellt.");
-
-                KurseController kurseController = new KurseController(mainContext);
-                kurseController.erstelltKurse();
-                Log.d("KURSE", "Kurse wurden erstellt.");
-                kurseController.connectKursStunden();
-                Log.d("stundenplan", String.valueOf(stundenplan));
-
+                kurseController.connectKuerzel(String.valueOf(fachkz));
+                Log.d("fachkz", String.valueOf(fachkz));
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+            listener.onSuccesss();
+        }else {
+            // wenn es keine Results gibt
+            listener.onFailure();
         }
-
-
-        //Hier die Fachkuerzel
-        try {
-            JSONObject jsonObjectAll = new JSONObject(result);
-            JSONObject fachkz = jsonObjectAll.getJSONObject("fachkuerzel");
-
-            KurseController kurseController = new KurseController(mainContext);
-            kurseController.connectKuerzel(String.valueOf(fachkz));
-            Log.d("fachkz", String.valueOf(fachkz));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**
@@ -241,6 +256,20 @@ public class StundenplanController {
         }
 
 
+    }
+
+    public interface OnUpdateListener {
+        public void onSuccesss();
+        public void onFailure();
+    }
+
+    /**
+     * Methode MUSS vorher in der Klasse aufgerufen werden
+     * HIer wird das Interface "initlisiert"
+     * Wenn dies nicht passiert ist stürtzt die Application ab
+     */
+    public void setUpdateListener(OnUpdateListener listener) {
+        this.listener = listener;
     }
 
 

@@ -7,6 +7,7 @@ import android.text.Html;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -74,10 +75,15 @@ public class WebsiteArticleController {
         String params = builder.build().getEncodedQuery();
         atOnline atOnline2 = new atOnline(Url, params, context);
         atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
-            @Override
-            public void onUpdate(String result) {
-                parseRecentArticle(result);
 
+            @Override
+            public void onSuccesss(String result) {
+                parseRecentArticle(result);
+            }
+
+            @Override
+            public void onFailure(String result) {
+                Toast.makeText(context, "Ein Fehler ist aufgetreten", Toast.LENGTH_SHORT).show();
             }
         });
         atOnline2.execute();

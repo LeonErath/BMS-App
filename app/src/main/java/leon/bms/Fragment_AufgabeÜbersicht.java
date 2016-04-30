@@ -1,6 +1,7 @@
 package leon.bms;
 
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
 import com.cocosw.bottomsheet.BottomSheet;
+import com.sergiocasero.revealfab.RevealFAB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +32,12 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
     // definieren des recyclcerViews
     RecyclerView recyclerViewAufgaben;
     AufgabentAdapter aufgabeAdapter;
+    RevealFAB revealFAB;
     private static boolean m_iAmVisible;
     private static String TAG = Fragment_Article.class.getSimpleName();
 
+    public Fragment_AufgabeÜbersicht() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,6 +65,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                     aufgabeAdapter.changeDataSet(alleAufgaben);
                 }
             }
+
             Log.d(TAG, "this fragment is now visible");
 
         } else {
@@ -84,6 +91,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
                 }
             }
         }
+        revealFAB.onResume();
     }
 
     /**
@@ -105,8 +113,20 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
         recyclerViewAufgaben.setItemAnimator(new DefaultItemAnimator());
         recyclerViewAufgaben.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        revealFAB = (RevealFAB) view.findViewById(R.id.reveal_fab);
+
+        Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+        revealFAB.setIntent(intent);
+        revealFAB.setOnClickListener(new RevealFAB.OnClickListener() {
+            @Override
+            public void onClick(RevealFAB button, View v) {
+                button.startActivityWithAnimation();
+            }
+        });
 
     }
+
+
 
     /**
      * @param aufgabe ist die Aufgabe auf die geclickt worden ist
