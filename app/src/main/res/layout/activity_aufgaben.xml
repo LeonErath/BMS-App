@@ -283,7 +283,7 @@
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/recycler_view"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/aufgaben_vertical_size_row"
+                            android:layout_height="@dimen/aufgaben_vertical_size_row_recylcer"
                             app:layout_anchorGravity="bottom" />
 
 
@@ -316,7 +316,8 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:layout_alignParentBottom="true"
-                        app:fabSize="normal"
+                        app:fabSize="mini"
+                        android:layout_marginBottom="8dp"
                         android:src="@drawable/ic_photo_camera_white_48dp"
                         app:backgroundTint="#00897B"
                         app:elevation="4dp" />
@@ -326,7 +327,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        app:fabSize="normal"
+                        app:fabSize="mini"
+                        android:layout_marginBottom="8dp"
                         android:layout_alignParentBottom="true"
                         android:src="@drawable/ic_insert_photo_white_48dp"
                         app:backgroundTint="#607D8B"

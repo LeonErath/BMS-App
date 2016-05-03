@@ -3,7 +3,6 @@ package leon.bms;
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,9 +12,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -29,13 +26,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateUtils;
-import android.transition.Fade;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
@@ -49,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.pwittchen.swipe.library.Swipe;
-import com.github.pwittchen.swipe.library.SwipeListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,7 +51,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -121,7 +113,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mView = LayoutInflater.from(this).inflate(R.layout.activity_aufgaben,null);
+        mView = LayoutInflater.from(this).inflate(R.layout.activity_aufgaben, null);
         setContentView(mView);
 
         // initiate views
@@ -129,7 +121,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         editTextNotizen = (EditText) findViewById(R.id.editTextNotizen);
         textViewDatePicker = (TextView) findViewById(R.id.textViewDatePicker);
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        overlay = (RelativeLayout) findViewById(R.id.overlay );
+        overlay = (RelativeLayout) findViewById(R.id.overlay);
         // initiate FloatinActionButtons
         fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera);
         fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie);
@@ -158,7 +150,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         recyclerView.setHasFixedSize(true);
 
 
-
         fabAnimation();
 
         /** @fabCamera is for taking Pictures
@@ -170,6 +161,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             @Override
             public void onClick(View v) {
                 if (fabVisible != false) {
+                    fabAnimateOut();
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     // Ensure that there's a camera activity to handle the intent
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -185,6 +177,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                             startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
                         }
                     }
+
                 }
             }
         });
@@ -197,15 +190,15 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             @Override
             public void onClick(View v) {
                 if (fabVisible != false) {
+                    fabAnimateOut();
                     // Create intent to Open Image applications like Gallery, Google Photos
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     // Start the Intent
                     startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+
                 }
             }
         });
-
-
 
 
         chooseDate();
@@ -244,7 +237,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         if (extras != null) {
             Long id = intent.getLongExtra("id", 0);
             reloadData(id);
-        }else {
+        } else {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(editTextNotizen, InputMethodManager.SHOW_IMPLICIT);
 
@@ -256,8 +249,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 startActivity(new Intent(AufgabenActivity.this, MainActivity.class));
             }
         });
-
-
 
 
     }
@@ -359,6 +350,8 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         // prepare FloatingActionButton for Animation
         fabCamera.setAlpha(0f);
         fabGallarie.setAlpha(0f);
+        fabCamera.animate().setDuration(0).rotation(270).translationY(-112).scaleX(0).scaleY(0).alpha(0);
+        fabGallarie.animate().setDuration(0).rotation(270).translationY(-208).scaleX(0).scaleY(0).alpha(0);
         // appply Animation on OnClick
         fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate);
         fabAnimate.animate().setDuration(0).scaleX(0).scaleY(0).alpha(0).setListener(new Animator.AnimatorListener() {
@@ -374,7 +367,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
+                Log.d(TAG,"Animation got canceled");
             }
 
             @Override
@@ -407,8 +400,8 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         fabAnimate.animate().rotation(0).setDuration(300).setInterpolator(new AccelerateDecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-                fabGallarie.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
-                fabCamera.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabGallarie.animate().setDuration(300).alpha(1f).rotation(-270).scaleY(0).scaleX(0).alpha(0).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabCamera.animate().setDuration(300).alpha(1f).rotation(-270).scaleY(0).scaleX(0).alpha(0).setInterpolator(new AccelerateDecelerateInterpolator());
                 fabAnimate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E91E63")));
 
                 ObjectAnimator colorFade = ObjectAnimator.ofObject(overlay, "backgroundColor", new ArgbEvaluator(), Color.parseColor(overlayColor), Color.parseColor(overlayTransparentColor));
@@ -421,11 +414,12 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             @Override
             public void onAnimationEnd(Animator animation) {
                 fabAnimate.setRippleColor(Color.parseColor("#000000"));
+                enableDisableButtons(true);
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
+                Log.d(TAG,"Animation got canceled");
             }
 
             @Override
@@ -444,35 +438,46 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
          *  AccelerateDeccelerateInterpolator for smooth Animation
          **/
 
-            fabAnimate.animate().rotation(45).setDuration(300).setInterpolator(new AccelerateDecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    fabGallarie.animate().setDuration(300).translationY(-128).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabCamera.animate().setDuration(300).translationY(-256).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabAnimate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+        fabAnimate.animate().rotation(45).setDuration(300).setInterpolator(new AccelerateDecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                //.translationY(-112)
+                //.translationY(-208)
+                fabGallarie.animate().setDuration(300).rotation(360).alpha(1f).scaleY(1).scaleX(1).alpha(1).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabCamera.animate().setDuration(300).rotation(360).alpha(1f).scaleY(1).scaleX(1).alpha(1).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabAnimate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
 
-                    ObjectAnimator colorFade = ObjectAnimator.ofObject(overlay, "backgroundColor", new ArgbEvaluator(), Color.parseColor(overlayTransparentColor), Color.parseColor(overlayColor));
-                    colorFade.setDuration(300);
-                    colorFade.start();
-                }
+                ObjectAnimator colorFade = ObjectAnimator.ofObject(overlay, "backgroundColor", new ArgbEvaluator(), Color.parseColor(overlayTransparentColor), Color.parseColor(overlayColor));
+                colorFade.setDuration(300);
+                colorFade.start();
+            }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    fabAnimate.setRippleColor(Color.parseColor("#E91E63"));
-                }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                fabAnimate.setRippleColor(Color.parseColor("#E91E63"));
+                enableDisableButtons(false);
+            }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                Log.d(TAG,"Animation got canceled");
+            }
 
-                }
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            });
+            }
+        });
 
         fabVisible = true;
+    }
+
+    private void enableDisableButtons(boolean b) {
+        editTextBeschreibung.setEnabled(b);
+        editTextNotizen.setEnabled(b);
+        spinner.setEnabled(b);
+        textViewDatePicker.setEnabled(b);
+
     }
 
 
@@ -506,6 +511,8 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 ArrayList<String> paths = savedInstanceState.getStringArrayList("paths");
                 photoAdapter.newData(paths);
             }
+                fabAnimation();
+
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -522,6 +529,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 if (photoFile != null) {
                     photoAdapter.addPhoto(photoFile.getAbsolutePath());
                     photoFile = null;
+
                 }
                 if (data != null) {
                     // parse the data to get the path
@@ -574,22 +582,22 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         }
     }
 
-    private boolean checkSave(){
-        if (calendar2 != null ) {
-            if (dateCalendar.before(calendar2) == true){
-                if (selectedItem != null){
-                    if (!editTextBeschreibung.getText().toString().equals("")){
+    private boolean checkSave() {
+        if (calendar2 != null) {
+            if (dateCalendar.before(calendar2) == true) {
+                if (selectedItem != null) {
+                    if (!editTextBeschreibung.getText().toString().equals("")) {
                         return true;
-                    }else {
+                    } else {
                         Toast.makeText(AufgabenActivity.this, "Titel ist leer", Toast.LENGTH_SHORT).show();
                     }
-                }else {
+                } else {
                     Toast.makeText(AufgabenActivity.this, "Es wurde kein Fach ausgewählt", Toast.LENGTH_SHORT).show();
                 }
-            }else {
+            } else {
                 Toast.makeText(AufgabenActivity.this, "ausgewähltes Datum nicht möglich", Toast.LENGTH_SHORT).show();
             }
-        }else {
+        } else {
             Toast.makeText(AufgabenActivity.this, "Es wurde kein Datum ausgewählt", Toast.LENGTH_SHORT).show();
         }
         return false;
@@ -635,11 +643,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         }
 
 
-        createNotification(this,aufgabeLoad);
+        createNotification(this, aufgabeLoad);
     }
 
-    public void createNotification(Context context,dbAufgabe aufgabeLoad){
-        Log.d("onRecieve","trigger");
+    public void createNotification(Context context, dbAufgabe aufgabeLoad) {
+        Log.d("onRecieve", "trigger");
         //create an Notification
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_done_white_48dp)
@@ -677,13 +685,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         stackBuilder.addNextIntent(resultIntent);
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         // mId allows you to update the notification later on.
 
         mNotificationManager.notify(1, mBuilder.build());
     }
-
-
 
 
     /**
