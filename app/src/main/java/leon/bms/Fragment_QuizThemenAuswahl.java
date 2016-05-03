@@ -39,10 +39,6 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     List<quizthemen> quizthemenList;
 
 
-    public Fragment_QuizThemenAuswahl(String kursID) {
-        this.kursID = kursID;
-    }
-
     public Fragment_QuizThemenAuswahl() {
         // Required empty public constructor
     }
@@ -69,6 +65,9 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        Bundle bundle = this.getArguments();
+        kursID = bundle.getString("kursid", null);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("id")) {

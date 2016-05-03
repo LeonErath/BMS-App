@@ -1,5 +1,8 @@
 package leon.bms;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
@@ -7,7 +10,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +43,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,15 +71,17 @@ import java.util.List;
 public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.ViewHolder.ClickListener {
 
     private static String TAG = AufgabenActivity.class.getSimpleName();
+    private final String overlayColor = "#73000000";
+    private final String overlayTransparentColor = "#00000000";
     // @datePickerDialog wird gebraucht für die Auswahl der Datums
     DatePickerDialog datePickerDialog;
+    RelativeLayout overlay;
     private PendingIntent pendingIntent;
     // @dateString hier wird das Datum als String gespeichert
     String dateString, dateAnzeige;
     // @dateCalendar ist das heutige Datum @calendar2 ist das Datum welches der User auswählt
     Calendar dateCalendar, calendar2 = Calendar.getInstance();
     Calendar calendar = Calendar.getInstance();
-    // Views
     TextView textViewDatePicker;
     EditText editTextBeschreibung, editTextNotizen;
     // zeigt eine Liste mit den Kursen an
@@ -116,6 +124,18 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         mView = LayoutInflater.from(this).inflate(R.layout.activity_aufgaben,null);
         setContentView(mView);
 
+        // initiate views
+        editTextBeschreibung = (EditText) findViewById(R.id.editTextBeschreibung);
+        editTextNotizen = (EditText) findViewById(R.id.editTextNotizen);
+        textViewDatePicker = (TextView) findViewById(R.id.textViewDatePicker);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        overlay = (RelativeLayout) findViewById(R.id.overlay );
+        // initiate FloatinActionButtons
+        fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera);
+        fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie);
+        // setUp der Kursauswahl für die Aufgaben
+        spinner = (Spinner) findViewById(R.id.spinner2);
+
         // setUp der toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -131,59 +151,15 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         // Adapter bekommt die Kurseliste für die Anzeige der Kurse
         photoAdapter = new PhotoAdapter(this, picturePaths);
         // setUp RecyclerView
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+
         recyclerView.setAdapter(photoAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this, 0, false));
         recyclerView.setHasFixedSize(true);
 
-        // initiate FloatinActionButtons
-        fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera);
-        fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie);
-        // prepare FloatingActionButton for Animation
-        fabCamera.setAlpha(0f);
-        fabGallarie.setAlpha(0f);
-        fabCamera.animate().translationY(-72).setDuration(0).setInterpolator(new AccelerateDecelerateInterpolator());
-        fabGallarie.animate().translationY(-200).setDuration(0);
-        // appply Animation on OnClick
-        fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate);
-        fabAnimate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (fabVisible == false) {
-                    /** if fabVisible == false FloatinActionButtons are invisible
-                     *  check SDK for Anmation
-                     *  make FloationActionButtons visible with Animation
-                     *  Animation fade FloatingActionButton in and let them "fly" in
-                     *  AccelerateDeccelerateInterpolator for smooth Animation
-                     **/
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_48dp, getTheme()));
-                    } else {
-                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_up_white_48dp));
-                    }
-                    fabGallarie.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabCamera.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabVisible = true;
-                } else {
-                    /** if fabVisible == true FloatinActionButtons are visible
-                     *  check SDK for Anmation
-                     *  make FloationActionButtons invisible with Animation
-                     *  Animation fade FloatingActionButton out and let them "fly" out
-                     *  AccelerateDeccelerateInterpolator for smooth Animation
-                     **/
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp, getTheme()));
-                    } else {
-                        fabAnimate.setImageDrawable(getResources().getDrawable(R.drawable.ic_keyboard_arrow_down_white_48dp));
-                    }
-                    fabGallarie.animate().setDuration(300).translationY(-200).alpha(0f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabCamera.animate().setDuration(300).translationY(-72).alpha(0f).setInterpolator(new AccelerateDecelerateInterpolator());
-                    fabVisible = false;
-                }
 
-            }
-        });
+
+        fabAnimation();
 
         /** @fabCamera is for taking Pictures
          *  check if Button is invisble
@@ -207,8 +183,6 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                         if (photoFile != null) {
                             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
                             startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
-
-
                         }
                     }
                 }
@@ -231,12 +205,64 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             }
         });
 
-        // initiate views
-        editTextBeschreibung = (EditText) findViewById(R.id.editTextBeschreibung);
-        editTextNotizen = (EditText) findViewById(R.id.editTextNotizen);
-        textViewDatePicker = (TextView) findViewById(R.id.textViewDatePicker);
 
 
+
+        chooseDate();
+
+        // Liste mit alle ausgewählten Kursen wird rausgesucht
+        List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
+        // Spinner Drop down elements
+        List<String> fachlist = new ArrayList<String>();
+        for (dbKurs kurs : allActiveKurse) {
+            // der Spinner beinhaltet nur die Namen der Kurse
+            fachlist.add(kurs.fach);
+        }
+        // Spinner wird mit der Liste konfiguriert
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, fachlist);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+        // @setOnItemSelectedListener wird ausgelöst wenn ein Kurs ausgewählt wurde
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // name des Kurses wird in selectedItem gespeichert
+                selectedItem = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        /** @getIntent checks if the Activity is for a new Aufgabe or if a Aufgabe gets changed
+         *  if intent isnt null the Aufgabe get loaded
+         **/
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            Long id = intent.getLongExtra("id", 0);
+            reloadData(id);
+        }else {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(editTextNotizen, InputMethodManager.SHOW_IMPLICIT);
+
+        }
+        findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // if back Button gets pressed
+                startActivity(new Intent(AufgabenActivity.this, MainActivity.class));
+            }
+        });
+
+
+
+
+    }
+
+    private void chooseDate() {
         // Listener für das auswählen eines Datums
         textViewDatePicker.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,153 +310,177 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 datePickerDialog.show();
             }
         });
+    }
 
-        // setUp der Kursauswahl für die Aufgaben
-        spinner = (Spinner) findViewById(R.id.spinner2);
+    private void reloadData(Long id) {
         // Liste mit alle ausgewählten Kursen wird rausgesucht
         List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
-        // Spinner wird mit der Liste konfiguriert
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, android.R.id.text1);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerAdapter);
-        for (dbKurs kurs : allActiveKurse) {
-            // der Spinner beinhaltet nur die Namen der Kurse
-            spinnerAdapter.add(kurs.fach);
+        aufgabeLoad = new dbAufgabe().getAufgabe(id);
+        // check if aufgabe got load successfully
+        if (aufgabeLoad != null) {
+
+            editTextBeschreibung.setText(aufgabeLoad.beschreibung);
+            editTextNotizen.setText(aufgabeLoad.notizen);
+            // setUp the kurs for the Aufgabe
+            List<String> fachList = new ArrayList<>();
+            for (dbKurs kurs : allActiveKurse) {
+                fachList.add(kurs.fach);
+            }
+            int position = fachList.indexOf(aufgabeLoad.kurs.fach);
+            spinner.setSelection(position);
+
+            // setUp Time to the DatePicker
+            SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.M.d");
+            try {
+                calendar2.setTime(sdf2.parse(aufgabeLoad.zuletztAktualisiert));// all done
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
+            textViewDatePicker.setText(dateAnzeige);
+            dateString = aufgabeLoad.zuletztAktualisiert;
+
+            /** loads the images and applys them to the adapter
+             **/
+            if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
+                Log.d("IMAGE", "Bild wird geladen");
+                List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabeLoad.getId());
+                for (int i = 0; i < dbMediaFileList.size(); i++) {
+                    dbMediaFile dbMediaFile = dbMediaFileList.get(i);
+                    photoAdapter.addPhoto(dbMediaFile.path);
+                }
+
+
+            }
         }
-        spinnerAdapter.notifyDataSetChanged();
-        // @setOnItemSelectedListener wird ausgelöst wenn ein Kurs ausgewählt wurde
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    }
+
+    private void fabAnimation() {
+        // prepare FloatingActionButton for Animation
+        fabCamera.setAlpha(0f);
+        fabGallarie.setAlpha(0f);
+        // appply Animation on OnClick
+        fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate);
+        fabAnimate.animate().setDuration(0).scaleX(0).scaleY(0).alpha(0).setListener(new Animator.AnimatorListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // name des Kurses wird in selectedItem gespeichert
-                selectedItem = parent.getItemAtPosition(position).toString();
-                // Dem User wird mitgeteilt welchen Kurs er ausgewählt hat
-                Toast.makeText(parent.getContext(), "Selected: " + selectedItem, Toast.LENGTH_LONG).show();
+            public void onAnimationStart(Animator animation) {
+
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+            public void onAnimationEnd(Animator animation) {
+                fabAnimate.animate().setDuration(500).scaleX(1).scaleY(1).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
             }
         });
 
-        /** @getIntent checks if the Activity is for a new Aufgabe or if a Aufgabe gets changed
-         *  if intent isnt null the Aufgabe get loaded
-         **/
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            Long id = intent.getLongExtra("id", 0);
-            aufgabeLoad = new dbAufgabe().getAufgabe(id);
-            // check if aufgabe got load successfully
-            if (aufgabeLoad != null) {
-
-                editTextBeschreibung.setText(aufgabeLoad.beschreibung);
-                editTextNotizen.setText(aufgabeLoad.notizen);
-                // setUp the kurs for the Aufgabe
-                List<String> fachList = new ArrayList<>();
-                for (dbKurs kurs : allActiveKurse) {
-                    fachList.add(kurs.fach);
-                }
-                int position = fachList.indexOf(aufgabeLoad.kurs.fach);
-                spinner.setSelection(position);
-
-                // setUp Time to the DatePicker
-                SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.M.d");
-                try {
-                    calendar2.setTime(sdf2.parse(aufgabeLoad.zuletztAktualisiert));// all done
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
-                textViewDatePicker.setText(dateAnzeige);
-                dateString = aufgabeLoad.zuletztAktualisiert;
-
-                /** loads the images and applys them to the adapter
-                 **/
-                if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
-                    Log.d("IMAGE", "Bild wird geladen");
-                    List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabeLoad.getId());
-                    for (int i = 0; i < dbMediaFileList.size(); i++) {
-                        dbMediaFile dbMediaFile = dbMediaFileList.get(i);
-                        photoAdapter.addPhoto(dbMediaFile.path);
-                    }
-
-
-                }
-            }
-
-
-        }else {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(editTextNotizen, InputMethodManager.SHOW_IMPLICIT);
-
-        }
-        findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
+        fabAnimate.setRippleColor(Color.parseColor("#000000"));
+        fabAnimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // if back Button gets pressed
-                startActivity(new Intent(AufgabenActivity.this, MainActivity.class));
+                if (fabVisible == false) {
+                    fabAnimateIn();
+                } else {
+                    fabAnimateOut();
+                }
+
             }
         });
+    }
 
-        final Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        final int height = size.y;
-
-        Log.d("COO",height+" Höhe");
-        swipe = new Swipe();
-        swipe.addListener(new SwipeListener() {
+    private void fabAnimateOut() {
+        /** if fabVisible == true FloatinActionButtons are visible
+         *  check SDK for Anmation
+         *  make FloationActionButtons invisible with Animation
+         *  Animation fade FloatingActionButton out and let them "fly" out
+         *  AccelerateDeccelerateInterpolator for smooth Animation
+         **/
+        fabAnimate.animate().rotation(0).setDuration(300).setInterpolator(new AccelerateDecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
             @Override
-            public void onSwipingLeft(MotionEvent event) {
+            public void onAnimationStart(Animator animation) {
+                fabGallarie.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabCamera.animate().setDuration(300).translationY(0).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                fabAnimate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E91E63")));
 
-            }
-
-            @Override
-            public void onSwipedLeft(MotionEvent event) {
-
-            }
-
-            @Override
-            public void onSwipingRight(MotionEvent event) {
-
-            }
-
-            @Override
-            public void onSwipedRight(MotionEvent event) {
-
-            }
-
-            @Override
-            public void onSwipingUp(MotionEvent event) {
-
-            }
-
-            @Override
-            public void onSwipedUp(MotionEvent event) {
-
-            }
-
-            @Override
-            public void onSwipingDown(MotionEvent event) {
+                ObjectAnimator colorFade = ObjectAnimator.ofObject(overlay, "backgroundColor", new ArgbEvaluator(), Color.parseColor(overlayColor), Color.parseColor(overlayTransparentColor));
+                colorFade.setDuration(300);
+                colorFade.start();
 
 
             }
 
             @Override
-            public void onSwipedDown(MotionEvent event) {
-            onBackPressed();
+            public void onAnimationEnd(Animator animation) {
+                fabAnimate.setRippleColor(Color.parseColor("#000000"));
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
             }
         });
-
-    }
-    @Override public boolean dispatchTouchEvent(MotionEvent event) {
-        swipe.dispatchTouchEvent(event);
-        return super.dispatchTouchEvent(event);
+        fabVisible = false;
     }
 
+    private void fabAnimateIn() {
+        /** if fabVisible == false FloatinActionButtons are invisible
+         *  check SDK for Anmation
+         *  make FloationActionButtons visible with Animation
+         *  Animation fade FloatingActionButton in and let them "fly" in
+         *  AccelerateDeccelerateInterpolator for smooth Animation
+         **/
 
+            fabAnimate.animate().rotation(45).setDuration(300).setInterpolator(new AccelerateDecelerateInterpolator()).setListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    fabGallarie.animate().setDuration(300).translationY(-128).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabCamera.animate().setDuration(300).translationY(-256).alpha(1f).setInterpolator(new AccelerateDecelerateInterpolator());
+                    fabAnimate.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#000000")));
+
+                    ObjectAnimator colorFade = ObjectAnimator.ofObject(overlay, "backgroundColor", new ArgbEvaluator(), Color.parseColor(overlayTransparentColor), Color.parseColor(overlayColor));
+                    colorFade.setDuration(300);
+                    colorFade.start();
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    fabAnimate.setRippleColor(Color.parseColor("#E91E63"));
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+
+        fabVisible = true;
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fabAnimation();
+    }
 
     /**
      * @onSaveInstanceState gets called if Activity gets destroyed
@@ -509,54 +559,12 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
                 dateCalendar = Calendar.getInstance();
                 // es wird überprüft ob alle notwendigen Daten ausgefüllt worden sind
-                if (calendar2 != null && dateCalendar.before(calendar2) == true && selectedItem != null && editTextBeschreibung.getText().toString() != "") {
-                    if (aufgabeLoad == null) {
-                        aufgabeLoad = new dbAufgabe();
-                    }
-                    // Daten werden eingetragen
-                    aufgabeLoad.abgabeDatum = fromCalendarToString(calendar2);
-                    aufgabeLoad.erstelltAm = fromCalendarToString(Calendar.getInstance());
-                    Log.d(TAG, dateString + "");
-                    aufgabeLoad.zuletztAktualisiert = dateString;
-                    aufgabeLoad.erledigt = false;
-
-                    aufgabeLoad.kurs = new dbKurs().getKursWithFach(selectedItem);
-                    aufgabeLoad.beschreibung = editTextBeschreibung.getText().toString();
-                    if (editTextNotizen.getText().toString() != "") {
-                        aufgabeLoad.notizen = editTextNotizen.getText().toString();
-                    }
-
-
-                    // Aufgabe wird in der Datenbank gespeichert
-                    aufgabeLoad.save();
-                    if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
-                        List<dbMediaFile> mediaFileList = aufgabeLoad.getMediaFile(aufgabeLoad.getId());
-                        for (dbMediaFile mediaFile : mediaFileList) {
-                            mediaFile.delete();
-                        }
-                    }
-                    // Photos werden in der mediaFile Datenbank gespeichert und die Beziehung
-                    // zu den aufgaben werden hergestellt
-                    picturePaths = photoAdapter.getList();
-                    if (picturePaths.size() != 0) {
-                        for (String path : picturePaths) {
-                            dbMediaFile mediaFile = new dbMediaFile();
-                            mediaFile.path = path;
-                            mediaFile.aufgaben = aufgabeLoad;
-                            mediaFile.save();
-                            Log.d("Photo", "Photo gespeichert: " + path);
-                        }
-                    }
-
-
-                    createNotification(this,aufgabeLoad);
-
-
+                if (checkSave() == true) {
+                    saveAufgabe();
                     Log.d("AufgabeActitviy", "Aufgabe wurde erstellt");
                     // Activity wird geschlossen
                     exitAcitivity();
                     return true;
-
                 }
 
 
@@ -564,6 +572,70 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private boolean checkSave(){
+        if (calendar2 != null ) {
+            if (dateCalendar.before(calendar2) == true){
+                if (selectedItem != null){
+                    if (!editTextBeschreibung.getText().toString().equals("")){
+                        return true;
+                    }else {
+                        Toast.makeText(AufgabenActivity.this, "Titel ist leer", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(AufgabenActivity.this, "Es wurde kein Fach ausgewählt", Toast.LENGTH_SHORT).show();
+                }
+            }else {
+                Toast.makeText(AufgabenActivity.this, "ausgewähltes Datum nicht möglich", Toast.LENGTH_SHORT).show();
+            }
+        }else {
+            Toast.makeText(AufgabenActivity.this, "Es wurde kein Datum ausgewählt", Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
+    private void saveAufgabe() {
+        if (aufgabeLoad == null) {
+            aufgabeLoad = new dbAufgabe();
+        }
+        // Daten werden eingetragen
+        aufgabeLoad.abgabeDatum = fromCalendarToString(calendar2);
+        aufgabeLoad.erstelltAm = fromCalendarToString(Calendar.getInstance());
+        Log.d(TAG, dateString + "");
+        aufgabeLoad.zuletztAktualisiert = dateString;
+        aufgabeLoad.erledigt = false;
+
+        aufgabeLoad.kurs = new dbKurs().getKursWithFach(selectedItem);
+        aufgabeLoad.beschreibung = editTextBeschreibung.getText().toString();
+        if (editTextNotizen.getText().toString() != "") {
+            aufgabeLoad.notizen = editTextNotizen.getText().toString();
+        }
+
+
+        // Aufgabe wird in der Datenbank gespeichert
+        aufgabeLoad.save();
+        if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
+            List<dbMediaFile> mediaFileList = aufgabeLoad.getMediaFile(aufgabeLoad.getId());
+            for (dbMediaFile mediaFile : mediaFileList) {
+                mediaFile.delete();
+            }
+        }
+        // Photos werden in der mediaFile Datenbank gespeichert und die Beziehung
+        // zu den aufgaben werden hergestellt
+        picturePaths = photoAdapter.getList();
+        if (picturePaths.size() != 0) {
+            for (String path : picturePaths) {
+                dbMediaFile mediaFile = new dbMediaFile();
+                mediaFile.path = path;
+                mediaFile.aufgaben = aufgabeLoad;
+                mediaFile.save();
+                Log.d("Photo", "Photo gespeichert: " + path);
+            }
+        }
+
+
+        createNotification(this,aufgabeLoad);
     }
 
     public void createNotification(Context context,dbAufgabe aufgabeLoad){

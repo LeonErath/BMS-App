@@ -57,9 +57,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     public Fragment_Article() {
     }
 
-    public Fragment_Article(ViewPager viewPager) {
-        this.viewPager = viewPager;
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

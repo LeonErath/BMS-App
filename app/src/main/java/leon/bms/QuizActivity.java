@@ -64,7 +64,10 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
             case 2:
                 if (kursid != null) {
                     // als zweites die Themenbreich auswahl
-                    Fragment_QuizThemenAuswahl fragment = new Fragment_QuizThemenAuswahl(kursid);
+                    Fragment_QuizThemenAuswahl fragment = new Fragment_QuizThemenAuswahl();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("kursid", kursid);
+                    fragment.setArguments(bundle);
                     FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
 
                     // Replace whatever is in the fragment_container view with this fragment,

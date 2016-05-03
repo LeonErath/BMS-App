@@ -1,11 +1,15 @@
 package leon.bms;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Leon E on 12.03.2016.
  */
-public class quizfragen {
+public class quizfragen implements Serializable {
     String themenbereichFrage;
     String frage;
     int fradeID;
@@ -72,4 +76,5 @@ public class quizfragen {
     public void setQuizantwortenList(List<quizantworten> quizantwortenList) {
         this.quizantwortenList = quizantwortenList;
     }
+
 }

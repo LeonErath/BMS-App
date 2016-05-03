@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/tafel_schwarz"
     android:orientation="vertical"
     tools:context="leon.bms.AufgabenActivity">
-
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="fill_parent">
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,200 +35,288 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_margin="0dp"
-            android:orientation="vertical">
-
-            <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
                 android:orientation="vertical">
 
-                <android.support.v4.widget.NestedScrollView
+                <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                    android:orientation="vertical">
 
-                    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                        xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/cardView"
+                    <android.support.v4.widget.NestedScrollView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        card_view:cardCornerRadius="0dp"
-                        card_view:cardElevation="8dp">
+                        android:layout_height="match_parent"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                        <LinearLayout
+                        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/cardView"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginTop="8dp"
-                            android:orientation="vertical">
-
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/editTextBeschreibung"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="8dp"
-                                android:hint="Hier den Titel eingeben"
-                                card_view:met_clearButton="true"
-                                card_view:met_floatingLabel="highlight"
-                                card_view:met_floatingLabelText="Titel"
-                                card_view:met_hideUnderline="true"
-                                android:nextFocusDown="@+id/editTextNotizen"
-                                card_view:met_iconLeft="@drawable/ic_assignment_black_48dp"
-                                card_view:met_maxCharacters="20"
-                                card_view:met_typeface="fonts/roboto_thin.ttf" />
-
-                            <RelativeLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginBottom="8dp"
-                                android:layout_marginTop="8dp"
-                                android:background="#aeaeae"></RelativeLayout>
-
-                            <com.rengwuxian.materialedittext.MaterialEditText
-                                android:id="@+id/editTextNotizen"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginRight="8dp"
-                                android:hint="Hier die Beschreibung eingeben"
-                                card_view:met_clearButton="true"
-                                card_view:met_floatingLabel="highlight"
-                                card_view:met_floatingLabelText="Beschreibung"
-                                card_view:met_hideUnderline="true"
-                                card_view:met_iconLeft="@drawable/ic_description_black_48dp"
-                                card_view:met_maxCharacters="200"
-                                 android:textSize="16dp"
-                                card_view:met_typeface="fonts/roboto_thin.ttf" />
-
-                            <RelativeLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginBottom="16dp"
-                                android:layout_marginTop="8dp"
-                                android:background="#aeaeae"></RelativeLayout>
+                            android:layout_height="wrap_content"
+                            card_view:cardCornerRadius="0dp"
+                            card_view:cardElevation="8dp">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal"
-                                android:layout_margin="8dp">
+                                android:layout_height="match_parent"
+                                android:layout_marginTop="0dp"
+                                android:orientation="vertical">
 
-                                <TextView
-                                    android:id="@+id/textViewKurs"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.18"
-                                    android:text="Kurs:"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                                <Spinner
-                                    android:id="@+id/spinner2"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.82"
-                                    android:spinnerMode="dialog"
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:id="@+id/editTextBeschreibung"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:layout_marginRight="8dp"
+                                    android:hint="Hier den Titel eingeben"
+                                    android:nextFocusDown="@+id/editTextNotizen"
+                                    card_view:met_clearButton="true"
+                                    card_view:met_floatingLabel="highlight"
+                                    card_view:met_floatingLabelText="Titel"
+                                    card_view:met_hideUnderline="true"
+                                    card_view:met_iconLeft="@drawable/ic_assignment_black_48dp"
+                                    card_view:met_maxCharacters="20"
+                                    card_view:met_typeface="fonts/roboto_thin.ttf" />
 
-                                    />
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
+                                <com.rengwuxian.materialedittext.MaterialEditText
+                                    android:id="@+id/editTextNotizen"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:layout_marginRight="8dp"
+                                    android:hint="Hier die Beschreibung eingeben"
+                                    android:textSize="16dp"
+                                    card_view:met_clearButton="true"
+                                    card_view:met_floatingLabel="highlight"
+                                    card_view:met_floatingLabelText="Beschreibung"
+                                    card_view:met_hideUnderline="true"
+                                    card_view:met_iconLeft="@drawable/ic_description_black_48dp"
+                                    card_view:met_maxCharacters="200"
+                                    card_view:met_typeface="fonts/roboto_thin.ttf" />
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="8dp">
+
+                                        <TextView
+                                            android:id="@+id/textViewKurs"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="0.3"
+                                            android:text="Kurs:"
+                                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                                        <Spinner
+                                            android:id="@+id/spinner2"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="0.7"
+                                            android:prompt="@string/spinnerprompt"
+                                            android:spinnerMode="dropdown"
+
+                                            />
+                                        #
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="8dp">
+
+                                        <TextView
+                                            android:id="@+id/textView4"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="0.3"
+                                            android:text="Datum:"
+                                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                                        <TextView
+                                            android:id="@+id/textViewDatePicker"
+                                            style="@style/Widget.AppCompat.Spinner"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="0.7"
+                                            android:text=" Datum auswählen"
+                                            android:textColor="#000"
+                                            android:textSize="16dp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="8dp">
+
+                                        <TextView
+                                            android:id="@+id/textView5"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="0.3"
+                                            android:text="Erinnerung:"
+                                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                                        <TextView
+                                            android:id="@+id/textViewTimePicker"
+                                            style="@style/Widget.AppCompat.Spinner"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="0.7"
+                                            android:text=" Zeit auswählen"
+                                            android:textColor="#000"
+                                            android:textSize="16dp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/aufgaben_vertical_size_row"
+                                    android:orientation="horizontal">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="8dp">
+
+                                        <TextView
+                                            android:id="@+id/textView6"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="0.3"
+                                            android:text="Wichtigkeit:"
+                                            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+                                        <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+                                            android:id="@+id/toogleButton"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="0.7"
+                                            android:textSize="16sp"
+                                            custom:activeBgColor="@android:color/holo_blue_dark"
+                                            custom:activeTextColor="@android:color/white"
+                                            custom:inactiveBgColor="#bcbcbc"
+                                            custom:inactiveTextColor="@android:color/black"
+                                            custom:separatorColor="@color/gray_very_light"
+                                            custom:textToggleCenter="+2"
+                                            custom:textToggleLeft="+1"
+                                            custom:textToggleRight="+3"
+                                            custom:toggleWidth="80dp" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <RelativeLayout
+                                    android:layout_width="fill_parent"
+                                    android:layout_height="1dp"
+                                    android:background="#aeaeae"></RelativeLayout>
+
                             </LinearLayout>
-                            <RelativeLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginBottom="16dp"
-                                android:layout_marginTop="16dp"
-                                android:background="#aeaeae"></RelativeLayout>
 
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="8dp"
-                                android:orientation="horizontal">
+                        </android.support.v7.widget.CardView>
 
-                                <TextView
-                                    android:id="@+id/textView4"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="0.2"
-                                    android:text="Datum:"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    </android.support.v4.widget.NestedScrollView>
 
-                                <TextView
-                                    android:id="@+id/textViewDatePicker"
-                                    style="@style/Widget.AppCompat.Spinner"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_weight="0.8"
-                                    android:text=" Datum auswählen"
-                                    android:textColor="#000"
-                                    android:textSize="16dp" />
-                            </LinearLayout>
-                            <RelativeLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginBottom="0dp"
-                                android:layout_marginTop="16dp"
-                                android:background="#aeaeae"></RelativeLayout>
-                        </LinearLayout>
-                    </android.support.v7.widget.CardView>
 
-                </android.support.v4.widget.NestedScrollView>
+                </android.support.design.widget.CoordinatorLayout>
 
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginTop="280dp"
-                    app:layout_anchor="@id/cardView"
-                    app:layout_anchorGravity="right|end|bottom">
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/fabAnimate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="right"
-                        android:src="@drawable/ic_keyboard_arrow_down_white_48dp"
-                        app:backgroundTint="@color/colorPrimary"
-                        app:elevation="4dp" />
-
-                </FrameLayout>
-
-            </android.support.design.widget.CoordinatorLayout>
-            <android.support.design.widget.CoordinatorLayout
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent">
-                <RelativeLayout
+                <android.support.design.widget.CoordinatorLayout
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent">
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="110dp"
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/recycler_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/aufgaben_vertical_size_row"
+                            app:layout_anchorGravity="bottom" />
+
+
+                    </RelativeLayout>
+
+
+                </android.support.design.widget.CoordinatorLayout>
+
+            </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/overlay"
+            >
+                <RelativeLayout
+                    android:layout_width="56dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="16dp"
                     android:layout_marginBottom="16dp"
-                    android:layout_marginTop="16dp"
-                    app:layout_anchorGravity="bottom"/>
-
-
-                </RelativeLayout>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true">
 
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/fabCamera"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="8dp"
+                        android:layout_alignParentBottom="true"
+                        app:fabSize="normal"
                         android:src="@drawable/ic_photo_camera_white_48dp"
                         app:backgroundTint="#00897B"
                         app:elevation="4dp" />
@@ -232,22 +326,25 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_gravity="right"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginTop="72dp"
+                        app:fabSize="normal"
+                        android:layout_alignParentBottom="true"
                         android:src="@drawable/ic_insert_photo_white_48dp"
                         app:backgroundTint="#607D8B"
                         app:elevation="4dp" />
 
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabAnimate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/ic_add_white_48dp"
+                        app:backgroundTint="#E91E63"
+                        app:elevation="4dp" />
 
-                </FrameLayout>
-
-            </android.support.design.widget.CoordinatorLayout>
-
-        </LinearLayout>
+            </RelativeLayout>
 
 
-    </ScrollView>
-
-
+        </RelativeLayout>
+</FrameLayout>
 </LinearLayout>

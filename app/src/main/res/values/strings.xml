@@ -7,6 +7,9 @@
         <item>Donnerstag</item>
         <item>Freitag</item>
     </string-array>
+    <string name="aufgabensize">60dp</string>
+
+    <string name="spinnerprompt">Wähle ein Kurs</string>
     <string name="auf">open</string>
     <string name="zu">closed</string>
     <string name="week_prompt">Wähle einen Wochentag</string>

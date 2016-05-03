@@ -42,7 +42,7 @@ public class ViewPagerAdapterMain extends FragmentPagerAdapter {
             case 2:
                 return new Fragment_AufgabeÜbersicht();
             case 3:
-                return new Fragment_Article(viewPager);
+                return new Fragment_Article();
         }
         return null;
     }

@@ -53,11 +53,12 @@ public class QuizController {
             @Override
             public void onSuccesss(String result) {
                 parseQuizData(result);
+                Log.d("Internet","Success!");
             }
 
             @Override
             public void onFailure(String result) {
-
+                Log.d("Internet","Failure!");
             }
         });
         atOnline.execute();

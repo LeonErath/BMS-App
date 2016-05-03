@@ -25,8 +25,7 @@
         android:adjustViewBounds="true"
         android:maxHeight="350dp"
         android:id="@+id/imageView"
-        android:layout_alignTop="@+id/recycler_view"
-        android:layout_alignStart="@+id/recycler_view" />
+       />
     <LinearLayout
         android:orientation="vertical"
         android:layout_below="@+id/imageView"
