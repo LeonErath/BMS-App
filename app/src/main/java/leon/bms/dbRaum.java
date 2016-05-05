@@ -11,7 +11,7 @@ import com.orm.SugarRecord;
  * Sie verwaltet alle Einträge der Räume und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbRaum extends SugarRecord<dbRaum> {
+public class dbRaum extends SugarRecord {
     //Datensätze des Raumes
     Boolean beamer;
     String beschreibung;

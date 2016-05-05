@@ -11,7 +11,7 @@ import com.orm.SugarRecord;
  * Sie verwaltet alle Bilder der Aufgaben und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbMediaFile extends SugarRecord<dbMediaFile> {
+public class dbMediaFile extends SugarRecord {
 
     String path;
     dbAufgabe aufgaben;

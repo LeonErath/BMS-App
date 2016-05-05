@@ -15,7 +15,7 @@ import java.util.List;
  * Sie verwaltet alle Einträge der User und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbUser extends SugarRecord<dbUser> {
+public class dbUser extends SugarRecord {
     // Datensätze der User
     public String benutzername;
     String geburtstag;
@@ -59,7 +59,6 @@ public class dbUser extends SugarRecord<dbUser> {
     }
 
     public dbUser() {
-        validData = false;
         //empty Constructor needed!
 
     }

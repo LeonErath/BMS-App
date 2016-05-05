@@ -37,8 +37,6 @@ public class dbFragen extends SugarRecord {
     dbThemenbereich themenbereich;
 
     public dbFragen() {
-        richtigCounter = 0;
-        falschCounter = 0;
         //empty Constructor needed!
     }
 

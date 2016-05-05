@@ -40,7 +40,7 @@ public class ViewPagerAdapterMain extends FragmentPagerAdapter {
             case 1:
                 return new Fragment_Stundenplan();
             case 2:
-                return new Fragment_AufgabeÜbersicht();
+                return new Fragment_AufgabeUebersicht();
             case 3:
                 return new Fragment_Article();
         }

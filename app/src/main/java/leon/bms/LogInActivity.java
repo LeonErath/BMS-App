@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
+import com.orm.SugarContext;
+
 /**
  * @LogInActivity zeigt das Fragment_Login und wird immer beim Start geladen.
  * Hier besteht zu Test Zwecken die Methode zum löschen der Datenbank
@@ -19,9 +21,8 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_log_in);
-
+    ;
     }
 
     /**
@@ -41,6 +42,7 @@ public class LogInActivity extends AppCompatActivity {
         dbAntworten.deleteAll(dbAntworten.class);
         dbKursTagConnect.deleteAll(dbKursTagConnect.class);
     }
+
 
 }
 

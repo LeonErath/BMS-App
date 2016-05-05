@@ -13,7 +13,7 @@ import java.util.Date;
  * Sie verwaltet alle Einträge der Klausuraufsicht und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbKlausuraufsicht extends SugarRecord<dbKlausuraufsicht> {
+public class dbKlausuraufsicht extends SugarRecord {
 
     //Datensätze der Klausuraufsicht
     Date fromDate;

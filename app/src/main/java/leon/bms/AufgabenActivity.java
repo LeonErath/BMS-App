@@ -3,6 +3,7 @@ package leon.bms;
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,8 +12,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -31,18 +35,24 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.pwittchen.swipe.library.Swipe;
+import com.meetic.marypopup.MaryPopup;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,7 +114,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     private ActionMode actionMode;
     File photoFile = null;
     View mView;
-
+    MaryPopup popup;
     /**
      * Automatische generierte Methode
      * Hier passiert die Magie
@@ -133,6 +143,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp);
         toolbar.setTitle("Neue Aufgabe");
+        getSupportActionBar().setTitle("Neue Aufgabe");
         /**  Wichtig: @setDisplayHosAsUpEnabled erstellt einen "Back"-Button und die Activity ist "Vor" der Activity die sie aufuruft,
          *  sodass einfach wieder "zurück" gegangen werden kann
          */
@@ -148,6 +159,19 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this, 0, false));
         recyclerView.setHasFixedSize(true);
+
+        popup = MaryPopup.with(this)
+                .cancellable(true)
+                .draggable(true)
+                .center(true)
+                .inlineMove(false)
+                .scaleDownDragging(true)
+                .shadow(false)
+                .scaleDownCloseOnDrag(true)
+                .openDuration(300)
+                .closeDuration(300)
+                .blackOverlayColor(Color.parseColor(overlayColor))
+                .backgroundColor(Color.parseColor("#00000000"));
 
 
         fabAnimation();
@@ -302,6 +326,14 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             }
         });
     }
+    @Override
+    public void onBackPressed() {
+        if(!popup.close(true)){
+            super.onBackPressed();
+        }else {
+            popup.close(true);
+        }
+    }
 
     private void reloadData(Long id) {
         // Liste mit alle ausgewählten Kursen wird rausgesucht
@@ -346,12 +378,13 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         }
     }
 
+
     private void fabAnimation() {
         // prepare FloatingActionButton for Animation
         fabCamera.setAlpha(0f);
         fabGallarie.setAlpha(0f);
-        fabCamera.animate().setDuration(0).rotation(270).translationY(-112).scaleX(0).scaleY(0).alpha(0);
-        fabGallarie.animate().setDuration(0).rotation(270).translationY(-208).scaleX(0).scaleY(0).alpha(0);
+        fabCamera.animate().setDuration(1).rotation(270).scaleX(0).scaleY(0).alpha(0);
+        fabGallarie.animate().setDuration(1).rotation(270).scaleX(0).scaleY(0).alpha(0);
         // appply Animation on OnClick
         fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate);
         fabAnimate.animate().setDuration(0).scaleX(0).scaleY(0).alpha(0).setListener(new Animator.AnimatorListener() {
@@ -819,13 +852,16 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
 
     @Override
-    public void onItemClicked(int position) {
-        if (actionMode != null) {
-            toggleSelection(position);
-        } else {
-            // neuer Intent
-        }
-        Log.d(TAG, "On photo clicked");
+    public void onItemClicked(int position, View v) {
+        String photoPath = photoAdapter.getPhoto(position);
+        Bitmap myBitmap = BitmapFactory.decodeFile(photoPath);
+        View popupImageLayout = LayoutInflater.from(this).inflate(R.layout.popup_image, null, false);
+        ImageView imageView = (ImageView) popupImageLayout.findViewById(R.id.image);
+        imageView.setImageBitmap(myBitmap);
+        popup
+                .content(popupImageLayout)
+                .from(v)
+                .show();
     }
 
     @Override

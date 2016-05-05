@@ -1,5 +1,6 @@
 package leon.bms;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -22,6 +23,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -167,7 +170,14 @@ public class MainActivity extends AppCompatActivity {
         }
         setUpBottombar();
     }
-
+    public static void setTaskBarColored(Activity context, String color) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            Window window = context.getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor(color));
+        }
+    }
     private void setUpBottombar() {
         // Create items
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Highlight", tabIcons[1], Color.parseColor("#4CAF50"));
@@ -191,13 +201,24 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setNotificationTextColor(Color.parseColor("#000000"));
         bottomNavigation.setCurrentItem(0);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(0).getColor(MainActivity.this)));
-
+        setTaskBarColored(MainActivity.this,"#388E3C");
 
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position, boolean wasSelected) {
                 viewPager.setCurrentItem(position);
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(position).getColor(MainActivity.this)));
+                switch (position){
+                    case 0:
+                        setTaskBarColored(MainActivity.this,"#388E3C");
+                        break;
+                    case 1:
+                        setTaskBarColored(MainActivity.this,"#00796B");break;
+                    case 2:
+                        setTaskBarColored(MainActivity.this,"#0288D1");break;
+                    case 3:
+                        setTaskBarColored(MainActivity.this,"#C2185B");break;
+                }
             }
         });
 

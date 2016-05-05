@@ -41,6 +41,10 @@ public class PhotoAdapter extends SelectableAdapter<PhotoAdapter.ViewHolder> {
 
     }
 
+    public String getPhoto(int position){
+        return photoList.get(position);
+    }
+
     /**
      * @param path Pfad des Photo welches hinzugefügt werden soll
      * @addPhoto methode zum hinzufügen von Photos
@@ -169,7 +173,7 @@ public class PhotoAdapter extends SelectableAdapter<PhotoAdapter.ViewHolder> {
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onItemClicked(getAdapterPosition());
+                listener.onItemClicked(getAdapterPosition(),v);
             }
         }
 
@@ -190,7 +194,7 @@ public class PhotoAdapter extends SelectableAdapter<PhotoAdapter.ViewHolder> {
          * Interface for Click Callbacks
          */
         public interface ClickListener {
-            public void onItemClicked(int position);
+            public void onItemClicked(int position, View v);
 
             public boolean onItemLongClicked(int position);
         }

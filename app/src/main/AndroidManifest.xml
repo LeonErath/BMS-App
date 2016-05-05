@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="leon.bms">
+    package="leon.bms"
+    >
     <uses-sdk tools:overrideLibrary="com.sergiocasero.revealfab"/>
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +14,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
 
     <application
+        android:debuggable="true"
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@drawable/logo_bms"
@@ -26,13 +28,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PublicClass"></activity>
 
         <meta-data
             android:name="DATABASE"
-            android:value="BMSDATENBANK2.db" />
+            android:value="HausaufgabenDatenbank2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="45" />
+            android:value="22" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />

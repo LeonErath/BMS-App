@@ -13,7 +13,7 @@ import java.util.Date;
  * Sie verwaltet alle Einträge der Termin und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbTermin extends SugarRecord<dbTermin> {
+public class dbTermin extends SugarRecord {
     //Datensätze des Termines
     Boolean beschaeftigt;
     Date date;

@@ -11,7 +11,7 @@ import com.orm.SugarRecord;
  * Sie verwaltet alle Einträge der Note und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbNote extends SugarRecord<dbNote> {
+public class dbNote extends SugarRecord {
     //Datensätze für die Note
     Double klassendurchschnitt;
     Integer punkte;

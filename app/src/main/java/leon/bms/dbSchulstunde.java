@@ -13,7 +13,7 @@ import java.util.List;
  * Sie verwaltet alle Einträge der Schulstunde und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbSchulstunde extends SugarRecord<dbSchulstunde> {
+public class dbSchulstunde extends SugarRecord {
     //Datensätze des Schulstunde
     Double dauer;
     public Integer beginnzeit;

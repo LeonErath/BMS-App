@@ -13,7 +13,7 @@ import java.util.List;
  * Sie verwaltet alle Einträge der Lehrer und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbLehrer extends SugarRecord<dbLehrer> {
+public class dbLehrer extends SugarRecord{
     //Datensätze der Lehrer
     public String titel;
     String faecher;
@@ -28,8 +28,6 @@ public class dbLehrer extends SugarRecord<dbLehrer> {
 
     public dbLehrer() {
         //empty Constructor needed!
-        titel = "";
-        name = "";
     }
 
     public dbLehrer(String titel, String faecher, String email, String kuerzel, String vorname, String name, dbKlausuraufsicht aufsicht, dbKurs kurs, dbSchulstunde schulstunde) {

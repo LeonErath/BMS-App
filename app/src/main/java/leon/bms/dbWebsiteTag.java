@@ -26,8 +26,7 @@ public class dbWebsiteTag extends SugarRecord {
 
     public dbWebsiteTag() {
         //empty Constructor needed!
-        this.vorkommen = 0;
-        this.relevanz = 0;
+
     }
 
     public dbWebsiteTag(String hinzugefuegtAm, int relevanz, String websitetag, int vorkommen, dbKurs kurs, dbUser user, leon.bms.dbKursTagConnect dbKursTagConnect) {

@@ -27,7 +27,7 @@ import java.util.List;
  * darstellen soll . Dazu verwendet es einen RecyclerView und die in der Aufgaben vorhanden Suchabfragen
  * für die Aufgaben um diese anzuzeigen.
  */
-public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAdapter.ViewHolder.ClickListener {
+public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAdapter.ViewHolder.ClickListener {
 
     // definieren des recyclcerViews
     RecyclerView recyclerViewAufgaben;
@@ -36,7 +36,7 @@ public class Fragment_AufgabeÜbersicht extends Fragment implements AufgabentAda
     private static boolean m_iAmVisible;
     private static String TAG = Fragment_Article.class.getSimpleName();
 
-    public Fragment_AufgabeÜbersicht() {
+    public Fragment_AufgabeUebersicht() {
     }
 
     @Override

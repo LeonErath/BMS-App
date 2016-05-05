@@ -15,7 +15,7 @@ import java.util.List;
  * Sie verwaltet alle Einträge der Aufgaben und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbAufgabe extends SugarRecord<dbAufgabe> {
+public class dbAufgabe extends SugarRecord {
 
     //Datensätze der Aufgabe
     String abgabeDatum;
@@ -53,9 +53,9 @@ public class dbAufgabe extends SugarRecord<dbAufgabe> {
     }
 
     public dbAufgabe() {
-        this.erledigt = false;
-        this.notizen = "";
+
     }
+
 
     public String getAbgabeDatum() {
         return abgabeDatum;

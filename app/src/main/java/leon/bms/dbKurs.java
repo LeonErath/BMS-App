@@ -17,7 +17,7 @@ import java.util.List;
  * Die Kurse Tabelle ist der Mittelpunkt der App den alles dreht sich um die Kurse. Daraus resultiert
  * auch , dass die Kurse Tabelle die größte und aktivste Tabelle ist.
  */
-public class dbKurs extends SugarRecord<dbKurs> {
+public class dbKurs extends SugarRecord {
 
     //Datensätze der Kurse
     public String name;

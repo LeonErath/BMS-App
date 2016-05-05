@@ -13,7 +13,7 @@ import java.util.Date;
  * Sie verwaltet alle Einträge der Klausur und beinhaltet Filter für die weitere
  * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
  */
-public class dbKlausur extends SugarRecord<dbKlausur> {
+public class dbKlausur extends SugarRecord {
 
     //Datensätze der Klausur
     Double dauer;
