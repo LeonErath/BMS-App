@@ -27,7 +27,7 @@ public class LogInController {
     SharedPreferences prefs;
     Context mainContext;
     // URL für den LOGIN
-    String registrationUrl = "http://app.marienschule.de/files/scripts/login.php";
+    String registrationUrl = Constants.LOGIN_URL;
 
 
     public LogInController(Context context) {

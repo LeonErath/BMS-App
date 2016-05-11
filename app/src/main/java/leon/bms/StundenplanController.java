@@ -111,7 +111,7 @@ public class StundenplanController {
      */
     public void checkUpdate() {
         // WICHTIGE Url für die Anfrage an den Server
-        String Url = "http://app.marienschule.de/files/scripts/getAllDataN.php";
+        String Url = Constants.GET_ALL_DATA_URL;
         LogInController logInController = new LogInController(mainContext);
         // parsed Datum
         Calendar calendar = Calendar.getInstance();

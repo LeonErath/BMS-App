@@ -109,7 +109,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
 
     public void getNews() {
         // URL für die Server Anfrage
-        String Url = "http://app.marienschule.de/files/scripts/nachrichten.php";
+        String Url = Constants.NACHRICHTEN_URL;
         Uri.Builder builder = new Uri.Builder()
                 .appendQueryParameter("username", new dbUser().getUser().benutzername)
                 .appendQueryParameter("pw", new LogInController(getActivity()).getPass())

@@ -68,6 +68,7 @@ public class Fragment_TabLogin extends AbstractStep {
     @Override
     public boolean nextIf() {
         if (i== 1) {
+            Log.d(TAG,"Try to login...");
             User = user.getText().toString();
             Pass = pass.getText().toString();
             Stufe = stufe.getText().toString();
@@ -112,6 +113,8 @@ public class Fragment_TabLogin extends AbstractStep {
                 } else {
                     Log.d(TAG, "neuer User konnte nicht erstellt werden");
                 }
+            }else {
+                Log.d(TAG,"Login fehlgeschlagen (Error)");
             }
         }
         return i > 1;

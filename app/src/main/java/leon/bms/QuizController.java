@@ -33,7 +33,7 @@ public class QuizController {
     Context context;
     Date now;
     // URL für die Daten des Quizes
-    private static String quizUrl = "http://app.marienschule.de/files/scripts/getQuizData.php";
+    private static String quizUrl = Constants.QUIZ_URL;
 
     public QuizController(Context context) {
         this.context = context;

@@ -3,7 +3,6 @@ package leon.bms;
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -16,7 +15,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -35,16 +33,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -62,6 +56,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * @AufgabenActivity ist für die erstellung von Aufgaben zuständig
@@ -99,7 +95,8 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     // @picturePaths speichert alle Pfade für die Bilder
     List<String> picturePaths = new ArrayList<>();
     // Wichtiger Code für das machen von Fotos
-    static int RESULT_LOAD_IMG = 1;
+    static int CAMERA_CODE = 1;
+    static int GALLARY_CODE = 2;
     // @aufgabeLoad wichtig für das ändern von Aufaben
     dbAufgabe aufgabeLoad = null;
     // @photoAdapter ist ein Adapter für den recyclerView für das anzeigen von den Bildern
@@ -115,6 +112,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     File photoFile = null;
     View mView;
     MaryPopup popup;
+
     /**
      * Automatische generierte Methode
      * Hier passiert die Magie
@@ -164,10 +162,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 .cancellable(true)
                 .draggable(true)
                 .center(true)
-                .inlineMove(false)
+                .inlineMove(true)
                 .scaleDownDragging(true)
                 .shadow(false)
                 .scaleDownCloseOnDrag(true)
+                .fadeOutDragging(true)
                 .openDuration(300)
                 .closeDuration(300)
                 .blackOverlayColor(Color.parseColor(overlayColor))
@@ -198,7 +197,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                         // Continue only if the File was successfully created
                         if (photoFile != null) {
                             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                            startActivityForResult(takePictureIntent, RESULT_LOAD_IMG);
+                            startActivityForResult(takePictureIntent, CAMERA_CODE);
                         }
                     }
 
@@ -218,7 +217,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                     // Create intent to Open Image applications like Gallery, Google Photos
                     Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     // Start the Intent
-                    startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
+                    startActivityForResult(galleryIntent, GALLARY_CODE);
 
                 }
             }
@@ -326,11 +325,12 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             }
         });
     }
+
     @Override
     public void onBackPressed() {
-        if(!popup.close(true)){
+        if (!popup.close(true)) {
             super.onBackPressed();
-        }else {
+        } else {
             popup.close(true);
         }
     }
@@ -400,7 +400,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                Log.d(TAG,"Animation got canceled");
+                Log.d(TAG, "Animation got canceled");
             }
 
             @Override
@@ -452,7 +452,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                Log.d(TAG,"Animation got canceled");
+                Log.d(TAG, "Animation got canceled");
             }
 
             @Override
@@ -493,7 +493,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                Log.d(TAG,"Animation got canceled");
+                Log.d(TAG, "Animation got canceled");
             }
 
             @Override
@@ -544,7 +544,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 ArrayList<String> paths = savedInstanceState.getStringArrayList("paths");
                 photoAdapter.newData(paths);
             }
-                fabAnimation();
+            fabAnimation();
 
         }
         super.onRestoreInstanceState(savedInstanceState);
@@ -558,12 +558,14 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (resultCode == RESULT_OK) {
-            if (requestCode == RESULT_LOAD_IMG) {
+            if (requestCode == CAMERA_CODE) {
                 if (photoFile != null) {
                     photoAdapter.addPhoto(photoFile.getAbsolutePath());
                     photoFile = null;
 
                 }
+            }
+            if (requestCode == GALLARY_CODE){
                 if (data != null) {
                     // parse the data to get the path
                     Uri selectedImage = data.getData();
@@ -581,6 +583,42 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private Bitmap getScaledBitmap(String picturePath, int width, int height) {
+        BitmapFactory.Options sizeOptions = new BitmapFactory.Options();
+        sizeOptions.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(picturePath, sizeOptions);
+
+        int inSampleSize = calculateInSampleSize(sizeOptions, width, height);
+
+        sizeOptions.inJustDecodeBounds = false;
+        sizeOptions.inSampleSize = inSampleSize;
+
+        return BitmapFactory.decodeFile(picturePath, sizeOptions);
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and
+            // width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will
+            // guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
+        }
+
+        return inSampleSize;
     }
 
     /**
@@ -854,10 +892,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     @Override
     public void onItemClicked(int position, View v) {
         String photoPath = photoAdapter.getPhoto(position);
-        Bitmap myBitmap = BitmapFactory.decodeFile(photoPath);
+        Bitmap myBitmap = getScaledBitmap(photoPath, 800, 800);
         View popupImageLayout = LayoutInflater.from(this).inflate(R.layout.popup_image, null, false);
         ImageView imageView = (ImageView) popupImageLayout.findViewById(R.id.image);
         imageView.setImageBitmap(myBitmap);
+        PhotoViewAttacher mAttacher = new PhotoViewAttacher(imageView);
         popup
                 .content(popupImageLayout)
                 .from(v)
