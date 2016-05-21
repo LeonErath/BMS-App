@@ -2,6 +2,8 @@ package leon.bms.database;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 /**
  * Created by Leon E on 19.11.2015.
  */
@@ -13,6 +15,7 @@ import com.orm.SugarRecord;
  */
 public class dbRaum extends SugarRecord {
     //Datensätze des Raumes
+    public int serverid;
     public Boolean beamer;
     public String beschreibung;
     public Boolean computer;
@@ -29,8 +32,8 @@ public class dbRaum extends SugarRecord {
         //empty Contructor needed!
     }
 
-    public dbRaum(Boolean beamer, String beschreibung, Boolean computer, String funktion, Integer kapazitaet, Boolean lautsprecher, String nummer) {
-
+    public dbRaum(int serverId, Boolean beamer, String beschreibung, Boolean computer, String funktion, Integer kapazitaet, Boolean lautsprecher, String nummer, dbKlausur klausur, dbSchulstunde stunden, dbVertretung vertretung) {
+        this.serverid = serverId;
         this.beamer = beamer;
         this.beschreibung = beschreibung;
         this.computer = computer;
@@ -38,6 +41,41 @@ public class dbRaum extends SugarRecord {
         this.kapazitaet = kapazitaet;
         this.lautsprecher = lautsprecher;
         this.nummer = nummer;
+        this.klausur = klausur;
+        this.stunden = stunden;
+        this.vertretung = vertretung;
+    }
+
+    public int getServerid() {
+        return serverid;
+    }
+
+    public void setServerid(int serverid) {
+        this.serverid = serverid;
+    }
+
+    public dbKlausur getKlausur() {
+        return klausur;
+    }
+
+    public void setKlausur(dbKlausur klausur) {
+        this.klausur = klausur;
+    }
+
+    public dbSchulstunde getStunden() {
+        return stunden;
+    }
+
+    public void setStunden(dbSchulstunde stunden) {
+        this.stunden = stunden;
+    }
+
+    public dbVertretung getVertretung() {
+        return vertretung;
+    }
+
+    public void setVertretung(dbVertretung vertretung) {
+        this.vertretung = vertretung;
     }
 
     public Boolean getBeamer() {
@@ -96,5 +134,16 @@ public class dbRaum extends SugarRecord {
         this.nummer = nummer;
     }
 
+    public dbRaum getRaumWithId(int id) {
+        List<dbRaum> dbRaumList = dbRaum.find(dbRaum.class, "serverid = ?", String.valueOf(id));
+        if (dbRaumList != null && dbRaumList.size()== 1){
+            return dbRaumList.get(0);
+        }
+        return null;
+    }
 
+    public int countRaum() {
+        List<dbRaum> dbRaumList = dbRaum.listAll(dbRaum.class);
+        return dbRaumList.size();
+    }
 }

@@ -21,6 +21,8 @@ public class dbSchulstunde extends SugarRecord {
     public String zuletztAktualisiert;
     public String kursID;
     public Integer wochentag;
+    public int blocknummer;
+    public int serverId;
     // defining a relationship
     public dbKurs kurs;
     public dbLehrer lehrer;
@@ -31,18 +33,22 @@ public class dbSchulstunde extends SugarRecord {
         // empty Constructor needed!
     }
 
-    public dbSchulstunde(Double dauer, Integer beginnzeit, Integer endZeit, String zuletztAktualisiert, String kursID, Integer wochentag, dbKurs kurs, dbLehrer lehrer, dbVertretung vertretung, dbRaum raum) {
+    public dbSchulstunde(Double dauer, Integer beginnzeit, Integer endZeit, String zuletztAktualisiert, String kursID, Integer wochentag, int blocknummer, int serverId, dbKurs kurs, dbLehrer lehrer, dbVertretung vertretung, dbRaum raum) {
         this.dauer = dauer;
         this.beginnzeit = beginnzeit;
         this.endZeit = endZeit;
         this.zuletztAktualisiert = zuletztAktualisiert;
         this.kursID = kursID;
         this.wochentag = wochentag;
+        this.blocknummer = blocknummer;
+        this.serverId = serverId;
         this.kurs = kurs;
         this.lehrer = lehrer;
         this.vertretung = vertretung;
         this.raum = raum;
     }
+
+
 
     public String getZuletztAktualisiert() {
         return zuletztAktualisiert;

@@ -20,6 +20,7 @@ public class dbLehrer extends SugarRecord{
     public String email;
     public String kuerzel;
     public String Vorname;
+    public int serverid;
     public String name;
     // defining a relationship
     public dbKlausuraufsicht aufsicht;
@@ -30,29 +31,27 @@ public class dbLehrer extends SugarRecord{
         //empty Constructor needed!
     }
 
-    public dbLehrer(String titel, String faecher, String email, String kuerzel, String vorname, String name, dbKlausuraufsicht aufsicht, dbKurs kurs, dbSchulstunde schulstunde) {
+    public dbLehrer(String titel, String faecher, String email, String kuerzel, String vorname, int serverId, String name, dbKlausuraufsicht aufsicht, dbKurs kurs, dbSchulstunde schulstunde) {
         this.titel = titel;
         this.faecher = faecher;
         this.email = email;
         this.kuerzel = kuerzel;
         Vorname = vorname;
+        this.serverid = serverId;
         this.name = name;
         this.aufsicht = aufsicht;
         this.kurs = kurs;
         this.schulstunde = schulstunde;
     }
 
-    /**
-     * @param suchKategorie ist die Kategorie mit der man den Lehrer raussuchen möchte
-     * @param suchWort      ist das Wort womit der Lehrer in der entsprechenden Kategorie gepseichert ist
-     * @return gibt den gesucht Lehrer zurück
-     * @getLehrer abstrakte Methode um einen Lehrer nach bestimmen Kategorien rauszusuchen
-     */
-    public dbLehrer getLehrer(String suchKategorie, String suchWort) {
-        List<dbLehrer> lehrer = dbLehrer.find(dbLehrer.class, suchKategorie + " = ?", suchWort);
-        dbLehrer lehrer1 = lehrer.get(0);
-        return lehrer1;
+    public int getServerId() {
+        return serverid;
     }
+
+    public void setServerId(int serverId) {
+        this.serverid = serverId;
+    }
+
 
     public String getTitel() {
         return titel;
@@ -134,6 +133,24 @@ public class dbLehrer extends SugarRecord{
         return dbLehrerList.get(0);
     }
 
+    public dbLehrer getLehereWithId(int id) {
+        List<dbLehrer> dbLehrerList = dbLehrer.find(dbLehrer.class, "serverid = ?", String.valueOf(id));
+        if (dbLehrerList != null && dbLehrerList.size()== 1){
+            return dbLehrerList.get(0);
+        }
+       return null;
+    }
+    /**
+     * @param suchKategorie ist die Kategorie mit der man den Lehrer raussuchen möchte
+     * @param suchWort      ist das Wort womit der Lehrer in der entsprechenden Kategorie gepseichert ist
+     * @return gibt den gesucht Lehrer zurück
+     * @getLehrer abstrakte Methode um einen Lehrer nach bestimmen Kategorien rauszusuchen
+     */
+    public dbLehrer getLehrer(String suchKategorie, String suchWort) {
+        List<dbLehrer> lehrer = dbLehrer.find(dbLehrer.class, suchKategorie + " = ?", suchWort);
+        dbLehrer lehrer1 = lehrer.get(0);
+        return lehrer1;
+    }
     /**
      * @sucheLehrer gibt die Anzahl alle Lehrer zurück
      */

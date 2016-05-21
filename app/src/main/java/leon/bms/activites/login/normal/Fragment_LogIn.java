@@ -130,11 +130,22 @@ public class Fragment_LogIn extends Fragment {
                                         // nächsten Login eingeben muss
                                         logInController.savePass(Pass);
                                         StundenplanController stundenplanController = new StundenplanController(getActivity());
+                                        stundenplanController.setUpdateListener(new StundenplanController.OnUpdateListener() {
+                                            @Override
+                                            public void onSuccesss() {
+                                                // danach wird der User weitergeleitet auf die Kursauswahl
+                                                Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
+                                                startActivity(intent);
+                                            }
+
+                                            @Override
+                                            public void onFailure() {
+                                                Toast.makeText(getActivity(), "Es ist ein Fehler aufgetreten", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
                                         // es wird geguckt ob neue Updates vorhanden sind
                                         stundenplanController.checkUpdate();
-                                        // danach wird der User weitergeleitet auf die Kursauswahl
-                                        Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
-                                        startActivity(intent);
+
 
                                     } else {
                                         Log.d(TAG, "neuer User konnte nicht erstellt werden");
@@ -151,10 +162,21 @@ public class Fragment_LogIn extends Fragment {
                                 logInController.savePass(Pass);
                                 StundenplanController stundenplanController = new StundenplanController(getActivity());
                                 // es wird geguckt ob neue Updates vorhanden sind
+                                stundenplanController.setUpdateListener(new StundenplanController.OnUpdateListener() {
+                                    @Override
+                                    public void onSuccesss() {
+                                        // danach wird der User weitergeleitet auf die Kursauswahl
+                                        Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onFailure() {
+                                        Toast.makeText(getActivity(), "Es ist ein Fehler aufgetreten", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                // es wird geguckt ob neue Updates vorhanden sind
                                 stundenplanController.checkUpdate();
-                                // danach wird der User weitergeleitet auf die Kursauswahl
-                                Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
-                                startActivity(intent);
 
                             } else {
                                 Log.d(TAG, "neuer User konnte nicht erstellt werden");
@@ -196,9 +218,20 @@ public class Fragment_LogIn extends Fragment {
                 } else {
                     Log.d(TAG, "ValidData = false -> KursauswahlActivity");
                     StundenplanController stundenplanController = new StundenplanController(getActivity());
+                    stundenplanController.setUpdateListener(new StundenplanController.OnUpdateListener() {
+                        @Override
+                        public void onSuccesss() {
+                            // danach wird der User weitergeleitet auf die Kursauswahl
+                            Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
+                            startActivity(intent);
+                        }
+
+                        @Override
+                        public void onFailure() {
+                            Toast.makeText(getActivity(), "Es ist ein Fehler aufgetreten", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     stundenplanController.checkUpdate();
-                    Intent intent = new Intent(getActivity(), KursauswahlActivity.class);
-                    startActivity(intent);
                 }
             } else {
                 Log.d(TAG, "User hat sich vorher abgemeldet");

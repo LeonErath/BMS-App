@@ -2,7 +2,6 @@ package leon.bms.controller;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -12,12 +11,14 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
 
 import leon.bms.Constants;
 import leon.bms.atOnline;
+import leon.bms.database.dbFach;
 import leon.bms.database.dbKurs;
+import leon.bms.database.dbKursart;
 import leon.bms.database.dbLehrer;
+import leon.bms.database.dbRaum;
 import leon.bms.database.dbSchulstunde;
 
 /**
@@ -42,53 +43,6 @@ public class StundenplanController {
     }
 
 
-    // Methode nur für Testzwecke
-    public void erstelleStundenplan(String result) {
-        try {
-
-            JSONObject jsonObjectAll = new JSONObject(result);
-            String aktualisierungsDatum = jsonObjectAll.optString("zuletzt Aktualisiert");
-            //Array mit allen Stundenplan Informationen
-            JSONArray jsonArrayStundenplan = jsonObjectAll.getJSONArray("stundenPlan");
-            //Array sortieren
-
-            for (int i = 0; i < jsonArrayStundenplan.length(); i++) {
-                JSONObject jsonObject = jsonArrayStundenplan.getJSONObject(i);
-                dbSchulstunde schulstunde = new dbSchulstunde();
-                String LKZ = jsonObject.optString("LKZ");
-                String KURSID = jsonObject.optString("KURSID");
-                Integer WOCHENTAG = jsonObject.optInt("WOCHENTAG");
-                Integer STUNDE = jsonObject.optInt("STUNDE");
-                Integer BN = jsonObject.optInt("BN");
-                String RAUM = jsonObject.optString("RAUM");
-
-                dbLehrer lehrer1 = new dbLehrer();
-                if (!LKZ.equals("")) {
-                    lehrer1 = lehrer1.getLehrer("kuerzel", LKZ);
-                } else {
-
-                }
-                schulstunde.lehrer = lehrer1;
-                //List<dbRaum> raum = dbRaum.find(dbRaum.class, "nummer = ?", RAUM);
-                //dbRaum raum1 = raum.get(0);
-
-                schulstunde.zuletztAktualisiert = aktualisierungsDatum;
-                schulstunde.wochentag = WOCHENTAG;
-                schulstunde.beginnzeit = STUNDE;
-                schulstunde.kursID = KURSID;
-
-                schulstunde.raum.nummer = RAUM;
-                //schulstunde.raum = raum1;
-                schulstunde.save();
-
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     /**
      * @checkUpdate macht eine Server Anfrage mit dem Datum des letzten Login des Users und überprüft
      * ob sich Daten verändert haben. Alle Daten werden in einer bestimmten Reihenfolge in die Datenbank
@@ -107,9 +61,9 @@ public class StundenplanController {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String date = calendar.get(Calendar.DAY_OF_MONTH)+"."+calendar.get(Calendar.MONTH)+"."+calendar.get(Calendar.YEAR)+" "+calendar.get(Calendar.HOUR)+":"+calendar.get(Calendar.MINUTE);
+        String date = calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
 
-        String params = "pw=" + logInController.getPass() + "&username=" + logInController.getUsername(); //TODO Datum später hinzufügen
+        String params = "username=erath&password=Ardaturan99"; //TODO richtige Paramerter hiinzufügen
         Log.d("STUNDENPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);
@@ -117,19 +71,20 @@ public class StundenplanController {
 
             @Override
             public void onSuccesss(String result2) {
+                Log.d("checkUpdate",result2);
                 parseData(result2);
             }
 
             @Override
             public void onFailure(String result2) {
-                onFailure(result2);
+                listener.onFailure();
             }
         });
         atOnline2.execute();
     }
-    public void parseData(String result){
-        Log.d("RESULT", result);
-        if (!result.equals("")) {
+
+
+    public void parseData(String result) {
 
             // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
             // in folgeneder Reihenfolge:
@@ -145,8 +100,8 @@ public class StundenplanController {
             if (new dbLehrer().countLehrer() == 0) {
                 try {
                     JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONObject leherliste = jsonObjectAll.getJSONObject("lehrerliste");
-                    erstelleLehrerListe(String.valueOf(leherliste));
+                    JSONObject leherliste = jsonObjectAll.getJSONObject("teacher_data");
+                    boolean leherercheck = saveLehrerliste(String.valueOf(leherliste));
                     Log.d("leherliste", String.valueOf(leherliste));
 
 
@@ -154,16 +109,27 @@ public class StundenplanController {
                     e.printStackTrace();
                 }
             }
+
+            if (new dbRaum().countRaum() == 0) {
+                try {
+                    JSONObject jsonObjectAll = new JSONObject(result);
+                    JSONArray raumliste = jsonObjectAll.getJSONArray("room_data");
+                    boolean roomcheck = saveRaumliste(raumliste);
+                    Log.d("raum", String.valueOf(raumliste));
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
             //Hier die AGs und Projektkurse
             if (new dbKurs().countKurse() == 0) {
                 try {
                     JSONObject jsonObjectAll = new JSONObject(result);
                     JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
 
-                    KurseController kurseController = new KurseController(mainContext);
-                    Log.d("pkuags", String.valueOf(pkuags));
-                    kurseController.erstelltPKundAGs(String.valueOf(pkuags));
-                    Log.d("COUNT", new dbKurs().countKurse() + " ");
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -171,15 +137,9 @@ public class StundenplanController {
                 //Hier der Stundenplan und die Kurse
                 try {
                     JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONObject stundenplan = jsonObjectAll.getJSONObject("timetable");
+                    JSONArray stundenplan = jsonObjectAll.getJSONArray("timetable_data");
 
-                    erstelleStundenplan(String.valueOf(stundenplan));
-                    Log.d("STUNDENPLAN", "Stundenplan wurde erstellt.");
-
-                    KurseController kurseController = new KurseController(mainContext);
-                    kurseController.erstelltKurse();
-                    Log.d("KURSE", "Kurse wurden erstellt.");
-                    kurseController.connectKursStunden();
+                    erstelleStundenplan(stundenplan);
                     Log.d("stundenplan", String.valueOf(stundenplan));
 
 
@@ -189,38 +149,45 @@ public class StundenplanController {
             }
 
 
-
-
             listener.onSuccesss();
-        }else {
-            // wenn es keine Results gibt
-            listener.onFailure();
+    }
+
+    private boolean saveRaumliste(JSONArray jsonArrayRaum) {
+        try {
+            for (int i = 0; i < jsonArrayRaum.length(); i++) {
+                JSONObject jsonObjectRaum = jsonArrayRaum.getJSONObject(i);
+                dbRaum raum = new dbRaum();
+                raum.serverid = jsonObjectRaum.getInt("id");
+                raum.nummer = jsonObjectRaum.getString("name");
+                raum.save();
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+
+        return true;
     }
 
     /**
      * @param result JSON Daten des Server für die Lehrer
      * @erstelltLehrerListe parsed die Daten für die Lehrer in die Datenbank
      */
-    public void erstelleLehrerListe(String result) {
+    public boolean saveLehrerliste(String result) {
         try {
             JSONObject jsonObjectLehrerliste = new JSONObject(result);
             //JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject("zuletzt Aktualisiert");
-            JSONArray jsonArrayLehrer = jsonObjectLehrerliste.getJSONArray("lehrerliste");
+            JSONArray jsonArrayLehrer = jsonObjectLehrerliste.getJSONArray("teachers");
             for (int i = 0; i < jsonArrayLehrer.length(); i++) {
                 dbLehrer lehrer = new dbLehrer();
                 JSONObject lehrerDaten = jsonArrayLehrer.getJSONObject(i);
-                lehrer.name = lehrerDaten.optString("NAME");
-                lehrer.email = lehrerDaten.optString("MAIL");
-                lehrer.titel = lehrerDaten.optString("TITEL");
-                lehrer.kuerzel = lehrerDaten.optString("KUERZEL");
-                lehrer.Vorname = lehrerDaten.optString("VORNAME");
-                JSONArray lehrerFaecher = lehrerDaten.getJSONArray("faecher");
-                String faecher = "";
-                for (int k = 0; k < lehrerFaecher.length(); k++) {
-                    faecher += lehrerFaecher.getString(k) + ",";
-                }
-                lehrer.faecher = faecher;
+                lehrer.serverid = lehrerDaten.optInt("id");
+                lehrer.name = lehrerDaten.optString("last_name");
+                lehrer.email = lehrerDaten.optString("email");
+                lehrer.titel = lehrerDaten.optString("title");
+                lehrer.kuerzel = lehrerDaten.optString("abbreviation");
+                lehrer.Vorname = lehrerDaten.optString("first_name");
                 lehrer.save();
 
 
@@ -229,13 +196,90 @@ public class StundenplanController {
 
         } catch (JSONException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
+
+    }
+
+    // Methode nur für Testzwecke
+    public void erstelleStundenplan(JSONArray timetablearray) {
+        try {
+
+            for (int i = 0; i < timetablearray.length(); i++) {
+                JSONObject jsonObject = timetablearray.getJSONObject(i);
+                dbFach fach = new dbFach();
+                if (jsonObject.isNull("id")==false){
+                    fach.serverId = jsonObject.optInt("id");
+                }
+               if (jsonObject.isNull("abbreviation")){
+                   fach.kuerzel = jsonObject.optString("abbreviation");
+               }
+                if (jsonObject.isNull("description")){
+                    fach.name = jsonObject.optString("description");
+                }
+                fach.save();
+                JSONArray kurstyparray = jsonObject.getJSONArray("course_types");
+                for (int k = 0; k < kurstyparray.length(); k++) {
+                    JSONObject jsonObjectKursart = kurstyparray.getJSONObject(k);
+                    dbKursart kursart = new dbKursart();
+                    //kursart.gloablId = jsonObjectKursart.getInt("global_id"); //TODO global id ist im moment immer null
+                    kursart.abkuerzung = jsonObjectKursart.getString("abbreviation");
+                    kursart.name = jsonObjectKursart.getString("name");
+                    kursart.save();
+                    JSONArray jsonArrayKurse = jsonObjectKursart.getJSONArray("courses");
+                    for (int l = 0; l < jsonArrayKurse.length(); l++) {
+                        JSONObject jsonObjectKurse = jsonArrayKurse.getJSONObject(l);
+                        dbKurs kurs = new dbKurs();
+                        kurs.serverId = jsonObjectKurse.getInt("int_id");
+                        kurs.untisId = jsonObjectKurse.getString("id");
+                        kurs.name = jsonObjectKurse.getString("name");
+                        int lehrerid = jsonObjectKurse.getInt("teacher_id");
+                        if (new dbLehrer().getLehereWithId(lehrerid) != null) {
+                            dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
+                            kurs.lehrer = lehrer;
+                        } else {
+                            Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                        }
+                        kurs.kursart = kursart;
+                        kurs.fach = fach;
+                        kurs.save();
+
+                        JSONArray jsonArraySchulstunde = jsonObjectKurse.getJSONArray("lessons");
+                        for (int m = 0; m < jsonArraySchulstunde.length(); m++) {
+                            JSONObject jsonObjectSchulstunde = jsonArraySchulstunde.getJSONObject(m);
+                            dbSchulstunde schulstunde = new dbSchulstunde();
+                            schulstunde.beginnzeit = jsonObjectSchulstunde.getInt("lesson");
+                            schulstunde.wochentag = jsonObjectSchulstunde.getInt("day");
+                            schulstunde.blocknummer = jsonObjectSchulstunde.getInt("block_number");
+                            schulstunde.serverId = jsonObjectSchulstunde.getInt("lesson_id");
+                            int roomid = jsonObjectSchulstunde.getInt("room_id");
+                            if (new dbRaum().getRaumWithId(roomid) != null) {
+                                dbRaum raum = new dbRaum().getRaumWithId(roomid);
+                                schulstunde.raum = raum;
+                            } else {
+                                Log.d("erstelleStundenplan", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
+                            }
+                            schulstunde.kurs = kurs;
+                            schulstunde.save();
+                        }
 
 
+                    }
+                }
+
+
+            }
+            Log.d("erstelleStundenplan", "Success");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public interface OnUpdateListener {
         public void onSuccesss();
+
         public void onFailure();
     }
 
