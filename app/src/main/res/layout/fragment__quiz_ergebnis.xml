@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="leon.bms.Fragment_QuizFrage">
+    tools:context=".activites.quiz.Fragment_QuizFrage">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:serverid="@+serverid/containerLayout"
+            android:id="@+id/containerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="30dp"
@@ -40,7 +40,7 @@
 
 
                         <in.raveesh.customtype.TextView
-                            android:serverid="@+serverid/textViewFrageID"
+                            android:id="@+id/textViewFrageID"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -63,7 +63,7 @@
                     </android.support.design.widget.CoordinatorLayout>
 
                     <ImageView
-                        android:serverid="@+serverid/imageViewCancel"
+                        android:id="@+id/imageViewCancel"
                         android:layout_width="0dp"
                         android:layout_height="56dp"
                         android:layout_marginTop="8dp"
@@ -81,7 +81,7 @@
 
 
                     <TextView
-                    android:serverid="@+serverid/textViewName"
+                    android:id="@+id/textViewName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -90,7 +90,7 @@
                     android:textSize="16dp"
                     />
                     <TextView
-                        android:serverid="@+serverid/textViewStufe"
+                        android:id="@+id/textViewStufe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -99,7 +99,7 @@
                         android:textSize="16dp"
                         />
                     <TextView
-                        android:serverid="@+serverid/textViewThemenbereich"
+                        android:id="@+id/textViewThemenbereich"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -108,7 +108,7 @@
                         android:textSize="16dp"
                         />
                     <TextView
-                        android:serverid="@+serverid/textViewFrageRichtig"
+                        android:id="@+id/textViewFrageRichtig"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -118,7 +118,7 @@
                         android:textSize="16dp"
                         />
                     <TextView
-                        android:serverid="@+serverid/textViewFrageFalsch"
+                        android:id="@+id/textViewFrageFalsch"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -143,7 +143,7 @@
                 android:layout_height="wrap_content">
                 <in.raveesh.customtype.TextView
                     android:layout_marginLeft="16dp"
-                    android:serverid="@+serverid/textViewFragen"
+                    android:id="@+id/textViewFragen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -164,7 +164,7 @@
             </android.support.design.widget.CoordinatorLayout>
 
                 <android.support.v7.widget.RecyclerView
-                    android:serverid="@+serverid/recycler_view"
+                    android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

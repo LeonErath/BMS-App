@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Gebe hier deinen Benutzername und dein Passwort ein."
-            android:serverid="@+serverid/textView"
+            android:id="@+id/textView"
             android:layout_alignParentStart="true"
             android:textAlignment="center"
             android:textColor="#000" />
@@ -23,9 +23,9 @@
         <EditText
             android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:serverid="@+serverid/editText"
+        android:id="@+id/editText"
         android:hint="Benutzername"
-            android:layout_below="@+serverid/textView"
+            android:layout_below="@+id/textView"
             android:layout_alignParentStart="true"
             android:layout_marginTop="100dp" />
 
@@ -33,9 +33,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:serverid="@+serverid/editText2"
+        android:id="@+id/editText2"
         android:hint="Passwort"
-        android:layout_below="@+serverid/editText"
+        android:layout_below="@+id/editText"
         android:layout_alignParentLeft="true" />
 
         <Button
@@ -43,7 +43,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="Log In"
-            android:serverid="@+serverid/LogIn"
+            android:id="@+id/LogIn"
             android:background="@drawable/custombutton"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
@@ -52,10 +52,10 @@
         <EditText
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:serverid="@+serverid/editText3"
+            android:id="@+id/editText3"
             android:hint="Stufe"
             android:layout_alignParentStart="true"
-            android:layout_below="@+serverid/editText2" />
+            android:layout_below="@+id/editText2" />
 
 
     </RelativeLayout>

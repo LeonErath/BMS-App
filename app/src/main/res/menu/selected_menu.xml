@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:serverid="@+serverid/menu_info"
+        android:id="@+id/menu_info"
         android:icon="@drawable/ic_info_outline_white_48dp"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
         android:title="Info" />
     <item
-        android:serverid="@+serverid/menu_finnish"
+        android:id="@+id/menu_finnish"
         android:icon="@drawable/ic_done_white_48dp"
         android:orderInCategory="2"
         app:showAsAction="always"

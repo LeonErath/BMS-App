@@ -2,7 +2,7 @@
 
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:serverid="@+serverid/cardView"
+    android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:foreground="?android:attr/selectableItemBackground"
@@ -27,7 +27,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:serverid="@+serverid/textViewWeek"
+                    android:id="@+id/textViewWeek"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hier der Wochentag"
@@ -35,7 +35,7 @@
                     android:textColor="#000000" />
 
                 <TextView
-                    android:serverid="@+serverid/textViewZeit"
+                    android:id="@+id/textViewZeit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hier die Zeit"
@@ -44,7 +44,7 @@
             </LinearLayout>
 
             <TextView
-                android:serverid="@+serverid/textViewRaum"
+                android:id="@+id/textViewRaum"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"

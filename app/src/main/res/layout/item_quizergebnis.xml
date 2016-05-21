@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:cardCornerRadius="0dp"
     android:foreground="?android:attr/selectableItemBackground"
-    android:serverid="@+serverid/container"
+    android:id="@+id/container"
     android:background="#fff">
     <LinearLayout
         android:layout_margin="8dp"
@@ -26,14 +26,14 @@
         android:layout_marginRight="32dp"
         android:text="Hier kommt die Frage hin"
         android:textColor="#fff"
-        android:serverid="@+serverid/textViewFrage" />
+        android:id="@+id/textViewFrage" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Hier die Frage ID"
-        android:serverid="@+serverid/textViewFrageID" />
+        android:id="@+id/textViewFrageID" />
 
     </LinearLayout>
     <LinearLayout
@@ -45,7 +45,7 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:serverid="@+serverid/imageViewIcon"
+            android:id="@+id/imageViewIcon"
             android:layout_width="fill_parent"
             android:gravity="center_vertical"
             android:layout_gravity="center"

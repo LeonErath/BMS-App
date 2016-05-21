@@ -21,14 +21,14 @@
           android:layout_margin="2dp"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:serverid="@+serverid/imageViewPhoto"/>
+          android:id="@+id/imageViewPhoto"/>
 
 
 
 
     </RelativeLayout>
     <View
-        android:serverid="@+serverid/selected_overlay"
+        android:id="@+id/selected_overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#88545454"

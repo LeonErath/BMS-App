@@ -1,9 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="leon.bms.AufgabenActivity">
+    tools:context=".activites.aufgabe.AufgabenActivity">
     <item
-        android:serverid="@+serverid/menu_finnish"
+        android:id="@+id/menu_finnish"
         android:icon="@drawable/ic_done_white_48dp"
         android:orderInCategory="1"
         app:showAsAction="always"

@@ -4,25 +4,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".KursauswahlActivity">
+    tools:context=".activites.login.normal.KursauswahlActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:serverid="@+serverid/AppBarLayout"
+        android:id="@+id/AppBarLayout"
         android:theme="@style/AppTheme.AppBarOverlay">
     <android.support.v7.widget.Toolbar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:serverid="@+serverid/toolbar"
+        android:id="@+id/toolbar"
         android:background="@color/colorPrimary"
 
         />
     </android.support.design.widget.AppBarLayout>
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+serverid/AppBarLayout"
-        android:serverid="@+serverid/recycler_view"
+        android:layout_below="@+id/AppBarLayout"
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

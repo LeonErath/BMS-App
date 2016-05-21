@@ -6,7 +6,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.AufgabenActivity"/>
+        className = "leon.bms.activites.aufgabe.AufgabenActivity"/>
       <point      
         x = "2012"      
         y = "-79"/>
@@ -14,7 +14,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.WebsiteArticleActivity"/>
+        className = "leon.bms.activites.website.WebsiteArticleActivity"/>
       <point      
         x = "3673"      
         y = "101"/>
@@ -22,7 +22,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.LogInActivity"/>
+        className = "leon.bms.activites.login.normal.LogInActivity"/>
       <point      
         x = "252"      
         y = "1624"/>
@@ -30,7 +30,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.IntroductionActivity"/>
+        className = "leon.bms.activites.login.first.IntroductionActivity"/>
       <point      
         x = "633"      
         y = "21"/>
@@ -38,7 +38,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.KursauswahlActivity"/>
+        className = "leon.bms.activites.login.normal.KursauswahlActivity"/>
       <point      
         x = "4754"      
         y = "2182"/>
@@ -46,7 +46,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "leon.bms.MainActivity"/>
+        className = "leon.bms.activites.main.MainActivity"/>
       <point      
         x = "2571"      
         y = "2166"/>

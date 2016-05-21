@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment_QuizStart">
+    tools:context=".activites.quiz.Fragment_QuizStart">
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
@@ -15,7 +15,7 @@
             android:src="@drawable/quiz_logo"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:serverid="@+serverid/imageView2"
+            android:id="@+id/imageView2"
             android:layout_gravity="center_horizontal|top" />
 
         <Button
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Quiz starten"
-            android:serverid="@+serverid/buttonStart"
+            android:id="@+id/buttonStart"
             />
 
         <Button
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Score"
-            android:serverid="@+serverid/buttonScore" />
+            android:id="@+id/buttonScore" />
         <Button
             style="?android:attr/buttonStyleSmall"
             android:layout_marginTop="32dp"
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Zurück"
-            android:serverid="@+serverid/buttonZurück" />
+            android:id="@+id/buttonZurück" />
 
 
     </LinearLayout>
@@ -58,6 +58,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textColor="#fff"
         android:text="Letztes Update: "
-        android:serverid="@+serverid/textViewDate"
+        android:id="@+id/textViewDate"
         android:layout_gravity="center_horizontal|bottom" />
 </FrameLayout>

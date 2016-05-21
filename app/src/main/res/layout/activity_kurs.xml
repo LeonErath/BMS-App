@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="leon.bms.AufgabenActivity">
+    tools:context=".activites.aufgabe.AufgabenActivity">
 
 
     <android.support.design.widget.AppBarLayout
@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:serverid="@+serverid/toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -23,7 +23,7 @@
 
 
             <TextView
-                android:serverid="@+serverid/textViewToolbar"
+                android:id="@+id/textViewToolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -48,7 +48,7 @@
 
 
             <TextView
-                android:serverid="@+serverid/textView1"
+                android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -57,7 +57,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:serverid="@+serverid/textViewLehrer"
+                android:id="@+id/textViewLehrer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -68,7 +68,7 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:serverid="@+serverid/textViewEmail"
+                android:id="@+id/textViewEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -78,7 +78,7 @@
                 android:textColor="#528dc5" />
 
             <TextView
-                android:serverid="@+serverid/textView14"
+                android:id="@+id/textView14"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -87,7 +87,7 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <TextView
-                android:serverid="@+serverid/textViewAufgaben"
+                android:id="@+id/textViewAufgaben"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -97,7 +97,7 @@
                 android:textColor="#528dc5" />
 
             <TextView
-                android:serverid="@+serverid/textView16"
+                android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -106,14 +106,14 @@
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <android.support.v7.widget.RecyclerView
-                android:serverid="@+serverid/recycler_view"
+                android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="16dp" />
 
             <TextView
-                android:serverid="@+serverid/textViewDate"
+                android:id="@+id/textViewDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"

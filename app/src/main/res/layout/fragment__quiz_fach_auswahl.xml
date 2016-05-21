@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
-    tools:context="leon.bms.Fragment_QuizFachAuswahl">
+    tools:context=".activites.quiz.Fragment_QuizFachAuswahl">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Zurück"
             android:layout_gravity="center_vertical"
-            android:serverid="@+serverid/buttonBack"
+            android:id="@+id/buttonBack"
             android:background="@color/colorPrimary"
             />
         <TextView
@@ -42,13 +42,13 @@
             android:layout_height="wrap_content"
             android:text="Beenden"
             android:layout_gravity="center_vertical"
-            android:serverid="@+serverid/buttonQuit"
+            android:id="@+id/buttonQuit"
             android:background="@color/colorPrimary"
             />
 
 </LinearLayout>
     <android.support.v7.widget.RecyclerView
-        android:serverid="@+serverid/recycler_view"
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

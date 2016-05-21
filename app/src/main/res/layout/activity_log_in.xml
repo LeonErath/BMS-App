@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_2klein"
-    tools:context=".LogInActivity">
+    tools:context=".activites.login.normal.LogInActivity">
 
 
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:name="leon.bms.Fragment_LogIn"
-        android:serverid="@+serverid/fragment"
+        android:name="leon.bms.activites.login.normal.Fragment_LogIn"
+        android:id="@+id/fragment"
         />
 </RelativeLayout>

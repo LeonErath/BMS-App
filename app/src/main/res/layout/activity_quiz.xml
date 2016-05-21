@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="leon.bms.QuizActivity"
+    tools:context=".activites.quiz.QuizActivity"
     android:background="@drawable/tafel_schwarz">
 
 
@@ -14,7 +14,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:serverid="@+serverid/fragemntContainer">
+    android:id="@+id/fragemntContainer">
 
 </LinearLayout>
 

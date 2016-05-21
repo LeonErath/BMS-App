@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:cardCornerRadius="0dp"
     android:foreground="?android:attr/selectableItemBackground"
-    android:serverid="@+serverid/cardView">
+    android:id="@+id/cardView">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
@@ -22,7 +22,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="10"
         android:textSize="25dp"
-        android:serverid="@+serverid/textViewNumber"
+        android:id="@+id/textViewNumber"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
@@ -33,27 +33,27 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Stundenname"
         android:textColor="#000000"
-        android:serverid="@+serverid/textViewStunde"
-        android:layout_toStartOf="@+serverid/textViewRaum"
-        android:layout_toEndOf="@+serverid/textViewNumber"/>
+        android:id="@+id/textViewStunde"
+        android:layout_toStartOf="@+id/textViewRaum"
+        android:layout_toEndOf="@+id/textViewNumber"/>
     <TextView
         android:layout_marginRight="8dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Lehrer"
-        android:serverid="@+serverid/textViewLehrer"
-        android:layout_below="@+serverid/textViewStunde"
+        android:id="@+id/textViewLehrer"
+        android:layout_below="@+id/textViewStunde"
         android:textSize="14dp"
-        android:layout_toStartOf="@+serverid/textViewRaum"
-        android:layout_toEndOf="@+serverid/textViewNumber" />
+        android:layout_toStartOf="@+id/textViewRaum"
+        android:layout_toEndOf="@+id/textViewNumber" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Raum"
-        android:serverid="@+serverid/textViewRaum"
+        android:id="@+id/textViewRaum"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true" />
 

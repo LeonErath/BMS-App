@@ -6,6 +6,11 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
+import leon.bms.activites.main.Fragment_AufgabeUebersicht;
+import leon.bms.activites.main.Fragment_Highlight;
+import leon.bms.activites.main.Fragment_Stundenplan;
+import leon.bms.activites.website.Fragment_Article;
+
 /**
  * Created by Leon E on 24.01.2016.
  */

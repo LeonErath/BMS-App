@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="leon.bms.IntroductionActivity">
+    tools:context=".activites.login.first.IntroductionActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
 
         <android.support.v7.widget.Toolbar
             android:fitsSystemWindows="true"
-            android:serverid="@+serverid/toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"

@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:theme">
-        <activity android:name=".LogInActivity">
+        <activity android:name=".activites.login.normal.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -36,7 +36,7 @@
             android:value="HausaufgabenDatenbank2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="22" />
+            android:value="23" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />
@@ -45,12 +45,12 @@
             android:value="leon.bms" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activites.main.MainActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".KursauswahlActivity" />
+        <activity android:name=".activites.login.normal.KursauswahlActivity" />
         <activity
-            android:name=".AufgabenActivity"
+            android:name=".activites.aufgabe.AufgabenActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"
@@ -58,24 +58,24 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".activites.main.MainActivity"/>
 
         </activity>
         <activity
-            android:name=".WebsiteArticleActivity"
+            android:name=".activites.website.WebsiteArticleActivity"
             android:hardwareAccelerated="false"
             android:label="@string/title_activity_website_article"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".IntroductionActivity"
+            android:name=".activites.login.first.IntroductionActivity"
             android:label="@string/title_activity_introduction"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".QuizActivity"
+            android:name=".activites.quiz.QuizActivity"
             android:label="@string/title_activity_quiz"
             android:theme="@style/AppTheme" />
         <activity
-            android:name=".KursActivity"
+            android:name=".activites.kurs.KursActivity"
             android:label="@string/title_activity_kurs"
             android:theme="@style/AppTheme"></activity>
         <activity android:name=".NachrichtenActivity"></activity>
