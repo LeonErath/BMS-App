@@ -13,6 +13,8 @@ import com.orm.SugarRecord;
  */
 public class dbNote extends SugarRecord {
     //Datensätze für die Note
+    String beschreibung;
+    String hinzugefuegtAm;
     Double klassendurchschnitt;
     Integer punkte;
     Boolean schriftlich;
@@ -24,11 +26,45 @@ public class dbNote extends SugarRecord {
         //empty Constructor needed!
     }
 
-    public dbNote(Double klassendurchschnitt, Integer punkte, Boolean schriftlich, dbKlausur klausur, dbKurs kurs) {
+    public dbNote(String beschreibung, String hinzugefuegtAm, Double klassendurchschnitt, Integer punkte, Boolean schriftlich, dbKlausur klausur, dbKurs kurs) {
+        this.beschreibung = beschreibung;
+        this.hinzugefuegtAm = hinzugefuegtAm;
         this.klassendurchschnitt = klassendurchschnitt;
         this.punkte = punkte;
         this.schriftlich = schriftlich;
         this.klausur = klausur;
+        this.kurs = kurs;
+    }
+
+    public String getBeschreibung() {
+        return beschreibung;
+    }
+
+    public void setBeschreibung(String beschreibung) {
+        this.beschreibung = beschreibung;
+    }
+
+    public String getHinzugefuegtAm() {
+        return hinzugefuegtAm;
+    }
+
+    public void setHinzugefuegtAm(String hinzugefuegtAm) {
+        this.hinzugefuegtAm = hinzugefuegtAm;
+    }
+
+    public dbKlausur getKlausur() {
+        return klausur;
+    }
+
+    public void setKlausur(dbKlausur klausur) {
+        this.klausur = klausur;
+    }
+
+    public dbKurs getKurs() {
+        return kurs;
+    }
+
+    public void setKurs(dbKurs kurs) {
         this.kurs = kurs;
     }
 

@@ -180,32 +180,32 @@ dbAufgabe.java</FONT>
 <a name="l158"><span class="ln">158  </span></a>    } 
 <a name="l159"><span class="ln">159  </span></a> 
 <a name="l160"><span class="ln">160  </span></a>    </span><span class="s2">/** 
-<a name="l161"><span class="ln">161  </span></a>     * </span><span class="s3">@param </span><span class="s2">aufgabe übergibt eine Aufgabe über deren id überprüft wird ob sie erledigt ist 
+<a name="l161"><span class="ln">161  </span></a>     * </span><span class="s3">@param </span><span class="s2">aufgabe übergibt eine Aufgabe über deren serverid überprüft wird ob sie erledigt ist
 <a name="l162"><span class="ln">162  </span></a>     * </span><span class="s3">@checkifErledigtAufgabe </span><span class="s2">überprüft ob bestimmte Aufgabe ist erledigt oder nicht . Wichtig für das 
 <a name="l163"><span class="ln">163  </span></a>     * richtig Anzeige der Aufgaben in Fragment_aufgabeÜbersicht 
 <a name="l164"><span class="ln">164  </span></a>     */</span><span class="s1"> 
 <a name="l165"><span class="ln">165  </span></a>    </span><span class="s0">public </span><span class="s1">Boolean checkIfErledigtAufgabe(dbAufgabe aufgabe) { 
-<a name="l166"><span class="ln">166  </span></a>        List&lt;dbAufgabe&gt; dbAufgabeList = dbAufgabe.find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;id = ?&quot;</span><span class="s1">, String.valueOf(aufgabe.getId())); 
+<a name="l166"><span class="ln">166  </span></a>        List&lt;dbAufgabe&gt; dbAufgabeList = dbAufgabe.find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;serverid = ?&quot;</span><span class="s1">, String.valueOf(aufgabe.getId()));
 <a name="l167"><span class="ln">167  </span></a>        </span><span class="s0">return </span><span class="s1">dbAufgabeList.get(</span><span class="s5">0</span><span class="s1">).erledigt; 
 <a name="l168"><span class="ln">168  </span></a>    } 
 <a name="l169"><span class="ln">169  </span></a> 
 <a name="l170"><span class="ln">170  </span></a>    </span><span class="s2">/** 
-<a name="l171"><span class="ln">171  </span></a>     * </span><span class="s3">@param </span><span class="s2">id ist die ID der Aufgabe die rausgesucht werden soll 
+<a name="l171"><span class="ln">171  </span></a>     * </span><span class="s3">@param </span><span class="s2">serverid ist die ID der Aufgabe die rausgesucht werden soll
 <a name="l172"><span class="ln">172  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt die Aufgabe zurück 
 <a name="l173"><span class="ln">173  </span></a>     * </span><span class="s3">@getAufgabe </span><span class="s2">gibt Aufgabe einer bestimmer ID zurück 
 <a name="l174"><span class="ln">174  </span></a>     */</span><span class="s1"> 
-<a name="l175"><span class="ln">175  </span></a>    </span><span class="s0">public </span><span class="s1">dbAufgabe getAufgabe(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l176"><span class="ln">176  </span></a>        List&lt;dbAufgabe&gt; dbAufgabeList = dbAufgabe.find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;id = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l175"><span class="ln">175  </span></a>    </span><span class="s0">public </span><span class="s1">dbAufgabe getAufgabe(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l176"><span class="ln">176  </span></a>        List&lt;dbAufgabe&gt; dbAufgabeList = dbAufgabe.find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;serverid = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l177"><span class="ln">177  </span></a>        </span><span class="s0">return </span><span class="s1">dbAufgabeList.get(</span><span class="s5">0</span><span class="s1">); 
 <a name="l178"><span class="ln">178  </span></a>    } 
 <a name="l179"><span class="ln">179  </span></a> 
 <a name="l180"><span class="ln">180  </span></a>    </span><span class="s2">/** 
-<a name="l181"><span class="ln">181  </span></a>     * </span><span class="s3">@param </span><span class="s2">id ist die ID der Aufgabe von der die Bilder geladen werden soll 
+<a name="l181"><span class="ln">181  </span></a>     * </span><span class="s3">@param </span><span class="s2">serverid ist die ID der Aufgabe von der die Bilder geladen werden soll
 <a name="l182"><span class="ln">182  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt wenn Bilder vorhanden eine Liste mit alle Bildern zurück 
 <a name="l183"><span class="ln">183  </span></a>     * </span><span class="s3">@getMediaFile </span><span class="s2">gibt alle Bilder(MediaFiles) zurück die eine Aufgabe besitzt 
 <a name="l184"><span class="ln">184  </span></a>     */</span><span class="s1"> 
-<a name="l185"><span class="ln">185  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbMediaFile&gt; getMediaFile(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l186"><span class="ln">186  </span></a>        List&lt;dbMediaFile&gt; dbMediaFileList = dbMediaFile.find(dbMediaFile.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;aufgaben = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l185"><span class="ln">185  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbMediaFile&gt; getMediaFile(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l186"><span class="ln">186  </span></a>        List&lt;dbMediaFile&gt; dbMediaFileList = dbMediaFile.find(dbMediaFile.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;aufgaben = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l187"><span class="ln">187  </span></a>        Log.d(</span><span class="s4">&quot;MEDIAFILE&quot;</span><span class="s1">, dbMediaFileList.size() + </span><span class="s4">&quot;&quot;</span><span class="s1">); 
 <a name="l188"><span class="ln">188  </span></a>        </span><span class="s0">return </span><span class="s1">dbMediaFileList; 
 <a name="l189"><span class="ln">189  </span></a>    } 

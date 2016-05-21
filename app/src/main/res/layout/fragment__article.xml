@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coordinatorLayout"
+    android:serverid="@+serverid/coordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/toogleButton"
+        android:serverid="@+serverid/toogleButton"
         android:textSize="16sp"
         custom:activeBgColor="@android:color/holo_blue_dark"
         custom:activeTextColor="@android:color/white"
@@ -26,7 +26,7 @@
 
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:serverid="@+serverid/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

@@ -16,15 +16,15 @@
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+                android:serverid="@+serverid/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/AppBarLayout" />
+                android:layout_below="@+serverid/AppBarLayout" />
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <com.sergiocasero.revealfab.RevealFAB
-        android:id="@+id/reveal_fab"
+        android:serverid="@+serverid/reveal_fab"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"

@@ -24,7 +24,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Hier die Überschrift"
         android:textColor="#fff"
-        android:id="@+id/textViewTitle"
+        android:serverid="@+serverid/textViewTitle"
         />
 
     <TextView
@@ -35,7 +35,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Hier die eigentliche Nachricht zu der Überschrift."
         android:textColor="#fff"
-        android:id="@+id/textViewContent"
+        android:serverid="@+serverid/textViewContent"
        />
 </LinearLayout>
     <TextView
@@ -45,7 +45,7 @@
         android:text="ok"
         android:textStyle="bold"
         android:textSize="20dp"
-        android:id="@+id/textViewOk"
+        android:serverid="@+serverid/textViewOk"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         />

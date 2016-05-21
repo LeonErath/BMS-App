@@ -86,7 +86,7 @@ public class QuizController {
             for (int i = 0; i < jsonArrayThemenbereiche.length(); i++) {
                 JSONObject jsonObject = jsonArrayThemenbereiche.getJSONObject(i);
                 dbThemenbereich themenbereich = new dbThemenbereich();
-                themenbereich.serverid = jsonObject.getInt("id");
+                themenbereich.serverid = jsonObject.getInt("serverid");
                 if (jsonObject.getString("wInfos") != null) {
                     themenbereich.infos = jsonObject.getString("wInfos");
                 }
@@ -112,7 +112,7 @@ public class QuizController {
                     fragen.frage = jsonObject.getString("frage");
                     fragen.schwirigkeit = jsonObject.getInt("schwierigkeit");
                     fragen.date = jsonObject.getString("date");
-                    fragen.serverid = jsonObject.getInt("id");
+                    fragen.serverid = jsonObject.getInt("serverid");
                     fragen.stufe = jsonObject.getString("stufe");
                     if (fragen.stufe.equals(new dbUser().getUser().stufe)) {
                         if (new dbFragen().frageVorhanden(fragen.serverid) == false) {
@@ -129,7 +129,7 @@ public class QuizController {
                                 for (int l = 0; l < answers.length(); l++) {
                                     JSONObject jsonObjectAnswer = answers.getJSONObject(l);
                                     dbAntworten antworten = new dbAntworten();
-                                    antworten.serverid = jsonObjectAnswer.getInt("id");
+                                    antworten.serverid = jsonObjectAnswer.getInt("serverid");
                                     antworten.antwort = jsonObjectAnswer.getString("text");
                                     antworten.richtig = jsonObjectAnswer.getBoolean("truth");
                                     antworten.langfassung = jsonObjectAnswer.getString("description");

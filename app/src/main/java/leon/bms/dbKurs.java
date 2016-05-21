@@ -21,61 +21,92 @@ public class dbKurs extends SugarRecord {
 
     //Datensätze der Kurse
     public String name;
-    // kursart 0 LK 1 GK 2 AG 3 PK
-    public int kursart;
+    String untisId;
     /**
      * @aktiv zeigt ob ein Kurs vom User ausgewählt worden ist. Wichtig für die Erstellung des
      * Stundenplans
      * @schriftlich nacher wichtig für das laden des Klausurplans
      */
     public Boolean aktiv;
-    public String fach;
     public Boolean schriftlich;
     String geandertAm;
     String hinzugefuegtAm;
-    int icon;
-    int schuljahr;
+    int blocknummer;
+    int serverId;
+    String iconPath;
     Boolean archiviert;
 
     // defining a relationship
     dbAufgabe aufgabe;
     dbKlausur klausur;
     dbNote note;
+    dbFach fach;
     dbUser user;
-    public dbLehrer lehrer;
+    dbLehrer lehrer;
     dbSchulstunde stunde;
+    dbSchuljahr schuljahr;
+    dbKursart kursart;
+
     dbKursTagConnect dbKursTagConnect;
 
     public dbKurs() {
         //empty Constructor needed!
     }
 
-    public dbKurs(String name, int kursart, Boolean aktiv, String fach, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int icon, int schuljahr, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, leon.bms.dbKursTagConnect dbKursTagConnect) {
+    public dbKurs(String name, String untisId, Boolean aktiv, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int blocknummer, int serverId, String iconPath, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbFach fach, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, dbSchuljahr schuljahr, dbKursart kursart, leon.bms.dbKursTagConnect dbKursTagConnect) {
         this.name = name;
-        this.kursart = kursart;
+        this.untisId = untisId;
         this.aktiv = aktiv;
-        this.fach = fach;
         this.schriftlich = schriftlich;
         this.geandertAm = geandertAm;
         this.hinzugefuegtAm = hinzugefuegtAm;
-        this.icon = icon;
-        this.schuljahr = schuljahr;
+        this.blocknummer = blocknummer;
+        this.serverId = serverId;
+        this.iconPath = iconPath;
         this.archiviert = archiviert;
         this.aufgabe = aufgabe;
         this.klausur = klausur;
         this.note = note;
+        this.fach = fach;
         this.user = user;
         this.lehrer = lehrer;
         this.stunde = stunde;
+        this.schuljahr = schuljahr;
+        this.kursart = kursart;
         this.dbKursTagConnect = dbKursTagConnect;
     }
 
-    public leon.bms.dbKursTagConnect getDbKursTagConnect() {
-        return dbKursTagConnect;
+
+    public String getName() {
+        return name;
     }
 
-    public void setDbKursTagConnect(leon.bms.dbKursTagConnect dbKursTagConnect) {
-        this.dbKursTagConnect = dbKursTagConnect;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUntisId() {
+        return untisId;
+    }
+
+    public void setUntisId(String untisId) {
+        this.untisId = untisId;
+    }
+
+    public Boolean getAktiv() {
+        return aktiv;
+    }
+
+    public void setAktiv(Boolean aktiv) {
+        this.aktiv = aktiv;
+    }
+
+    public Boolean getSchriftlich() {
+        return schriftlich;
+    }
+
+    public void setSchriftlich(Boolean schriftlich) {
+        this.schriftlich = schriftlich;
     }
 
     public String getGeandertAm() {
@@ -94,20 +125,28 @@ public class dbKurs extends SugarRecord {
         this.hinzugefuegtAm = hinzugefuegtAm;
     }
 
-    public int getIcon() {
-        return icon;
+    public int getBlocknummer() {
+        return blocknummer;
     }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
+    public void setBlocknummer(int blocknummer) {
+        this.blocknummer = blocknummer;
     }
 
-    public int getSchuljahr() {
-        return schuljahr;
+    public int getServerId() {
+        return serverId;
     }
 
-    public void setSchuljahr(int schuljahr) {
-        this.schuljahr = schuljahr;
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
+    }
+
+    public String getIconPath() {
+        return iconPath;
+    }
+
+    public void setIconPath(String iconPath) {
+        this.iconPath = iconPath;
     }
 
     public Boolean getArchiviert() {
@@ -116,47 +155,6 @@ public class dbKurs extends SugarRecord {
 
     public void setArchiviert(Boolean archiviert) {
         this.archiviert = archiviert;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getKursart() {
-        return kursart;
-    }
-
-    public void setKursart(int kursart) {
-        this.kursart = kursart;
-    }
-
-    public Boolean getAktiv() {
-        return aktiv;
-    }
-
-    public void setAktiv(Boolean aktiv) {
-        this.aktiv = aktiv;
-    }
-
-
-    public String getFach() {
-        return fach;
-    }
-
-    public void setFach(String fach) {
-        this.fach = fach;
-    }
-
-    public Boolean getSchriftlich() {
-        return schriftlich;
-    }
-
-    public void setSchriftlich(Boolean schriftlich) {
-        this.schriftlich = schriftlich;
     }
 
     public dbAufgabe getAufgabe() {
@@ -183,6 +181,14 @@ public class dbKurs extends SugarRecord {
         this.note = note;
     }
 
+    public dbFach getFach() {
+        return fach;
+    }
+
+    public void setFach(dbFach fach) {
+        this.fach = fach;
+    }
+
     public dbUser getUser() {
         return user;
     }
@@ -207,30 +213,28 @@ public class dbKurs extends SugarRecord {
         this.stunde = stunde;
     }
 
+    public dbSchuljahr getSchuljahr() {
+        return schuljahr;
+    }
 
-    /**
-     * @kursVorhanden gibt an ob der übergebene Kurs vorhanden ist.
-     * Dazu wird geguckt ob der Name des Kurses in der Kurstabelle vorkommt.
-     * Wenn ja und die Kursart der beiden Kurse größer als 1 sind ist der Kurs nicht vorhanden
-     * -> dies liegt daran das AGs und PK den gleichen Namen haben können also wird geguckt ob der andere
-     * kurs ein PK oder AG ist (kursart > 1)
-     * Wenn ja und die Kursart gleich oder unter 1 ist dann ist der Kurs vorhanden
-     * Wenn nein ist der Kurs nicht vorhanden
-     */
-    public Boolean kursVorhanden(dbKurs kurs) {
+    public void setSchuljahr(dbSchuljahr schuljahr) {
+        this.schuljahr = schuljahr;
+    }
 
-        if (dbKurs.find(dbKurs.class, "name = ?", kurs.name).size() > 0) {
-            dbKurs kurs2 = dbKurs.find(dbKurs.class, "name = ?", kurs.name).get(0);
-            if (kurs.kursart != kurs2.kursart) {
-                if (kurs.kursart > 1 && kurs2.kursart > 1) {
-                    return false;
-                }
-            }
-            Log.d("TAG", "KURS VORHANDEN!");
-            return true;
-        } else {
-            return false;
-        }
+    public dbKursart getKursart() {
+        return kursart;
+    }
+
+    public void setKursart(dbKursart kursart) {
+        this.kursart = kursart;
+    }
+
+    public leon.bms.dbKursTagConnect getDbKursTagConnect() {
+        return dbKursTagConnect;
+    }
+
+    public void setDbKursTagConnect(leon.bms.dbKursTagConnect dbKursTagConnect) {
+        this.dbKursTagConnect = dbKursTagConnect;
     }
 
     /**
@@ -357,7 +361,7 @@ public class dbKurs extends SugarRecord {
      * @gerKursWithID gibt einen Kurs zurück über die kursid der Datenbank
      */
     public dbKurs getKursWithID(long kursid) {
-        List<dbKurs> kursList = dbKurs.find(dbKurs.class, "id = ?", String.valueOf(kursid));
+        List<dbKurs> kursList = dbKurs.find(dbKurs.class, "serverid = ?", String.valueOf(kursid));
         if (kursList.size() == 1) {
             return kursList.get(0);
         } else {

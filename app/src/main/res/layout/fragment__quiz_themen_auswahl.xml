@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Zurück"
             android:layout_gravity="center_vertical"
-            android:id="@+id/buttonBack"
+            android:serverid="@+serverid/buttonBack"
             android:background="@color/colorPrimary"
             />
         <TextView
@@ -31,7 +31,7 @@
             android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:text="Dein Kurs"
-            android:id="@+id/textViewKurs"
+            android:serverid="@+serverid/textViewKurs"
             android:textSize="16dp"
             android:textColor="#fff"
             android:gravity="center_horizontal"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text=""
             android:layout_gravity="center_vertical"
-            android:id="@+id/buttonQuit"
+            android:serverid="@+serverid/buttonQuit"
             android:background="@color/colorPrimary"
             />
 
@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/cardViewAll">
+        android:serverid="@+serverid/cardViewAll">
     <LinearLayout
         android:layout_margin="4dp"
         android:layout_width="match_parent"
@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="alle Fragen des Kurses"
-            android:id="@+id/textView11" />
+            android:serverid="@+serverid/textView11" />
 
 
     </LinearLayout>
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/cardViewNew">
+        android:serverid="@+serverid/cardViewNew">
         <LinearLayout
             android:layout_margin="8dp"
             android:layout_width="match_parent"
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="neuste Fragen"
-                android:id="@+id/textView1" />
+                android:serverid="@+serverid/textView1" />
 
 
         </LinearLayout>
@@ -125,7 +125,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="0dp"
         android:foreground="?android:attr/selectableItemBackground"
-        android:id="@+id/cardViewWrong">
+        android:serverid="@+serverid/cardViewWrong">
         <LinearLayout
             android:layout_margin="4dp"
             android:layout_width="match_parent"
@@ -148,13 +148,13 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:text="alle falschen Fragen"
-                android:id="@+id/textView2" />
+                android:serverid="@+serverid/textView2" />
 
 
         </LinearLayout>
     </android.support.v7.widget.CardView>
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:serverid="@+serverid/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

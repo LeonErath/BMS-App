@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
 
-    <item android:id="@+id/action_settings"
+    <item android:serverid="@+serverid/action_settings"
         android:title="Settings"
         android:orderInCategory="100"
         app:showAsAction="never" />
-    <item android:id="@+id/action_logout"
+    <item android:serverid="@+serverid/action_logout"
     android:title="Ausloggen"
     android:orderInCategory="100"
     app:showAsAction="never" />
 
-    <item android:id="@+id/action_reset"
+    <item android:serverid="@+serverid/action_reset"
         android:title="Daten löschen"
         android:orderInCategory="100"
         app:showAsAction="never" />

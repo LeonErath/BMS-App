@@ -16,44 +16,70 @@ import java.util.Date;
 public class dbKlausur extends SugarRecord {
 
     //Datensätze der Klausur
-    Double dauer;
-    Date nachschreibertermin;
+   String beginn;
+    String datum;
+    String ende;
+    String nachschreibertermin;
     String notizen;
     Boolean restkursFrei;
-    Date zeit;
 
     // defining a relationship
     dbKlausuraufsicht aufsicht;
     dbKurs kurs;
     dbNote note;
     dbRaum raum;
+    dbFehler fehler;
+    dbKlausurinhalt klausurinhalt;
+
 
     public dbKlausur() {
         //empty Constructor needed!
     }
 
-    public dbKlausur(Double dauer, Date nachschreibertermin, String notizen, Boolean restkursFrei, Date zeit) {
-
-        this.dauer = dauer;
+    public dbKlausur(String beginn, String datum, String ende, String nachschreibertermin, String notizen, Boolean restkursFrei, dbKlausuraufsicht aufsicht, dbKurs kurs, dbNote note, dbRaum raum, dbFehler fehler, dbKlausurinhalt klausurinhalt) {
+        this.beginn = beginn;
+        this.datum = datum;
+        this.ende = ende;
         this.nachschreibertermin = nachschreibertermin;
         this.notizen = notizen;
         this.restkursFrei = restkursFrei;
-        this.zeit = zeit;
+        this.aufsicht = aufsicht;
+        this.kurs = kurs;
+        this.note = note;
+        this.raum = raum;
+        this.fehler = fehler;
+        this.klausurinhalt = klausurinhalt;
     }
 
-    public Double getDauer() {
-        return dauer;
+    public String getBeginn() {
+        return beginn;
     }
 
-    public void setDauer(Double dauer) {
-        this.dauer = dauer;
+    public void setBeginn(String beginn) {
+        this.beginn = beginn;
     }
 
-    public Date getNachschreibertermin() {
+    public String getDatum() {
+        return datum;
+    }
+
+    public void setDatum(String datum) {
+        this.datum = datum;
+    }
+
+    public String getEnde() {
+        return ende;
+    }
+
+    public void setEnde(String ende) {
+        this.ende = ende;
+    }
+
+    public String getNachschreibertermin() {
         return nachschreibertermin;
     }
 
-    public void setNachschreibertermin(Date nachschreibertermin) {
+    public void setNachschreibertermin(String nachschreibertermin) {
         this.nachschreibertermin = nachschreibertermin;
     }
 
@@ -73,13 +99,51 @@ public class dbKlausur extends SugarRecord {
         this.restkursFrei = restkursFrei;
     }
 
-    public Date getZeit() {
-        return zeit;
+    public dbKlausuraufsicht getAufsicht() {
+        return aufsicht;
     }
 
-    public void setZeit(Date zeit) {
-        this.zeit = zeit;
+    public void setAufsicht(dbKlausuraufsicht aufsicht) {
+        this.aufsicht = aufsicht;
     }
 
+    public dbKurs getKurs() {
+        return kurs;
+    }
 
+    public void setKurs(dbKurs kurs) {
+        this.kurs = kurs;
+    }
+
+    public dbNote getNote() {
+        return note;
+    }
+
+    public void setNote(dbNote note) {
+        this.note = note;
+    }
+
+    public dbRaum getRaum() {
+        return raum;
+    }
+
+    public void setRaum(dbRaum raum) {
+        this.raum = raum;
+    }
+
+    public dbFehler getFehler() {
+        return fehler;
+    }
+
+    public void setFehler(dbFehler fehler) {
+        this.fehler = fehler;
+    }
+
+    public dbKlausurinhalt getKlausurinhalt() {
+        return klausurinhalt;
+    }
+
+    public void setKlausurinhalt(dbKlausurinhalt klausurinhalt) {
+        this.klausurinhalt = klausurinhalt;
+    }
 }

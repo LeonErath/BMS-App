@@ -13,7 +13,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/containerLayout"
+            android:serverid="@+serverid/containerLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="30dp"
@@ -43,12 +43,12 @@
                             android:layout_height="wrap_content"
                             android:text="Praxisanwendungen IF G1"
                             android:textColor="#fff"
-                            android:id="@+id/textViewThemenbereich"
+                            android:serverid="@+serverid/textViewThemenbereich"
                             android:textSize="12dp"
                             app:typeface="fonts/chalkduster.ttf" />
 
                         <in.raveesh.customtype.TextView
-                            android:id="@+id/textViewFrageID"
+                            android:serverid="@+serverid/textViewFrageID"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
@@ -71,7 +71,7 @@
                     </android.support.design.widget.CoordinatorLayout>
 
                     <ImageView
-                        android:id="@+id/imageViewCancel"
+                        android:serverid="@+serverid/imageViewCancel"
                         android:layout_width="0dp"
                         android:layout_height="56dp"
                         android:layout_marginTop="8dp"
@@ -87,7 +87,7 @@
                     android:layout_marginTop="16dp">
 
                     <in.raveesh.customtype.TextView
-                        android:id="@+id/textViewFrage"
+                        android:serverid="@+serverid/textViewFrage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -125,7 +125,7 @@
                     <android.support.v7.widget.CardView
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/cardView"
+                        android:serverid="@+serverid/cardView"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:foreground="?android:attr/selectableItemBackground"
@@ -135,7 +135,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:id="@+id/textViewAntwort1"
+                            android:serverid="@+serverid/textViewAntwort1"
                             android:text="Java"
                             android:textColor="#000"
                             android:textSize="16dp" />
@@ -152,7 +152,7 @@
                         <android.support.v7.widget.CardView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/cardView2"
+                            android:serverid="@+serverid/cardView2"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:foreground="?android:attr/selectableItemBackground"
@@ -162,7 +162,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:id="@+id/textViewAntwort2"
+                                android:serverid="@+serverid/textViewAntwort2"
                                 android:text="Java"
                                 android:textColor="#000"
                                 android:textSize="16dp" />
@@ -187,7 +187,7 @@
                         <android.support.v7.widget.CardView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/cardView3"
+                            android:serverid="@+serverid/cardView3"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:foreground="?android:attr/selectableItemBackground"
@@ -197,7 +197,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:id="@+id/textViewAntwort3"
+                                android:serverid="@+serverid/textViewAntwort3"
                                 android:text="Java"
                                 android:textColor="#000"
                                 android:textSize="16dp" />
@@ -207,7 +207,7 @@
                     <io.codetail.widget.RevealFrameLayout
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:background="#ffffff"
-                        android:id="@+id/reveal4"
+                        android:serverid="@+serverid/reveal4"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_margin="4dp"
@@ -216,7 +216,7 @@
                         <android.support.v7.widget.CardView
                             xmlns:android="http://schemas.android.com/apk/res/android"
                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/cardView4"
+                            android:serverid="@+serverid/cardView4"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:foreground="?android:attr/selectableItemBackground"
@@ -226,7 +226,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center"
-                                android:id="@+id/textViewAntwort4"
+                                android:serverid="@+serverid/textViewAntwort4"
                                 android:text="Java"
                                 android:textColor="#000"
                                 android:textSize="16dp" />
@@ -237,7 +237,7 @@
             <android.support.v7.widget.CardView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/cardViewbottomBar"
+                android:serverid="@+serverid/cardViewbottomBar"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.1"
@@ -254,7 +254,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="2dp"
                     android:layout_marginTop="2dp"
-                    android:id="@+id/textViewCounter"
+                    android:serverid="@+serverid/textViewCounter"
                     android:text="Frage 1 von 10"
                     android:textColor="#fff"
                     android:textSize="10dp" />
@@ -264,7 +264,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:text="Lösen"
-                    android:id="@+id/textViewContinue"
+                    android:serverid="@+serverid/textViewContinue"
                     android:textColor="#fff"
                     android:textSize="24dp" />
             </android.support.design.widget.CoordinatorLayout>

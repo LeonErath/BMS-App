@@ -18,7 +18,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="10"
         android:textSize="25dp"
-        android:id="@+id/textViewNumber"
+        android:serverid="@+serverid/textViewNumber"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
@@ -28,9 +28,9 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Freistunde"
-        android:id="@+id/textViewStunde"
+        android:serverid="@+serverid/textViewStunde"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/textViewNumber" />
+        android:layout_toEndOf="@+serverid/textViewNumber" />
 
 </RelativeLayout>
 

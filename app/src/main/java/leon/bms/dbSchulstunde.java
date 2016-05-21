@@ -20,26 +20,48 @@ public class dbSchulstunde extends SugarRecord {
     Integer endZeit;
     String zuletztAktualisiert;
     public String kursID;
-    public String raum;
     public Integer wochentag;
     // defining a relationship
     public dbKurs kurs;
     public dbLehrer lehrer;
-    //dbRaum raum;
+    dbVertretung vertretung;
+    dbRaum raum;
 
     public dbSchulstunde() {
         // empty Constructor needed!
     }
 
-    public dbSchulstunde(Double dauer, Integer beginnZeit, Integer endZeit, String kursID, String raum, Integer wochentag, dbKurs kurs, dbLehrer lehrer) {
+    public dbSchulstunde(Double dauer, Integer beginnzeit, Integer endZeit, String zuletztAktualisiert, String kursID, Integer wochentag, dbKurs kurs, dbLehrer lehrer, dbVertretung vertretung, dbRaum raum) {
         this.dauer = dauer;
-        this.beginnzeit = beginnZeit;
+        this.beginnzeit = beginnzeit;
         this.endZeit = endZeit;
+        this.zuletztAktualisiert = zuletztAktualisiert;
         this.kursID = kursID;
-        this.raum = raum;
         this.wochentag = wochentag;
         this.kurs = kurs;
         this.lehrer = lehrer;
+        this.vertretung = vertretung;
+        this.raum = raum;
+    }
+
+    public String getZuletztAktualisiert() {
+        return zuletztAktualisiert;
+    }
+
+    public void setZuletztAktualisiert(String zuletztAktualisiert) {
+        this.zuletztAktualisiert = zuletztAktualisiert;
+    }
+
+    public dbVertretung getVertretung() {
+        return vertretung;
+    }
+
+    public void setVertretung(dbVertretung vertretung) {
+        this.vertretung = vertretung;
+    }
+
+    public void setRaum(dbRaum raum) {
+        this.raum = raum;
     }
 
     public Double getDauer() {
@@ -96,14 +118,6 @@ public class dbSchulstunde extends SugarRecord {
 
     public void setLehrer(dbLehrer lehrer) {
         this.lehrer = lehrer;
-    }
-
-    public String getRaum() {
-        return raum;
-    }
-
-    public void setRaum(String raum) {
-        this.raum = raum;
     }
 
     /**

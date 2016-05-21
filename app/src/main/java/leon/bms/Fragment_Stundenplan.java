@@ -292,7 +292,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         stunden stunde = stundenplanAdapter.getStundenplan().get(position);
         if (stunde.active == true) {
             Intent intent = new Intent(getActivity(), KursActivity.class);
-            intent.putExtra("id", stunde.getId());
+            intent.putExtra("serverid", stunde.getId());
             startActivity(intent);
         }
 

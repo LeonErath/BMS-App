@@ -51,7 +51,7 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
     @Override
     public void onSaveInstanceState(Bundle outState) {
         String id = kursID;
-        outState.putString("id", id);
+        outState.putString("serverid", id);
         super.onSaveInstanceState(outState);
     }
 
@@ -70,9 +70,9 @@ public class Fragment_QuizThemenAuswahl extends Fragment implements QuizKursAdap
         kursID = bundle.getString("kursid", null);
 
         if (savedInstanceState != null) {
-            if (savedInstanceState.containsKey("id")) {
+            if (savedInstanceState.containsKey("serverid")) {
                 //lädt Daten falls das Fragment wiederhergestellt wird nachdem es zerstört wurde
-                String id = savedInstanceState.getString("id");
+                String id = savedInstanceState.getString("serverid");
                 this.kursID = id;
             }
         }

@@ -275,8 +275,8 @@ dbKurs.java</FONT>
 <a name="l253"><span class="ln">253  </span></a>     * </span><span class="s3">@getSchulStunden </span><span class="s2">gibt alle Schulstunden des Kurses zurück // Hier kommen die Relationships 
 <a name="l254"><span class="ln">254  </span></a>     * ins Spiel 
 <a name="l255"><span class="ln">255  </span></a>     */</span><span class="s1"> 
-<a name="l256"><span class="ln">256  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbSchulstunde&gt; getSchulStunden(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l257"><span class="ln">257  </span></a>        </span><span class="s0">return </span><span class="s1">dbSchulstunde.find(dbSchulstunde.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l256"><span class="ln">256  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbSchulstunde&gt; getSchulStunden(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l257"><span class="ln">257  </span></a>        </span><span class="s0">return </span><span class="s1">dbSchulstunde.find(dbSchulstunde.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l258"><span class="ln">258  </span></a>    } 
 <a name="l259"><span class="ln">259  </span></a> 
 <a name="l260"><span class="ln">260  </span></a>    </span><span class="s2">/** 
@@ -301,8 +301,8 @@ dbKurs.java</FONT>
 <a name="l279"><span class="ln">279  </span></a>     * </span><span class="s3">@getSchulStunden </span><span class="s2">gibt alle Aufgaben des Kurses zurück // Hier kommen die Relationships 
 <a name="l280"><span class="ln">280  </span></a>     * ins Spiel 
 <a name="l281"><span class="ln">281  </span></a>     */</span><span class="s1"> 
-<a name="l282"><span class="ln">282  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbAufgabe&gt; getAufgaben(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l283"><span class="ln">283  </span></a>        </span><span class="s0">return </span><span class="s1">find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l282"><span class="ln">282  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbAufgabe&gt; getAufgaben(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l283"><span class="ln">283  </span></a>        </span><span class="s0">return </span><span class="s1">find(dbAufgabe.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l284"><span class="ln">284  </span></a>    } 
 <a name="l285"><span class="ln">285  </span></a> 
 <a name="l286"><span class="ln">286  </span></a>    </span><span class="s2">/** 
@@ -315,14 +315,14 @@ dbKurs.java</FONT>
 <a name="l293"><span class="ln">293  </span></a>    } 
 <a name="l294"><span class="ln">294  </span></a> 
 <a name="l295"><span class="ln">295  </span></a>    </span><span class="s2">/** 
-<a name="l296"><span class="ln">296  </span></a>     * </span><span class="s3">@param </span><span class="s2">id ist die ID des Kurses durch den die Themenbereich herausgesucht werden 
+<a name="l296"><span class="ln">296  </span></a>     * </span><span class="s3">@param </span><span class="s2">serverid ist die ID des Kurses durch den die Themenbereich herausgesucht werden
 <a name="l297"><span class="ln">297  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt wenn Themenbereich vorhanden diesen zurück sonst null 
 <a name="l298"><span class="ln">298  </span></a>     * </span><span class="s3">@getThemenbereiche </span><span class="s2">gibt alle themenbereich eines Kurses zurück. Wichtig fü die erstellung des 
 <a name="l299"><span class="ln">299  </span></a>     * Quizes 
 <a name="l300"><span class="ln">300  </span></a>     */</span><span class="s1"> 
-<a name="l301"><span class="ln">301  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbThemenbereich&gt; getThemenbereiche(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l302"><span class="ln">302  </span></a>        </span><span class="s0">if </span><span class="s1">(find(dbThemenbereich.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(id)).size() != </span><span class="s5">0</span><span class="s1">) { 
-<a name="l303"><span class="ln">303  </span></a>            </span><span class="s0">return </span><span class="s1">find(dbThemenbereich.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l301"><span class="ln">301  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbThemenbereich&gt; getThemenbereiche(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l302"><span class="ln">302  </span></a>        </span><span class="s0">if </span><span class="s1">(find(dbThemenbereich.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(serverid)).size() != </span><span class="s5">0</span><span class="s1">) {
+<a name="l303"><span class="ln">303  </span></a>            </span><span class="s0">return </span><span class="s1">find(dbThemenbereich.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l304"><span class="ln">304  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
 <a name="l305"><span class="ln">305  </span></a>            </span><span class="s0">return null</span><span class="s1">; 
 <a name="l306"><span class="ln">306  </span></a>        } 
@@ -359,13 +359,13 @@ dbKurs.java</FONT>
 <a name="l337"><span class="ln">337  </span></a>    } 
 <a name="l338"><span class="ln">338  </span></a> 
 <a name="l339"><span class="ln">339  </span></a>    </span><span class="s2">/** 
-<a name="l340"><span class="ln">340  </span></a>     * </span><span class="s3">@param </span><span class="s2">id ist die ID des Kurses von dem die Tags rausgesucht werden soll 
+<a name="l340"><span class="ln">340  </span></a>     * </span><span class="s3">@param </span><span class="s2">serverid ist die ID des Kurses von dem die Tags rausgesucht werden soll
 <a name="l341"><span class="ln">341  </span></a>     * </span><span class="s3">@return </span><span class="s2">gibt eine Liste der Tags zurück falls der Kurs welchen besitzt sonst null 
 <a name="l342"><span class="ln">342  </span></a>     * </span><span class="s3">@getWebsiteTags </span><span class="s2">gibt alle Tags des Kurses zurück. Wichtig für das personalisierte Darstellen 
 <a name="l343"><span class="ln">343  </span></a>     * der Website Artikel 
 <a name="l344"><span class="ln">344  </span></a>     */</span><span class="s1"> 
-<a name="l345"><span class="ln">345  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbWebsiteTag&gt; getWebsiteTags(Long id) { 
-<a name="l346"><span class="ln">346  </span></a>        List&lt;dbWebsiteTag&gt; dbWebsiteTagList = dbWebsiteTag.find(dbWebsiteTag.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(id)); 
+<a name="l345"><span class="ln">345  </span></a>    </span><span class="s0">public </span><span class="s1">List&lt;dbWebsiteTag&gt; getWebsiteTags(Long serverid) {
+<a name="l346"><span class="ln">346  </span></a>        List&lt;dbWebsiteTag&gt; dbWebsiteTagList = dbWebsiteTag.find(dbWebsiteTag.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;kurs = ?&quot;</span><span class="s1">, String.valueOf(serverid));
 <a name="l347"><span class="ln">347  </span></a>        </span><span class="s0">if </span><span class="s1">(dbWebsiteTagList.size() &gt; </span><span class="s5">0</span><span class="s1">) { 
 <a name="l348"><span class="ln">348  </span></a>            </span><span class="s0">return </span><span class="s1">dbWebsiteTagList; 
 <a name="l349"><span class="ln">349  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 
@@ -379,7 +379,7 @@ dbKurs.java</FONT>
 <a name="l357"><span class="ln">357  </span></a>     * </span><span class="s3">@gerKursWithID </span><span class="s2">gibt einen Kurs zurück über die kursid der Datenbank 
 <a name="l358"><span class="ln">358  </span></a>     */</span><span class="s1"> 
 <a name="l359"><span class="ln">359  </span></a>    </span><span class="s0">public </span><span class="s1">dbKurs getKursWithID(</span><span class="s0">long </span><span class="s1">kursid) { 
-<a name="l360"><span class="ln">360  </span></a>        List&lt;dbKurs&gt; kursList = dbKurs.find(dbKurs.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;id = ?&quot;</span><span class="s1">, String.valueOf(kursid)); 
+<a name="l360"><span class="ln">360  </span></a>        List&lt;dbKurs&gt; kursList = dbKurs.find(dbKurs.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;serverid = ?&quot;</span><span class="s1">, String.valueOf(kursid));
 <a name="l361"><span class="ln">361  </span></a>        </span><span class="s0">if </span><span class="s1">(kursList.size() == </span><span class="s5">1</span><span class="s1">) { 
 <a name="l362"><span class="ln">362  </span></a>            </span><span class="s0">return </span><span class="s1">kursList.get(</span><span class="s5">0</span><span class="s1">); 
 <a name="l363"><span class="ln">363  </span></a>        } </span><span class="s0">else </span><span class="s1">{ 

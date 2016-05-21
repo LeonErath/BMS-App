@@ -14,7 +14,7 @@
     android:layout_marginBottom="16dp"
     app:cardElevation="10dp"
     android:layout_height="match_parent"
-    android:id="@+id/recycler_view">
+    android:serverid="@+serverid/recycler_view">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -24,11 +24,11 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:maxHeight="350dp"
-        android:id="@+id/imageView"
+        android:serverid="@+serverid/imageView"
        />
     <LinearLayout
         android:orientation="vertical"
-        android:layout_below="@+id/imageView"
+        android:layout_below="@+serverid/imageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp">
@@ -38,8 +38,8 @@
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Hier eine große Überschrift"
-        android:id="@+id/textViewHeadline"
-        android:layout_below="@+id/imageView"
+        android:serverid="@+serverid/textViewHeadline"
+        android:layout_below="@+serverid/imageView"
         />
         <RelativeLayout
             android:layout_marginTop="8dp"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Hier kommt ein langer Text rein der irgendwas über den Artikel aussagt aber sich kaum einer durchliest weil sich jeder nur das bild anguckt"
-        android:id="@+id/textViewExcerpt"
+        android:serverid="@+serverid/textViewExcerpt"
         android:maxLines="4"
         android:textSize="14dp"
         android:layout_margin="8dp" />
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Hier das Datum"
-            android:id="@+id/textViewDate"
+            android:serverid="@+serverid/textViewDate"
             android:layout_marginRight="8dp"
             android:layout_gravity="right" />
 

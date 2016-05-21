@@ -109,7 +109,7 @@ public class WebsiteArticleController {
                 //Erstellt die websiteArtikel
                 final WebsiteArtikel websiteArtikel = new WebsiteArtikel();
 
-                websiteArtikel.id = einzelnerPost.optInt("id");
+                websiteArtikel.id = einzelnerPost.optInt("serverid");
                 websiteArtikel.slug = einzelnerPost.optString("slug");
                 websiteArtikel.url = einzelnerPost.optString("url");
                 websiteArtikel.title = Html.fromHtml(einzelnerPost.optString("title")).toString();

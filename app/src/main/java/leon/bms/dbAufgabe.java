@@ -25,11 +25,49 @@ public class dbAufgabe extends SugarRecord {
     Boolean erledigt;
     String beschreibung;
     String notizen;
+    String titel;
     Integer priorität;
 
     // defining a relationship
     dbKurs kurs;
     dbMediaFile mediaFile;
+    dbUser user;
+
+
+    public dbAufgabe() {
+
+}
+
+    public dbAufgabe(String abgabeDatum, String erinnerungDate, String erstelltAm, String zuletztAktualisiert, Boolean erledigt, String beschreibung, String notizen, String titel, Integer priorität, dbKurs kurs, dbMediaFile mediaFile, dbUser user) {
+        this.abgabeDatum = abgabeDatum;
+        this.erinnerungDate = erinnerungDate;
+        this.erstelltAm = erstelltAm;
+        this.zuletztAktualisiert = zuletztAktualisiert;
+        this.erledigt = erledigt;
+        this.beschreibung = beschreibung;
+        this.notizen = notizen;
+        this.titel = titel;
+        this.priorität = priorität;
+        this.kurs = kurs;
+        this.mediaFile = mediaFile;
+        this.user = user;
+    }
+
+    public String getTitel() {
+        return titel;
+    }
+
+    public void setTitel(String titel) {
+        this.titel = titel;
+    }
+
+    public dbUser getUser() {
+        return user;
+    }
+
+    public void setUser(dbUser user) {
+        this.user = user;
+    }
 
     public dbKurs getKurs() {
         return kurs;
@@ -39,22 +77,9 @@ public class dbAufgabe extends SugarRecord {
         this.kurs = kurs;
     }
 
-    public dbAufgabe(String abgabeDatum, String erinnerungDate, String erstelltAm, String zuletztAktualisiert, Boolean erledigt, String beschreibung, String notizen, Integer priorität, dbKurs kurs, dbMediaFile mediaFile) {
-        this.abgabeDatum = abgabeDatum;
-        this.erinnerungDate = erinnerungDate;
-        this.erstelltAm = erstelltAm;
-        this.zuletztAktualisiert = zuletztAktualisiert;
-        this.erledigt = erledigt;
-        this.beschreibung = beschreibung;
-        this.notizen = notizen;
-        this.priorität = priorität;
-        this.kurs = kurs;
-        this.mediaFile = mediaFile;
-    }
 
-    public dbAufgabe() {
 
-    }
+
 
 
     public String getAbgabeDatum() {
@@ -158,12 +183,12 @@ public class dbAufgabe extends SugarRecord {
     }
 
     /**
-     * @param aufgabe übergibt eine Aufgabe über deren id überprüft wird ob sie erledigt ist
+     * @param aufgabe übergibt eine Aufgabe über deren serverid überprüft wird ob sie erledigt ist
      * @checkifErledigtAufgabe überprüft ob bestimmte Aufgabe ist erledigt oder nicht . Wichtig für das
      * richtig Anzeige der Aufgaben in Fragment_aufgabeÜbersicht
      */
     public Boolean checkIfErledigtAufgabe(dbAufgabe aufgabe) {
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "id = ?", String.valueOf(aufgabe.getId()));
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "serverid = ?", String.valueOf(aufgabe.getId()));
         return dbAufgabeList.get(0).erledigt;
     }
 
@@ -173,7 +198,7 @@ public class dbAufgabe extends SugarRecord {
      * @getAufgabe gibt Aufgabe einer bestimmer ID zurück
      */
     public dbAufgabe getAufgabe(long id) {
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "id = ?", String.valueOf(id));
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "serverid = ?", String.valueOf(id));
         return dbAufgabeList.get(0);
     }
 

@@ -125,7 +125,7 @@ AufgabenActivity.java</FONT>
 <a name="l102"><span class="ln">102  </span></a>        setContentView(R.layout.activity_aufgaben); 
 <a name="l103"><span class="ln">103  </span></a> 
 <a name="l104"><span class="ln">104  </span></a>        </span><span class="s2">// setUp der toolbar</span><span class="s1"> 
-<a name="l105"><span class="ln">105  </span></a>        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar); 
+<a name="l105"><span class="ln">105  </span></a>        Toolbar toolbar = (Toolbar) findViewById(R.serverid.toolbar);
 <a name="l106"><span class="ln">106  </span></a>        setSupportActionBar(toolbar); 
 <a name="l107"><span class="ln">107  </span></a>        toolbar.setNavigationIcon(R.drawable.ic_clear_white_24dp); 
 <a name="l108"><span class="ln">108  </span></a>        toolbar.setTitle(</span><span class="s5">&quot;Neue Aufgabe&quot;</span><span class="s1">); 
@@ -139,22 +139,22 @@ AufgabenActivity.java</FONT>
 <a name="l116"><span class="ln">116  </span></a>        </span><span class="s2">// Adapter bekommt die Kurseliste für die Anzeige der Kurse</span><span class="s1"> 
 <a name="l117"><span class="ln">117  </span></a>        photoAdapter = </span><span class="s0">new </span><span class="s1">PhotoAdapter(</span><span class="s0">this</span><span class="s1">, picturePaths); 
 <a name="l118"><span class="ln">118  </span></a>        </span><span class="s2">// setUp RecyclerView</span><span class="s1"> 
-<a name="l119"><span class="ln">119  </span></a>        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view); 
+<a name="l119"><span class="ln">119  </span></a>        RecyclerView recyclerView = (RecyclerView) findViewById(R.serverid.recycler_view);
 <a name="l120"><span class="ln">120  </span></a>        recyclerView.setAdapter(photoAdapter); 
 <a name="l121"><span class="ln">121  </span></a>        recyclerView.setItemAnimator(</span><span class="s0">new </span><span class="s1">DefaultItemAnimator()); 
 <a name="l122"><span class="ln">122  </span></a>        recyclerView.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(</span><span class="s0">this</span><span class="s1">, </span><span class="s4">0</span><span class="s1">, </span><span class="s0">false</span><span class="s1">)); 
 <a name="l123"><span class="ln">123  </span></a>        recyclerView.setHasFixedSize(</span><span class="s0">true</span><span class="s1">); 
 <a name="l124"><span class="ln">124  </span></a> 
 <a name="l125"><span class="ln">125  </span></a>        </span><span class="s2">// initiate FloatinActionButtons</span><span class="s1"> 
-<a name="l126"><span class="ln">126  </span></a>        fabCamera = (FloatingActionButton) findViewById(R.id.fabCamera); 
-<a name="l127"><span class="ln">127  </span></a>        fabGallarie = (FloatingActionButton) findViewById(R.id.fabGallarie); 
+<a name="l126"><span class="ln">126  </span></a>        fabCamera = (FloatingActionButton) findViewById(R.serverid.fabCamera);
+<a name="l127"><span class="ln">127  </span></a>        fabGallarie = (FloatingActionButton) findViewById(R.serverid.fabGallarie);
 <a name="l128"><span class="ln">128  </span></a>        </span><span class="s2">// prepare FloatingActionButton for Animation</span><span class="s1"> 
 <a name="l129"><span class="ln">129  </span></a>        fabCamera.setAlpha(</span><span class="s4">0f</span><span class="s1">); 
 <a name="l130"><span class="ln">130  </span></a>        fabGallarie.setAlpha(</span><span class="s4">0f</span><span class="s1">); 
 <a name="l131"><span class="ln">131  </span></a>        fabCamera.animate().translationY(-</span><span class="s4">72</span><span class="s1">).setDuration(</span><span class="s4">0</span><span class="s1">).setInterpolator(</span><span class="s0">new </span><span class="s1">AccelerateDecelerateInterpolator()); 
 <a name="l132"><span class="ln">132  </span></a>        fabGallarie.animate().translationY(-</span><span class="s4">200</span><span class="s1">).setDuration(</span><span class="s4">0</span><span class="s1">); 
 <a name="l133"><span class="ln">133  </span></a>        </span><span class="s2">// appply Animation on OnClick</span><span class="s1"> 
-<a name="l134"><span class="ln">134  </span></a>        fabAnimate = (FloatingActionButton) findViewById(R.id.fabAnimate); 
+<a name="l134"><span class="ln">134  </span></a>        fabAnimate = (FloatingActionButton) findViewById(R.serverid.fabAnimate);
 <a name="l135"><span class="ln">135  </span></a>        fabAnimate.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
 <a name="l136"><span class="ln">136  </span></a>            @Override 
 <a name="l137"><span class="ln">137  </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
@@ -240,9 +240,9 @@ AufgabenActivity.java</FONT>
 <a name="l217"><span class="ln">217  </span></a>        }); 
 <a name="l218"><span class="ln">218  </span></a> 
 <a name="l219"><span class="ln">219  </span></a>        </span><span class="s2">// initiate views</span><span class="s1"> 
-<a name="l220"><span class="ln">220  </span></a>        editTextBeschreibung = (EditText) findViewById(R.id.editTextBeschreibung); 
-<a name="l221"><span class="ln">221  </span></a>        editTextNotizen = (EditText) findViewById(R.id.editTextNotizen); 
-<a name="l222"><span class="ln">222  </span></a>        textViewDatePicker = (TextView) findViewById(R.id.textViewDatePicker); 
+<a name="l220"><span class="ln">220  </span></a>        editTextBeschreibung = (EditText) findViewById(R.serverid.editTextBeschreibung);
+<a name="l221"><span class="ln">221  </span></a>        editTextNotizen = (EditText) findViewById(R.serverid.editTextNotizen);
+<a name="l222"><span class="ln">222  </span></a>        textViewDatePicker = (TextView) findViewById(R.serverid.textViewDatePicker);
 <a name="l223"><span class="ln">223  </span></a> 
 <a name="l224"><span class="ln">224  </span></a> 
 <a name="l225"><span class="ln">225  </span></a>        </span><span class="s2">// Listener für das auswählen eines Datums</span><span class="s1"> 
@@ -294,11 +294,11 @@ AufgabenActivity.java</FONT>
 <a name="l271"><span class="ln">271  </span></a>        }); 
 <a name="l272"><span class="ln">272  </span></a> 
 <a name="l273"><span class="ln">273  </span></a>        </span><span class="s2">// setUp der Kursauswahl für die Aufgaben</span><span class="s1"> 
-<a name="l274"><span class="ln">274  </span></a>        spinner = (Spinner) findViewById(R.id.spinner2); 
+<a name="l274"><span class="ln">274  </span></a>        spinner = (Spinner) findViewById(R.serverid.spinner2);
 <a name="l275"><span class="ln">275  </span></a>        </span><span class="s2">// Liste mit alle ausgewählten Kursen wird rausgesucht</span><span class="s1"> 
 <a name="l276"><span class="ln">276  </span></a>        List&lt;dbKurs&gt; allActiveKurse = </span><span class="s0">new </span><span class="s1">dbKurs().getAllActiveKurse(); 
 <a name="l277"><span class="ln">277  </span></a>        </span><span class="s2">// Spinner wird mit der Liste konfiguriert</span><span class="s1"> 
-<a name="l278"><span class="ln">278  </span></a>        ArrayAdapter&lt;String&gt; spinnerAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(</span><span class="s0">this</span><span class="s1">, android.R.layout.simple_spinner_item, android.R.id.text1); 
+<a name="l278"><span class="ln">278  </span></a>        ArrayAdapter&lt;String&gt; spinnerAdapter = </span><span class="s0">new </span><span class="s1">ArrayAdapter&lt;String&gt;(</span><span class="s0">this</span><span class="s1">, android.R.layout.simple_spinner_item, android.R.serverid.text1);
 <a name="l279"><span class="ln">279  </span></a>        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); 
 <a name="l280"><span class="ln">280  </span></a>        spinner.setAdapter(spinnerAdapter); 
 <a name="l281"><span class="ln">281  </span></a>        </span><span class="s0">for </span><span class="s1">(dbKurs kurs : allActiveKurse) { 
@@ -309,7 +309,7 @@ AufgabenActivity.java</FONT>
 <a name="l286"><span class="ln">286  </span></a>        </span><span class="s2">// @setOnItemSelectedListener wird ausgelöst wenn ein Kurs ausgewählt wurde</span><span class="s1"> 
 <a name="l287"><span class="ln">287  </span></a>        spinner.setOnItemSelectedListener(</span><span class="s0">new </span><span class="s1">AdapterView.OnItemSelectedListener() { 
 <a name="l288"><span class="ln">288  </span></a>            @Override 
-<a name="l289"><span class="ln">289  </span></a>            </span><span class="s0">public void </span><span class="s1">onItemSelected(AdapterView&lt;?&gt; parent, View view, </span><span class="s0">int </span><span class="s1">position, </span><span class="s0">long </span><span class="s1">id) { 
+<a name="l289"><span class="ln">289  </span></a>            </span><span class="s0">public void </span><span class="s1">onItemSelected(AdapterView&lt;?&gt; parent, View view, </span><span class="s0">int </span><span class="s1">position, </span><span class="s0">long </span><span class="s1">serverid) {
 <a name="l290"><span class="ln">290  </span></a>                </span><span class="s2">// name des Kurses wird in selectedItem gespeichert</span><span class="s1"> 
 <a name="l291"><span class="ln">291  </span></a>                selectedItem = parent.getItemAtPosition(position).toString(); 
 <a name="l292"><span class="ln">292  </span></a>                </span><span class="s2">// Dem User wird mitgeteilt welchen Kurs er ausgewählt hat</span><span class="s1"> 
@@ -328,8 +328,8 @@ AufgabenActivity.java</FONT>
 <a name="l305"><span class="ln">305  </span></a>        Intent intent = getIntent(); 
 <a name="l306"><span class="ln">306  </span></a>        Bundle extras = intent.getExtras(); 
 <a name="l307"><span class="ln">307  </span></a>        </span><span class="s0">if </span><span class="s1">(extras != </span><span class="s0">null</span><span class="s1">) { 
-<a name="l308"><span class="ln">308  </span></a>            Long id = intent.getLongExtra(</span><span class="s5">&quot;id&quot;</span><span class="s1">, </span><span class="s4">0</span><span class="s1">); 
-<a name="l309"><span class="ln">309  </span></a>            aufgabeLoad = </span><span class="s0">new </span><span class="s1">dbAufgabe().getAufgabe(id); 
+<a name="l308"><span class="ln">308  </span></a>            Long serverid = intent.getLongExtra(</span><span class="s5">&quot;serverid&quot;</span><span class="s1">, </span><span class="s4">0</span><span class="s1">);
+<a name="l309"><span class="ln">309  </span></a>            aufgabeLoad = </span><span class="s0">new </span><span class="s1">dbAufgabe().getAufgabe(serverid);
 <a name="l310"><span class="ln">310  </span></a>            </span><span class="s2">// check if aufgabe got load successfully</span><span class="s1"> 
 <a name="l311"><span class="ln">311  </span></a>            </span><span class="s0">if </span><span class="s1">(aufgabeLoad != </span><span class="s0">null</span><span class="s1">) { 
 <a name="l312"><span class="ln">312  </span></a> 
@@ -370,7 +370,7 @@ AufgabenActivity.java</FONT>
 <a name="l347"><span class="ln">347  </span></a> 
 <a name="l348"><span class="ln">348  </span></a> 
 <a name="l349"><span class="ln">349  </span></a>        } 
-<a name="l350"><span class="ln">350  </span></a>        findViewById(R.id.toolbar).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+<a name="l350"><span class="ln">350  </span></a>        findViewById(R.serverid.toolbar).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {
 <a name="l351"><span class="ln">351  </span></a>            @Override 
 <a name="l352"><span class="ln">352  </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
 <a name="l353"><span class="ln">353  </span></a>                </span><span class="s2">// if back Button gets pressed</span><span class="s1"> 
@@ -449,11 +449,11 @@ AufgabenActivity.java</FONT>
 <a name="l426"><span class="ln">426  </span></a>    </span><span class="s0">public boolean </span><span class="s1">onOptionsItemSelected(MenuItem item) { 
 <a name="l427"><span class="ln">427  </span></a>        </span><span class="s0">switch </span><span class="s1">(item.getItemId()) { 
 <a name="l428"><span class="ln">428  </span></a>            </span><span class="s2">//wenn home geclickt wird soll er die Activity schließen</span><span class="s1"> 
-<a name="l429"><span class="ln">429  </span></a>            </span><span class="s0">case </span><span class="s1">android.R.id.home: 
+<a name="l429"><span class="ln">429  </span></a>            </span><span class="s0">case </span><span class="s1">android.R.serverid.home:
 <a name="l430"><span class="ln">430  </span></a>                exitAcitivity(); 
 <a name="l431"><span class="ln">431  </span></a>                </span><span class="s0">return true</span><span class="s1">; 
 <a name="l432"><span class="ln">432  </span></a>            </span><span class="s2">//wenn menu_finnish geclickt wird , wird die Aufgabe gespeichert</span><span class="s1"> 
-<a name="l433"><span class="ln">433  </span></a>            </span><span class="s0">case </span><span class="s1">R.id.menu_finnish: 
+<a name="l433"><span class="ln">433  </span></a>            </span><span class="s0">case </span><span class="s1">R.serverid.menu_finnish:
 <a name="l434"><span class="ln">434  </span></a> 
 <a name="l435"><span class="ln">435  </span></a>                dateCalendar = Calendar.getInstance(); 
 <a name="l436"><span class="ln">436  </span></a>                </span><span class="s2">// es wird überprüft ob alle notwendigen Daten ausgefüllt worden sind</span><span class="s1"> 
@@ -616,7 +616,7 @@ AufgabenActivity.java</FONT>
 <a name="l593"><span class="ln">593  </span></a>        @Override 
 <a name="l594"><span class="ln">594  </span></a>        </span><span class="s0">public boolean </span><span class="s1">onActionItemClicked(ActionMode mode, MenuItem item) { 
 <a name="l595"><span class="ln">595  </span></a>            </span><span class="s0">switch </span><span class="s1">(item.getItemId()) { 
-<a name="l596"><span class="ln">596  </span></a>                </span><span class="s0">case </span><span class="s1">R.id.menu_delete: 
+<a name="l596"><span class="ln">596  </span></a>                </span><span class="s0">case </span><span class="s1">R.serverid.menu_delete:
 <a name="l597"><span class="ln">597  </span></a>                    List&lt;Integer&gt; photoPositions = photoAdapter.getSelectedItems(); 
 <a name="l598"><span class="ln">598  </span></a>                    </span><span class="s0">for </span><span class="s1">(Integer i : photoPositions) { 
 <a name="l599"><span class="ln">599  </span></a>                        photoAdapter.removeItem(i); 

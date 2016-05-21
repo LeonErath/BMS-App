@@ -23,6 +23,7 @@ public class dbRaum extends SugarRecord {
     // defining a relationship
     dbKlausur klausur;
     dbSchulstunde stunden;
+    dbVertretung vertretung;
 
     public dbRaum() {
         //empty Contructor needed!

@@ -144,9 +144,9 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
                     List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
                     switch (which) {
                         case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
                             Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("id", aufgabe.getId());
+                            intent.putExtra("serverid", aufgabe.getId());
                             startActivity(intent);
                             break;
                         case R.id.share:
@@ -198,9 +198,9 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
                     List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
                     switch (which) {
                         case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
                             Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("id", aufgabe.getId());
+                            intent.putExtra("serverid", aufgabe.getId());
                             startActivity(intent);
                             break;
                         case R.id.share:
@@ -262,9 +262,9 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
                     List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
                     switch (which) {
                         case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
                             Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("id", aufgabe.getId());
+                            intent.putExtra("serverid", aufgabe.getId());
                             startActivity(intent);
                             break;
                         case R.id.share:
@@ -316,7 +316,7 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
                     List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
                     switch (which) {
                         case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
                             Intent intent = new Intent(getActivity(), AufgabenActivity.class);
                             intent.putExtra("Beschreibung", aufgabe.beschreibung);
                             intent.putExtra("Notizen", aufgabe.notizen);

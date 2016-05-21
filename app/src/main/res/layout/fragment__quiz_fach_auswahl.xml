@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:text="Zurück"
             android:layout_gravity="center_vertical"
-            android:id="@+id/buttonBack"
+            android:serverid="@+serverid/buttonBack"
             android:background="@color/colorPrimary"
             />
         <TextView
@@ -42,13 +42,13 @@
             android:layout_height="wrap_content"
             android:text="Beenden"
             android:layout_gravity="center_vertical"
-            android:id="@+id/buttonQuit"
+            android:serverid="@+serverid/buttonQuit"
             android:background="@color/colorPrimary"
             />
 
 </LinearLayout>
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:serverid="@+serverid/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

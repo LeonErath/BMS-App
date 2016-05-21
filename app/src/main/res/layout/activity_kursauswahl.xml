@@ -9,20 +9,20 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/AppBarLayout"
+        android:serverid="@+serverid/AppBarLayout"
         android:theme="@style/AppTheme.AppBarOverlay">
     <android.support.v7.widget.Toolbar
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:id="@+id/toolbar"
+        android:serverid="@+serverid/toolbar"
         android:background="@color/colorPrimary"
 
         />
     </android.support.design.widget.AppBarLayout>
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/AppBarLayout"
-        android:id="@+id/recycler_view"
+        android:layout_below="@+serverid/AppBarLayout"
+        android:serverid="@+serverid/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

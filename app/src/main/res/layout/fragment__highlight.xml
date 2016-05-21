@@ -1,13 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/linearlayout"
+    android:serverid="@+serverid/linearlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="leon.bms.Fragment_Highlight">
 
     <android.support.v4.widget.NestedScrollView
-        android:id="@+id/nestedScroll"
+        android:serverid="@+serverid/nestedScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -20,7 +20,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView2"
+                android:serverid="@+serverid/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -29,7 +29,7 @@
                 android:textColor="#fff" />
 
             <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/cardView"
+                android:serverid="@+serverid/cardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#c1ffffff"
@@ -43,7 +43,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textViewNumber"
+                        android:serverid="@+serverid/textViewNumber"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -54,30 +54,30 @@
                         android:textSize="25dp" />
 
                     <TextView
-                        android:id="@+id/textViewStunde"
+                        android:serverid="@+serverid/textViewStunde"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_toEndOf="@+id/textViewNumber"
-                        android:layout_toStartOf="@+id/textViewRaum"
+                        android:layout_toEndOf="@+serverid/textViewNumber"
+                        android:layout_toStartOf="@+serverid/textViewRaum"
                         android:text="Stundenname"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/textViewLehrer"
+                        android:serverid="@+serverid/textViewLehrer"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textViewStunde"
+                        android:layout_below="@+serverid/textViewStunde"
                         android:layout_marginRight="8dp"
-                        android:layout_toEndOf="@+id/textViewNumber"
-                        android:layout_toStartOf="@+id/textViewRaum"
+                        android:layout_toEndOf="@+serverid/textViewNumber"
+                        android:layout_toStartOf="@+serverid/textViewRaum"
                         android:text="Lehrer"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textSize="14dp" />
 
                     <TextView
-                        android:id="@+id/textViewRaum"
+                        android:serverid="@+serverid/textViewRaum"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -90,7 +90,7 @@
             </android.support.v7.widget.CardView>
 
             <TextView
-                android:id="@+id/textView4"
+                android:serverid="@+serverid/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
@@ -99,7 +99,7 @@
                 android:textColor="#fff" />
 
             <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/cardView2"
+                android:serverid="@+serverid/cardView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="#c1ffffff"
@@ -113,7 +113,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textViewNumber2"
+                        android:serverid="@+serverid/textViewNumber2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -124,30 +124,30 @@
                         android:textSize="25dp" />
 
                     <TextView
-                        android:id="@+id/textViewStunde2"
+                        android:serverid="@+serverid/textViewStunde2"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="8dp"
-                        android:layout_toEndOf="@+id/textViewNumber2"
-                        android:layout_toStartOf="@+id/textViewRaum2"
+                        android:layout_toEndOf="@+serverid/textViewNumber2"
+                        android:layout_toStartOf="@+serverid/textViewRaum2"
                         android:text="Stundenname"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="#000000" />
 
                     <TextView
-                        android:id="@+id/textViewLehrer2"
+                        android:serverid="@+serverid/textViewLehrer2"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textViewStunde2"
+                        android:layout_below="@+serverid/textViewStunde2"
                         android:layout_marginRight="8dp"
-                        android:layout_toEndOf="@+id/textViewNumber2"
-                        android:layout_toStartOf="@+id/textViewRaum2"
+                        android:layout_toEndOf="@+serverid/textViewNumber2"
+                        android:layout_toStartOf="@+serverid/textViewRaum2"
                         android:text="Lehrer"
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textSize="14dp" />
 
                     <TextView
-                        android:id="@+id/textViewRaum2"
+                        android:serverid="@+serverid/textViewRaum2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -160,7 +160,7 @@
             </android.support.v7.widget.CardView>
 
             <TextView
-                android:id="@+id/textView3"
+                android:serverid="@+serverid/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -171,7 +171,7 @@
                 android:textColor="#fff" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+                android:serverid="@+serverid/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>

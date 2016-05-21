@@ -16,8 +16,8 @@ import java.util.Date;
 public class dbKlausuraufsicht extends SugarRecord {
 
     //Datensätze der Klausuraufsicht
-    Date fromDate;
-    Date toDate;
+    String start;
+    String end;
 
     // defining a relationship
     dbKlausur klausur;
@@ -27,27 +27,42 @@ public class dbKlausuraufsicht extends SugarRecord {
         //empty Constructor needed!
     }
 
-    public dbKlausuraufsicht(Date fromDate, Date toDate) {
-
-        this.fromDate = fromDate;
-        this.toDate = toDate;
+    public dbKlausuraufsicht(String start, String end, dbKlausur klausur, dbLehrer lehrer) {
+        this.start = start;
+        this.end = end;
+        this.klausur = klausur;
+        this.lehrer = lehrer;
     }
 
-    public Date getFromDate() {
-        return fromDate;
+    public String getStart() {
+        return start;
     }
 
-    public void setFromDate(Date fromDate) {
-        this.fromDate = fromDate;
+    public void setStart(String start) {
+        this.start = start;
     }
 
-    public Date getToDate() {
-        return toDate;
+    public String getEnd() {
+        return end;
     }
 
-    public void setToDate(Date toDate) {
-        this.toDate = toDate;
+    public void setEnd(String end) {
+        this.end = end;
     }
 
+    public dbKlausur getKlausur() {
+        return klausur;
+    }
 
+    public void setKlausur(dbKlausur klausur) {
+        this.klausur = klausur;
+    }
+
+    public dbLehrer getLehrer() {
+        return lehrer;
+    }
+
+    public void setLehrer(dbLehrer lehrer) {
+        this.lehrer = lehrer;
+    }
 }

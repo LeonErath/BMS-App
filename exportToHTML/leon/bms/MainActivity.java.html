@@ -82,12 +82,12 @@ MainActivity.java</FONT>
 <a name="l60"><span class="ln">60   </span></a>        tabIcons = </span><span class="s0">new int</span><span class="s1">[]{R.drawable.ic_done_white_24dp, R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_timeline_white_24dp}; 
 <a name="l61"><span class="ln">61   </span></a> 
 <a name="l62"><span class="ln">62   </span></a>        </span><span class="s2">//setUp Toolbar</span><span class="s1"> 
-<a name="l63"><span class="ln">63   </span></a>        toolbar = (Toolbar) findViewById(R.id.toolbar); 
+<a name="l63"><span class="ln">63   </span></a>        toolbar = (Toolbar) findViewById(R.serverid.toolbar);
 <a name="l64"><span class="ln">64   </span></a>        setSupportActionBar(toolbar); 
 <a name="l65"><span class="ln">65   </span></a>        getSupportActionBar().setTitle(</span><span class="s5">&quot;Highlights&quot;</span><span class="s1">); 
 <a name="l66"><span class="ln">66   </span></a> 
 <a name="l67"><span class="ln">67   </span></a>        </span><span class="s2">//setUP Drawerlayout</span><span class="s1"> 
-<a name="l68"><span class="ln">68   </span></a>        drawerLayoutgesamt = (DrawerLayout) findViewById(R.id.drawerlayoutgesamt); 
+<a name="l68"><span class="ln">68   </span></a>        drawerLayoutgesamt = (DrawerLayout) findViewById(R.serverid.drawerlayoutgesamt);
 <a name="l69"><span class="ln">69   </span></a>        drawerToggle = </span><span class="s0">new </span><span class="s1">ActionBarDrawerToggle(MainActivity.</span><span class="s0">this</span><span class="s1">, drawerLayoutgesamt, R.string.auf, R.string.zu); 
 <a name="l70"><span class="ln">70   </span></a>        drawerLayoutgesamt.setDrawerListener(drawerToggle); 
 <a name="l71"><span class="ln">71   </span></a> 
@@ -95,46 +95,46 @@ MainActivity.java</FONT>
 <a name="l73"><span class="ln">73   </span></a>        drawerToggle.syncState(); 
 <a name="l74"><span class="ln">74   </span></a> 
 <a name="l75"><span class="ln">75   </span></a>        </span><span class="s2">//applying CollapsingToolbar</span><span class="s1"> 
-<a name="l76"><span class="ln">76   </span></a>        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar); 
+<a name="l76"><span class="ln">76   </span></a>        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.serverid.collapsing_toolbar);
 <a name="l77"><span class="ln">77   </span></a>        collapsingToolbarLayout.setTitle(</span><span class="s5">&quot;Hightlights&quot;</span><span class="s1">); 
 <a name="l78"><span class="ln">78   </span></a> 
-<a name="l79"><span class="ln">79   </span></a>        textViewTitle = (TextView) findViewById(R.id.textViewTitle); 
+<a name="l79"><span class="ln">79   </span></a>        textViewTitle = (TextView) findViewById(R.serverid.textViewTitle);
 <a name="l80"><span class="ln">80   </span></a>        textViewTitle.setText(</span><span class="s5">&quot;Highlights&quot;</span><span class="s1">); 
 <a name="l81"><span class="ln">81   </span></a> 
-<a name="l82"><span class="ln">82   </span></a>        appBarLayout = (AppBarLayout) findViewById(R.id.AppBarLayout); 
+<a name="l82"><span class="ln">82   </span></a>        appBarLayout = (AppBarLayout) findViewById(R.serverid.AppBarLayout);
 <a name="l83"><span class="ln">83   </span></a> 
 <a name="l84"><span class="ln">84   </span></a> 
 <a name="l85"><span class="ln">85   </span></a>        </span><span class="s2">//viewpager for tablayout and to switch between the Fragments</span><span class="s1"> 
-<a name="l86"><span class="ln">86   </span></a>        viewPager = (ViewPager) findViewById(R.id.viewpager); 
+<a name="l86"><span class="ln">86   </span></a>        viewPager = (ViewPager) findViewById(R.serverid.viewpager);
 <a name="l87"><span class="ln">87   </span></a>        </span><span class="s0">final </span><span class="s1">ViewPagerAdapterMain viewPagerAdapter = </span><span class="s0">new </span><span class="s1">ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager); 
 <a name="l88"><span class="ln">88   </span></a>        viewPager.setAdapter(viewPagerAdapter); 
-<a name="l89"><span class="ln">89   </span></a>        tabLayout = (TabLayout) findViewById(R.id.tablayout); </span><span class="s2">//tabaylout</span><span class="s1"> 
+<a name="l89"><span class="ln">89   </span></a>        tabLayout = (TabLayout) findViewById(R.serverid.tablayout); </span><span class="s2">//tabaylout</span><span class="s1">
 <a name="l90"><span class="ln">90   </span></a>        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL); </span><span class="s2">//tabs fill the width</span><span class="s1"> 
 <a name="l91"><span class="ln">91   </span></a>        tabLayout.setupWithViewPager(viewPager); 
 <a name="l92"><span class="ln">92   </span></a>        setupTabLayout(tabLayout); 
-<a name="l93"><span class="ln">93   </span></a>        findViewById(R.id.toolbar).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+<a name="l93"><span class="ln">93   </span></a>        findViewById(R.serverid.toolbar).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {
 <a name="l94"><span class="ln">94   </span></a>            @Override 
 <a name="l95"><span class="ln">95   </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
 <a name="l96"><span class="ln">96   </span></a>                startActivity(</span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, KursauswahlActivity.</span><span class="s0">class</span><span class="s1">)); 
 <a name="l97"><span class="ln">97   </span></a>            } 
 <a name="l98"><span class="ln">98   </span></a>        }); 
-<a name="l99"><span class="ln">99   </span></a>        findViewById(R.id.tablayout).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+<a name="l99"><span class="ln">99   </span></a>        findViewById(R.serverid.tablayout).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {
 <a name="l100"><span class="ln">100  </span></a>            @Override 
 <a name="l101"><span class="ln">101  </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
 <a name="l102"><span class="ln">102  </span></a>                startActivity(</span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, AufgabenActivity.</span><span class="s0">class</span><span class="s1">)); 
 <a name="l103"><span class="ln">103  </span></a>            } 
 <a name="l104"><span class="ln">104  </span></a>        }); 
-<a name="l105"><span class="ln">105  </span></a>        findViewById(R.id.viewpager).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() { 
+<a name="l105"><span class="ln">105  </span></a>        findViewById(R.serverid.viewpager).setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {
 <a name="l106"><span class="ln">106  </span></a>            @Override 
 <a name="l107"><span class="ln">107  </span></a>            </span><span class="s0">public void </span><span class="s1">onClick(View v) { 
 <a name="l108"><span class="ln">108  </span></a>                startActivity(</span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, WebsiteArticleActivity.</span><span class="s0">class</span><span class="s1">)); 
 <a name="l109"><span class="ln">109  </span></a>            } 
 <a name="l110"><span class="ln">110  </span></a>        }); 
 <a name="l111"><span class="ln">111  </span></a> 
-<a name="l112"><span class="ln">112  </span></a>        navigationView = (NavigationView) findViewById(R.id.navView); 
+<a name="l112"><span class="ln">112  </span></a>        navigationView = (NavigationView) findViewById(R.serverid.navView);
 <a name="l113"><span class="ln">113  </span></a>        View headerLayout = navigationView.getHeaderView(</span><span class="s4">0</span><span class="s1">); 
-<a name="l114"><span class="ln">114  </span></a>        textViewHeaderName = (TextView) headerLayout.findViewById(R.id.headerName); 
-<a name="l115"><span class="ln">115  </span></a>        textViewHeaderDatum = (TextView) headerLayout.findViewById(R.id.headerEmail); 
+<a name="l114"><span class="ln">114  </span></a>        textViewHeaderName = (TextView) headerLayout.findViewById(R.serverid.headerName);
+<a name="l115"><span class="ln">115  </span></a>        textViewHeaderDatum = (TextView) headerLayout.findViewById(R.serverid.headerEmail);
 <a name="l116"><span class="ln">116  </span></a> 
 <a name="l117"><span class="ln">117  </span></a>        textViewHeaderName.setText(</span><span class="s0">new </span><span class="s1">dbUser().getUser().vorname + </span><span class="s5">&quot; &quot; </span><span class="s1">+ </span><span class="s0">new </span><span class="s1">dbUser().getUser().nachname); 
 <a name="l118"><span class="ln">118  </span></a>        textViewHeaderDatum.setText(</span><span class="s5">&quot;Deine Stufe: &quot; </span><span class="s1">+ </span><span class="s0">new </span><span class="s1">dbUser().getUser().stufe); 
@@ -145,11 +145,11 @@ MainActivity.java</FONT>
 <a name="l123"><span class="ln">123  </span></a>            @Override 
 <a name="l124"><span class="ln">124  </span></a>            </span><span class="s0">public boolean </span><span class="s1">onNavigationItemSelected(MenuItem item) { 
 <a name="l125"><span class="ln">125  </span></a>                </span><span class="s0">switch </span><span class="s1">(item.getItemId()) { 
-<a name="l126"><span class="ln">126  </span></a>                    </span><span class="s0">case </span><span class="s1">R.id.drawerViewItemHome: { 
+<a name="l126"><span class="ln">126  </span></a>                    </span><span class="s0">case </span><span class="s1">R.serverid.drawerViewItemHome: {
 <a name="l127"><span class="ln">127  </span></a>                        </span><span class="s0">break</span><span class="s1">; 
 <a name="l128"><span class="ln">128  </span></a>                    } 
 <a name="l129"><span class="ln">129  </span></a> 
-<a name="l130"><span class="ln">130  </span></a>                    </span><span class="s0">case </span><span class="s1">R.id.drawerViewItemQuiz: { 
+<a name="l130"><span class="ln">130  </span></a>                    </span><span class="s0">case </span><span class="s1">R.serverid.drawerViewItemQuiz: {
 <a name="l131"><span class="ln">131  </span></a>                        Intent intent3 = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this</span><span class="s1">, QuizActivity.</span><span class="s0">class</span><span class="s1">); 
 <a name="l132"><span class="ln">132  </span></a>                        startActivity(intent3); 
 <a name="l133"><span class="ln">133  </span></a>                        </span><span class="s0">break</span><span class="s1">; 
@@ -267,15 +267,15 @@ MainActivity.java</FONT>
 <a name="l245"><span class="ln">245  </span></a>        </span><span class="s2">// Handle action bar item clicks here. The action bar will</span><span class="s1"> 
 <a name="l246"><span class="ln">246  </span></a>        </span><span class="s2">// automatically handle clicks on the Home/Up button, so long</span><span class="s1"> 
 <a name="l247"><span class="ln">247  </span></a>        </span><span class="s2">// as you specify a parent activity in AndroidManifest.xml.</span><span class="s1"> 
-<a name="l248"><span class="ln">248  </span></a>        </span><span class="s0">int </span><span class="s1">id = item.getItemId(); 
+<a name="l248"><span class="ln">248  </span></a>        </span><span class="s0">int </span><span class="s1">serverid = item.getItemId();
 <a name="l249"><span class="ln">249  </span></a>        </span><span class="s0">if </span><span class="s1">(drawerToggle.onOptionsItemSelected(item)) { 
 <a name="l250"><span class="ln">250  </span></a>            </span><span class="s0">return true</span><span class="s1">; 
 <a name="l251"><span class="ln">251  </span></a>        } 
-<a name="l252"><span class="ln">252  </span></a>        </span><span class="s0">switch </span><span class="s1">(id) { 
-<a name="l253"><span class="ln">253  </span></a>            </span><span class="s0">case </span><span class="s1">R.id.action_settings: 
+<a name="l252"><span class="ln">252  </span></a>        </span><span class="s0">switch </span><span class="s1">(serverid) {
+<a name="l253"><span class="ln">253  </span></a>            </span><span class="s0">case </span><span class="s1">R.serverid.action_settings:
 <a name="l254"><span class="ln">254  </span></a>                </span><span class="s2">// TODO ADD Settings</span><span class="s1"> 
 <a name="l255"><span class="ln">255  </span></a>                </span><span class="s0">return true</span><span class="s1">; 
-<a name="l256"><span class="ln">256  </span></a>            </span><span class="s0">case </span><span class="s1">R.id.action_logout: 
+<a name="l256"><span class="ln">256  </span></a>            </span><span class="s0">case </span><span class="s1">R.serverid.action_logout:
 <a name="l257"><span class="ln">257  </span></a>                </span><span class="s2">// User wird augeloggt</span><span class="s1"> 
 <a name="l258"><span class="ln">258  </span></a>                dbUser user = </span><span class="s0">new </span><span class="s1">dbUser().getUser(); 
 <a name="l259"><span class="ln">259  </span></a>                user.loggedIn = </span><span class="s0">false</span><span class="s1">; 
@@ -284,14 +284,14 @@ MainActivity.java</FONT>
 <a name="l262"><span class="ln">262  </span></a>                startActivity(intent1); 
 <a name="l263"><span class="ln">263  </span></a>                finish(); 
 <a name="l264"><span class="ln">264  </span></a>                </span><span class="s0">return true</span><span class="s1">; 
-<a name="l265"><span class="ln">265  </span></a>            </span><span class="s0">case </span><span class="s1">R.id.action_reset: 
+<a name="l265"><span class="ln">265  </span></a>            </span><span class="s0">case </span><span class="s1">R.serverid.action_reset:
 <a name="l266"><span class="ln">266  </span></a>                </span><span class="s2">// daten werden gelöscht</span><span class="s1"> 
 <a name="l267"><span class="ln">267  </span></a>                deleteDB(); 
 <a name="l268"><span class="ln">268  </span></a>                Intent intent2 = </span><span class="s0">new </span><span class="s1">Intent(</span><span class="s0">this</span><span class="s1">, LogInActivity.</span><span class="s0">class</span><span class="s1">); 
 <a name="l269"><span class="ln">269  </span></a>                startActivity(intent2); 
 <a name="l270"><span class="ln">270  </span></a>                finish(); 
 <a name="l271"><span class="ln">271  </span></a>                </span><span class="s0">return true</span><span class="s1">; 
-<a name="l272"><span class="ln">272  </span></a>            </span><span class="s0">case </span><span class="s1">R.id.menu_add: 
+<a name="l272"><span class="ln">272  </span></a>            </span><span class="s0">case </span><span class="s1">R.serverid.menu_add:
 <a name="l273"><span class="ln">273  </span></a>                </span><span class="s2">// neue Aufgabe wird erstellt bzw AufgabenActivity wird geladen</span><span class="s1"> 
 <a name="l274"><span class="ln">274  </span></a>                Toast.makeText(MainActivity.</span><span class="s0">this</span><span class="s1">, </span><span class="s5">&quot;clicked&quot;</span><span class="s1">, Toast.LENGTH_SHORT).show(); 
 <a name="l275"><span class="ln">275  </span></a>                ActivityOptionsCompat activityOptionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(</span><span class="s0">this</span><span class="s1">, </span><span class="s0">null</span><span class="s1">); 

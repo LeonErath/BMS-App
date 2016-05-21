@@ -114,12 +114,12 @@ public class dbThemenbereich extends SugarRecord {
     }
 
     /**
-     * @param id ist die id mit der der Themenbereich in der Datenbank gespeichert ist
+     * @param id ist die serverid mit der der Themenbereich in der Datenbank gespeichert ist
      * @return gibt diesen Themenbereich zurück wenn er vorhanden ist sonst null
      * @getThemenbereich gibt einen Themebereich zurück der in der Datenbank ist
      */
     public dbThemenbereich getThemenbereich(long id) {
-        List<dbThemenbereich> dbThemenbereichList = dbThemenbereich.find(dbThemenbereich.class, "id = ?", String.valueOf(id));
+        List<dbThemenbereich> dbThemenbereichList = dbThemenbereich.find(dbThemenbereich.class, "serverid = ?", String.valueOf(id));
         if (dbThemenbereichList.size() == 1) {
             return dbThemenbereichList.get(0);
         } else {
@@ -152,7 +152,7 @@ public class dbThemenbereich extends SugarRecord {
     }
 
     /**
-     * @param id ist die id des themenbereich
+     * @param id ist die serverid des themenbereich
      * @return gibt alle Fragen zurück wenn sie vorhanden sind sonst null
      * @getFragen gibt alle Fragen eines bestimmten Themenbereiches zurück
      */

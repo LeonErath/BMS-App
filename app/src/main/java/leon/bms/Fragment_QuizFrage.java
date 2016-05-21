@@ -97,7 +97,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     @Override
     public void onSaveInstanceState(Bundle outState) {
         Long id = themenbereichID;
-        outState.putLong("id", id);
+        outState.putLong("serverid", id);
         super.onSaveInstanceState(outState);
     }
 
@@ -142,8 +142,8 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
 
         if (savedInstanceState != null) {
             //loads Data wenn das Fragment wieder hergestellt wird
-            if (savedInstanceState.containsKey("id")) {
-                Long id = savedInstanceState.getLong("id");
+            if (savedInstanceState.containsKey("serverid")) {
+                Long id = savedInstanceState.getLong("serverid");
                 this.themenbereichID = id;
             }
         }
@@ -203,7 +203,7 @@ public class Fragment_QuizFrage extends Fragment implements View.OnClickListener
     }
 
     /**
-     * @param id ist die Fragen id um die Antworten zu laden
+     * @param id ist die Fragen serverid um die Antworten zu laden
      * @setUpAntwort zeigt alle Antworten zufällig an. Da die Antworten teilweise mulitpile choice sind werden
      * zuerst alle richtige Antworten angezeigt und dann die resltichen mit falschen aufgefüllt. Alle Antworten
      * werden immer an zufälligen Positionen angezigt. Die Position und ob die Frage richtig oder Falsch ist wird

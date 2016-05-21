@@ -37,17 +37,17 @@ stunden.java</FONT>
 <a name="l17"><span class="ln">17   </span></a>    </span><span class="s0">public </span><span class="s1">String raum; 
 <a name="l18"><span class="ln">18   </span></a>    </span><span class="s0">public </span><span class="s1">String timeString; 
 <a name="l19"><span class="ln">19   </span></a>    </span><span class="s0">public </span><span class="s1">String wochentag; 
-<a name="l20"><span class="ln">20   </span></a>    </span><span class="s0">public long </span><span class="s1">id; 
+<a name="l20"><span class="ln">20   </span></a>    </span><span class="s0">public long </span><span class="s1">serverid;
 <a name="l21"><span class="ln">21   </span></a>    </span><span class="s0">public int </span><span class="s1">stunde; 
 <a name="l22"><span class="ln">22   </span></a> 
-<a name="l23"><span class="ln">23   </span></a>    </span><span class="s0">public </span><span class="s1">stunden(String stundenname, String lehrer, </span><span class="s0">boolean </span><span class="s1">active, String raum, String timeString, String wochentag, </span><span class="s0">long </span><span class="s1">id, </span><span class="s0">int </span><span class="s1">stunde) { 
+<a name="l23"><span class="ln">23   </span></a>    </span><span class="s0">public </span><span class="s1">stunden(String stundenname, String lehrer, </span><span class="s0">boolean </span><span class="s1">active, String raum, String timeString, String wochentag, </span><span class="s0">long </span><span class="s1">serverid, </span><span class="s0">int </span><span class="s1">stunde) {
 <a name="l24"><span class="ln">24   </span></a>        </span><span class="s0">this</span><span class="s1">.stundenname = stundenname; 
 <a name="l25"><span class="ln">25   </span></a>        </span><span class="s0">this</span><span class="s1">.lehrer = lehrer; 
 <a name="l26"><span class="ln">26   </span></a>        </span><span class="s0">this</span><span class="s1">.active = active; 
 <a name="l27"><span class="ln">27   </span></a>        </span><span class="s0">this</span><span class="s1">.raum = raum; 
 <a name="l28"><span class="ln">28   </span></a>        </span><span class="s0">this</span><span class="s1">.timeString = timeString; 
 <a name="l29"><span class="ln">29   </span></a>        </span><span class="s0">this</span><span class="s1">.wochentag = wochentag; 
-<a name="l30"><span class="ln">30   </span></a>        </span><span class="s0">this</span><span class="s1">.id = id; 
+<a name="l30"><span class="ln">30   </span></a>        </span><span class="s0">this</span><span class="s1">.serverid = serverid;
 <a name="l31"><span class="ln">31   </span></a>        </span><span class="s0">this</span><span class="s1">.stunde = stunde; 
 <a name="l32"><span class="ln">32   </span></a>    } 
 <a name="l33"><span class="ln">33   </span></a> 
@@ -68,11 +68,11 @@ stunden.java</FONT>
 <a name="l48"><span class="ln">48   </span></a>    } 
 <a name="l49"><span class="ln">49   </span></a> 
 <a name="l50"><span class="ln">50   </span></a>    </span><span class="s0">public long </span><span class="s1">getId() { 
-<a name="l51"><span class="ln">51   </span></a>        </span><span class="s0">return </span><span class="s1">id; 
+<a name="l51"><span class="ln">51   </span></a>        </span><span class="s0">return </span><span class="s1">serverid;
 <a name="l52"><span class="ln">52   </span></a>    } 
 <a name="l53"><span class="ln">53   </span></a> 
-<a name="l54"><span class="ln">54   </span></a>    </span><span class="s0">public void </span><span class="s1">setId(</span><span class="s0">long </span><span class="s1">id) { 
-<a name="l55"><span class="ln">55   </span></a>        </span><span class="s0">this</span><span class="s1">.id = id; 
+<a name="l54"><span class="ln">54   </span></a>    </span><span class="s0">public void </span><span class="s1">setId(</span><span class="s0">long </span><span class="s1">serverid) {
+<a name="l55"><span class="ln">55   </span></a>        </span><span class="s0">this</span><span class="s1">.serverid = serverid;
 <a name="l56"><span class="ln">56   </span></a>    } 
 <a name="l57"><span class="ln">57   </span></a> 
 <a name="l58"><span class="ln">58   </span></a>    </span><span class="s0">public </span><span class="s1">stunden() { 

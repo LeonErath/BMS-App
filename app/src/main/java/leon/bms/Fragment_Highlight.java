@@ -146,7 +146,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                 for (int i = 0; i < jsonArrayAll.length(); i++) {
                     JSONObject jsonObject = jsonArrayAll.getJSONObject(i);
                     nachrichten nachrichten = new nachrichten();
-                    nachrichten.serverid = jsonObject.getInt("id");
+                    nachrichten.serverid = jsonObject.getInt("serverid");
                     nachrichten.titel = jsonObject.getString("titel");
                     nachrichten.nachricht = jsonObject.getString("nachricht");
                     nachrichten.hinzugefuegtAm = jsonObject.getString("hinzugefuegtAm");

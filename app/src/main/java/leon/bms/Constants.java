@@ -7,6 +7,7 @@ public abstract class  Constants {
     public static final String LOGIN_URL ="http://app.marienschule.de/api/login.php";
     public static final String GET_ALL_DATA_URL ="http://app.marienschule.de/api/getAllData.php";
     public static final String QUIZ_URL ="http://app.marienschule.de/api/quiz.php";
+    public static final String EXAM_URL="";
     public static final String QUIZ_KATALOG_URL ="http://app.marienschule.de/api/quizCatalog.php";
     public static final String VERTRETUNGSPLAN_URL ="http://app.marienschule.de/api/vertretungsplan.php";
     public static final String NACHRICHTEN_URL ="http://app.marienschule.de/api/nachrichten.php";

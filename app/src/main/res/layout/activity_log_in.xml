@@ -11,6 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="leon.bms.Fragment_LogIn"
-        android:id="@+id/fragment"
+        android:serverid="@+serverid/fragment"
         />
 </RelativeLayout>

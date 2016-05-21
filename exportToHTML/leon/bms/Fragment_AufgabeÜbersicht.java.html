@@ -115,7 +115,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l93"><span class="ln">93   </span></a>    </span><span class="s0">public void </span><span class="s1">onViewCreated(View view, Bundle savedInstanceState) { 
 <a name="l94"><span class="ln">94   </span></a>        </span><span class="s0">super</span><span class="s1">.onViewCreated(view, savedInstanceState); 
 <a name="l95"><span class="ln">95   </span></a> 
-<a name="l96"><span class="ln">96   </span></a>        recyclerViewAufgaben = (RecyclerView) view.findViewById(R.id.recycler_view); 
+<a name="l96"><span class="ln">96   </span></a>        recyclerViewAufgaben = (RecyclerView) view.findViewById(R.serverid.recycler_view);
 <a name="l97"><span class="ln">97   </span></a> 
 <a name="l98"><span class="ln">98   </span></a>        List&lt;dbAufgabe&gt; unerledigtList = </span><span class="s0">new </span><span class="s1">dbAufgabe().getUnerledigtAufgabe(); 
 <a name="l99"><span class="ln">99   </span></a>        List&lt;dbAufgabe&gt; erledigtList = </span><span class="s0">new </span><span class="s1">dbAufgabe().getErledigtAufgabe(); 
@@ -145,13 +145,13 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l123"><span class="ln">123  </span></a>                    List&lt;dbAufgabe&gt; erledigtList; 
 <a name="l124"><span class="ln">124  </span></a>                    List&lt;dbAufgabe&gt; alleAufgaben = </span><span class="s0">new </span><span class="s1">ArrayList&lt;dbAufgabe&gt;(); 
 <a name="l125"><span class="ln">125  </span></a>                    </span><span class="s0">switch </span><span class="s1">(which) { 
-<a name="l126"><span class="ln">126  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.change: 
-<a name="l127"><span class="ln">127  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe</span><span class="s1"> 
+<a name="l126"><span class="ln">126  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.change:
+<a name="l127"><span class="ln">127  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe</span><span class="s1">
 <a name="l128"><span class="ln">128  </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), AufgabenActivity.</span><span class="s0">class</span><span class="s1">); 
-<a name="l129"><span class="ln">129  </span></a>                            intent.putExtra(</span><span class="s5">&quot;id&quot;</span><span class="s1">, aufgabe.getId()); 
+<a name="l129"><span class="ln">129  </span></a>                            intent.putExtra(</span><span class="s5">&quot;serverid&quot;</span><span class="s1">, aufgabe.getId());
 <a name="l130"><span class="ln">130  </span></a>                            startActivity(intent); 
 <a name="l131"><span class="ln">131  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l132"><span class="ln">132  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.share: 
+<a name="l132"><span class="ln">132  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.share:
 <a name="l133"><span class="ln">133  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l134"><span class="ln">134  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l135"><span class="ln">135  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
@@ -159,7 +159,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l137"><span class="ln">137  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l138"><span class="ln">138  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l139"><span class="ln">139  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l140"><span class="ln">140  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.delete: 
+<a name="l140"><span class="ln">140  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.delete:
 <a name="l141"><span class="ln">141  </span></a>                            </span><span class="s2">// löscht die Aufgabe und updatet die Liste sowie den Adapter</span><span class="s1"> 
 <a name="l142"><span class="ln">142  </span></a>                            alleAufgaben.clear(); 
 <a name="l143"><span class="ln">143  </span></a>                            aufgabe.delete(); 
@@ -173,7 +173,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l151"><span class="ln">151  </span></a>                            } 
 <a name="l152"><span class="ln">152  </span></a>                            aufgabeAdapter.removeAufgabe(aufgabe); 
 <a name="l153"><span class="ln">153  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l154"><span class="ln">154  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.erledigt: 
+<a name="l154"><span class="ln">154  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.erledigt:
 <a name="l155"><span class="ln">155  </span></a>                            </span><span class="s2">// ändert die Aufgabe zu erledigt</span><span class="s1"> 
 <a name="l156"><span class="ln">156  </span></a>                            alleAufgaben.clear(); 
 <a name="l157"><span class="ln">157  </span></a>                            aufgabe.erledigt = </span><span class="s0">true</span><span class="s1">; 
@@ -199,13 +199,13 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l177"><span class="ln">177  </span></a>                    List&lt;dbAufgabe&gt; erledigtList; 
 <a name="l178"><span class="ln">178  </span></a>                    List&lt;dbAufgabe&gt; alleAufgaben = </span><span class="s0">new </span><span class="s1">ArrayList&lt;dbAufgabe&gt;(); 
 <a name="l179"><span class="ln">179  </span></a>                    </span><span class="s0">switch </span><span class="s1">(which) { 
-<a name="l180"><span class="ln">180  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.change: 
-<a name="l181"><span class="ln">181  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe</span><span class="s1"> 
+<a name="l180"><span class="ln">180  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.change:
+<a name="l181"><span class="ln">181  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe</span><span class="s1">
 <a name="l182"><span class="ln">182  </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), AufgabenActivity.</span><span class="s0">class</span><span class="s1">); 
-<a name="l183"><span class="ln">183  </span></a>                            intent.putExtra(</span><span class="s5">&quot;id&quot;</span><span class="s1">, aufgabe.getId()); 
+<a name="l183"><span class="ln">183  </span></a>                            intent.putExtra(</span><span class="s5">&quot;serverid&quot;</span><span class="s1">, aufgabe.getId());
 <a name="l184"><span class="ln">184  </span></a>                            startActivity(intent); 
 <a name="l185"><span class="ln">185  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l186"><span class="ln">186  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.share: 
+<a name="l186"><span class="ln">186  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.share:
 <a name="l187"><span class="ln">187  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l188"><span class="ln">188  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l189"><span class="ln">189  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
@@ -213,7 +213,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l191"><span class="ln">191  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l192"><span class="ln">192  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l193"><span class="ln">193  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l194"><span class="ln">194  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.delete: 
+<a name="l194"><span class="ln">194  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.delete:
 <a name="l195"><span class="ln">195  </span></a>                            </span><span class="s2">// löscht die Aufgabe und updatet die Liste sowie den Adapter</span><span class="s1"> 
 <a name="l196"><span class="ln">196  </span></a>                            alleAufgaben.clear(); 
 <a name="l197"><span class="ln">197  </span></a>                            aufgabe.delete(); 
@@ -227,7 +227,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l205"><span class="ln">205  </span></a>                            } 
 <a name="l206"><span class="ln">206  </span></a>                            aufgabeAdapter.removeAufgabe(aufgabe); 
 <a name="l207"><span class="ln">207  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l208"><span class="ln">208  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.cancel: 
+<a name="l208"><span class="ln">208  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.cancel:
 <a name="l209"><span class="ln">209  </span></a>                            </span><span class="s2">// ändert die Aufgabe zu nicht erledigt</span><span class="s1"> 
 <a name="l210"><span class="ln">210  </span></a>                            alleAufgaben.clear(); 
 <a name="l211"><span class="ln">211  </span></a>                            aufgabe.erledigt = </span><span class="s0">false</span><span class="s1">; 
@@ -263,13 +263,13 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l241"><span class="ln">241  </span></a>                    List&lt;dbAufgabe&gt; erledigtList; 
 <a name="l242"><span class="ln">242  </span></a>                    List&lt;dbAufgabe&gt; alleAufgaben = </span><span class="s0">new </span><span class="s1">ArrayList&lt;dbAufgabe&gt;(); 
 <a name="l243"><span class="ln">243  </span></a>                    </span><span class="s0">switch </span><span class="s1">(which) { 
-<a name="l244"><span class="ln">244  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.change: 
-<a name="l245"><span class="ln">245  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe</span><span class="s1"> 
+<a name="l244"><span class="ln">244  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.change:
+<a name="l245"><span class="ln">245  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe</span><span class="s1">
 <a name="l246"><span class="ln">246  </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), AufgabenActivity.</span><span class="s0">class</span><span class="s1">); 
-<a name="l247"><span class="ln">247  </span></a>                            intent.putExtra(</span><span class="s5">&quot;id&quot;</span><span class="s1">, aufgabe.getId()); 
+<a name="l247"><span class="ln">247  </span></a>                            intent.putExtra(</span><span class="s5">&quot;serverid&quot;</span><span class="s1">, aufgabe.getId());
 <a name="l248"><span class="ln">248  </span></a>                            startActivity(intent); 
 <a name="l249"><span class="ln">249  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l250"><span class="ln">250  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.share: 
+<a name="l250"><span class="ln">250  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.share:
 <a name="l251"><span class="ln">251  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l252"><span class="ln">252  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l253"><span class="ln">253  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
@@ -277,7 +277,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l255"><span class="ln">255  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l256"><span class="ln">256  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l257"><span class="ln">257  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l258"><span class="ln">258  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.delete: 
+<a name="l258"><span class="ln">258  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.delete:
 <a name="l259"><span class="ln">259  </span></a>                            </span><span class="s2">// löscht die Aufgabe und updatet die Liste sowie den Adapter</span><span class="s1"> 
 <a name="l260"><span class="ln">260  </span></a>                            alleAufgaben.clear(); 
 <a name="l261"><span class="ln">261  </span></a>                            aufgabe.delete(); 
@@ -291,7 +291,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l269"><span class="ln">269  </span></a>                            } 
 <a name="l270"><span class="ln">270  </span></a>                            aufgabeAdapter.removeAufgabe(aufgabe); 
 <a name="l271"><span class="ln">271  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l272"><span class="ln">272  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.erledigt: 
+<a name="l272"><span class="ln">272  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.erledigt:
 <a name="l273"><span class="ln">273  </span></a>                            </span><span class="s2">// ändert die Aufgabe zu erledigt</span><span class="s1"> 
 <a name="l274"><span class="ln">274  </span></a>                            alleAufgaben.clear(); 
 <a name="l275"><span class="ln">275  </span></a>                            aufgabe.erledigt = </span><span class="s0">true</span><span class="s1">; 
@@ -317,8 +317,8 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l295"><span class="ln">295  </span></a>                    List&lt;dbAufgabe&gt; erledigtList; 
 <a name="l296"><span class="ln">296  </span></a>                    List&lt;dbAufgabe&gt; alleAufgaben = </span><span class="s0">new </span><span class="s1">ArrayList&lt;dbAufgabe&gt;(); 
 <a name="l297"><span class="ln">297  </span></a>                    </span><span class="s0">switch </span><span class="s1">(which) { 
-<a name="l298"><span class="ln">298  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.change: 
-<a name="l299"><span class="ln">299  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die id der Aufgabe</span><span class="s1"> 
+<a name="l298"><span class="ln">298  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.change:
+<a name="l299"><span class="ln">299  </span></a>                            </span><span class="s2">// ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe</span><span class="s1">
 <a name="l300"><span class="ln">300  </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), AufgabenActivity.</span><span class="s0">class</span><span class="s1">); 
 <a name="l301"><span class="ln">301  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Beschreibung&quot;</span><span class="s1">, aufgabe.beschreibung); 
 <a name="l302"><span class="ln">302  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Notizen&quot;</span><span class="s1">, aufgabe.notizen); 
@@ -326,7 +326,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l304"><span class="ln">304  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Datum&quot;</span><span class="s1">, aufgabe.abgabeDatum); 
 <a name="l305"><span class="ln">305  </span></a>                            startActivity(intent); 
 <a name="l306"><span class="ln">306  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l307"><span class="ln">307  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.share: 
+<a name="l307"><span class="ln">307  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.share:
 <a name="l308"><span class="ln">308  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l309"><span class="ln">309  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l310"><span class="ln">310  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
@@ -334,7 +334,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l312"><span class="ln">312  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l313"><span class="ln">313  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l314"><span class="ln">314  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l315"><span class="ln">315  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.delete: 
+<a name="l315"><span class="ln">315  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.delete:
 <a name="l316"><span class="ln">316  </span></a>                            </span><span class="s2">// löscht die Aufgabe und updatet die Liste sowie den Adapter</span><span class="s1"> 
 <a name="l317"><span class="ln">317  </span></a>                            alleAufgaben.clear(); 
 <a name="l318"><span class="ln">318  </span></a>                            aufgabe.delete(); 
@@ -348,7 +348,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l326"><span class="ln">326  </span></a>                            } 
 <a name="l327"><span class="ln">327  </span></a>                            aufgabeAdapter.changeDataSet(alleAufgaben); 
 <a name="l328"><span class="ln">328  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
-<a name="l329"><span class="ln">329  </span></a>                        </span><span class="s0">case </span><span class="s1">R.id.cancel: 
+<a name="l329"><span class="ln">329  </span></a>                        </span><span class="s0">case </span><span class="s1">R.serverid.cancel:
 <a name="l330"><span class="ln">330  </span></a>                            </span><span class="s2">// ändert die Aufgabe zu nicht erledigt</span><span class="s1"> 
 <a name="l331"><span class="ln">331  </span></a>                            alleAufgaben.clear(); 
 <a name="l332"><span class="ln">332  </span></a>                            aufgabe.erledigt = </span><span class="s0">false</span><span class="s1">; 

@@ -24,7 +24,7 @@
                 android:theme="@style/AppTheme.AppBarOverlay">
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
+                    android:serverid="@+serverid/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/colorPrimary"
@@ -57,7 +57,7 @@
 
                             <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
                                 xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                                android:id="@+id/cardView"
+                                android:serverid="@+serverid/cardView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 card_view:cardCornerRadius="0dp"
@@ -71,12 +71,12 @@
 
 
                                     <com.rengwuxian.materialedittext.MaterialEditText
-                                        android:id="@+id/editTextBeschreibung"
+                                        android:serverid="@+serverid/editTextBeschreibung"
                                         android:layout_width="match_parent"
                                         android:layout_height="@dimen/aufgaben_vertical_size_row"
                                         android:layout_marginRight="8dp"
                                         android:hint="Hier den Titel eingeben"
-                                        android:nextFocusDown="@+id/editTextNotizen"
+                                        android:nextFocusDown="@+serverid/editTextNotizen"
                                         card_view:met_clearButton="true"
                                         card_view:met_floatingLabel="highlight"
                                         card_view:met_floatingLabelText="Titel"
@@ -91,7 +91,7 @@
                                         android:background="#aeaeae"></RelativeLayout>
 
                                     <com.rengwuxian.materialedittext.MaterialEditText
-                                        android:id="@+id/editTextNotizen"
+                                        android:serverid="@+serverid/editTextNotizen"
                                         android:layout_width="match_parent"
                                         android:minHeight="@dimen/aufgaben_vertical_size_row"
                                         android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
                                             android:layout_margin="8dp">
 
                                             <TextView
-                                                android:id="@+id/textViewKurs"
+                                                android:serverid="@+serverid/textViewKurs"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center_vertical"
@@ -131,7 +131,7 @@
                                                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                             <Spinner
-                                                android:id="@+id/spinner2"
+                                                android:serverid="@+serverid/spinner2"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center_vertical"
@@ -160,7 +160,7 @@
                                             android:layout_margin="8dp">
 
                                             <TextView
-                                                android:id="@+id/textView4"
+                                                android:serverid="@+serverid/textView4"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center_vertical"
@@ -169,7 +169,7 @@
                                                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                             <TextView
-                                                android:id="@+id/textViewDatePicker"
+                                                android:serverid="@+serverid/textViewDatePicker"
                                                 style="@style/Widget.AppCompat.Spinner"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
@@ -197,7 +197,7 @@
                                             android:layout_margin="8dp">
 
                                             <TextView
-                                                android:id="@+id/textView5"
+                                                android:serverid="@+serverid/textView5"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center_vertical"
@@ -206,7 +206,7 @@
                                                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                             <TextView
-                                                android:id="@+id/textViewTimePicker"
+                                                android:serverid="@+serverid/textViewTimePicker"
                                                 style="@style/Widget.AppCompat.Spinner"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
@@ -234,7 +234,7 @@
                                             android:layout_margin="8dp">
 
                                             <TextView
-                                                android:id="@+id/textView6"
+                                                android:serverid="@+serverid/textView6"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center_vertical"
@@ -244,7 +244,7 @@
 
 
                                             <belka.us.androidtoggleswitch.widgets.ToggleSwitch
-                                                android:id="@+id/toogleButton"
+                                                android:serverid="@+serverid/toogleButton"
                                                 android:layout_width="0dp"
                                                 android:layout_height="wrap_content"
                                                 android:layout_gravity="center"
@@ -285,7 +285,7 @@
                             android:layout_height="fill_parent">
 
                             <android.support.v7.widget.RecyclerView
-                                android:id="@+id/recycler_view"
+                                android:serverid="@+serverid/recycler_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/aufgaben_vertical_size_row_recylcer"
                                 app:layout_anchorGravity="bottom" />
@@ -303,7 +303,7 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/overlay"
+            android:serverid="@+serverid/overlay"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -316,11 +316,11 @@
                 android:layout_marginRight="16dp">
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabCamera"
+                    android:serverid="@+serverid/fabCamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_above="@+id/fabGallarie"
+                    android:layout_above="@+serverid/fabGallarie"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_photo_camera_white_48dp"
                     app:backgroundTint="#00897B"
@@ -328,10 +328,10 @@
                     app:fabSize="mini" />
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabGallarie"
+                    android:serverid="@+serverid/fabGallarie"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/fabAnimate"
+                    android:layout_above="@+serverid/fabAnimate"
                     android:layout_centerHorizontal="true"
                     android:layout_marginBottom="8dp"
                     android:src="@drawable/ic_insert_photo_white_48dp"
@@ -340,7 +340,7 @@
                     app:fabSize="mini" />
 
                 <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabAnimate"
+                    android:serverid="@+serverid/fabAnimate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"

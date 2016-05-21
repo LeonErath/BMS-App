@@ -215,9 +215,10 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 if (fabVisible != false) {
                     fabAnimateOut();
                     // Create intent to Open Image applications like Gallery, Google Photos
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    // Start the Intent
-                    startActivityForResult(galleryIntent, GALLARY_CODE);
+                    Intent intent = new Intent();
+                    intent.setType("image/*");
+                    intent.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent, "Select Picture"), GALLARY_CODE);
 
                 }
             }
@@ -258,7 +259,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            Long id = intent.getLongExtra("id", 0);
+            Long id = intent.getLongExtra("serverid", 0);
             reloadData(id);
         } else {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -744,7 +745,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
         // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, AufgabenActivity.class);
-        resultIntent.putExtra("id", aufgabeLoad.getId());
+        resultIntent.putExtra("serverid", aufgabeLoad.getId());
         // The stack builder object will contain an artificial back stack for the
         // started Activity.
         // This ensures that navigating backward from the Activity leads out of

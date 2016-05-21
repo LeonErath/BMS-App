@@ -77,12 +77,12 @@ KursauswahlActivity.java</FONT>
 <a name="l54"><span class="ln">54   </span></a>        kursauswahlAdapter = </span><span class="s0">new </span><span class="s1">KursauswahlAdapter(</span><span class="s0">this</span><span class="s1">, kurseList); 
 <a name="l55"><span class="ln">55   </span></a> 
 <a name="l56"><span class="ln">56   </span></a>        </span><span class="s2">// setUp Toolbar</span><span class="s1"> 
-<a name="l57"><span class="ln">57   </span></a>        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar); 
+<a name="l57"><span class="ln">57   </span></a>        Toolbar toolbar = (Toolbar) findViewById(R.serverid.toolbar);
 <a name="l58"><span class="ln">58   </span></a>        setSupportActionBar(toolbar); 
 <a name="l59"><span class="ln">59   </span></a>        getSupportActionBar().setTitle(</span><span class="s4">&quot;Wähle deine Kurse!&quot;</span><span class="s1">); 
 <a name="l60"><span class="ln">60   </span></a> 
 <a name="l61"><span class="ln">61   </span></a>        </span><span class="s2">// setUp RecyclerView</span><span class="s1"> 
-<a name="l62"><span class="ln">62   </span></a>        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view); 
+<a name="l62"><span class="ln">62   </span></a>        RecyclerView recyclerView = (RecyclerView) findViewById(R.serverid.recycler_view);
 <a name="l63"><span class="ln">63   </span></a>        recyclerView.setAdapter(kursauswahlAdapter); 
 <a name="l64"><span class="ln">64   </span></a>        recyclerView.setItemAnimator(</span><span class="s0">new </span><span class="s1">DefaultItemAnimator()); 
 <a name="l65"><span class="ln">65   </span></a>        recyclerView.setLayoutManager(</span><span class="s0">new </span><span class="s1">LinearLayoutManager(</span><span class="s0">this</span><span class="s1">)); 
@@ -169,12 +169,12 @@ KursauswahlActivity.java</FONT>
 <a name="l146"><span class="ln">146  </span></a>                        .setCancelable(</span><span class="s0">false</span><span class="s1">) 
 <a name="l147"><span class="ln">147  </span></a>                        .setMessage(</span><span class="s4">&quot;Wähle ob du den Kurs schriftlich oder mündlich hast.&quot;</span><span class="s1">) 
 <a name="l148"><span class="ln">148  </span></a>                        .setPositiveButton(</span><span class="s4">&quot;schriftlich&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l149"><span class="ln">149  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l149"><span class="ln">149  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l150"><span class="ln">150  </span></a>                                kursauswahlAdapter.switchMS(position, </span><span class="s0">true</span><span class="s1">); 
 <a name="l151"><span class="ln">151  </span></a>                            } 
 <a name="l152"><span class="ln">152  </span></a>                        }) 
 <a name="l153"><span class="ln">153  </span></a>                        .setNegativeButton(</span><span class="s4">&quot;mündlich&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l154"><span class="ln">154  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l154"><span class="ln">154  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l155"><span class="ln">155  </span></a>                                kursauswahlAdapter.switchMS(position, </span><span class="s0">false</span><span class="s1">); 
 <a name="l156"><span class="ln">156  </span></a>                            } 
 <a name="l157"><span class="ln">157  </span></a>                        }); 
@@ -212,12 +212,12 @@ KursauswahlActivity.java</FONT>
 <a name="l189"><span class="ln">189  </span></a>                        .setCancelable(</span><span class="s0">false</span><span class="s1">) 
 <a name="l190"><span class="ln">190  </span></a>                        .setMessage(</span><span class="s4">&quot;Wähle zwischen schriftlich und mündlich.&quot;</span><span class="s1">) 
 <a name="l191"><span class="ln">191  </span></a>                        .setPositiveButton(</span><span class="s4">&quot;schriftlich&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l192"><span class="ln">192  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l192"><span class="ln">192  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l193"><span class="ln">193  </span></a>                                kursauswahlAdapter.switchMS(position, </span><span class="s0">true</span><span class="s1">); 
 <a name="l194"><span class="ln">194  </span></a>                            } 
 <a name="l195"><span class="ln">195  </span></a>                        }) 
 <a name="l196"><span class="ln">196  </span></a>                        .setNegativeButton(</span><span class="s4">&quot;mündlich&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l197"><span class="ln">197  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l197"><span class="ln">197  </span></a>                            </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l198"><span class="ln">198  </span></a>                                kursauswahlAdapter.switchMS(position, </span><span class="s0">false</span><span class="s1">); 
 <a name="l199"><span class="ln">199  </span></a>                            } 
 <a name="l200"><span class="ln">200  </span></a>                        }); 
@@ -298,7 +298,7 @@ KursauswahlActivity.java</FONT>
 <a name="l275"><span class="ln">275  </span></a>        @Override 
 <a name="l276"><span class="ln">276  </span></a>        </span><span class="s0">public boolean </span><span class="s1">onActionItemClicked(ActionMode mode, MenuItem item) { 
 <a name="l277"><span class="ln">277  </span></a>            </span><span class="s0">switch </span><span class="s1">(item.getItemId()) { 
-<a name="l278"><span class="ln">278  </span></a>                </span><span class="s0">case </span><span class="s1">R.id.menu_finnish: 
+<a name="l278"><span class="ln">278  </span></a>                </span><span class="s0">case </span><span class="s1">R.serverid.menu_finnish:
 <a name="l279"><span class="ln">279  </span></a>                    </span><span class="s2">//prüft ob die Möglichkeit der Kurse möglich ist</span><span class="s1"> 
 <a name="l280"><span class="ln">280  </span></a>                    </span><span class="s2">//fragt den User ob er fertig ist mit seiner Auswahl</span><span class="s1"> 
 <a name="l281"><span class="ln">281  </span></a>                    </span><span class="s2">//speichert die Einstellung und geht zur MainActivity</span><span class="s1"> 
@@ -313,7 +313,7 @@ KursauswahlActivity.java</FONT>
 <a name="l290"><span class="ln">290  </span></a>                        builder.setTitle(</span><span class="s4">&quot;Finnish!&quot;</span><span class="s1">) 
 <a name="l291"><span class="ln">291  </span></a>                                .setMessage(</span><span class="s4">&quot;Bist du fertig mit der Auswahl deiner Kurse?&quot;</span><span class="s1">) 
 <a name="l292"><span class="ln">292  </span></a>                                .setPositiveButton(</span><span class="s4">&quot;Ja&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l293"><span class="ln">293  </span></a>                                    </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l293"><span class="ln">293  </span></a>                                    </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l294"><span class="ln">294  </span></a>                                        </span><span class="s2">// wenn ja werden die Kurse als aktiv gespeichert</span><span class="s1"> 
 <a name="l295"><span class="ln">295  </span></a>                                        </span><span class="s2">// und ob er sie schriftlich oder mündlich hat</span><span class="s1"> 
 <a name="l296"><span class="ln">296  </span></a>                                        </span><span class="s0">for </span><span class="s1">(dbKurs kurs : kursauswahlAdapter.getSchriftlichList()) { 
@@ -374,7 +374,7 @@ KursauswahlActivity.java</FONT>
 <a name="l351"><span class="ln">351  </span></a>                        builder.setTitle(</span><span class="s4">&quot;Fehler&quot;</span><span class="s1">) 
 <a name="l352"><span class="ln">352  </span></a>                                .setMessage(</span><span class="s4">&quot;Diese Kombination ist nicht möglich!&quot;</span><span class="s1">) 
 <a name="l353"><span class="ln">353  </span></a>                                .setPositiveButton(</span><span class="s4">&quot;Okay&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l354"><span class="ln">354  </span></a>                                    </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l354"><span class="ln">354  </span></a>                                    </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l355"><span class="ln">355  </span></a>                                        dialog.dismiss(); 
 <a name="l356"><span class="ln">356  </span></a>                                    } 
 <a name="l357"><span class="ln">357  </span></a>                                }); 
@@ -386,7 +386,7 @@ KursauswahlActivity.java</FONT>
 <a name="l363"><span class="ln">363  </span></a>                    </span><span class="s2">//mode.finish(); Nur wenn die Auswahl aufgehobe werden soll</span><span class="s1"> 
 <a name="l364"><span class="ln">364  </span></a>                    </span><span class="s0">return true</span><span class="s1">; 
 <a name="l365"><span class="ln">365  </span></a>                </span><span class="s2">// gibt informationen zu der Kursauswahl an</span><span class="s1"> 
-<a name="l366"><span class="ln">366  </span></a>                </span><span class="s0">case </span><span class="s1">R.id.menu_info: 
+<a name="l366"><span class="ln">366  </span></a>                </span><span class="s0">case </span><span class="s1">R.serverid.menu_info:
 <a name="l367"><span class="ln">367  </span></a>                    AlertDialog.Builder builder2 = </span><span class="s0">new </span><span class="s1">AlertDialog.Builder(context); 
 <a name="l368"><span class="ln">368  </span></a>                    builder2.setTitle(</span><span class="s4">&quot;Info&quot;</span><span class="s1">) 
 <a name="l369"><span class="ln">369  </span></a>                            .setMessage(</span><span class="s4">&quot;Wähle Hier deine Kurse, AGs und Projektkurse aus. Wenn du ein Fach ausgewählt &quot; </span><span class="s1">+ 
@@ -394,7 +394,7 @@ KursauswahlActivity.java</FONT>
 <a name="l371"><span class="ln">371  </span></a>                                    </span><span class="s4">&quot;LK Fächer werden automatisch als schriftliches Fach gespeichert sowie AG und PK als mündliches Fach.</span><span class="s0">\n\n</span><span class="s4">&quot; </span><span class="s1">+ 
 <a name="l372"><span class="ln">372  </span></a>                                    </span><span class="s4">&quot;Wenn du fertig bist kannst du oben rechts auf den Hacken klicken.&quot;</span><span class="s1">) 
 <a name="l373"><span class="ln">373  </span></a>                            .setPositiveButton(</span><span class="s4">&quot;Okay&quot;</span><span class="s1">, </span><span class="s0">new </span><span class="s1">DialogInterface.OnClickListener() { 
-<a name="l374"><span class="ln">374  </span></a>                                </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">id) { 
+<a name="l374"><span class="ln">374  </span></a>                                </span><span class="s0">public void </span><span class="s1">onClick(DialogInterface dialog, </span><span class="s0">int </span><span class="s1">serverid) {
 <a name="l375"><span class="ln">375  </span></a>                                    dialog.dismiss(); 
 <a name="l376"><span class="ln">376  </span></a>                                } 
 <a name="l377"><span class="ln">377  </span></a>                            }); 
