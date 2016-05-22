@@ -1,32 +1,29 @@
 # BMS-App
 ## Der Ultimative Schulplaner
-In unserem Projekt geht es um einen Schulplaner, welcher den Schülerinnen und Schülern den Schulalltag erleichtern soll. 
-Der Planer soll als App an die Hausaufgaben erinnern oder auch an Übungszeit für Klausuren.Es soll möglich sein, dass die Lehrer Unterrichtsmaterialien online zur Verfügung stellen, wodurch die Schüler es einfacher haben, die Materialien aus
-dem Unterricht zu wiederholen.Weiterhin soll der Vertretungsplan mit eingebunden werden. Hier ist es uns besonders wichtig, dass *nur authentifizierte Benutzer Zugriff auf den Vertretungsplan haben.*
-Die App wird es für **IOS und Android** geben. Sie beinhaltet außerdem auch ein einfach zu bedienendes Webinterface, worüber z.B.
-der Vertretungsplan oder andere Dinge verwaltet werden können. Es sollen viele verschiedene Funktionen eingebunden werden sodass der Schulalltag bestmöglich erleichtert wird. Dazu kommen **Funktionen** , wie ein *Kalender* der die aktuellen Termine überschaulich darstellen soll und eine *effiziente Planung für Prüfung und Hausaufgaben* bereitstellt. Auch *aktuelle Nachrichten und Informationen* zum Tagesgeschehen in der Schule sollen angezeigt werden. Außerdem soll die Website , der Marienschule und deren Artikel mit in die App eingebunden werden und dynamisch auf die Interessen der User angezeigt werden. Die App soll nicht nur Informieren sondern den Schülern auch beim lernen unterstützten indem eine *Quiz* eingebaut werden soll , wo ausgewählte Fragen von Lehrer abgefragt werden , die sich auf den aktuellen Schulstoff beziehen, oder auf die nächste Klausur vorbereiten sollen . Aber nicht nur der Schüler soll von der App profitieren sondern auch die Lehrer die damit auch ihren eigenen Stundenplan zusammenstellen können und somit ihren eigenen Alltag besser strukturieren können. Das ist nur ein Teil der möglichen Funktionen die man einbauen könnte.
- 
-**Schwerpunkt der App sollte Individualität sein.** Jeder Schüler wird seinen eigen Stundenplan zusammengestellt und der Vertretungsplan,Klausurplan und Artikel der Website sollen sich dynamisch darauf aufbauen. Dazu kommt das die Daten mit größtmöglichen Vertrauen behandelt werden und die persönliche Daten vor möglichen Abgreifern gesichert werden sollen. Die App soll nur für Schüler der Bischöflichen Marienschule verfügbar seien und ein Projekt von Schülern für Schülern sein.
+*Eine App von Schülern für Schüler*
 
-- [x] Login
-- [x] Stundenplan
-- [x] Aufgaben (Foto probleme)
-- [x] Webseite (noch nicht personalisiert)
-- [ ] Quiz
-- [ ] Updates richtig laden
+Die ultimative Schul-App erleichtert Schülerinnen und Schülern den Schulalltag und vermittelt gleichzeitig auch neues Wissen. 
+Sie kombiniert Funktionen wie einen Stundenplan mit integriertem Vertretungsplan mit neuen, innovativen Funktionen und fasst sie in einer App, unter besonderer Beachtung aller gültigen Datenschutzregeln, zusammen.  
+Alle Daten werden individuell für jeden Schüler persönlich aufbereitet und angezeigt.
+Ein in der App integriertes Quiz ermöglicht den Schülerinnen und Schülern, Wissen aus dem Unterricht zu vertiefen und Neues zu lernen. Lehrerinnen und Lehrer haben in einem Web-Interface die Möglichkeit, einfach und schnell neue Quiz-Fragen zu aktuellen Themen aus dem Unterricht bereitzustellen und über das Web-Interface die App zu verwalten. 
+Um den besonderen Anforderungen des Datenschutzes im Schulbereich gerecht zu werden, haben wir besonderen Wert daraufgelegt, nur schülerspezifische Daten auf dem Handy zu speichern. Selbst im Falle des Handyverlusts, bleiben die Daten der Schulgemeinde sicher. Zusätzlich werden die Schul-Daten speziell aufbereitet, sodass sensible Daten nicht veröffentlicht werden müssen. Der Einsatz moderner Verschlüsselungsmethoden sorgt für eine sichere Datenübertragung. 
+Das Projekt ist Open Source und steht damit jeder Schule in Deutschland zur freien und kostenlosen Verwendung zur Verfügung. Jede Schule kann die Entwicklung vorantreiben und die App für ihre eigenen Bedürfnisse abändern. 
+Um die App problemlos in das Schulnetzwerk zu integrieren, wird das Schulverwaltungsprogramm Untis verwendet, das von mehr als 40% der Schulen in Deutschland genutzt wird. 
+Als Mehrgenerationenprojekt wird die App in der Zukunft in einer „App-AG“ an der Schule weitergeführt, die auch langfristig für die Weiterentwicklung der App sorgt und in der Schüler von Schülern das Programmieren lernen. 
+Dort lernen die Schülerinnen und Schüler im Team interessen- und jahrgangsübergreifend die App für ihre Schule in einem stetigen Prozess weiterzuentwickeln.
+Die App wird für iOS und Android entwickelt und zum neuen Schuljahr erstmals eingesetzt werden.
 
-###Stand 25.02:Aufgaben Feature
 
-![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Aufgaben.PNG)
+- [x] Stundenplan 
+- [x] Aufgabenplaner
+- [x] Websiteartikel
+- [x] Quiz
+- [x] Mitteilungsfeature
 
-###Stand 25.02:Stundenplan Feature
+#COMING SOON
+- Klausurplaner
+- Vertretungsplan
 
-![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Stundenplan.PNG)
+##See more [on our Website] (http://app.marienschule.de/).
 
-###Stand 25.02:Welcome Bildschirm
 
-![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/Screenshot_Welcome.PNG)
-
-###Stand 25.02:Article Feature
-
-![alt tag](https://raw.githubusercontent.com/LeonErath/BMS-App/master/app/src/main/res/drawable/screenshot_article.PNG)
