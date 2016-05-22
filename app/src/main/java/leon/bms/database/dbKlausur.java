@@ -19,6 +19,8 @@ public class dbKlausur extends SugarRecord {
     public String ende;
     public String nachschreibertermin;
     public String notizen;
+    public String name;
+    public int serverid;
     public Boolean restkursFrei;
 
     // defining a relationship
@@ -34,12 +36,14 @@ public class dbKlausur extends SugarRecord {
         //empty Constructor needed!
     }
 
-    public dbKlausur(String beginn, String datum, String ende, String nachschreibertermin, String notizen, Boolean restkursFrei, dbKlausuraufsicht aufsicht, dbKurs kurs, dbNote note, dbRaum raum, dbFehler fehler, dbKlausurinhalt klausurinhalt) {
+    public dbKlausur(String beginn, String datum, String ende, String nachschreibertermin, String notizen, String name, int serverid, Boolean restkursFrei, dbKlausuraufsicht aufsicht, dbKurs kurs, dbNote note, dbRaum raum, dbFehler fehler, dbKlausurinhalt klausurinhalt) {
         this.beginn = beginn;
         this.datum = datum;
         this.ende = ende;
         this.nachschreibertermin = nachschreibertermin;
         this.notizen = notizen;
+        this.name = name;
+        this.serverid = serverid;
         this.restkursFrei = restkursFrei;
         this.aufsicht = aufsicht;
         this.kurs = kurs;
@@ -47,6 +51,22 @@ public class dbKlausur extends SugarRecord {
         this.raum = raum;
         this.fehler = fehler;
         this.klausurinhalt = klausurinhalt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getServerid() {
+        return serverid;
+    }
+
+    public void setServerid(int serverid) {
+        this.serverid = serverid;
     }
 
     public String getBeginn() {

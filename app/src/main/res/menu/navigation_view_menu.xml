@@ -12,6 +12,11 @@
             android:icon="@drawable/ic_home_white_48dp"
             android:checked="true"
             />
+        <item
+            android:id="@+id/drawerViewItemWebsite"
+            android:title="Website"
+            android:icon="@drawable/ic_web_white_48dp"
+            />
 
         <item
             android:id="@+id/drawerViewItemQuiz"

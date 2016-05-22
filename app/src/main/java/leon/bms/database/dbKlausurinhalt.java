@@ -1,9 +1,11 @@
 package leon.bms.database;
 
+import com.orm.SugarRecord;
+
 /**
  * Created by Leon E on 21.05.2016.
  */
-public class dbKlausurinhalt {
+public class dbKlausurinhalt extends SugarRecord {
     public String beschreibung;
     public int inhaltIndex;
 

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import leon.bms.activites.login.normal.KursauswahlActivity;
 import leon.bms.R;
 import leon.bms.ViewPagerAdapterMain;
+import leon.bms.activites.website.Website;
 import leon.bms.activites.website.WebsiteArticleActivity;
 import leon.bms.activites.login.normal.LogInActivity;
 import leon.bms.activites.quiz.QuizActivity;
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        tabIcons = new int[]{R.drawable.ic_done_white_24dp, R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_timeline_white_24dp};
+        tabIcons = new int[]{R.drawable.ic_home_white_24dp,R.drawable.ic_schedule_white_24dp,R.drawable.ic_done_white_24dp, R.drawable.ic_class_white_24dp,R.drawable.ic_grade_white_24dp};
 
         //setUp Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.drawerViewItemHome: {
                         break;
                     }
+                    case R.id.drawerViewItemWebsite: {
+                        Intent intent = new Intent(MainActivity.this, Website.class);
+                        startActivity(intent);
+                        break;
+                    }
 
                     case R.id.drawerViewItemQuiz: {
                         Intent intent3 = new Intent(MainActivity.this, QuizActivity.class);
@@ -194,16 +200,18 @@ public class MainActivity extends AppCompatActivity {
     }
     private void setUpBottombar() {
         // Create items
-        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Highlight", tabIcons[1], Color.parseColor("#4CAF50"));
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Stundenplan", tabIcons[2], Color.parseColor("#009688"));
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Aufgaben", tabIcons[0], Color.parseColor("#03A9F4"));
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Website", tabIcons[3], Color.parseColor("#E91E63"));
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem("Highlight", tabIcons[0], Color.parseColor("#4CAF50"));
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Stundenplan", tabIcons[1], Color.parseColor("#009688"));
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Aufgaben", tabIcons[2], Color.parseColor("#03A9F4"));
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Klausur", tabIcons[3], Color.parseColor("#3F51B5"));
+        AHBottomNavigationItem item5 = new AHBottomNavigationItem("Note", tabIcons[4], Color.parseColor("#673AB7"));
 
         // Add items
         bottomNavigationItems.add(item1);
         bottomNavigationItems.add(item2);
         bottomNavigationItems.add(item3);
         bottomNavigationItems.add(item4);
+        bottomNavigationItems.add(item5);
 
         bottomNavigation.addItems(bottomNavigationItems);
 
@@ -214,6 +222,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#FFFFFF"));
         bottomNavigation.setNotificationTextColor(Color.parseColor("#000000"));
         bottomNavigation.setCurrentItem(0);
+        textViewTitle.setText("Highlight");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(0).getColor(MainActivity.this)));
         setTaskBarColored(MainActivity.this,"#388E3C");
 
@@ -225,13 +234,24 @@ public class MainActivity extends AppCompatActivity {
                 switch (position){
                     case 0:
                         setTaskBarColored(MainActivity.this,"#388E3C");
+                        textViewTitle.setText("Highlight");
                         break;
                     case 1:
-                        setTaskBarColored(MainActivity.this,"#00796B");break;
+                        setTaskBarColored(MainActivity.this,"#00796B");
+                        textViewTitle.setText("Stundenplan");
+                        break;
                     case 2:
-                        setTaskBarColored(MainActivity.this,"#0288D1");break;
+                        setTaskBarColored(MainActivity.this,"#0288D1");
+                        textViewTitle.setText("Aufgaben");
+                        break;
                     case 3:
-                        setTaskBarColored(MainActivity.this,"#C2185B");break;
+                        setTaskBarColored(MainActivity.this,"#303F9F");
+                        textViewTitle.setText("Klausur");
+                        break;
+                    case 4:
+                        setTaskBarColored(MainActivity.this,"#512DA8");
+                        textViewTitle.setText("Note:");
+                        break;
                 }
             }
         });

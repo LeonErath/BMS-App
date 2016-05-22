@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFF"
+    android:orientation="vertical"
+    tools:context="leon.bms.activites.main.Fragment_Klausur">
+
+    <!-- TODO: Update blank fragment layout -->
+    <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/toggleButton"
+        android:textSize="16sp"
+        custom:activeBgColor="@android:color/holo_blue_dark"
+        custom:activeTextColor="@android:color/white"
+        custom:inactiveBgColor="@android:color/white"
+        custom:inactiveTextColor="@android:color/black"
+        custom:separatorColor="@color/gray_very_light"
+        custom:textToggleLeft="alle "
+        custom:textToggleRight="ausstehende"
+        android:layout_margin="8dp"
+        custom:toggleWidth="154dp"/>
+
+    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/recyclerview"
+        app:recyclerviewEmptyView="@layout/empty_view"
+        app:recyclerviewScrollbars="vertical"/>
+
+</LinearLayout>

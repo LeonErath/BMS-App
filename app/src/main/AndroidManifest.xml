@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="leon.bms"
-    >
-    <uses-sdk tools:overrideLibrary="com.sergiocasero.revealfab"/>
+    package="leon.bms">
+
+    <uses-sdk tools:overrideLibrary="com.sergiocasero.revealfab" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
 
     <application
-        android:debuggable="true"
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@drawable/logo_bms"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -25,18 +28,18 @@
         <activity android:name=".activites.login.normal.LogInActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".PublicClass"></activity>
+        <activity android:name=".PublicClass" />
 
         <meta-data
             android:name="DATABASE"
             android:value="HausaufgabenDatenbank2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="29" />
+            android:value="31" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />
@@ -54,12 +57,10 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_aufgaben"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan" >
-
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activites.main.MainActivity"/>
-
+                android:value=".activites.main.MainActivity" />
         </activity>
         <activity
             android:name=".activites.website.WebsiteArticleActivity"
@@ -77,8 +78,9 @@
         <activity
             android:name=".activites.kurs.KursActivity"
             android:label="@string/title_activity_kurs"
-            android:theme="@style/AppTheme"></activity>
-        <activity android:name=".NachrichtenActivity"></activity>
+            android:theme="@style/AppTheme" />
+        <activity android:name=".NachrichtenActivity" />
+        <activity android:name=".activites.website.Website"></activity>
     </application>
 
 </manifest>

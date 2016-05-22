@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 
 import leon.bms.activites.main.Fragment_AufgabeUebersicht;
 import leon.bms.activites.main.Fragment_Highlight;
+import leon.bms.activites.main.Fragment_Klausur;
+import leon.bms.activites.main.Fragment_Note;
 import leon.bms.activites.main.Fragment_Stundenplan;
 import leon.bms.activites.website.Fragment_Article;
 
@@ -21,7 +23,7 @@ import leon.bms.activites.website.Fragment_Article;
  */
 public class ViewPagerAdapterMain extends FragmentPagerAdapter {
     //int icons[] = {R.drawable.ic_done_white_24dp,R.drawable.ic_home_white_24dp,R.drawable.ic_schedule_white_24dp,R.drawable.ic_timeline_white_24dp};
-    String[] tabtitlearray = {"", "", "", ""};
+    String[] tabtitlearray = {"", "", "", "",""};
     Toolbar toolbar;
     ViewPager viewPager;
 
@@ -47,7 +49,9 @@ public class ViewPagerAdapterMain extends FragmentPagerAdapter {
             case 2:
                 return new Fragment_AufgabeUebersicht();
             case 3:
-                return new Fragment_Article();
+                return new Fragment_Klausur();
+            case 4:
+                return new Fragment_Note();
         }
         return null;
     }
@@ -62,7 +66,7 @@ public class ViewPagerAdapterMain extends FragmentPagerAdapter {
      */
     @Override
     public int getCount() {
-        return 4;
+        return 5;
     }
 
 

@@ -309,45 +309,49 @@
 
             <RelativeLayout
                 android:layout_width="56dp"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
                 android:layout_marginBottom="16dp"
                 android:layout_marginRight="16dp">
-
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabCamera"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_above="@+serverid/fabGallarie"
-                    android:layout_marginBottom="8dp"
-                    android:src="@drawable/ic_photo_camera_white_48dp"
-                    app:backgroundTint="#00897B"
-                    app:elevation="4dp"
-                    app:fabSize="mini" />
+                    android:orientation="vertical"
+                    android:layout_alignParentBottom="true">
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabCamera"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_photo_camera_white_48dp"
+                        app:backgroundTint="#00897B"
+                        app:elevation="4dp"
+                        app:fabSize="mini" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabGallarie"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+serverid/fabAnimate"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="8dp"
-                    android:src="@drawable/ic_insert_photo_white_48dp"
-                    app:backgroundTint="#607D8B"
-                    app:elevation="4dp"
-                    app:fabSize="mini" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabGallarie"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_insert_photo_white_48dp"
+                        app:backgroundTint="#607D8B"
+                        app:elevation="4dp"
+                        app:fabSize="mini" />
 
-                <android.support.design.widget.FloatingActionButton
-                    android:id="@+id/fabAnimate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    android:src="@drawable/ic_add_white_48dp"
-                    app:backgroundTint="#E91E63"
-                    app:elevation="4dp" />
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/fabAnimate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_add_white_48dp"
+                        app:backgroundTint="#E91E63"
+                        app:elevation="4dp" />
+
+                </LinearLayout>
+
+
 
             </RelativeLayout>
 
