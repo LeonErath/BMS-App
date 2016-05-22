@@ -280,8 +280,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
             // wenn die aktuelleStunde ein Schulstunde ist
             if (aktuelleStunde > 0 && aktuelleStunde < 10) {
                 // holt sich alle Kurse
-                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse(0);
-                aktiveKurse.addAll(new dbKurs().getActiveKurse(1));
+                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse();
 
                 List<dbSchulstunde> schulstundeList = new ArrayList<>();
                 // holt sich von den Kursen die entsprechenden schulstunde für die Woche
@@ -357,8 +356,8 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                 textViewLehrer.setText("Denk an deine Hausaufgaben.");
                 textViewNumber.setText(String.valueOf(""));
 
-                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse(0);
-                aktiveKurse.addAll(new dbKurs().getActiveKurse(1));
+                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse();
+
 
                 List<dbSchulstunde> schulstundeList = new ArrayList<>();
                 for (dbKurs kurs : aktiveKurse) {

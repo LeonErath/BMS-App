@@ -258,6 +258,12 @@ public class StundenplanController {
                             schulstunde.blocknummer = jsonObjectSchulstunde.getInt("block_number");
                             schulstunde.serverId = jsonObjectSchulstunde.getInt("lesson_id");
                             int roomid = jsonObjectSchulstunde.getInt("room_id");
+                            if (new dbLehrer().getLehereWithId(lehrerid) != null) {
+                                dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
+                                schulstunde.lehrer = lehrer;
+                            } else {
+                                Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                            }
                             if (new dbRaum().getRaumWithId(roomid) != null) {
                                 dbRaum raum = new dbRaum().getRaumWithId(roomid);
                                 schulstunde.raum = raum;

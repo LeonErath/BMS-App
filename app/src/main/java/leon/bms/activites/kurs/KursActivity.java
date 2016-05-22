@@ -62,7 +62,7 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            Long id = intent.getLongExtra("serverid", 0);
+            Long id = intent.getLongExtra("id", 0);
             if (id != 0) {
                 if (new dbKurs().getKursWithID(id) != null) {
                     // lädt den Kurs zum anzeigen

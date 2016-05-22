@@ -175,8 +175,8 @@ public class QuizController {
      */
     public List<quizkurs> getQuizKurse() {
         // lädt alle Kurse
-        List<dbKurs> kursList = new dbKurs().getActiveKurse(0);
-        kursList.addAll(new dbKurs().getActiveKurse(1));
+        List<dbKurs> kursList = new dbKurs().getActiveKurse();
+
 
         // lädt alle Themenbereich der Kurse
         List<dbThemenbereich> themenbereichList = new ArrayList<>();

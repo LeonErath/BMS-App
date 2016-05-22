@@ -137,8 +137,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     public void setUpStundenplan() {
 
         // zuerst werden alle GK und LK Kurse in eine Liste gespeichert
-        List<dbKurs> kursList = new dbKurs().getActiveKurse(0);
-        kursList.addAll(new dbKurs().getActiveKurse(1));
+        List<dbKurs> kursList = new dbKurs().getActiveKurse();
 
         // alle Schulstunden der Kurse werden in die Liste dbSchulstundeList geladen
         List<dbSchulstunde> dbSchulstundeList = new ArrayList<>();
@@ -299,7 +298,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         stunden stunde = stundenplanAdapter.getStundenplan().get(position);
         if (stunde.active == true) {
             Intent intent = new Intent(getActivity(), KursActivity.class);
-            intent.putExtra("serverid", stunde.getId());
+            intent.putExtra("id", stunde.getId());
             startActivity(intent);
         }
 

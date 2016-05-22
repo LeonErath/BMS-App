@@ -263,8 +263,8 @@ public class dbKurs extends SugarRecord {
      * @getActiveKurse gibt alle Kurse einer Kursart zurück die aktiv sind also bei der Kursauswahl
      * ausgwählt worden sind
      */
-    public List<dbKurs> getActiveKurse(int kursart) {
-        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "kursart = ? and aktiv = ?", String.valueOf(kursart), "1");
+    public List<dbKurs> getActiveKurse() {
+        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "aktiv = ?", "1");
         return dbKursList;
     }
 
@@ -359,7 +359,7 @@ public class dbKurs extends SugarRecord {
      * @gerKursWithID gibt einen Kurs zurück über die kursid der Datenbank
      */
     public dbKurs getKursWithID(long kursid) {
-        List<dbKurs> kursList = dbKurs.find(dbKurs.class, "serverid = ?", String.valueOf(kursid));
+        List<dbKurs> kursList = dbKurs.find(dbKurs.class, "id = ?", String.valueOf(kursid));
         if (kursList.size() == 1) {
             return kursList.get(0);
         } else {
