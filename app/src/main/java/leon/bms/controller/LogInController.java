@@ -77,7 +77,7 @@ public class LogInController {
      * Speichert den username,vorname,nachname,stufe,zuletztaktualisiert in die Datenbank.
      */
     public dbUser createUser(String result) {
-
+        Log.d("createUser",result);
         try {
             JSONObject jsonObject = new JSONObject(result);
             // json to String

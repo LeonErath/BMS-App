@@ -1,42 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-
-
-    <android.support.v7.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="?android:attr/selectableItemBackground">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/tools"
+    card_view:cardCornerRadius="0dp"
+    android:foreground="?android:attr/selectableItemBackground">
 
 
         <RelativeLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
-                android:textColor="#000000"
-                android:textSize="18dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="FACHNAME"
-                android:id="@+id/textViewFachname"
-                android:layout_marginRight="50dp"
-                android:layout_marginLeft="16dp"
-                />
+
 
             <TextView
+                android:textColor="#000000"
                 android:layout_marginTop="4dp"
-                android:textSize="15dp"
+                android:textSize="17dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="FACHID"
                 android:id="@+id/textViewFachid"
-                android:layout_below="@+id/textViewFachname"
-                android:layout_alignStart="@+id/textViewFachname" />
+                android:layout_marginRight="50dp"
+                android:layout_marginLeft="16dp" />
 
             <TextView
                 android:textSize="15dp"

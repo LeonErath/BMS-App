@@ -20,11 +20,13 @@ import java.util.List;
 
 import leon.bms.R;
 import leon.bms.adapters.KursauswahlAdapter;
+import leon.bms.database.dbFach;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbKursTagConnect;
 import leon.bms.database.dbSchulstunde;
 import leon.bms.database.dbUser;
 import leon.bms.database.dbWebsiteTag;
+import leon.bms.model.kursauswahl;
 
 
 /**
@@ -35,7 +37,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
     private int i = 1;
     //recylcer view for the Kurs
     RecyclerView recyclerView;
-    List<dbKurs> kurseList;
+    List<kursauswahl> kurseList;
     String TAG = "Fragment_TabKursauswahl";
     private KursauswahlAdapter kursauswahlAdapter;
     private static boolean m_iAmVisible;
@@ -59,31 +61,61 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
      * @return gibt die soriterte Liste zurück
      * @sortierteList sortiert die Listen nach LK GK AG und PK und alphabetisch jeweils
      */
-    public List<dbKurs> sortierteListe() {
-        List<dbKurs> sortiereListe = new ArrayList<>();
+    public List<kursauswahl> sortierteListe() {
+        List<kursauswahl> sortiereListe = new ArrayList<>();
+        if (new dbFach().getAllFaecher() != null && new dbFach().getAllFaecher().size() != 0) {
+            List<dbFach> fachList = new dbFach().getAllFaecher();
+            fachList = sortListASCFach(fachList);
+            for (dbFach fach : fachList) {
+                if (fach.getAllKurse(fach.getId()) != null) {
+                    kursauswahl kurswahl = new kursauswahl();
+                    kurswahl.headline = fach.name;
+                    kurswahl.headlineOrKurs = true;
+                    sortiereListe.add(kurswahl);
 
-        if (new dbKurs().kursartListe(0).size() > 0) {
-            List<dbKurs> lkList = sortListASC(new dbKurs().kursartListe(0));
-            Log.d(TAG, lkList.size() + "");
-            sortiereListe.addAll(lkList);
+                    List<dbKurs> kursList = fach.getAllKurse(fach.getId());
+                    List<dbKurs> lklist = new ArrayList<>();
+                    List<dbKurs> gklist = new ArrayList<>();
+                    List<dbKurs> aglist = new ArrayList<>();
+                    List<dbKurs> pklist = new ArrayList<>();
 
-        }
-        if (new dbKurs().kursartListe(1).size() > 0) {
-            List<dbKurs> gkList = sortListASC(new dbKurs().kursartListe(1));
-            Log.d(TAG, gkList.size() + "");
-            sortiereListe.addAll(gkList);
+                    for (dbKurs kurs : kursList) {
+                        switch (kurs.kursart.gloablId) {
+                            case 0:
+                                lklist.add(kurs);
+                                break;
+                            case 1:
+                                gklist.add(kurs);
+                                break;
+                            case 2:
+                                aglist.add(kurs);
+                                break;
+                            case 3:
+                                pklist.add(kurs);
+                                break;
+                        }
+                    }
 
-        }
-        if (new dbKurs().kursartListe(2).size() > 0) {
-            List<dbKurs> pkList = sortListASC(new dbKurs().kursartListe(2));
-            Log.d(TAG, pkList.size() + "");
-            sortiereListe.addAll(pkList);
+                    lklist = sortListASCKurs(lklist);
+                    gklist = sortListASCKurs(gklist);
+                    aglist = sortListASCKurs(aglist);
+                    pklist = sortListASCKurs(pklist);
 
-        }
-        if (new dbKurs().kursartListe(3).size() > 0) {
-            List<dbKurs> agList = sortListASC(new dbKurs().kursartListe(3));
-            Log.d(TAG, agList.size() + "");
-            sortiereListe.addAll(agList);
+                    kursList = lklist;
+                    kursList.addAll(gklist);
+                    kursList.addAll(aglist);
+                    kursList.addAll(pklist);
+
+                    for (dbKurs kurs : kursList) {
+                        kursauswahl kurswahl2 = new kursauswahl();
+                        kurswahl2.kurs = kurs;
+                        kurswahl2.headlineOrKurs = false;
+                        sortiereListe.add(kurswahl2);
+                    }
+                }
+
+
+            }
 
         }
 
@@ -107,13 +139,17 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
             // wenn sichtbar
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             // kurseList wird durch die Methode sortierteListe() mit allen verfügbaren Kursen gefüllt
-            kurseList = sortierteListe();
-            // Adapter bekommt die Kurseliste für die Anzeige der Kurse
-            kursauswahlAdapter = new KursauswahlAdapter(this, kurseList);
-            // setUp RecyclerView
-            recyclerView.setAdapter(kursauswahlAdapter);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            Log.d(TAG, "this fragment is now visible");
+            if (sortierteListe() != null && sortierteListe().size() != 0) {
+                kurseList = sortierteListe();
+
+                // Adapter bekommt die Kurseliste für die Anzeige der Kurse
+                kursauswahlAdapter = new KursauswahlAdapter(this, kurseList);
+                // setUp RecyclerView
+                recyclerView.setAdapter(kursauswahlAdapter);
+                recyclerView.setItemAnimator(new DefaultItemAnimator());
+                Log.d(TAG, "this fragment is now visible");
+            }
+
 
         } else {
             Log.d(TAG, "this fragment is now invisible");
@@ -123,10 +159,20 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
     /**
      * @sortiereListASC sortiert die Liste nach ihrem Name von A bis Z durch
      */
-    public List<dbKurs> sortListASC(List<dbKurs> list) {
+    public List<dbKurs> sortListASCKurs(List<dbKurs> list) {
         Collections.sort(list, new Comparator<dbKurs>() {
             @Override
             public int compare(dbKurs lhs, dbKurs rhs) {
+                return lhs.getName().compareTo(rhs.getName());
+            }
+        });
+        return list;
+    }
+
+    public List<dbFach> sortListASCFach(List<dbFach> list) {
+        Collections.sort(list, new Comparator<dbFach>() {
+            @Override
+            public int compare(dbFach lhs, dbFach rhs) {
                 return lhs.getName().compareTo(rhs.getName());
             }
         });
@@ -235,41 +281,44 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
      */
     @Override
     public void onItemClicked(final int position) {
-        /**  überprüft ob der Kurs schon ausgewählt worden ist
-         *      wenn ja dann wird er makiert und in die entsprechende Liste eingespeichert
-         *      wenn nein wird die auswahl aufgehoben
-         */
-        if (kursauswahlAdapter.isSelected(position) != true) {
-            // überprüft ob das Fach ein GK ist
-            // bei LK wird es automatisch auf schriftlich gesetzt
-            // bei PK und AG wird es automatisch auf mündlich gesetzt
-            if (kurseList.get(position).kursart.gloablId == 1) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle("Kurswahl")
-                        .setCancelable(false)
-                        .setMessage("Wähle ob du den Kurs schriftlich oder mündlich hast.")
-                        .setPositiveButton("schriftlich", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                kursauswahlAdapter.switchMS(position, true);
-                            }
-                        })
-                        .setNegativeButton("mündlich", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                kursauswahlAdapter.switchMS(position, false);
-                            }
-                        });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-            } else if (kurseList.get(position).kursart.gloablId == 0) {
-                kursauswahlAdapter.switchMS(position, true);
-            } else if (kurseList.get(position).kursart.gloablId > 1) {
-                kursauswahlAdapter.switchMS(position, false);
+        if (kurseList.get(position).headlineOrKurs == false) {
+
+            /**  überprüft ob der Kurs schon ausgewählt worden ist
+             *      wenn ja dann wird er makiert und in die entsprechende Liste eingespeichert
+             *      wenn nein wird die auswahl aufgehoben
+             */
+            if (kursauswahlAdapter.isSelected(position) != true) {
+                // überprüft ob das Fach ein GK ist
+                // bei LK wird es automatisch auf schriftlich gesetzt
+                // bei PK und AG wird es automatisch auf mündlich gesetzt
+                if (kurseList.get(position).kurs.kursart.gloablId == 1) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Kurswahl")
+                            .setCancelable(false)
+                            .setMessage("Wähle ob du den Kurs schriftlich oder mündlich hast.")
+                            .setPositiveButton("schriftlich", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    kursauswahlAdapter.switchMS(position, true);
+                                }
+                            })
+                            .setNegativeButton("mündlich", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    kursauswahlAdapter.switchMS(position, false);
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else if (kurseList.get(position).kurs.kursart.gloablId == 0) {
+                    kursauswahlAdapter.switchMS(position, true);
+                } else if (kurseList.get(position).kurs.kursart.gloablId > 1) {
+                    kursauswahlAdapter.switchMS(position, false);
+                }
+            } else {
+                kursauswahlAdapter.removeMS(position);
             }
-        } else {
-            kursauswahlAdapter.removeMS(position);
+            // toggleSelection ändert die Auswahl in der Anzeige
+            toggleSelection(position);
         }
-        // toggleSelection ändert die Auswahl in der Anzeige
-        toggleSelection(position);
     }
 
     private void toggleSelection(int position) {
@@ -286,7 +335,45 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
     // wenn eni fragt es den User ob schriftlich oder mündlich
     // speichert die Eingabe in der entsprechenden Liste
     @Override
-    public boolean onItemLongClicked(int position) {
+    public boolean onItemLongClicked(final int position) {
+        if (kurseList.get(position).headlineOrKurs == false) {
+
+            /**  überprüft ob der Kurs schon ausgewählt worden ist
+             *      wenn ja dann wird er makiert und in die entsprechende Liste eingespeichert
+             *      wenn nein wird die auswahl aufgehoben
+             */
+            if (kursauswahlAdapter.isSelected(position) != true) {
+                // überprüft ob das Fach ein GK ist
+                // bei LK wird es automatisch auf schriftlich gesetzt
+                // bei PK und AG wird es automatisch auf mündlich gesetzt
+                if (kurseList.get(position).kurs.kursart.gloablId == 1) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Kurswahl")
+                            .setCancelable(false)
+                            .setMessage("Wähle ob du den Kurs schriftlich oder mündlich hast.")
+                            .setPositiveButton("schriftlich", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    kursauswahlAdapter.switchMS(position, true);
+                                }
+                            })
+                            .setNegativeButton("mündlich", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    kursauswahlAdapter.switchMS(position, false);
+                                }
+                            });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                } else if (kurseList.get(position).kurs.kursart.gloablId == 0) {
+                    kursauswahlAdapter.switchMS(position, true);
+                } else if (kurseList.get(position).kurs.kursart.gloablId > 1) {
+                    kursauswahlAdapter.switchMS(position, false);
+                }
+            } else {
+                kursauswahlAdapter.removeMS(position);
+            }
+            // toggleSelection ändert die Auswahl in der Anzeige
+            toggleSelection(position);
+        }
         return false;
     }
 

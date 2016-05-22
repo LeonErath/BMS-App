@@ -2,6 +2,8 @@ package leon.bms.database;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+
 /**
  * Created by Leon E on 21.05.2016.
  */
@@ -10,7 +12,7 @@ public class dbFach extends SugarRecord{
     public String kuerzel;
     public String name;
 
-    public dbKurs kurs;
+    public dbKurs kurse;
 
     public dbFach() {
 
@@ -44,5 +46,14 @@ public class dbFach extends SugarRecord{
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<dbFach> getAllFaecher(){
+        List<dbFach> dbKursList = dbFach.listAll(dbFach.class);
+        return dbKursList;
+    }
+
+    public List<dbKurs> getAllKurse(long id) {
+        return dbKurs.find(dbKurs.class, "fach = ?", String.valueOf(id));
     }
 }

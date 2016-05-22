@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leon.bms.R;
+import leon.bms.database.dbAufgabe;
 import leon.bms.database.dbKurs;
+import leon.bms.model.kursauswahl;
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -23,9 +25,10 @@ import leon.bms.database.dbKurs;
 public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private static final String TAG = KursauswahlAdapter.class.getSimpleName();
+    private static final int TYPE_INACTIVE = 0;
+    private static final int TYPE_ACTIVE = 1;
 
-
-    private List<dbKurs> kurse;
+    private List<kursauswahl> kurse;
     private List<dbKurs> schriftlichList;
     private List<dbKurs> mündlichList;
 
@@ -36,7 +39,7 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
      * @param kursList      ist die Liste die angezeigt werden soll
      * @KursAdapter ClickListener und anzuzeigende Liste wird übergeben.
      */
-    public KursauswahlAdapter(ViewHolder.ClickListener clickListener, List<dbKurs> kursList) {
+    public KursauswahlAdapter(ViewHolder.ClickListener clickListener, List<kursauswahl> kursList) {
         super();
         this.clickListener = clickListener;
         this.kurse = kursList;
@@ -55,7 +58,7 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
      * Speichert den Kurs in der entsprechende Liste für Schriftlich oder Mündlich
      */
     public void switchMS(int position, boolean schriftlich) {
-        dbKurs kurs = kurse.get(position);
+        dbKurs kurs = kurse.get(position).kurs;
 
 
         if (schriftlich == true) {
@@ -99,7 +102,7 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
      * @removeMS entfernt einen Kurs von der Schriftlich oder Mündlich List
      */
     public void removeMS(int position) {
-        dbKurs kurs = kurse.get(position);
+        dbKurs kurs = kurse.get(position).kurs;
         if (schriftlichList.contains(kurs)) {
             schriftlichList.remove(kurs);
         }
@@ -109,51 +112,61 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
         Log.d(TAG, "Removed " + kurs.name);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return kurse.get(position).headlineOrKurs ? TYPE_ACTIVE : TYPE_INACTIVE;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_kursauswahl, parent, false);
+        final int layout = viewType == TYPE_INACTIVE ? R.layout.item_kursauswahl: R.layout.item_kursauswahl_headline;
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(v, clickListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final dbKurs kurs = kurse.get(position);
+        final kursauswahl kurswahl = kurse.get(position);
 
-        //Setting the Data to the views
-        holder.textViewFachname.setText(kurs.fach.name);
-        holder.textViewFachid.setText(kurs.name);
+        if (kurswahl.headlineOrKurs == true){
+            holder.textViewHeadline.setText(kurswahl.headline);
+        }else {
+            dbKurs kurs = kurswahl.kurs;
+            holder.textViewFachid.setText(kurs.name);
 
-        String lehrerString = "";
+            String lehrerString = "";
 
-        if (kurs.lehrer != null) {
-            if (kurs.lehrer.name != null) {
-                if (kurs.lehrer.titel != null) {
-                    //zeigt den Lehrer nur an wenn er vorhanden ist
-                    lehrerString += kurs.lehrer.titel + " ";
+            if (kurs.lehrer != null) {
+                if (kurs.lehrer.name != null) {
+                    if (kurs.lehrer.titel != null) {
+                        //zeigt den Lehrer nur an wenn er vorhanden ist
+                        lehrerString += kurs.lehrer.titel + " ";
+                    }
+                    lehrerString += kurs.lehrer.name + " ";
                 }
-                lehrerString += kurs.lehrer.name + " ";
             }
-        }
-        holder.textViewLehrer.setText(lehrerString);
-        switch (kurs.kursart.gloablId) {
-            case 0:
-                holder.textViewArt.setText("LK");
-                break;
-            case 1:
-                holder.textViewArt.setText("GK");
-                break;
-            case 2:
-                holder.textViewArt.setText("AG");
-                break;
-            case 3:
-                holder.textViewArt.setText("PK");
-                break;
+            holder.textViewLehrer.setText(lehrerString);
+            switch (kurs.kursart.gloablId) {
+                case 0:
+                    holder.textViewArt.setText("LK");
+                    break;
+                case 1:
+                    holder.textViewArt.setText("GK");
+                    break;
+                case 2:
+                    holder.textViewArt.setText("AG");
+                    break;
+                case 3:
+                    holder.textViewArt.setText("PK");
+                    break;
+            }
+
+            // Highlight the item if it's selected
+            holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
         }
 
-        // Highlight the item if it's selected
-        holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
+
     }
 
     @Override
@@ -167,10 +180,10 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
 
         private static final String TAG = ViewHolder.class.getSimpleName();
         //views
-        TextView textViewFachname;
         TextView textViewFachid;
         TextView textViewLehrer;
         TextView textViewArt;
+        TextView textViewHeadline;
         View selectedOverlay;
 
         private ClickListener listener;
@@ -178,7 +191,7 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
             //initial the Views
-            textViewFachname = (TextView) itemView.findViewById(R.id.textViewFachname);
+            textViewHeadline = (TextView) itemView.findViewById(R.id.textViewHeadline);
             textViewFachid = (TextView) itemView.findViewById(R.id.textViewFachid);
             textViewLehrer = (TextView) itemView.findViewById(R.id.textViewFachlehrer);
             textViewArt = (TextView) itemView.findViewById(R.id.textViewArt);

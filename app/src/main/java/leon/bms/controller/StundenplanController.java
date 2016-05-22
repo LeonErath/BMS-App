@@ -212,18 +212,22 @@ public class StundenplanController {
                 if (jsonObject.isNull("id")==false){
                     fach.serverId = jsonObject.optInt("id");
                 }
-               if (jsonObject.isNull("abbreviation")){
+               if (jsonObject.isNull("abbreviation")== false){
                    fach.kuerzel = jsonObject.optString("abbreviation");
+               }else {
+                   fach.kuerzel = "";
                }
-                if (jsonObject.isNull("description")){
+                if (jsonObject.isNull("description")== false){
                     fach.name = jsonObject.optString("description");
+                }else {
+                    fach.name = "";
                 }
                 fach.save();
                 JSONArray kurstyparray = jsonObject.getJSONArray("course_types");
                 for (int k = 0; k < kurstyparray.length(); k++) {
                     JSONObject jsonObjectKursart = kurstyparray.getJSONObject(k);
                     dbKursart kursart = new dbKursart();
-                    //kursart.gloablId = jsonObjectKursart.getInt("global_id"); //TODO global id ist im moment immer null
+                    kursart.gloablId = jsonObjectKursart.getInt("global_id"); //TODO global id ist im moment immer null
                     kursart.abkuerzung = jsonObjectKursart.getString("abbreviation");
                     kursart.name = jsonObjectKursart.getString("name");
                     kursart.save();
