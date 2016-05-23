@@ -20,6 +20,7 @@ public class KlausurActivity extends AppCompatActivity {
             Long id = intent.getLongExtra("id",100000000);
             if (id != 100000000){
 
+
             }
         }
 
