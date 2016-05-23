@@ -53,7 +53,7 @@ import leon.bms.model.stunden;
  * @Fragment_Highlight ist ein Fragment , welches kompakt alles wichtiges anzeigen soll
  * Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen
  */
-public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.ViewHolder.ClickListener {
+public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.ViewHolder.ClickListener,FragmentLifecycle {
 
     // views
     TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2;
@@ -510,5 +510,15 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     @Override
     public boolean onItemLongClicked(int position) {
         return false;
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }

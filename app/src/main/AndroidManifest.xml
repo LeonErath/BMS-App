@@ -80,7 +80,12 @@
             android:label="@string/title_activity_kurs"
             android:theme="@style/AppTheme" />
         <activity android:name=".NachrichtenActivity" />
-        <activity android:name=".activites.website.Website"></activity>
+        <activity android:name=".activites.website.Website" />
+        <activity android:name=".activites.Klausur.KlausurActivity"
+            android:windowSoftInputMode="adjustPan">
+
+
+        </activity>
     </application>
 
 </manifest>

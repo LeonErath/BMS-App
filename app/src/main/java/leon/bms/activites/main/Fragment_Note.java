@@ -12,7 +12,7 @@ import leon.bms.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Fragment_Note extends Fragment {
+public class Fragment_Note extends Fragment implements FragmentLifecycle {
 
 
     public Fragment_Note() {
@@ -27,4 +27,13 @@ public class Fragment_Note extends Fragment {
         return inflater.inflate(R.layout.fragment__note, container, false);
     }
 
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
+    }
 }

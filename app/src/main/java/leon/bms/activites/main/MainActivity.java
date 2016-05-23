@@ -105,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         final ViewPagerAdapterMain viewPagerAdapter = new ViewPagerAdapterMain(getSupportFragmentManager(), toolbar, viewPager);
         viewPager.setAdapter(viewPagerAdapter);
+
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int currentPosition = 0;
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -114,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 bottomNavigation.setCurrentItem(position);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)viewPagerAdapter.getItem(position);
+                fragmentToShow.onResumeFragment();
+
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)viewPagerAdapter.getItem(currentPosition);
+                fragmentToHide.onPauseFragment();
+
+                currentPosition = position;
             }
 
             @Override

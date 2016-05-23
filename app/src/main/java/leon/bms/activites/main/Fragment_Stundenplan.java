@@ -37,7 +37,7 @@ import leon.bms.model.stunden;
  * einem RecyclerView angezeigt und immer jeweils für einen Wochentag erstellt. Der User kann
  * den Wochentag durch einen Spinner wechseln.
  */
-public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter.ViewHolder.ClickListener {
+public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter.ViewHolder.ClickListener ,FragmentLifecycle{
 
 
     Spinner spinner;
@@ -307,5 +307,15 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     @Override
     public boolean onItemLongClicked(int position) {
         return false;
+    }
+
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
     }
 }

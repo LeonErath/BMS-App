@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import leon.bms.Constants;
@@ -21,7 +23,10 @@ import leon.bms.database.dbKlausuraufsicht;
 import leon.bms.database.dbKlausurinhalt;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbLehrer;
+import leon.bms.database.dbRaum;
 import leon.bms.database.klausur;
+import leon.bms.model.klausurModel;
+import leon.bms.model.websiteartikel;
 
 /**
  * Created by Leon E on 22.05.2016.
@@ -85,6 +90,13 @@ public class KlausurController {
                         klausur.beginn = jsonKlausur.getString("start");
                         klausur.ende = jsonKlausur.getString("end");
                         klausur.notizen = jsonKlausur.getString("note");
+                        int roomid = jsonKlausur.getInt("room_id");
+                        if (new dbRaum().getRaumWithId(roomid) != null) {
+                            dbRaum raum = new dbRaum().getRaumWithId(roomid);
+                            klausur.raum = raum;
+                        } else {
+                            Log.d("parseData", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
+                        }
                         switch (jsonKlausur.getInt("rest_course_eva")){
                             case 0:klausur.restkursFrei = true;break;
                             case 1:klausur.restkursFrei = false;break;
@@ -103,7 +115,7 @@ public class KlausurController {
                             inhalt.save();
                         }
                         JSONArray ausichtArray = jsonKlausur.getJSONArray("supervisors");
-                        for (int i=0;i<contentArray.length();i++){
+                        for (int i=0;i<ausichtArray.length();i++){
                             JSONObject jsonAufsicht = ausichtArray.getJSONObject(i);
                             dbKlausuraufsicht aufsicht = new dbKlausuraufsicht();
                             aufsicht.start = jsonAufsicht.getString("start");
@@ -114,7 +126,7 @@ public class KlausurController {
                                 dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
                                 aufsicht.lehrer = lehrer;
                             } else {
-                                Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                Log.d("parseData", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
                             }
                             aufsicht.save();
                         }
@@ -129,6 +141,43 @@ public class KlausurController {
             }
         }
 
+    }
+
+    public List<klausurModel> getAllKlausuren(){
+        List<klausurModel> convertedKlausurlist = new ArrayList<>();
+        if (new dbKlausur().getAllKLausur() != null){
+            List<dbKlausur> klausurlist = new dbKlausur().getAllKLausur();
+            List<klausurModel> klausurModelList = new ArrayList<>();
+            List<klausurModel> klausurModelListinPast = new ArrayList<>();
+            for (dbKlausur klausurObject:klausurlist){
+                klausurModel klausurModel = new klausurModel();
+                klausurModel.raum = klausurObject.raum;
+                klausurModel.klausur = klausurObject;
+                if (klausurModel.mathDate() < 0){
+                    klausurModel.inThePast = true;
+                    klausurModelListinPast.add(klausurModel);
+                }else {
+                    klausurModelList.add(klausurModel);
+                }
+
+            }
+            klausurModelListinPast = sortListDate(klausurModelListinPast);
+            klausurModelList = sortListDate(klausurModelList);
+            convertedKlausurlist.addAll(klausurModelList);
+            convertedKlausurlist.addAll(klausurModelListinPast);
+            return convertedKlausurlist;
+        }
+        return null;
+    }
+
+    private List<klausurModel> sortListDate(List<klausurModel> klausurModelList) {
+        Collections.sort(klausurModelList, new Comparator<klausurModel>() {
+            public int compare(klausurModel kl1, klausurModel kl2) {
+                return kl1.getDate().compareTo( kl2.getDate());
+            }
+        });
+        Collections.reverse(klausurModelList);
+        return klausurModelList;
     }
 
 

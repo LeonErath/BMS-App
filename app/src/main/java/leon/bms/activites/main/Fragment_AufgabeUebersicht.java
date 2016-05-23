@@ -31,7 +31,7 @@ import leon.bms.database.dbAufgabe;
  * darstellen soll . Dazu verwendet es einen RecyclerView und die in der Aufgaben vorhanden Suchabfragen
  * für die Aufgaben um diese anzuzeigen.
  */
-public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAdapter.ViewHolder.ClickListener {
+public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAdapter.ViewHolder.ClickListener,FragmentLifecycle {
 
     // definieren des recyclcerViews
     RecyclerView recyclerViewAufgaben;
@@ -372,5 +372,14 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
         return false;
     }
 
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
+    }
 }
 

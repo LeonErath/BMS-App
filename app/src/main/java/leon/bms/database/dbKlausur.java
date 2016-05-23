@@ -2,6 +2,9 @@ package leon.bms.database;
 
 import com.orm.SugarRecord;
 
+import java.util.List;
+import java.util.Random;
+
 /**
  * Created by Leon E on 19.11.2015.
  */
@@ -164,4 +167,16 @@ public class dbKlausur extends SugarRecord {
     public void setKlausurinhalt(dbKlausurinhalt klausurinhalt) {
         this.klausurinhalt = klausurinhalt;
     }
+
+
+    public List<dbKlausur> getAllKLausur(){
+        List<dbKlausur> klausurList = dbKlausur.listAll(dbKlausur.class);
+        if (klausurList != null && klausurList.size() != 0){
+            return klausurList;
+        }else {
+            return null;
+        }
+    }
+
+
 }
