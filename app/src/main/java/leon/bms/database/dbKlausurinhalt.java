@@ -8,16 +8,26 @@ import com.orm.SugarRecord;
 public class dbKlausurinhalt extends SugarRecord {
     public String beschreibung;
     public int inhaltIndex;
+    public boolean erledigt;
 
     public dbKlausur klausur;
 
     public dbKlausurinhalt() {
     }
 
-    public dbKlausurinhalt(String beschreibung, int inhaltIndex, dbKlausur klausur) {
+    public dbKlausurinhalt(String beschreibung, int inhaltIndex, boolean erledigt, dbKlausur klausur) {
         this.beschreibung = beschreibung;
         this.inhaltIndex = inhaltIndex;
+        this.erledigt = erledigt;
         this.klausur = klausur;
+    }
+
+    public boolean isErledigt() {
+        return erledigt;
+    }
+
+    public void setErledigt(boolean erledigt) {
+        this.erledigt = erledigt;
     }
 
     public String getBeschreibung() {

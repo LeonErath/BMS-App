@@ -39,7 +39,7 @@
             android:value="HausaufgabenDatenbank2.db" />
         <meta-data
             android:name="VERSION"
-            android:value="31" />
+            android:value="32" />
         <meta-data
             android:name="QUERY_LOG"
             android:value="false" />

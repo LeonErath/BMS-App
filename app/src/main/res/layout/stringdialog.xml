@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:orientation="vertical"
+        android:id="@+id/linearLayout">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxWidth="200dp"
+            android:hint="hier dein Fehler eingeben"
+            android:id="@+id/editText"
+             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+        <Button
+            android:layout_margin="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="match_parent"
+            android:id="@+id/buttonsubmit"
+            android:textColor="@color/colorPrimary"
+            android:background="#00000000"
+            android:text="speichern"/>
+        <Button
+            android:layout_margin="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="match_parent"
+            android:id="@+id/buttoncancel"
+            android:textColor="@color/colorPrimary"
+            android:background="#00000000"
+            android:text="abbrechen"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</RelativeLayout>

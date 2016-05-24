@@ -127,18 +127,23 @@ public class Fragment_Klausur extends Fragment implements KlausurAdapter.ViewHol
 
     @Override
     public void onItemClicked(int position) {
-        Log.d("Fragment_Klausur","Item click");
-        Intent intent = new Intent(getActivity(), KlausurActivity.class);
-        intent.putExtra("examid", klausurAdapter.get(position).klausur.getId());
-        getActivity().startActivity(intent);
+        if (klausurAdapter.get(position )!= null) {
+            Log.d("Fragment_Klausur", "Item click");
+            Intent intent = new Intent(getActivity(), KlausurActivity.class);
+            intent.putExtra("id", klausurAdapter.get(position).klausur.getId());
+            getActivity().startActivity(intent);
+        }
 
     }
 
     @Override
     public boolean onItemLongClicked(int position) {
-        Intent intent = new Intent(getActivity(), KlausurActivity.class);
-        intent.putExtra("examid", klausurAdapter.get(position).klausur.getId());
-        getActivity().startActivity(intent);
+        if (klausurAdapter.get(position )!= null) {
+            Log.d("Fragment_Klausur", "Item click");
+            Intent intent = new Intent(getActivity(), KlausurActivity.class);
+            intent.putExtra("id", klausurAdapter.get(position).klausur.getId());
+            getActivity().startActivity(intent);
+        }
         return false;
     }
 

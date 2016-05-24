@@ -178,5 +178,42 @@ public class dbKlausur extends SugarRecord {
         }
     }
 
+    public dbKlausur getKlausurWithId(long id) {
+        List<dbKlausur> dbKlausurList = dbKlausur.find(dbKlausur.class, "id = ?", String.valueOf(id));
+        if (dbKlausurList != null && dbKlausurList.size()== 1){
+            return dbKlausurList.get(0);
+        }
+        return null;
+    }
 
+    public List<dbKlausuraufsicht> getAufsichtFromKlausur(long id) {
+        List<dbKlausuraufsicht> dbKlausuraufsichtList = dbKlausuraufsicht.find(dbKlausuraufsicht.class, "klausur = ?", String.valueOf(id));
+        if (dbKlausuraufsichtList != null && dbKlausuraufsichtList.size()!= 0){
+            return dbKlausuraufsichtList;
+        }
+        return null;
+    }
+    public List<dbKlausurinhalt> getInhaltFromKlausur(long id) {
+        List<dbKlausurinhalt> dbKlausurinhaltList = dbKlausurinhalt.find(dbKlausurinhalt.class, "klausur = ?", String.valueOf(id));
+        if (dbKlausurinhaltList != null && dbKlausurinhaltList.size()!= 0){
+            return dbKlausurinhaltList;
+        }
+        return null;
+    }
+
+    public dbNote getNoteWithId(long id) {
+        List<dbNote> dbNoteList = dbNote.find(dbNote.class, "klausur = ?", String.valueOf(id));
+        if (dbNoteList != null && dbNoteList.size()== 1){
+            return dbNoteList.get(0);
+        }
+        return null;
+    }
+
+    public List<dbFehler> getFehlerFromKlausur(long id) {
+        List<dbFehler> dbFehlerList = dbFehler.find(dbFehler.class, "klausur = ?", String.valueOf(id));
+        if (dbFehlerList != null && dbFehlerList.size()!= 0){
+            return dbFehlerList;
+        }
+        return null;
+    }
 }

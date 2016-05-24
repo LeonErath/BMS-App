@@ -34,7 +34,10 @@ public class KlausurAdapter extends UltimateViewAdapter<KlausurAdapter.ViewHolde
     }
 
     public klausurModel get(int position){
-        return klausurList.get(position);
+        if (position>=0&&position<getAdapterItemCount()){
+            return klausurList.get(position);
+        }
+        return null;
     }
 
     @Override

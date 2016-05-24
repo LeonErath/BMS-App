@@ -1,17 +1,13 @@
 package leon.bms.controller;
 
 import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -23,10 +19,9 @@ import leon.bms.database.dbKlausuraufsicht;
 import leon.bms.database.dbKlausurinhalt;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbLehrer;
+import leon.bms.database.dbNote;
 import leon.bms.database.dbRaum;
-import leon.bms.database.klausur;
 import leon.bms.model.klausurModel;
-import leon.bms.model.websiteartikel;
 
 /**
  * Created by Leon E on 22.05.2016.
@@ -62,6 +57,7 @@ public class KlausurController {
             @Override
             public void onSuccesss(String result2) {
                 Log.d("checkUpdate",result2);
+                dbNote.deleteAll(dbNote.class);
                 dbKlausur.deleteAll(dbKlausur.class);
                 dbKlausuraufsicht.deleteAll(dbKlausur.class);
                 dbKlausurinhalt.deleteAll(dbKlausur.class);
@@ -111,6 +107,7 @@ public class KlausurController {
                             dbKlausurinhalt inhalt = new dbKlausurinhalt();
                             inhalt.inhaltIndex = jsonContent.getInt("subject_material_number");
                             inhalt.beschreibung = jsonContent.getString("material_description");
+                            inhalt.erledigt = false;
                             inhalt.klausur = klausur;
                             inhalt.save();
                         }
