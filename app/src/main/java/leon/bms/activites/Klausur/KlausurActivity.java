@@ -102,7 +102,7 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
                         dbNote note = klausur.getNoteWithId(klausur.getId());
                         if (note.punkte != null) {
                             textViewNotePunkte.setText(String.valueOf(note.punkte) + " Punkte");
-                            textViewNote.setText(notenArray[note.punkte]);
+                            textViewNote.setText(notenArray[note.punkte -1]);
 
                             Log.d("changeNote", "Note wurde erfolgreich geladen.");
                         }else {
@@ -282,8 +282,9 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void numberdialogshow() {
-        final Dialog d = new Dialog(KlausurActivity.this);
+        final Dialog d = new Dialog(KlausurActivity.this,R.style.PauseDialog);
         d.setTitle("Wähle deine Punktzahl");
+
         d.setContentView(R.layout.numberdialog);
         final Button b1 = (Button) d.findViewById(R.id.button1);
         final Button b2 = (Button) d.findViewById(R.id.button2);
@@ -300,6 +301,14 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         final Button b13 = (Button) d.findViewById(R.id.button13);
         final Button b14 = (Button) d.findViewById(R.id.button14);
         final Button b15 = (Button) d.findViewById(R.id.button15);
+        final Button bCancel = (Button) d.findViewById(R.id.button);
+
+        bCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                d.dismiss();
+            }
+        });
 
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,7 +423,7 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
 
     private void changeNote(Integer punktzahl) {
         textViewNotePunkte.setText(punktzahl + " Punkte");
-        textViewNote.setText(notenArray[punktzahl]);
+        textViewNote.setText(notenArray[punktzahl-1]);
         if (klausur != null) {
             dbNote note;
             if (klausur.getNoteWithId(klausur.getId()) == null) {

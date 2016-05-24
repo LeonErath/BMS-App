@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:background="#a8abac"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:card_view="http://schemas.android.com/tools"
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="#a8abac"
+        app:cardElevation="0dp"
+        card_view:cardCornerRadius="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_margin="1dp"
+            android:background="#fff"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:layout_marginLeft="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1. Klausur"
+                    android:textSize="14dp"
+                    android:id="@+id/textViewQuartal" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Montag, 01.04.2016"
+                    android:textSize="10dp"
+                    android:id="@+id/textViewDatum" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageViewAchtung"
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_margin="8dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:src="@drawable/klausur_fehler"
+                android:textSize="10dp"
+                android:visibility="invisible" />
+
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_marginRight="8dp"
+                android:layout_weight="0.1"
+                android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewNote"
+                        android:text="1+"
+                        android:textSize="14dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/textViewNotePunkte"
+                        android:text="15 P."
+                        android:textSize="10dp" />
+                </LinearLayout>
+                <TextView
+                    android:visibility="visible"
+                    android:gravity="center"
+                    android:background="#FFF"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/textViewKeineNote"
+                    android:text=" ? "
+                    android:textSize="18dp" />
+            </FrameLayout>
+
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

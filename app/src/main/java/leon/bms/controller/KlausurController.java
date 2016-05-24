@@ -1,6 +1,9 @@
 package leon.bms.controller;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -30,6 +33,19 @@ public class KlausurController {
     OnUpdateListener listener;
     Context mainContext;
     List<dbKurs> kursList;
+    Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            Boolean success = bundle.getBoolean("myKey");
+            if (success) {
+                listener.onSuccesss();
+            }else {
+                listener.onFailure();
+            }
+        }
+    };
 
     public KlausurController(Context mainContext) {
         this.mainContext = mainContext;
@@ -72,73 +88,92 @@ public class KlausurController {
         atOnline2.execute();
     }
 
-    private void parseData(String result2) {
-        if (kursList != null) {
-            for (dbKurs kurs : kursList) {
-                try {
-                    JSONObject jsonResult = new JSONObject(result2);
-                    if (jsonResult.has(String.valueOf(kurs.serverId))){
-                        JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.serverId));
-                        dbKlausur klausur = new dbKlausur();
-                        klausur.name = jsonKlausur.getString("name");
-                        klausur.serverid = jsonKlausur.getInt("exam_id");
-                        klausur.datum = jsonKlausur.getString("date");
-                        klausur.beginn = jsonKlausur.getString("start");
-                        klausur.ende = jsonKlausur.getString("end");
-                        klausur.notizen = jsonKlausur.getString("note");
-                        int roomid = jsonKlausur.getInt("room_id");
-                        if (new dbRaum().getRaumWithId(roomid) != null) {
-                            dbRaum raum = new dbRaum().getRaumWithId(roomid);
-                            klausur.raum = raum;
-                        } else {
-                            Log.d("parseData", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
-                        }
-                        switch (jsonKlausur.getInt("rest_course_eva")){
-                            case 0:klausur.restkursFrei = true;break;
-                            case 1:klausur.restkursFrei = false;break;
-                            default:break;
-                        }
+    private void parseData(final String result2) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if (kursList != null) {
+                    for (dbKurs kurs : kursList) {
+                        try {
+                            JSONObject jsonResult = new JSONObject(result2);
+                            if (jsonResult.has(String.valueOf(kurs.serverId))){
+                                JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.serverId));
+                                dbKlausur klausur = new dbKlausur();
+                                klausur.name = jsonKlausur.getString("name");
+                                klausur.serverid = jsonKlausur.getInt("exam_id");
+                                klausur.datum = jsonKlausur.getString("date");
+                                klausur.beginn = jsonKlausur.getString("start");
+                                klausur.ende = jsonKlausur.getString("end");
+                                klausur.notizen = jsonKlausur.getString("note");
+                                int roomid = jsonKlausur.getInt("room_id");
+                                if (new dbRaum().getRaumWithId(roomid) != null) {
+                                    dbRaum raum = new dbRaum().getRaumWithId(roomid);
+                                    klausur.raum = raum;
+                                } else {
+                                    Log.d("parseData", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
+                                }
+                                switch (jsonKlausur.getInt("rest_course_eva")){
+                                    case 0:klausur.restkursFrei = true;break;
+                                    case 1:klausur.restkursFrei = false;break;
+                                    default:break;
+                                }
 
-                        klausur.kurs = kurs;
-                        klausur.save();
-                        JSONArray contentArray = jsonKlausur.getJSONArray("content");
-                        for (int i=0;i<contentArray.length();i++){
-                            JSONObject jsonContent = contentArray.getJSONObject(i);
-                            dbKlausurinhalt inhalt = new dbKlausurinhalt();
-                            inhalt.inhaltIndex = jsonContent.getInt("subject_material_number");
-                            inhalt.beschreibung = jsonContent.getString("material_description");
-                            inhalt.erledigt = false;
-                            inhalt.klausur = klausur;
-                            inhalt.save();
-                        }
-                        JSONArray ausichtArray = jsonKlausur.getJSONArray("supervisors");
-                        for (int i=0;i<ausichtArray.length();i++){
-                            JSONObject jsonAufsicht = ausichtArray.getJSONObject(i);
-                            dbKlausuraufsicht aufsicht = new dbKlausuraufsicht();
-                            aufsicht.start = jsonAufsicht.getString("start");
-                            aufsicht.end = jsonAufsicht.getString("end");
-                            aufsicht.klausur = klausur;
-                            int lehrerid = jsonAufsicht.getInt("teacher_id");
-                            if (new dbLehrer().getLehereWithId(lehrerid) != null) {
-                                dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
-                                aufsicht.lehrer = lehrer;
-                            } else {
-                                Log.d("parseData", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                klausur.kurs = kurs;
+                                klausur.save();
+                                JSONArray contentArray = jsonKlausur.getJSONArray("content");
+                                for (int i=0;i<contentArray.length();i++){
+                                    JSONObject jsonContent = contentArray.getJSONObject(i);
+                                    dbKlausurinhalt inhalt = new dbKlausurinhalt();
+                                    inhalt.inhaltIndex = jsonContent.getInt("subject_material_number");
+                                    inhalt.beschreibung = jsonContent.getString("material_description");
+                                    inhalt.erledigt = false;
+                                    inhalt.klausur = klausur;
+                                    inhalt.save();
+                                }
+                                JSONArray ausichtArray = jsonKlausur.getJSONArray("supervisors");
+                                for (int i=0;i<ausichtArray.length();i++){
+                                    JSONObject jsonAufsicht = ausichtArray.getJSONObject(i);
+                                    dbKlausuraufsicht aufsicht = new dbKlausuraufsicht();
+                                    aufsicht.start = jsonAufsicht.getString("start");
+                                    aufsicht.end = jsonAufsicht.getString("end");
+                                    aufsicht.klausur = klausur;
+                                    int lehrerid = jsonAufsicht.getInt("teacher_id");
+                                    if (new dbLehrer().getLehereWithId(lehrerid) != null) {
+                                        dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
+                                        aufsicht.lehrer = lehrer;
+                                    } else {
+                                        Log.d("parseData", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                    }
+                                    aufsicht.save();
+                                }
+
                             }
-                            aufsicht.save();
+
+                            Message msg = handler.obtainMessage();
+                            boolean sucess = true;
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("myKey", sucess);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Message msg = handler.obtainMessage();
+                            boolean sucess = false;
+                            Bundle bundle = new Bundle();
+                            bundle.putBoolean("myKey", sucess);
+                            msg.setData(bundle);
+                            handler.sendMessage(msg);
                         }
 
                     }
-                    listener.onSuccesss();
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
 
             }
-        }
-
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
     }
+
 
     public List<klausurModel> getAllKlausuren(){
         List<klausurModel> convertedKlausurlist = new ArrayList<>();

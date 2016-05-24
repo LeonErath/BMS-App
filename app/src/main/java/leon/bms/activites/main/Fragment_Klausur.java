@@ -147,6 +147,8 @@ public class Fragment_Klausur extends Fragment implements KlausurAdapter.ViewHol
         return false;
     }
 
+
+
     @Override
     public void onPauseFragment() {
 

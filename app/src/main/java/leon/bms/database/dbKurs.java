@@ -367,6 +367,21 @@ public class dbKurs extends SugarRecord {
         }
     }
 
+    public List<dbNote> getNoteWithId(long id,int i) {
+        List<dbNote> dbNoteList = dbNote.find(dbNote.class, "kurs = ? and schriftlich = ?", String.valueOf(id), String.valueOf(i));
+        if (dbNoteList != null && dbNoteList.size()!= 0){
+            return dbNoteList;
+        }
+        return null;
+    }
+    public List<dbKlausur> getKlausurWithId(long id) {
+        List<dbKlausur> dbKlausurList = dbKlausur.find(dbKlausur.class, "kurs = ?", String.valueOf(id));
+        if (dbKlausurList != null && dbKlausurList.size()!= 0){
+            return dbKlausurList;
+        }
+        return null;
+    }
+
 
     public boolean kursVorhanden(dbKurs kurs) {
     return false; //TODO check Kurs

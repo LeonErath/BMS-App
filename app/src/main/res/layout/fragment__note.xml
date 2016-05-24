@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:textSize="20dp"
         android:text="Gesamtdurchschnitt: 9.3 (9 Punkte)"
-        android:id="@+id/textView8" />
+        android:id="@+id/textViewDurchschnitt" />
 
     <TextView
         android:layout_width="wrap_content"

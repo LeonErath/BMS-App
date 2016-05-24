@@ -81,11 +81,10 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".NachrichtenActivity" />
         <activity android:name=".activites.website.Website" />
-        <activity android:name=".activites.Klausur.KlausurActivity"
-            android:windowSoftInputMode="adjustPan">
-
-
-        </activity>
+        <activity
+            android:name=".activites.Klausur.KlausurActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".activites.note.NotenActivity"></activity>
     </application>
 
 </manifest>
