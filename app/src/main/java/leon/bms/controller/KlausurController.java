@@ -24,6 +24,7 @@ import leon.bms.database.dbKurs;
 import leon.bms.database.dbLehrer;
 import leon.bms.database.dbNote;
 import leon.bms.database.dbRaum;
+import leon.bms.database.dbUser;
 import leon.bms.model.klausurModel;
 
 /**
@@ -64,7 +65,7 @@ public class KlausurController {
             kurse+=id+",";
         }
 
-        String params = "username=erath&password=Ardaturan99&course_ids="+kurse+"&last_refresh="; //TODO richtige Paramerter hiinzufügen
+        String params = "username="+new LogInController(mainContext).getUsername() +"&password="+new LogInController(mainContext).getPass()+"&course_ids="+kurse+"&last_refresh="; //TODO richtige Paramerter hiinzufügen
         Log.d("params", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);

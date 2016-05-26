@@ -76,7 +76,7 @@ public class LogInController {
      * @createUser erstellt den user anhand der JSON Daten die man vom Server bekommt
      * Speichert den username,vorname,nachname,stufe,zuletztaktualisiert in die Datenbank.
      */
-    public dbUser createUser(String result) {
+    public dbUser createUser(String result,String User) {
         Log.d("createUser",result);
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -92,8 +92,8 @@ public class LogInController {
             user.vorname = Firstname;
             user.nachname = Lastname;
             user.loggedIn = true;
+            user.benutzername = User;
             user.stufe = Stufe;
-            user.benutzername = Firstname+" "+Lastname;
             user.save();
 
 

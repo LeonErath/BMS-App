@@ -67,15 +67,16 @@
                 android:textColor="#000"
                 android:textStyle="italic" />
 
-            <TextView
-                android:id="@+id/textViewEmail"
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/buttonEmail"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="16dp"
-                android:text="E-Mail schreiben"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textColor="#528dc5" />
+                android:layout_marginTop="8dp"
+                android:text="E-Mail schreiben"
+                android:textColor="#528dc5"
+                android:background="#00000000"/>
 
             <TextView
                 android:id="@+id/textView14"

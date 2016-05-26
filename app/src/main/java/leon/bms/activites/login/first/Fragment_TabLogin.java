@@ -86,7 +86,7 @@ public class Fragment_TabLogin extends AbstractStep {
             if (result != "Error") {
                 // login erfolgreich
                 Log.d(TAG, "Login erfolgreich");
-                dbUser user2 = logInController.createUser(result);
+                dbUser user2 = logInController.createUser(result,User);
 
                 if (user2 != null) {
 

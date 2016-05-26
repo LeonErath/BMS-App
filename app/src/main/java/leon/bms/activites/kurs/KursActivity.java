@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +34,8 @@ import leon.bms.model.stunden;
  */
 public class KursActivity extends AppCompatActivity implements View.OnTouchListener, KursAdapter.ViewHolder.ClickListener {
     // views
-    TextView textViewLehrer, textViewEmail, textViewAufgabe, textViewDate, textViewKurs;
+    TextView textViewLehrer, textViewAufgabe, textViewDate, textViewKurs;
+    Button buttonEmail;
     RecyclerView recyclerView;
     dbKurs kurs;
     private static String TAG = KursActivity.class.getSimpleName();
@@ -51,12 +53,23 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
         //initial view
         textViewKurs = (TextView) findViewById(R.id.textViewToolbar);
         textViewLehrer = (TextView) findViewById(R.id.textViewLehrer);
-        textViewEmail = (TextView) findViewById(R.id.textViewEmail);
+
         textViewAufgabe = (TextView) findViewById(R.id.textViewAufgaben);
         textViewDate = (TextView) findViewById(R.id.textViewDate);
 
-        textViewEmail.setOnTouchListener(this);
         textViewAufgabe.setOnTouchListener(this);
+        buttonEmail = (Button) findViewById(R.id.buttonEmail);
+        buttonEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "email trigger");
+                // startet den Email Intent zum verschicken einer Email an einen Lehrer
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", kurs.lehrer.email, null));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Hier der Betreff");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Sehr geehrte/r " + kurs.lehrer.titel + " " + kurs.lehrer.name + ",\n\n\n\nmit freundlichen Grüßen,\n" + new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
+                startActivity(Intent.createChooser(emailIntent, "Send email..."));
+            }
+        });
 
         // get the Data fromt the other Activity
         Intent intent = getIntent();
@@ -167,15 +180,6 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         switch (v.getId()) {
-            case R.id.textViewEmail:
-                Log.d(TAG, "email trigger");
-                // startet den Email Intent zum verschicken einer Email an einen Lehrer
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", kurs.lehrer.email, null));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Hier der Betreff");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Sehr geehrte/r " + kurs.lehrer.titel + " " + kurs.lehrer.name + ",\n\n\n\nmit freundlichen Grüßen,\n" + new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
-                startActivity(Intent.createChooser(emailIntent, "Send email..."));
-
-                break;
             case R.id.textViewAufgaben:
                 // startet die MainActivity und geht zu den Aufgaben Fragment
                 Intent intent = new Intent(this, MainActivity.class);

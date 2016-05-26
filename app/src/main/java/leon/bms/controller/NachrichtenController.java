@@ -27,6 +27,7 @@ import java.util.List;
 import leon.bms.Constants;
 import leon.bms.atOnline;
 import leon.bms.database.dbKurs;
+import leon.bms.database.dbUser;
 import leon.bms.model.nachrichten;
 
 ;
@@ -60,7 +61,7 @@ public class NachrichtenController {
         }
 
 
-        String params = "username=erath&password=Ardaturan99&last_refresh=" + datum + "&course_ids=" + course_ids; //TODO richtige Paramerter hiinzufügen
+        String params ="username="+new LogInController(mainContext).getUsername()+"&password="+new LogInController(mainContext).getPass()+"&last_refresh=" + datum + "&course_ids=" + course_ids; //TODO richtige Paramerter hiinzufügen
         Log.d("VERTREUNGSPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);

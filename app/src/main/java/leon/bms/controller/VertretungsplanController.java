@@ -21,6 +21,7 @@ import leon.bms.database.dbKurs;
 import leon.bms.database.dbLehrer;
 import leon.bms.database.dbRaum;
 import leon.bms.database.dbSchulstunde;
+import leon.bms.database.dbUser;
 import leon.bms.database.dbVertretung;
 
 /**
@@ -63,7 +64,7 @@ public class VertretungsplanController {
         }
 
 
-        String params = "username=erath&password=Ardaturan99&last_refresh=" + datum + "&course_ids=" + course_ids; //TODO richtige Paramerter hiinzufügen
+        String params = "username="+new LogInController(mainContext).getUsername()+"&password="+new LogInController(mainContext).getPass()+"&course_ids="+course_ids+"&last_refresh="; //TODO richtige Paramerter hiinzufügen
         Log.d("VERTREUNGSPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);

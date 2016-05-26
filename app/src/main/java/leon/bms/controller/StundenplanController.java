@@ -20,6 +20,7 @@ import leon.bms.database.dbKursart;
 import leon.bms.database.dbLehrer;
 import leon.bms.database.dbRaum;
 import leon.bms.database.dbSchulstunde;
+import leon.bms.database.dbUser;
 
 /**
  * Created by Leon E on 21.12.2015.
@@ -63,7 +64,7 @@ public class StundenplanController {
         }
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
 
-        String params = "username=erath&password=Ardaturan99"; //TODO richtige Paramerter hiinzufügen
+        String params = "username="+new LogInController(mainContext).getUsername() +"&password="+new LogInController(mainContext).getPass(); //TODO richtige Paramerter hiinzufügen
         Log.d("STUNDENPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);

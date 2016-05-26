@@ -124,7 +124,7 @@ public class Fragment_LogIn extends Fragment {
                                 } else {
                                     Log.d(TAG, "vorhandener User ist NICHT der gleiche wie der angemeldete");
                                     deleteDB();
-                                    dbUser user2 = logInController.createUser(result);
+                                    dbUser user2 = logInController.createUser(result,User);
                                     if (user2 != null) {
                                         // das Passswort des Users wird gespeichert sodass er es nicht beim
                                         // nächsten Login eingeben muss
@@ -154,7 +154,7 @@ public class Fragment_LogIn extends Fragment {
                             }
                         } else {
                             Log.d(TAG, "Kein User vorhanden");
-                            dbUser user2 = logInController.createUser(result);
+                            dbUser user2 = logInController.createUser(result,User);
                             if (user2 != null) {
 
                                 // das Passswort des Users wird gespeichert sodass er es nicht beim

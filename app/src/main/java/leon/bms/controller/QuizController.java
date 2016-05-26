@@ -31,6 +31,7 @@ import leon.bms.database.dbKurs;
 import leon.bms.database.dbNote;
 import leon.bms.database.dbQuiz;
 import leon.bms.database.dbThemenbereich;
+import leon.bms.database.dbUser;
 import leon.bms.model.quizthemen;
 
 /**
@@ -83,7 +84,7 @@ public class QuizController {
             kurse += id + ",";
         }
 
-        String params = "username=erath&password=Ardaturan99&course_ids=" + kurse + "&last_refresh="; //TODO richtige Paramerter hiinzufügen
+        String params = "username="+new LogInController(context).getUsername() +"&password="+new LogInController(context).getPass()+"&course_ids="+kurse+"&last_refresh="; //TODO richtige Paramerter hiinzufügen
         Log.d("params", params);
 
         atOnline atOnline2 = new atOnline(Url, params, context);

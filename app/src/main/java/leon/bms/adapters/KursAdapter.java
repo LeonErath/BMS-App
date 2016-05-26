@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import leon.bms.R;
@@ -25,6 +29,21 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
 
     private static final int TYPE_INACTIVE = 0;
     private static final int TYPE_ACTIVE = 1;
+    Calendar calendar = Calendar.getInstance();
+    GregorianCalendar[] calendars = new GregorianCalendar[]{
+            new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 8, 0, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 8, 45, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 9, 35, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 10, 45, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 11, 35, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 12, 25, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 13, 30, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 14, 15, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 15, 0, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 15, 45, 0)
+            , new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), 16, 30, 0)
+    };
+
 
     private List<stunden> stundenplan;
 
@@ -71,12 +90,33 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
     public void onBindViewHolder(ViewHolder holder, int position) {
         final stunden stunden = stundenplan.get(position);
         // TODO aktualisieren
-        //Setting the Data to the Views
-        //holder.textViewRaum.setText(stunden.getRaum());
-        //holder.textViewWeek.setText(stunden.wochentag + ", " + stunden.stunde + ". Std.");
-        //holder.textViewTime.setText(stunden.timeString);
+
+        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+        holder.textViewWeek.setText(getWochentagString(stunden.getSchulstunde().wochentag)+ ", " + stunden.getSchulstunde().getBeginnzeit() + ". Std.");
+        Calendar calendar = calendars[stunden.getSchulstunde().beginnzeit];
+        Calendar calendar2 = calendars[stunden.getSchulstunde().beginnzeit+1];
 
 
+        holder.textViewTime.setText(getDateString(calendar)+" - "+getDateString(calendar2));
+
+
+    }
+
+    public String getDateString(Calendar calendar){
+
+        SimpleDateFormat sdfmt = new SimpleDateFormat("HH:mm" );
+        return sdfmt.format(calendar.getTime())+" Uhr";
+    }
+
+    public String getWochentagString(int day){
+        switch (day){
+            case 1: return "Montag";
+            case 2: return "Dienstag";
+            case 3: return "Mittwoch";
+            case 4: return "Donnerstag";
+            case 5: return "Freitag";
+        }
+        return null;
     }
 
     /**
