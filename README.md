@@ -19,61 +19,11 @@ Die App wird für iOS und Android entwickelt und zum neuen Schuljahr erstmals ei
 - [x] Websiteartikel
 - [x] Quiz
 - [x] Mitteilungsfeature
-
-#COMING SOON
-- Klausurplaner
-- Vertretungsplan
-
-##See more [on our Website] (http://app.marienschule.de/).
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Login.PNG) 
-
-**Hier sieht man den Login der App.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Kursauswahl.PNG) 
-
-**Hier kann der Schüler seine Kurse auswählen, die automatisch in die App geladen werden. Aus diesen Kursen wird dann der Stundenplan für den Schüler erstellt.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Kursauswahl2.PNG)
-
-**Der Schüler wählt gleichzeitig ob er seine Kurse schriftlich oder mündlich hat.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Artikel2.PNG)
-
-**Hier sieht man die Artikel der Schule.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Artikel3.PNG)
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Artikel4.PNG)
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Aufgaben2.PNG)
-
-**Hier der Stundenplan des Schülers.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Aufgaben3.PNG)
-
-**Der Schüler kann ganz einfach neue Aufgaben eingeben und somit perfekt seinen Alltag planen.**
-
-______________________________________________________________________________________________________________________________________
-
-![alt tag](https://github.com/LeonErath/BMS-App/blob/master/app/src/main/res/drawable/screenshots/Screenshot_Welcome2.PNG)
+- [x] Klausurplan
+- [x] Vertretungsplan
 
 
-______________________________________________________________________________________________________________________________________
+
 
 
 
