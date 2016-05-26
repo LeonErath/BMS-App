@@ -155,7 +155,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l133"><span class="ln">133  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l134"><span class="ln">134  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l135"><span class="ln">135  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
-<a name="l136"><span class="ln">136  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach); 
+<a name="l136"><span class="ln">136  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fachnew);
 <a name="l137"><span class="ln">137  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l138"><span class="ln">138  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l139"><span class="ln">139  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
@@ -209,7 +209,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l187"><span class="ln">187  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l188"><span class="ln">188  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l189"><span class="ln">189  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
-<a name="l190"><span class="ln">190  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach); 
+<a name="l190"><span class="ln">190  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fachnew);
 <a name="l191"><span class="ln">191  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l192"><span class="ln">192  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l193"><span class="ln">193  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
@@ -273,7 +273,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l251"><span class="ln">251  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l252"><span class="ln">252  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l253"><span class="ln">253  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
-<a name="l254"><span class="ln">254  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach); 
+<a name="l254"><span class="ln">254  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fachnew);
 <a name="l255"><span class="ln">255  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l256"><span class="ln">256  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l257"><span class="ln">257  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
@@ -322,7 +322,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l300"><span class="ln">300  </span></a>                            Intent intent = </span><span class="s0">new </span><span class="s1">Intent(getActivity(), AufgabenActivity.</span><span class="s0">class</span><span class="s1">); 
 <a name="l301"><span class="ln">301  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Beschreibung&quot;</span><span class="s1">, aufgabe.beschreibung); 
 <a name="l302"><span class="ln">302  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Notizen&quot;</span><span class="s1">, aufgabe.notizen); 
-<a name="l303"><span class="ln">303  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Fach&quot;</span><span class="s1">, aufgabe.kurs.fach); 
+<a name="l303"><span class="ln">303  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Fach&quot;</span><span class="s1">, aufgabe.kurs.fachnew);
 <a name="l304"><span class="ln">304  </span></a>                            intent.putExtra(</span><span class="s5">&quot;Datum&quot;</span><span class="s1">, aufgabe.abgabeDatum); 
 <a name="l305"><span class="ln">305  </span></a>                            startActivity(intent); 
 <a name="l306"><span class="ln">306  </span></a>                            </span><span class="s0">break</span><span class="s1">; 
@@ -330,7 +330,7 @@ Fragment_AufgabeÜbersicht.java</FONT>
 <a name="l308"><span class="ln">308  </span></a>                            </span><span class="s2">// teilt die Aufgabe</span><span class="s1"> 
 <a name="l309"><span class="ln">309  </span></a>                            Intent sharingIntent = </span><span class="s0">new </span><span class="s1">Intent(android.content.Intent.ACTION_SEND); 
 <a name="l310"><span class="ln">310  </span></a>                            sharingIntent.setType(</span><span class="s5">&quot;text/plain&quot;</span><span class="s1">); 
-<a name="l311"><span class="ln">311  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach); 
+<a name="l311"><span class="ln">311  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fachnew);
 <a name="l312"><span class="ln">312  </span></a>                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">&quot; </span><span class="s1">+ aufgabe.notizen + </span><span class="s5">&quot;</span><span class="s0">\n</span><span class="s5">Abgabe am:&quot; </span><span class="s1">+ aufgabe.abgabeDatum); 
 <a name="l313"><span class="ln">313  </span></a>                            startActivity(Intent.createChooser(sharingIntent, </span><span class="s5">&quot;Share..&quot;</span><span class="s1">)); 
 <a name="l314"><span class="ln">314  </span></a>                            </span><span class="s0">break</span><span class="s1">; 

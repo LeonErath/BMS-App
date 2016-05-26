@@ -1,5 +1,8 @@
 package leon.bms.adapters;
 
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,9 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
+import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
+
 import java.util.List;
 
 import leon.bms.R;
+import leon.bms.database.dbVertretung;
 import leon.bms.model.stunden;
 
 /**
@@ -21,12 +28,9 @@ import leon.bms.model.stunden;
  * unterschieden einmal für normale stunden und einaml für freistunden. Deshalb wird für jedes Item der
  * ViewType überprüft.
  */
-public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.ViewHolder> {
+public class StundenplanAdapter extends UltimateViewAdapter<StundenplanAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private static final String TAG = KursauswahlAdapter.class.getSimpleName();
-
-    private static final int TYPE_INACTIVE = 0;
-    private static final int TYPE_ACTIVE = 1;
 
     private List<stunden> stundenplan;
 
@@ -41,38 +45,30 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
         super();
         this.clickListener = clickListener;
         this.stundenplan = stundenList;
-        Log.d(TAG,stundenList.size()+" ");
+        Log.d(TAG, stundenList.size() + " ");
     }
 
     /**
      * @return gibt die stundenplan Liste zurück
      */
-    public List<stunden> getStundenplan(){
+    public List<stunden> getStundenplan() {
         return stundenplan;
     }
 
 
-    /**
-     * @param position Position der Stunde in der stundenplan liste
-     * @return gibt an ob die Stunde ein Freistunde oder normale Stunde ist
-     */
     @Override
-    public int getItemViewType(int position) {
-        final stunden stunden = stundenplan.get(position);
-        return stunden.isActive() ? TYPE_ACTIVE : TYPE_INACTIVE;
+    public ViewHolder newFooterHolder(View view) {
+        return null;
     }
 
-    /**
-     * Hier wird zwischen zwei layouts gewechselt falls die Stunden keine normale sondern ein frei
-     * Stunde ist
-     * @param parent
-     * @param viewType wechselt je nach TYPE_INACTIVE
-     * @return das layout füur das item zurück
-     */
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final int layout = viewType  == TYPE_INACTIVE ? R.layout.item_stundenplan_leer : R.layout.item_stundenplan;
-        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+    public ViewHolder newHeaderHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_stundenplan, parent, false);
         return new ViewHolder(v, clickListener);
     }
 
@@ -81,39 +77,159 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
         final stunden stunden = stundenplan.get(position);
 
         //Sett the Data to the Views
-        if (stunden.isActive()==true){
-            holder.textViewFachname.setText(stunden.getStundenname());
-            holder.textViewStunde.setText(stunden.getStunde());
-            holder.textViewLehrer.setText(stunden.getLehrer());
-            holder.textViewRaum.setText(stunden.getRaum());
-        }else {
-            holder.textViewStunde.setText(stunden.getStunde());
+        if (stunden.isActive() == true) {
+            if (stunden.getVertretung() != null) {
+                //dbVertretung vertretung = stunden.getSchulstunde().getVertretung(stunden.getSchulstunde().getId());
+                //stunden.setVertretung(vertretung);
+                if (stunden.getVertretung().eva) {
+                    holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
+                    holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
+                    holder.textViewFachname.setPaintFlags(holder.textViewFachname.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    if (stunden.getVertretung().raum != null) {
+                        holder.textViewRaum.setText(stunden.getVertretung().raum.nummer);
+                        holder.textViewRaum.setBackgroundColor(Color.parseColor("#ff8002"));
+                        holder.textViewRaum.setTextColor(Color.parseColor("#FFFFFF"));
+                    } else {
+                        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                    }
+                    if (stunden.getVertretung().lehrer != null) {
+                        holder.textViewLehrer.setText(stunden.getVertretung().lehrer.titel + " "
+                                + stunden.getVertretung().lehrer.name);
+                    } else {
+                        holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
+                                + stunden.getSchulstunde().kurs.lehrer.name);
+                    }
 
+                } else {
+                    if ((holder.textViewFachname.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0){
+                        holder.textViewFachname.setPaintFlags( holder.textViewFachname.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                    }
+                    holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
+                    holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
+                    if (stunden.getVertretung().raum != null) {
+                        holder.textViewRaum.setText(stunden.getVertretung().raum.nummer);
+                        holder.textViewRaum.setBackgroundColor(Color.parseColor("#ff8002"));
+                        holder.textViewRaum.setTextColor(Color.parseColor("#FFFFFF"));
+                    } else {
+                        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                    }
+                    if (stunden.getVertretung().lehrer != null) {
+                        holder.textViewLehrer.setText(stunden.getVertretung().lehrer.titel + " "
+                                + stunden.getVertretung().lehrer.name);
+                    } else {
+                        holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
+                                + stunden.getSchulstunde().kurs.lehrer.name);
+                    }
+
+                }
+
+            } else {
+                if ((holder.textViewFachname.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0){
+                    holder.textViewFachname.setPaintFlags( holder.textViewFachname.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+                holder.textViewRaum.setBackgroundColor(Color.parseColor("#ffffff"));
+                holder.textViewRaum.setTextColor(Color.parseColor("#000000"));
+                holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
+                holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
+                holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
+                        + stunden.getSchulstunde().kurs.lehrer.name);
+
+            }
+
+        } else {
+            if ((holder.textViewFachname.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0){
+                holder.textViewFachname.setPaintFlags( holder.textViewFachname.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
+            }
+            holder.textViewRaum.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.textViewRaum.setTextColor(Color.parseColor("#000000"));
+            holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
+            holder.textViewFachname.setText("Freistunde");
+            holder.textViewLehrer.setText("");
+            holder.textViewRaum.setText("");
         }
-
 
 
     }
 
-    /**
-     * @return gibt die Größe der stundenplan Liste zurück
-     */
     @Override
-    public int getItemCount() {
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public int getAdapterItemCount() {
         return stundenplan.size();
+    }
+
+    @Override
+    public long generateHeaderId(int position) {
+        return 0;
     }
 
     /**
      * changes the Data set for another List
-     * @param finalMontagList ist die neue Liste die mit der alten ersetzt wird
+     *
+     * @param wochentagList ist die neue Liste die mit der alten ersetzt wird
      */
-    public void changeWeekDay(List<stunden> finalMontagList) {
-        stundenplan = finalMontagList;
-       notifyDataSetChanged();
+    public void changeStundenplan(List<stunden> wochentagList) {
+        //stundenplan = wochentagList;
+        //notifyDataSetChanged();
+
+        int wochentagsize = wochentagList.size();
+        int currentsize = stundenplan.size();
+
+       for (int i=0;i<currentsize;i++){
+           removeStunde(stundenplan.size()-1);
+       }
+        for (int i=0;i<wochentagsize;i++){
+            addStunde(wochentagList.get(i));
+        }
+    }
+
+    public void changeList(List<stunden> wochentagList){
+        int wochentagsize = wochentagList.size();
+        int currentsize = stundenplan.size();
+
+        if ( (currentsize-wochentagsize) <0){
+            for (int i=0;i<wochentagsize;i++){
+                if (i < currentsize){
+                    changeStunde(wochentagList.get(i),i);
+                }else {
+                    addStunde(wochentagList.get(i));
+                }
+            }
+        }else {
+            for (int i=0;i<currentsize;i++){
+                if (i < wochentagsize){
+                    changeStunde(wochentagList.get(i),i);
+                }else {
+                    removeStunde(stundenplan.size()-1);
+                }
+            }
+        }
+    }
+    public void changeStunde(stunden stunden1,int position){
+        stundenplan.remove(position);
+        stundenplan.add(position,stunden1);
+        notifyItemChanged(position);
+    }
+    public void addStunde(stunden stunden1){
+        stundenplan.add(stunden1);
+        notifyItemInserted(stundenplan.size()-1);
+    }
+    public void removeStunde(int position){
+        stundenplan.remove(position);
+        notifyItemRemoved(position);
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+    public static class ViewHolder extends UltimateRecyclerviewViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
         private static final String TAG = ViewHolder.class.getSimpleName();
@@ -122,6 +238,7 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
         TextView textViewLehrer;
         TextView textViewRaum;
         TextView textViewStunde;
+        CardView cardView;
 
         private ClickListener listener;
 
@@ -129,15 +246,17 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
             super(itemView);
             //intial Views
             textViewStunde = (TextView) itemView.findViewById(R.id.textViewNumber);
-            textViewRaum= (TextView) itemView.findViewById(R.id.textViewRaum);
-            textViewLehrer= (TextView) itemView.findViewById(R.id.textViewLehrer);
-            textViewFachname= (TextView) itemView.findViewById(R.id.textViewStunde);
+            textViewRaum = (TextView) itemView.findViewById(R.id.textViewRaum);
+            textViewLehrer = (TextView) itemView.findViewById(R.id.textViewLehrer);
+            textViewFachname = (TextView) itemView.findViewById(R.id.textViewStunde);
+            cardView = (CardView) itemView.findViewById(R.id.cardView);
 
             this.listener = listener;
 
             itemView.setOnClickListener(this);
             itemView.setOnLongClickListener(this);
         }
+
         /**
          * @param v
          * @onClick wird aufgerufen wenn ein Item angeclickt wird
@@ -148,6 +267,7 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
                 listener.onItemClicked(getAdapterPosition());
             }
         }
+
         /**
          * @param v
          * @onLongClick wird aufgerufen wenn ein Item angeclickt wird
@@ -160,11 +280,13 @@ public class StundenplanAdapter extends RecyclerView.Adapter<StundenplanAdapter.
 
             return false;
         }
+
         /**
          * Interface for Click Callbacks
          */
         public interface ClickListener {
             public void onItemClicked(int position);
+
             public boolean onItemLongClicked(int position);
         }
     }

@@ -13,6 +13,7 @@ public class dbVertretung extends SugarRecord {
     public String hinzugefuegtAm;
     public String letzteAenderung;
     public  String notiz;
+    public int serverId;
 
     public  dbSchulstunde schulstunde;
     public dbLehrer lehrer;
@@ -21,7 +22,8 @@ public class dbVertretung extends SugarRecord {
     public dbVertretung() {
     }
 
-    public dbVertretung(int art, int artBitfields, String datum, Boolean eva, String hinzugefuegtAm, String letzteAenderung, String notiz, dbSchulstunde schulstunde, dbLehrer lehrer, dbRaum raum) {
+
+    public dbVertretung(int art, int artBitfields, String datum, Boolean eva, String hinzugefuegtAm, String letzteAenderung, String notiz, int serverId, dbSchulstunde schulstunde, dbLehrer lehrer, dbRaum raum) {
         this.art = art;
         this.artBitfields = artBitfields;
         this.datum = datum;
@@ -29,9 +31,18 @@ public class dbVertretung extends SugarRecord {
         this.hinzugefuegtAm = hinzugefuegtAm;
         this.letzteAenderung = letzteAenderung;
         this.notiz = notiz;
+        this.serverId = serverId;
         this.schulstunde = schulstunde;
         this.lehrer = lehrer;
         this.raum = raum;
+    }
+
+    public int getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(int serverId) {
+        this.serverId = serverId;
     }
 
     public int getArt() {

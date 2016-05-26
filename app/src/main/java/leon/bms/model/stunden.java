@@ -2,6 +2,10 @@ package leon.bms.model;
 
 import java.io.Serializable;
 
+import leon.bms.database.dbKurs;
+import leon.bms.database.dbSchulstunde;
+import leon.bms.database.dbVertretung;
+
 /**
  * Created by Leon E on 10.02.2016.
  */
@@ -11,80 +15,23 @@ import java.io.Serializable;
  * Methode sind implementiert.
  */
 public class stunden implements Serializable {
-    public String stundenname;
-    public String lehrer;
     public boolean active;
-    public String raum;
-    public String timeString;
-    public String wochentag;
-    public long id;
     public int stunde;
-
-    public stunden(String stundenname, String lehrer, boolean active, String raum, String timeString, String wochentag, long id, int stunde) {
-        this.stundenname = stundenname;
-        this.lehrer = lehrer;
-        this.active = active;
-        this.raum = raum;
-        this.timeString = timeString;
-        this.wochentag = wochentag;
-        this.id = id;
-        this.stunde = stunde;
-    }
-
-    public String getTimeString() {
-        return timeString;
-    }
-
-    public void setTimeString(String timeString) {
-        this.timeString = timeString;
-    }
-
-    public String getWochentag() {
-        return wochentag;
-    }
-
-    public void setWochentag(String wochentag) {
-        this.wochentag = wochentag;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
+    public dbSchulstunde schulstunde;
+    public dbVertretung vertretung;
 
     public stunden() {
-
     }
 
-    public String getStundenname() {
-        return stundenname;
+    public stunden(boolean active, int stunde, dbSchulstunde schulstunde, dbVertretung vertretung) {
+        this.active = active;
+        this.stunde = stunde;
+        this.schulstunde = schulstunde;
+        this.vertretung = vertretung;
     }
 
-    public void setStundenname(String stundenname) {
-        this.stundenname = stundenname;
-    }
-
-    public String getLehrer() {
-        return lehrer;
-    }
-
-    public void setLehrer(String lehrer) {
-        this.lehrer = lehrer;
-    }
-
-    public String getRaum() {
-        return raum;
-    }
-
-    public void setRaum(String raum) {
-        this.raum = raum;
-    }
-
-    public String getStunde() {
-        return String.valueOf(stunde);
+    public int getStunde() {
+        return stunde;
     }
 
     public void setStunde(int stunde) {
@@ -93,10 +40,25 @@ public class stunden implements Serializable {
 
     public boolean isActive() {
         return active;
-
-  }
+    }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public dbSchulstunde getSchulstunde() {
+        return schulstunde;
+    }
+
+    public void setSchulstunde(dbSchulstunde schulstunde) {
+        this.schulstunde = schulstunde;
+    }
+
+    public dbVertretung getVertretung() {
+        return vertretung;
+    }
+
+    public void setVertretung(dbVertretung vertretung) {
+        this.vertretung = vertretung;
     }
 }

@@ -30,7 +30,7 @@ public class dbKurs extends SugarRecord {
     public String geandertAm;
     public String hinzugefuegtAm;
     public int blocknummer;
-    public int serverId;
+    public int serverid;
     public String iconPath;
     public Boolean archiviert;
 
@@ -38,7 +38,7 @@ public class dbKurs extends SugarRecord {
     public dbAufgabe aufgabe;
     public dbKlausur klausur;
     public dbNote note;
-    public dbFach fach;
+    public dbFach fachnew;
     public dbUser user;
     public dbLehrer lehrer;
     public dbSchulstunde stunde;
@@ -51,7 +51,7 @@ public class dbKurs extends SugarRecord {
         //empty Constructor needed!
     }
 
-    public dbKurs(String name, String untisId, Boolean aktiv, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int blocknummer, int serverId, String iconPath, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbFach fach, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, dbSchuljahr schuljahr, dbKursart kursart, leon.bms.database.dbKursTagConnect dbKursTagConnect) {
+    public dbKurs(String name, String untisId, Boolean aktiv, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, int blocknummer, int serverId, String iconPath, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbFach fachnew, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, dbSchuljahr schuljahr, dbKursart kursart, leon.bms.database.dbKursTagConnect dbKursTagConnect) {
         this.name = name;
         this.untisId = untisId;
         this.aktiv = aktiv;
@@ -59,13 +59,13 @@ public class dbKurs extends SugarRecord {
         this.geandertAm = geandertAm;
         this.hinzugefuegtAm = hinzugefuegtAm;
         this.blocknummer = blocknummer;
-        this.serverId = serverId;
+        this.serverid = serverId;
         this.iconPath = iconPath;
         this.archiviert = archiviert;
         this.aufgabe = aufgabe;
         this.klausur = klausur;
         this.note = note;
-        this.fach = fach;
+        this.fachnew = fachnew;
         this.user = user;
         this.lehrer = lehrer;
         this.stunde = stunde;
@@ -132,11 +132,11 @@ public class dbKurs extends SugarRecord {
     }
 
     public int getServerId() {
-        return serverId;
+        return serverid;
     }
 
     public void setServerId(int serverId) {
-        this.serverId = serverId;
+        this.serverid = serverId;
     }
 
     public String getIconPath() {
@@ -179,12 +179,12 @@ public class dbKurs extends SugarRecord {
         this.note = note;
     }
 
-    public dbFach getFach() {
-        return fach;
+    public dbFach getFachnew() {
+        return fachnew;
     }
 
-    public void setFach(dbFach fach) {
-        this.fach = fach;
+    public void setFachnew(dbFach fachnew) {
+        this.fachnew = fachnew;
     }
 
     public dbUser getUser() {
@@ -259,14 +259,6 @@ public class dbKurs extends SugarRecord {
         return dbSchulstunde.find(dbSchulstunde.class, "kurs = ?", String.valueOf(id));
     }
 
-    /**
-     * @getActiveKurse gibt alle Kurse einer Kursart zurück die aktiv sind also bei der Kursauswahl
-     * ausgwählt worden sind
-     */
-    public List<dbKurs> getActiveKurse() {
-        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "aktiv = ?", "1");
-        return dbKursList;
-    }
 
     /**
      * @getAllActiveKurse gibt alle Kurse zurück die aktiv sind also bei der Kursauswahl
@@ -285,13 +277,14 @@ public class dbKurs extends SugarRecord {
         return find(dbAufgabe.class, "kurs = ?", String.valueOf(id));
     }
 
-    /**
-     * @getKursWithFach gibt den Kurs zurück des fach
-     * Ist bei der AufgabenActivity von Relevanz
-     */
-    public dbKurs getKursWithFach(String fach) {
-        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "fach = ?", fach);
-        return dbKursList.get(0);
+
+
+    public dbKurs getKursWithServerId(int id) {
+        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "serverId = ?", String.valueOf(id));
+        if (dbKursList != null && dbKursList.size() == 1){
+            return dbKursList.get(0);
+        }
+       return null;
     }
 
     /**
@@ -321,6 +314,8 @@ public class dbKurs extends SugarRecord {
             return null;
         }
     }
+
+ 
 
     /**
      * @param kursid damit werden die Schulstunden rausgesucht

@@ -45,7 +45,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.pwittchen.swipe.library.Swipe;
 import com.meetic.marypopup.MaryPopup;
 
 import java.io.File;
@@ -57,10 +56,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import leon.bms.activites.main.MainActivity;
 import leon.bms.R;
+import leon.bms.activites.main.MainActivity;
 import leon.bms.adapters.PhotoAdapter;
 import leon.bms.database.dbAufgabe;
+import leon.bms.database.dbFach;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbMediaFile;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -97,14 +97,13 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     // @fabVisible wichtig für die Animation vom ein und ausblenden von FAB
     boolean fabVisible = false;
     String picturePath;
-    Swipe swipe;
     // @picturePaths speichert alle Pfade für die Bilder
     List<String> picturePaths = new ArrayList<>();
     // Wichtiger Code für das machen von Fotos
     static int CAMERA_CODE = 1;
     static int GALLARY_CODE = 2;
     // @aufgabeLoad wichtig für das ändern von Aufaben
-    dbAufgabe aufgabeLoad = null;
+    dbAufgabe aufgabe = null;
     // @photoAdapter ist ein Adapter für den recyclerView für das anzeigen von den Bildern
     private PhotoAdapter photoAdapter;
 
@@ -236,10 +235,10 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         // Liste mit alle ausgewählten Kursen wird rausgesucht
         List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
         // Spinner Drop down elements
-        List<String> fachlist = new ArrayList<String>();
+        final List<String> fachlist = new ArrayList<String>();
         for (dbKurs kurs : allActiveKurse) {
             // der Spinner beinhaltet nur die Namen der Kurse
-            fachlist.add(kurs.fach.name);
+            fachlist.add(kurs.fachnew.name);
         }
         // Spinner wird mit der Liste konfiguriert
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, fachlist);
@@ -250,12 +249,12 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 // name des Kurses wird in selectedItem gespeichert
-                selectedItem = parent.getItemAtPosition(position).toString();
+                selectedItem = fachlist.get(position);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-
+                selectedItem = null;
             }
         });
 
@@ -265,7 +264,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            Long id = intent.getLongExtra("serverid", 0);
+            Long id = intent.getLongExtra("id", 0);
             reloadData(id);
         } else {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -345,36 +344,36 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     private void reloadData(Long id) {
         // Liste mit alle ausgewählten Kursen wird rausgesucht
         List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
-        aufgabeLoad = new dbAufgabe().getAufgabe(id);
+        aufgabe = new dbAufgabe().getAufgabe(id);
         // check if aufgabe got load successfully
-        if (aufgabeLoad != null) {
+        if (aufgabe != null) {
 
-            editTextBeschreibung.setText(aufgabeLoad.beschreibung);
-            editTextNotizen.setText(aufgabeLoad.notizen);
+            editTextBeschreibung.setText(aufgabe.beschreibung);
+            editTextNotizen.setText(aufgabe.notizen);
             // setUp the kurs for the Aufgabe
             List<String> fachList = new ArrayList<>();
             for (dbKurs kurs : allActiveKurse) {
-                fachList.add(kurs.fach.name);
+                fachList.add(kurs.fachnew.name);
             }
-            int position = fachList.indexOf(aufgabeLoad.kurs.fach);
+            int position = fachList.indexOf(aufgabe.kurs.fachnew);
             spinner.setSelection(position);
 
             // setUp Time to the DatePicker
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.M.d");
             try {
-                calendar2.setTime(sdf2.parse(aufgabeLoad.zuletztAktualisiert));// all done
+                calendar2.setTime(sdf2.parse(aufgabe.zuletztAktualisiert));// all done
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
             textViewDatePicker.setText(dateAnzeige);
-            dateString = aufgabeLoad.zuletztAktualisiert;
+            dateString = aufgabe.zuletztAktualisiert;
 
             /** loads the images and applys them to the adapter
              **/
-            if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
+            if (aufgabe.getMediaFile(aufgabe.getId()).size() != 0) {
                 Log.d("IMAGE", "Bild wird geladen");
-                List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabeLoad.getId());
+                List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabe.getId());
                 for (int i = 0; i < dbMediaFileList.size(); i++) {
                     dbMediaFile dbMediaFile = dbMediaFileList.get(i);
                     photoAdapter.addPhoto(dbMediaFile.path);
@@ -407,7 +406,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
             @Override
             public void onAnimationCancel(Animator animation) {
-                Log.d(TAG, "Animation got canceled");
+
             }
 
             @Override
@@ -572,7 +571,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
                 }
             }
-            if (requestCode == GALLARY_CODE){
+            if (requestCode == GALLARY_CODE) {
                 if (data != null) {
                     // parse the data to get the path
                     Uri selectedImage = data.getData();
@@ -664,7 +663,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         if (calendar2 != null) {
             if (dateCalendar.before(calendar2) == true) {
                 if (selectedItem != null) {
-                    if (!editTextBeschreibung.getText().toString().equals("")) {
+                    if (!editTextBeschreibung.getText().toString().trim().equals("")) {
                         return true;
                     } else {
                         Toast.makeText(AufgabenActivity.this, "Titel ist leer", Toast.LENGTH_SHORT).show();
@@ -682,46 +681,64 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     }
 
     private void saveAufgabe() {
-        if (aufgabeLoad == null) {
-            aufgabeLoad = new dbAufgabe();
+        if (aufgabe == null) {
+            aufgabe = new dbAufgabe();
         }
         // Daten werden eingetragen
-        aufgabeLoad.abgabeDatum = fromCalendarToString(calendar2);
-        aufgabeLoad.erstelltAm = fromCalendarToString(Calendar.getInstance());
+        aufgabe.abgabeDatum = fromCalendarToString(calendar2);
+        aufgabe.erstelltAm = fromCalendarToString(Calendar.getInstance());
         Log.d(TAG, dateString + "");
-        aufgabeLoad.zuletztAktualisiert = dateString;
-        aufgabeLoad.erledigt = false;
-
-        aufgabeLoad.kurs = new dbKurs().getKursWithFach(selectedItem);
-        aufgabeLoad.beschreibung = editTextBeschreibung.getText().toString();
+        aufgabe.zuletztAktualisiert = dateString;
+        aufgabe.erledigt = false;
+        dbFach fach = new dbFach().getFachWithName(selectedItem);
+        aufgabe.kurs = fach.getKursWithFachId(fach.getId());
+        aufgabe.beschreibung = editTextBeschreibung.getText().toString();
         if (editTextNotizen.getText().toString() != "") {
-            aufgabeLoad.notizen = editTextNotizen.getText().toString();
+            aufgabe.notizen = editTextNotizen.getText().toString();
         }
 
 
         // Aufgabe wird in der Datenbank gespeichert
-        aufgabeLoad.save();
-        if (aufgabeLoad.getMediaFile(aufgabeLoad.getId()).size() != 0) {
-            List<dbMediaFile> mediaFileList = aufgabeLoad.getMediaFile(aufgabeLoad.getId());
-            for (dbMediaFile mediaFile : mediaFileList) {
-                mediaFile.delete();
+        if (checkAufgabe(aufgabe)) {
+            Log.d(TAG, "Aufgabe wurde gespeichert!");
+            aufgabe.save();
+
+            if (aufgabe.getMediaFile(aufgabe.getId()).size() != 0) {
+                List<dbMediaFile> mediaFileList = aufgabe.getMediaFile(aufgabe.getId());
+                for (dbMediaFile mediaFile : mediaFileList) {
+                    mediaFile.delete();
+                }
             }
-        }
-        // Photos werden in der mediaFile Datenbank gespeichert und die Beziehung
-        // zu den aufgaben werden hergestellt
-        picturePaths = photoAdapter.getList();
-        if (picturePaths.size() != 0) {
-            for (String path : picturePaths) {
-                dbMediaFile mediaFile = new dbMediaFile();
-                mediaFile.path = path;
-                mediaFile.aufgaben = aufgabeLoad;
-                mediaFile.save();
-                Log.d("Photo", "Photo gespeichert: " + path);
+            // Photos werden in der mediaFile Datenbank gespeichert und die Beziehung
+            // zu den aufgaben werden hergestellt
+            picturePaths = photoAdapter.getList();
+            if (picturePaths.size() != 0) {
+                for (String path : picturePaths) {
+                    dbMediaFile mediaFile = new dbMediaFile();
+                    mediaFile.path = path;
+                    mediaFile.aufgaben = aufgabe;
+                    mediaFile.save();
+                    Log.d("Photo", "Photo gespeichert: " + path);
+                }
             }
+
+            //createNotification(this, aufgabe);
         }
 
+    }
 
-        createNotification(this, aufgabeLoad);
+    public boolean checkAufgabe(dbAufgabe aufgabe) {
+        if (aufgabe.abgabeDatum != null) {
+            if (aufgabe.beschreibung != null) {
+                if (aufgabe.kurs != null) {
+                    if (aufgabe.erledigt != null) {
+                        if (aufgabe.zuletztAktualisiert != null)
+                            return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void createNotification(Context context, dbAufgabe aufgabeLoad) {

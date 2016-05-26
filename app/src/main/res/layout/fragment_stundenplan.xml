@@ -1,29 +1,60 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFF"
+    android:orientation="vertical">
 
+    <!-- TODO: Update blank fragment layout -->
+    <belka.us.androidtoggleswitch.widgets.ToggleSwitch
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/toggleButton"
+        android:textSize="16sp"
+        custom:activeBgColor="#029789"
+        custom:activeTextColor="@android:color/white"
+        custom:inactiveBgColor="@android:color/white"
+        custom:inactiveTextColor="@android:color/black"
+        custom:separatorColor="#029789"
+        android:layout_margin="8dp"
+        custom:toggleWidth="70dp"/>
 
-    <Spinner
-        android:layout_width="fill_parent"
-        android:layout_height="60dp"
-        android:id="@+id/spinner"
-        android:entries="@array/week_arrays"
-        android:prompt="@string/week_prompt"
-        android:spinnerMode="dialog"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:background="#fff"/>
-    <RelativeLayout
-        android:layout_below="@+id/spinner"
-        android:id="@+id/relative"
+    <TextView
+        android:id="@+id/textViewStundenAnzahl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="6 Stunden"
+        android:textColor="#979797"
+        android:textSize="14dp" />
+
+    <TextView
+        android:layout_marginTop="4dp"
+        android:id="@+id/textViewDatum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Vertretung für Mittwoch, 25.01.2123"
+        android:textColor="#000000"
+        android:textSize="16dp" />
+
+    <TextView
+        android:id="@+id/textViewVertretungDatum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Letzte Aktualisierung: 25.01.2123, 23.42 Uhr"
+        android:textColor="#c9834d"
+        android:textSize="12dp" />
+
+    <com.marshalchen.ultimaterecyclerview.UltimateRecyclerView
+        android:id="@+id/recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#747474"></RelativeLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/relative"
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</RelativeLayout>
+        android:layout_height="match_parent"
+        app:recyclerviewEmptyView="@layout/empty_view"
+        app:recyclerviewScrollbars="vertical" />
+
+</LinearLayout>

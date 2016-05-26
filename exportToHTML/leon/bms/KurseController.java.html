@@ -173,7 +173,7 @@ KurseController.java</FONT>
 <a name="l151"><span class="ln">151  </span></a>                    dbKurs kurs = kurseList.get(k); 
 <a name="l152"><span class="ln">152  </span></a>                    </span><span class="s2">//kurs wird anhand der Kursform rausgesucht und die Langform gespeichert</span><span class="s1"> 
 <a name="l153"><span class="ln">153  </span></a>                    </span><span class="s0">if </span><span class="s1">(mShort.equals(kurs.name)) { 
-<a name="l154"><span class="ln">154  </span></a>                        kurs.fach = jsonObject.optString(</span><span class="s5">&quot;FULL&quot;</span><span class="s1">); 
+<a name="l154"><span class="ln">154  </span></a>                        kurs.fachnew = jsonObject.optString(</span><span class="s5">&quot;FULL&quot;</span><span class="s1">);
 <a name="l155"><span class="ln">155  </span></a>                        kurs.save(); 
 <a name="l156"><span class="ln">156  </span></a>                    } 
 <a name="l157"><span class="ln">157  </span></a> 
@@ -223,7 +223,7 @@ KurseController.java</FONT>
 <a name="l201"><span class="ln">201  </span></a>                    </span><span class="s0">if </span><span class="s1">(Typ.getString(k).substring(</span><span class="s4">0</span><span class="s1">, </span><span class="s4">2</span><span class="s1">).equals(</span><span class="s5">&quot;PK&quot;</span><span class="s1">)) { 
 <a name="l202"><span class="ln">202  </span></a>                        kurs.kursart = </span><span class="s4">3</span><span class="s1">; 
 <a name="l203"><span class="ln">203  </span></a>                    } 
-<a name="l204"><span class="ln">204  </span></a>                    kurs.fach = name; 
+<a name="l204"><span class="ln">204  </span></a>                    kurs.fachnew = name;
 <a name="l205"><span class="ln">205  </span></a>                    </span><span class="s2">//überprüft ob Kurs vorhanden ist</span><span class="s1"> 
 <a name="l206"><span class="ln">206  </span></a>                    </span><span class="s0">if </span><span class="s1">(</span><span class="s0">new </span><span class="s1">dbKurs().kursVorhanden(kurs) == </span><span class="s0">false</span><span class="s1">) { 
 <a name="l207"><span class="ln">207  </span></a>                        JSONArray Tags = jsonObjectEintrag.getJSONArray(</span><span class="s5">&quot;TAGS&quot;</span><span class="s1">); 

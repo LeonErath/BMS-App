@@ -13,27 +13,35 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_weight="0.15"
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="48dp"
             android:layout_height="48dp"
-            android:scaleType="centerInside"
             android:src="@drawable/logo_bms"
-            />
+            app:civ_border_width="1dp"
+            app:civ_border_color="#FF000000"/>
 
         <LinearLayout
-            android:layout_marginLeft="4dp"
-            android:layout_width="0dp"
-            android:layout_weight="0.85"
+            android:layout_marginLeft="8dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <TextView
+            android:textColor="@color/fallback"
+            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hier die Überschrift"
+            android:id="@+id/textViewTitel"/>
+            <TextView
                 android:textColor="@color/fallback"
-                android:textSize="16dp"
+                android:textSize="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Hier die Überschrift"
-                android:id="@+id/textViewTitel"/>
+                android:text="Hier der Content"
+                android:maxLines="3"
+                android:id="@+id/textViewContent"/>
 
             <TextView
                 android:layout_width="wrap_content"

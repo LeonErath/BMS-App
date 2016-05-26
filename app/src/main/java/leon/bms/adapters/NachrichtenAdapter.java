@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerviewViewHolder;
+import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +28,7 @@ import leon.bms.model.nachrichten;
 /**
  * @WebsiteArticleAdapter Adapter für das Anzeigen der einzelnen artikel in einem RecylcerView.
  */
-public class NachrichtenAdapter extends RecyclerView.Adapter<NachrichtenAdapter.ViewHolder> {
+public class NachrichtenAdapter extends UltimateViewAdapter<NachrichtenAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private static final String TAG = KursauswahlAdapter.class.getSimpleName();
 
@@ -56,66 +59,89 @@ public class NachrichtenAdapter extends RecyclerView.Adapter<NachrichtenAdapter.
      * vorhande ist
      * @param nachrichten ist der zu hinzufügende Artikel
      */
-    public void addArticle(nachrichten nachrichten) {
-        if (!nachrichtenList.contains(nachrichten)) {
-            nachrichtenList.add(nachrichten);
-            notifyItemInserted(nachrichtenList.size() - 1);
-        }
-    }
+
 
     /**
      * @changeDataSet Methode zum Austausch der Daten
      * @param nachrichtens alte Liste wird duch die neue Komplett ersetzt
      */
     public void changeDataSet(List<nachrichten> nachrichtens) {
-        for (int i = 0; i < nachrichtens.size(); i++) {
-            nachrichten nachrichten = nachrichtenList.get(i);
-            nachrichtenList.remove(i);
-            nachrichtenList.add(i, nachrichten);
-            notifyItemChanged(i);
+
+        int nachrichtenSize = nachrichtenList.size();
+       for (int i= 0;i<nachrichtenSize;i++){
+           removeArticle(nachrichtenList.size()-1);
+       }
+        for (int i= 0;i<nachrichtens.size();i++){
+            addArticle(nachrichtens.get(i));
         }
 
     }
-    public void addList(List<nachrichten>nachrichtenList){
-        for (nachrichten nachrichten : nachrichtenList){
-            if (!getArtikelList().contains(nachrichten)){
-                addArticle(nachrichten);
-            }
-        }
+    public void addArticle(nachrichten nachrichten) {
+        nachrichtenList.add(nachrichten);
+        notifyItemInserted(nachrichtenList.size() - 1);
+    }
+    public void removeArticle(int position) {
+        nachrichtenList.remove(position);
+        notifyItemRemoved(position);
     }
 
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder newFooterHolder(View view) {
+        return null;
+    }
 
+    @Override
+    public ViewHolder newHeaderHolder(View view) {
+        return null;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_nachrichten, parent, false);
         return new ViewHolder(v, clickListener);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(NachrichtenAdapter.ViewHolder holder, int position) {
         final nachrichten nachrichten =  nachrichtenList.get(position);
 
         //Set the Data to the Views
         holder.textViewHeadline.setText(nachrichten.titel);
         holder.textViewDate.setText("Zuletzt gändert am: "+nachrichten.dateString);
-
+        holder.textViewContent.setText(nachrichten.nachricht);
 
     }
 
     @Override
-    public int getItemCount() {
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        return null;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public int getAdapterItemCount() {
         return nachrichtenList.size();
     }
 
+    @Override
+    public long generateHeaderId(int position) {
+        return 0;
+    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,
+
+    public static class ViewHolder extends UltimateRecyclerviewViewHolder implements View.OnClickListener,
             View.OnLongClickListener {
 
         private static final String TAG = ViewHolder.class.getSimpleName();
         //views
         TextView textViewHeadline;
         TextView textViewDate;
+        TextView textViewContent;
 
 
 
@@ -126,7 +152,7 @@ public class NachrichtenAdapter extends RecyclerView.Adapter<NachrichtenAdapter.
             //initial views
             textViewHeadline = (TextView) itemView.findViewById(R.id.textViewTitel);
             textViewDate = (TextView) itemView.findViewById(R.id.textViewDate);
-
+            textViewContent = (TextView) itemView.findViewById(R.id.textViewContent);
 
 
             this.listener = listener;

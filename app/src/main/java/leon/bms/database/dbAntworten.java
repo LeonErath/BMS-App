@@ -25,7 +25,6 @@ public class dbAntworten extends SugarRecord {
      */
     public boolean richtig;
     public String antwort;
-    public String langfassung;
     public int serverid;
 
     public dbFragen fragen;
@@ -35,11 +34,10 @@ public class dbAntworten extends SugarRecord {
         // empty Constructor needed!
     }
 
-    public dbAntworten(boolean richtig, String antwort, String langfassung, int idLocal, dbFragen fragen) {
+    public dbAntworten(boolean richtig, String antwort, int serverid, dbFragen fragen) {
         this.richtig = richtig;
         this.antwort = antwort;
-        this.langfassung = langfassung;
-        this.serverid = idLocal;
+        this.serverid = serverid;
         this.fragen = fragen;
     }
 
@@ -49,14 +47,6 @@ public class dbAntworten extends SugarRecord {
 
     public void setServerid(int serverid) {
         this.serverid = serverid;
-    }
-
-    public String getLangfassung() {
-        return langfassung;
-    }
-
-    public void setLangfassung(String langfassung) {
-        this.langfassung = langfassung;
     }
 
     public boolean isRichtig() {

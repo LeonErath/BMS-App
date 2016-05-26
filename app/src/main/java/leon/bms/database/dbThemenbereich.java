@@ -23,45 +23,26 @@ public class dbThemenbereich extends SugarRecord {
      */
     public String name;
     public String zuletztAktualisiert;
-    public String infos;
     public int serverid;
-    public dbKurs kurs;
+    public int globaleid;
+    public boolean katalogThemenbereich;
+    public String beschreibung;
+
+    public dbFach fach;
     public dbFragen fragen;
 
     public dbThemenbereich() {
         //empty Construcor needed
     }
 
-    public dbThemenbereich(String name, String zuletztAktualisiert, String infos, int serverid, dbKurs kurs, dbFragen fragen) {
+    public dbThemenbereich(String name, String zuletztAktualisiert, int serverid, int globaleid, boolean katalogThemenbereich, String beschreibung, dbFach fach, dbFragen fragen) {
         this.name = name;
         this.zuletztAktualisiert = zuletztAktualisiert;
-        this.infos = infos;
         this.serverid = serverid;
-        this.kurs = kurs;
-        this.fragen = fragen;
-    }
-
-    public String getInfos() {
-        return infos;
-    }
-
-    public void setInfos(String infos) {
-        this.infos = infos;
-    }
-
-    public int getServerid() {
-        return serverid;
-    }
-
-    public void setServerid(int serverid) {
-        this.serverid = serverid;
-    }
-
-    public dbFragen getFragen() {
-        return fragen;
-    }
-
-    public void setFragen(dbFragen fragen) {
+        this.globaleid = globaleid;
+        this.katalogThemenbereich = katalogThemenbereich;
+        this.beschreibung = beschreibung;
+        this.fach = fach;
         this.fragen = fragen;
     }
 
@@ -81,21 +62,52 @@ public class dbThemenbereich extends SugarRecord {
         this.zuletztAktualisiert = zuletztAktualisiert;
     }
 
-
-    public Integer getIdLocal() {
+    public int getServerid() {
         return serverid;
     }
 
-    public void setIdLocal(Integer idLocal) {
-        this.serverid = idLocal;
+    public void setServerid(int serverid) {
+        this.serverid = serverid;
     }
 
-    public dbKurs getKurs() {
-        return kurs;
+    public int getGlobaleid() {
+        return globaleid;
     }
 
-    public void setKurs(dbKurs kurs) {
-        this.kurs = kurs;
+    public void setGlobaleid(int globaleid) {
+        this.globaleid = globaleid;
+    }
+
+    public boolean isKatalogThemenbereich() {
+        return katalogThemenbereich;
+    }
+
+    public void setKatalogThemenbereich(boolean katalogThemenbereich) {
+        this.katalogThemenbereich = katalogThemenbereich;
+    }
+
+    public String getBeschreibung() {
+        return beschreibung;
+    }
+
+    public void setBeschreibung(String beschreibung) {
+        this.beschreibung = beschreibung;
+    }
+
+    public dbFach getFach() {
+        return fach;
+    }
+
+    public void setFach(dbFach fach) {
+        this.fach = fach;
+    }
+
+    public dbFragen getFragen() {
+        return fragen;
+    }
+
+    public void setFragen(dbFragen fragen) {
+        this.fragen = fragen;
     }
 
     /**

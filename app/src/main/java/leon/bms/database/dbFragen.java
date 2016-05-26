@@ -22,69 +22,81 @@ public class dbFragen extends SugarRecord {
      * von Fragen am Server
      * @langfassung Erklärung der Frage . Nacher für die Anzeige der richtigen Antwort wichtig.
      */
+    public int anzahlFalschtBeantwortet;
+    public int anzahlRichtigBeantwortet;
+    public String dateLetzteRichtigeAntwort;
+    public String erklaerung;
     public String frage;
-    public String path;
-    public int serverid;
-    public int richtigCounter;
-    public int falschCounter;
+    public int globaleid;
+    public String hinzugefuegtAm;
+    public String imageURL;
+    public int punkzahl;
     public int schwirigkeit;
-    public String langfassung;
-    public String date;
-    public String stufe;
+    public int stufe;
+    public String zuletztAktualisiert;
+
 
     public dbKurs kurs;
     public dbAntworten antworten;
     public dbThemenbereich themenbereich;
+    public dbQuiz quiz;
+    public int serverid;
+
 
     public dbFragen() {
         //empty Constructor needed!
     }
 
-    public dbFragen(String frage, String path, int serverid, int richtigCounter, int falschCounter, int schwirigkeit, String langfassung, String date, String stufe, dbKurs kurs, dbAntworten antworten, dbThemenbereich themenbereich) {
+    public dbFragen(int anzahlFalschtBeantwortet, int anzahlRichtigBeantwortet, String dateLetzteRichtigeAntwort, String erklaerung, String frage, int globaleid, String hinzugefuegtAm, String imageURL, int punkzahl, int schwirigkeit, int stufe, String zuletztAktualisiert, dbKurs kurs, dbAntworten antworten, dbThemenbereich themenbereich, dbQuiz quiz, int serverid) {
+        this.anzahlFalschtBeantwortet = anzahlFalschtBeantwortet;
+        this.anzahlRichtigBeantwortet = anzahlRichtigBeantwortet;
+        this.dateLetzteRichtigeAntwort = dateLetzteRichtigeAntwort;
+        this.erklaerung = erklaerung;
         this.frage = frage;
-        this.path = path;
-        this.serverid = serverid;
-        this.richtigCounter = richtigCounter;
-        this.falschCounter = falschCounter;
+        this.globaleid = globaleid;
+        this.hinzugefuegtAm = hinzugefuegtAm;
+        this.imageURL = imageURL;
+        this.punkzahl = punkzahl;
         this.schwirigkeit = schwirigkeit;
-        this.langfassung = langfassung;
-        this.date = date;
         this.stufe = stufe;
+        this.zuletztAktualisiert = zuletztAktualisiert;
         this.kurs = kurs;
         this.antworten = antworten;
         this.themenbereich = themenbereich;
+        this.quiz = quiz;
+        this.serverid = serverid;
     }
 
-    public int getFalschCounter() {
-        return falschCounter;
+    public int getAnzahlFalschtBeantwortet() {
+        return anzahlFalschtBeantwortet;
     }
 
-    public void setFalschCounter(int falschCounter) {
-        this.falschCounter = falschCounter;
+    public void setAnzahlFalschtBeantwortet(int anzahlFalschtBeantwortet) {
+        this.anzahlFalschtBeantwortet = anzahlFalschtBeantwortet;
     }
 
-    public String getDate() {
-        return date;
+    public int getAnzahlRichtigBeantwortet() {
+        return anzahlRichtigBeantwortet;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setAnzahlRichtigBeantwortet(int anzahlRichtigBeantwortet) {
+        this.anzahlRichtigBeantwortet = anzahlRichtigBeantwortet;
     }
 
-    public String getStufe() {
-        return stufe;
+    public String getDateLetzteRichtigeAntwort() {
+        return dateLetzteRichtigeAntwort;
     }
 
-    public void setStufe(String stufe) {
-        this.stufe = stufe;
+    public void setDateLetzteRichtigeAntwort(String dateLetzteRichtigeAntwort) {
+        this.dateLetzteRichtigeAntwort = dateLetzteRichtigeAntwort;
     }
 
-    public String getLangfassung() {
-        return langfassung;
+    public String getErklaerung() {
+        return erklaerung;
     }
 
-    public void setLangfassung(String langfassung) {
-        this.langfassung = langfassung;
+    public void setErklaerung(String erklaerung) {
+        this.erklaerung = erklaerung;
     }
 
     public String getFrage() {
@@ -95,12 +107,20 @@ public class dbFragen extends SugarRecord {
         this.frage = frage;
     }
 
-    public String getPath() {
-        return path;
+    public int getGlobaleid() {
+        return globaleid;
     }
 
-    public void setPath(String path) {
-        this.path = path;
+    public void setGlobaleid(int globaleid) {
+        this.globaleid = globaleid;
+    }
+
+    public String getHinzugefuegtAm() {
+        return hinzugefuegtAm;
+    }
+
+    public void setHinzugefuegtAm(String hinzugefuegtAm) {
+        this.hinzugefuegtAm = hinzugefuegtAm;
     }
 
     public int getServerid() {
@@ -111,12 +131,20 @@ public class dbFragen extends SugarRecord {
         this.serverid = serverid;
     }
 
-    public int getRichtigCounter() {
-        return richtigCounter;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setRichtigCounter(int richtigCounter) {
-        this.richtigCounter = richtigCounter;
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public int getPunkzahl() {
+        return punkzahl;
+    }
+
+    public void setPunkzahl(int punkzahl) {
+        this.punkzahl = punkzahl;
     }
 
     public int getSchwirigkeit() {
@@ -125,6 +153,22 @@ public class dbFragen extends SugarRecord {
 
     public void setSchwirigkeit(int schwirigkeit) {
         this.schwirigkeit = schwirigkeit;
+    }
+
+    public int getStufe() {
+        return stufe;
+    }
+
+    public void setStufe(int stufe) {
+        this.stufe = stufe;
+    }
+
+    public String getZuletztAktualisiert() {
+        return zuletztAktualisiert;
+    }
+
+    public void setZuletztAktualisiert(String zuletztAktualisiert) {
+        this.zuletztAktualisiert = zuletztAktualisiert;
     }
 
     public dbKurs getKurs() {
@@ -151,45 +195,11 @@ public class dbFragen extends SugarRecord {
         this.themenbereich = themenbereich;
     }
 
-    /**
-     * @param idLocal ist die Serverid zum raussuchen der Frage
-     * @return gibt die Frage zurck , wenn diese Frage vorhanden ist. Sonst wird null zurückgegeben
-     * @getFrage gibt alle Fragen einer bestimmten ID zurück. Diese Id kann nur eine Frage besitzen
-     */
-    public dbFragen getFrage(int idLocal) {
-        List<dbFragen> dbFragenList = new dbFragen().find(dbFragen.class, "serverid = ?", String.valueOf(idLocal));
-        if (dbFragenList.size() == 1) {
-            return dbFragenList.get(0);
-        } else {
-            return null;
-        }
+    public dbQuiz getQuiz() {
+        return quiz;
     }
 
-    /**
-     * @param id ist die ID der frage um die Antworten rauszusuchen
-     * @return gibt eine Liste mit den Antowrten zurück falls diese existieren
-     * @getAntworten gibt alle Antworten einer bestimmten Fragen zurück.
-     */
-    public List<dbAntworten> getAnworten(long id) {
-        List<dbAntworten> dbAntwortenList = new dbAntworten().find(dbAntworten.class, "fragen = ?", String.valueOf(id));
-        if (dbAntwortenList.size() > 0) {
-            return dbAntwortenList;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * @param idlocal ist die Serverid zum raussuchen der Frage
-     * @return wenn die Frage vorhanden ist gibt er true zurück sonst false
-     * @frageVorhanden guckt ob die Frage vorhanden ist anhand der Serverid
-     */
-    public boolean frageVorhanden(int idlocal) {
-        List<dbFragen> dbFragenList = dbFragen.find(dbFragen.class, "serverid = ?", String.valueOf(idlocal));
-        if (dbFragenList.size() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+    public void setQuiz(dbQuiz quiz) {
+        this.quiz = quiz;
     }
 }

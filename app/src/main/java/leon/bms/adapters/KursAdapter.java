@@ -70,11 +70,11 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final stunden stunden = stundenplan.get(position);
-
+        // TODO aktualisieren
         //Setting the Data to the Views
-        holder.textViewRaum.setText(stunden.getRaum());
-        holder.textViewWeek.setText(stunden.wochentag + ", " + stunden.stunde + ". Std.");
-        holder.textViewTime.setText(stunden.timeString);
+        //holder.textViewRaum.setText(stunden.getRaum());
+        //holder.textViewWeek.setText(stunden.wochentag + ", " + stunden.stunde + ". Std.");
+        //holder.textViewTime.setText(stunden.timeString);
 
 
     }

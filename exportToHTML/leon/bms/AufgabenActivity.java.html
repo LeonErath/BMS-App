@@ -303,7 +303,7 @@ AufgabenActivity.java</FONT>
 <a name="l280"><span class="ln">280  </span></a>        spinner.setAdapter(spinnerAdapter); 
 <a name="l281"><span class="ln">281  </span></a>        </span><span class="s0">for </span><span class="s1">(dbKurs kurs : allActiveKurse) { 
 <a name="l282"><span class="ln">282  </span></a>            </span><span class="s2">// der Spinner beinhaltet nur die Namen der Kurse</span><span class="s1"> 
-<a name="l283"><span class="ln">283  </span></a>            spinnerAdapter.add(kurs.fach); 
+<a name="l283"><span class="ln">283  </span></a>            spinnerAdapter.add(kurs.fachnew);
 <a name="l284"><span class="ln">284  </span></a>        } 
 <a name="l285"><span class="ln">285  </span></a>        spinnerAdapter.notifyDataSetChanged(); 
 <a name="l286"><span class="ln">286  </span></a>        </span><span class="s2">// @setOnItemSelectedListener wird ausgelöst wenn ein Kurs ausgewählt wurde</span><span class="s1"> 
@@ -338,9 +338,9 @@ AufgabenActivity.java</FONT>
 <a name="l315"><span class="ln">315  </span></a>                </span><span class="s2">// setUp the kurs for the Aufgabe</span><span class="s1"> 
 <a name="l316"><span class="ln">316  </span></a>                List&lt;String&gt; fachList = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;(); 
 <a name="l317"><span class="ln">317  </span></a>                </span><span class="s0">for </span><span class="s1">(dbKurs kurs : allActiveKurse) { 
-<a name="l318"><span class="ln">318  </span></a>                    fachList.add(kurs.fach); 
+<a name="l318"><span class="ln">318  </span></a>                    fachList.add(kurs.fachnew);
 <a name="l319"><span class="ln">319  </span></a>                } 
-<a name="l320"><span class="ln">320  </span></a>                </span><span class="s0">int </span><span class="s1">position = fachList.indexOf(aufgabeLoad.kurs.fach); 
+<a name="l320"><span class="ln">320  </span></a>                </span><span class="s0">int </span><span class="s1">position = fachList.indexOf(aufgabeLoad.kurs.fachnew);
 <a name="l321"><span class="ln">321  </span></a>                spinner.setSelection(position); 
 <a name="l322"><span class="ln">322  </span></a> 
 <a name="l323"><span class="ln">323  </span></a>                </span><span class="s2">// setUp Time to the DatePicker</span><span class="s1"> 

@@ -1,8 +1,9 @@
 package leon.bms.controller;
 
 import android.content.Context;
-import android.net.Uri;
-import android.text.format.DateUtils;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -22,12 +23,15 @@ import java.util.List;
 
 import leon.bms.Constants;
 import leon.bms.atOnline;
-import leon.bms.database.dbAntworten;
 import leon.bms.database.dbFragen;
+import leon.bms.database.dbKlausur;
+import leon.bms.database.dbKlausuraufsicht;
+import leon.bms.database.dbKlausurinhalt;
 import leon.bms.database.dbKurs;
+import leon.bms.database.dbLehrer;
+import leon.bms.database.dbNote;
+import leon.bms.database.dbQuiz;
 import leon.bms.database.dbThemenbereich;
-import leon.bms.database.dbUser;
-import leon.bms.model.quizkurs;
 import leon.bms.model.quizthemen;
 
 /**
@@ -41,7 +45,22 @@ import leon.bms.model.quizthemen;
 public class QuizController {
     UpdateUI updateUI;
     Context context;
+    List<dbKurs> kursList;
     Date now;
+    Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            Boolean success = bundle.getBoolean("myKey");
+            if (success) {
+                updateUI.success();
+            } else {
+                updateUI.failure();
+            }
+        }
+    };
+
     // URL für die Daten des Quizes
     private static String quizUrl = Constants.QUIZ_URL;
 
@@ -52,184 +71,109 @@ public class QuizController {
     /**
      * @getQuizData stellt eine Anfrage an das Quiz mit der uizUrl
      */
-    public void getQuizData() {
-        now = new Date();
-        Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("", "");
-        String params = builder.build().getEncodedQuery();
-        atOnline atOnline = new atOnline(quizUrl, params, context);
-        atOnline.setUpdateListener(new atOnline.OnUpdateListener() {
+    public void checkUpdate() {
+        // WICHTIGE Url für die Anfrage an den Server
+        String Url = Constants.EXAM_URL;
+        kursList = new dbKurs().getAllActiveKurse();
+        List<Integer> kursidList = new ArrayList<>();
+        for (dbKurs kurs : kursList) {
+            kursidList.add(kurs.serverid);
+        }
+        String kurse = "";
+        for (Integer id : kursidList) {
+            kurse += id + ",";
+        }
+
+        String params = "username=erath&password=Ardaturan99&course_ids=" + kurse + "&last_refresh="; //TODO richtige Paramerter hiinzufügen
+        Log.d("params", params);
+
+        atOnline atOnline2 = new atOnline(Url, params, context);
+        atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
 
             @Override
-            public void onSuccesss(String result) {
-                parseQuizData(result);
-                Log.d("Internet","Success!");
+            public void onSuccesss(String result2) {
+                Log.d("checkUpdate", result2);
+                dbNote.deleteAll(dbNote.class);
+                dbKlausur.deleteAll(dbKlausur.class);
+                dbKlausuraufsicht.deleteAll(dbKlausur.class);
+                dbKlausurinhalt.deleteAll(dbKlausur.class);
+                parseData(result2);
             }
 
             @Override
-            public void onFailure(String result) {
-                Log.d("Internet","Failure!");
+            public void onFailure(String result2) {
+                updateUI.failure();
             }
         });
-        atOnline.execute();
-
+        atOnline2.execute();
     }
 
-    /**
-     * @param result JSON Daten der Server Anfrage
-     * @parseQuizData parsed die JSON Daten vom Server in die Datenbank und stellt die entsprechenden
-     * Relationships zwischen kurs themenbereich frage und Antwort auf.
-     */
-    public void parseQuizData(String result) {
+    private void parseData(final String result2) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    JSONArray jsonarray = new JSONArray(result2);
 
-        //Momentag zu Testzwecken wird die Datenbank jedesmal zurückgesetzt
-        dbThemenbereich.deleteAll(dbThemenbereich.class);
-        dbFragen.deleteAll(dbFragen.class);
-        dbAntworten.deleteAll(dbAntworten.class);
+                    for (int i=0;i<jsonarray.length();i++){
+                        JSONObject jsonQuiz = jsonarray.getJSONObject(i);
+                        dbQuiz quiz = new dbQuiz();
+                        quiz.intergerid = jsonQuiz.getInt("id");
+                        quiz.name = jsonQuiz.getString("name");
+                        quiz.beschreibung = jsonQuiz.getString("description");
+                        quiz.erstelltAm =jsonQuiz.getString("creation_date");
+                        quiz.geandertAm = jsonQuiz.getString("last_change");
+                        quiz.gesamtePunkte = jsonQuiz.getInt("total_points");
+                        quiz.schwierigkeitsgrad = jsonQuiz.getInt("level_of_difficulty");
+                        int kursid = jsonQuiz.getInt("course_id");
+                        if (new dbKurs().getKursWithServerId(kursid) != null) {
+                            dbKurs kurs = new dbKurs().getKursWithServerId(kursid);
+                           quiz.kurs = kurs;
+                        }
+                        if (!jsonQuiz.isNull("global_id")){
+                            quiz.globaleid = jsonQuiz.getInt("global_id");
+                        }
+                        quiz.save();
+                        JSONArray jsonFragenArray = jsonQuiz.getJSONArray("questions");
+                        for (int k=0;k<jsonFragenArray.length();k++){
+                            JSONObject jsonFragen = jsonFragenArray.getJSONObject(k);
+                            dbFragen fragen = new dbFragen();
+                            fragen.serverid =jsonFragen.getInt("id");
 
-        try {
-            //parsed die Quizdaten
-            JSONObject jsonObjectAll = new JSONObject(result);
-            JSONArray jsonArrayThemenbereiche = jsonObjectAll.getJSONArray("themes");
 
-            // parsed die Themenbereiche
-            for (int i = 0; i < jsonArrayThemenbereiche.length(); i++) {
-                JSONObject jsonObject = jsonArrayThemenbereiche.getJSONObject(i);
-                dbThemenbereich themenbereich = new dbThemenbereich();
-                themenbereich.serverid = jsonObject.getInt("serverid");
-                if (jsonObject.getString("wInfos") != null) {
-                    themenbereich.infos = jsonObject.getString("wInfos");
-                }
-                themenbereich.name = jsonObject.getString("titel");
-                themenbereich.zuletztAktualisiert = jsonObject.getString("change");
-                if (new dbThemenbereich().themenbereichVorhanden(themenbereich.serverid) == false) {
-                    String kursID = jsonObject.getString("kursid");
-                    if (new dbKurs().getKursWithKursid(kursID) != null) {
-                        //relationships between kurs and themenbereich
-                        dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
-                        themenbereich.kurs = kurs;
-                        themenbereich.save();
-                    }
-
-                }
-            }
-            //parsed die Fragen und Antworten
-            JSONArray jsonArrayFragen = jsonObjectAll.getJSONArray("frag");
-            for (int i = 0; i < jsonArrayFragen.length(); i++) {
-                JSONObject jsonObject = jsonArrayFragen.getJSONObject(i);
-                dbFragen fragen = new dbFragen();
-                if (new dbThemenbereich().getThemenbereich(jsonObject.getInt("themenbereich")) != null) {
-                    fragen.frage = jsonObject.getString("frage");
-                    fragen.schwirigkeit = jsonObject.getInt("schwierigkeit");
-                    fragen.date = jsonObject.getString("date");
-                    fragen.serverid = jsonObject.getInt("serverid");
-                    fragen.stufe = jsonObject.getString("stufe");
-                    if (fragen.stufe.equals(new dbUser().getUser().stufe)) {
-                        if (new dbFragen().frageVorhanden(fragen.serverid) == false) {
-                            dbThemenbereich themenbereich = new dbThemenbereich().getThemenbereich(jsonObject.getInt("themenbereich"));
-                            fragen.themenbereich = themenbereich;
-                            String kursID = jsonObject.getString("kursid");
-                            if (new dbKurs().getKursWithKursid(kursID) != null) {
-                                dbKurs kurs = new dbKurs().getKursWithKursid(kursID);
-                                //Stellt die Relationships ein
-                                fragen.kurs = kurs;
-                                fragen.save();
-
-                                JSONArray answers = jsonObject.getJSONArray("answers");
-                                for (int l = 0; l < answers.length(); l++) {
-                                    JSONObject jsonObjectAnswer = answers.getJSONObject(l);
-                                    dbAntworten antworten = new dbAntworten();
-                                    antworten.serverid = jsonObjectAnswer.getInt("serverid");
-                                    antworten.antwort = jsonObjectAnswer.getString("text");
-                                    antworten.richtig = jsonObjectAnswer.getBoolean("truth");
-                                    antworten.langfassung = jsonObjectAnswer.getString("description");
-                                    //Stellt die Relationships ein
-                                    antworten.fragen = fragen;
-                                    antworten.save();
-
-                                }
-
-                            }
 
 
                         }
+
+
                     }
+
+
+
+                    Message msg = handler.obtainMessage();
+                    boolean sucess = true;
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("myKey", sucess);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                } catch (JSONException e) {
+                    Message msg = handler.obtainMessage();
+                    boolean sucess = false;
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("myKey", sucess);
+                    msg.setData(bundle);
+                    handler.sendMessage(msg);
+                    e.printStackTrace();
                 }
+
+
+
+
             }
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(context, now.getTime(), DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0));
-        // uses Callbacks for the Fragment to notice that the parsing is finnished
-        updateUI.updateUI(zuletztAktualisiert);
-
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
     }
 
-    /**
-     * @return List der quizkurse die einen Themenbereich haben werden zurückgegeben
-     * @getQuizKurs lädt die Kurse mit Themenbereich für da Quiz und konvertiert diese mit den nötigen
-     * Daten in quizkurse und gibt diese zurück
-     */
-    public List<quizkurs> getQuizKurse() {
-        // lädt alle Kurse
-        List<dbKurs> kursList = new dbKurs().getActiveKurse();
-
-
-        // lädt alle Themenbereich der Kurse
-        List<dbThemenbereich> themenbereichList = new ArrayList<>();
-        for (dbKurs kurs : kursList) {
-            if (kurs.getThemenbereiche(kurs.getId()) != null) {
-                themenbereichList.addAll(kurs.getThemenbereiche(kurs.getId()));
-            }
-        }
-        // lädt alle Fragen der Themenbereiche
-        List<dbFragen> fragenList = new ArrayList<>();
-        if (themenbereichList.size() > 0) {
-            for (dbThemenbereich themenbereich : themenbereichList) {
-                if (themenbereich.getFragen(themenbereich.getId()) != null) {
-                    fragenList.addAll(themenbereich.getFragen(themenbereich.getId()));
-                }
-            }
-
-        }
-        //konvertiert die Daten in ein Quizkurs Objekt
-        List<quizkurs> quizkursList = new ArrayList<>();
-        if (fragenList.size() > 0) {
-            for (dbKurs kurs : kursList) {
-                if (kurs.getThemenbereiche(kurs.getId()) != null) {
-                    quizkurs quizkurs = new quizkurs();
-                    quizkurs.kursFach = kurs.fach.name;
-                    quizkurs.kursId = kurs.name;
-                    quizkurs.lehrer = kurs.lehrer.titel + " " + kurs.lehrer.name;
-                    quizkurs.fragen = fragenList.size();
-                    List<quizthemen> quizthemenList = new ArrayList<>();
-                    int fragen = 0;
-                    themenbereichList = sortListASC(themenbereichList);
-                    quizkurs.datum = themenbereichList.get(0).zuletztAktualisiert;
-
-                    for (dbThemenbereich themenbereich : themenbereichList) {
-                        if (new dbThemenbereich().getFragen(themenbereich.getId()) != null) {
-                            fragen += new dbThemenbereich().getFragen(themenbereich.getId()).size();
-                        }
-                    }
-                    quizkurs.fragen = fragen;
-                    quizkursList.add(quizkurs);
-                }
-            }
-
-
-        }
-        if (quizkursList.size() > 0) {
-            //quizkurs liste wird zurückgegeben
-            return quizkursList;
-        } else {
-            return null;
-        }
-
-    }
 
     /**
      * @param list ist die Liste die nachdem Datum sortiert werden soll
@@ -287,7 +231,7 @@ public class QuizController {
                             size = themenbereich.getFragen(themenbereich.getId()).size();
                             quizthemen.fragen = size;
                             for (dbFragen fragen : themenbereich.getFragen(themenbereich.getId())) {
-                                if (fragen.richtigCounter > 0) {
+                                if (fragen.getAnzahlRichtigBeantwortet() > 0) {
                                     counterRichtig++;
                                     Log.d("QuizController", "counter: " + counterRichtig);
                                 }
@@ -394,7 +338,7 @@ public class QuizController {
     private List<dbFragen> sortListDate(List<dbFragen> fragenList) {
         Collections.sort(fragenList, new Comparator<dbFragen>() {
             public int compare(dbFragen fragen1, dbFragen fragen2) {
-                return stringToCalander(fragen1.getDate()).getTime().compareTo(stringToCalander(fragen2.getDate()).getTime());
+                return stringToCalander(fragen1.getDateLetzteRichtigeAntwort()).getTime().compareTo(stringToCalander(fragen2.getDateLetzteRichtigeAntwort()).getTime());
             }
         });
         Collections.reverse(fragenList);
@@ -436,8 +380,8 @@ public class QuizController {
                     if (themenbereich.getFragen(themenbereich.getId()) != null) {
                         List<dbFragen> fragenListAlle = themenbereich.getFragen(themenbereich.getId());
                         for (dbFragen fragen : fragenListAlle) {
-                            if (fragen.falschCounter > fragen.richtigCounter) {
-                                Log.d("QuizController","falsch: "+fragen.falschCounter+" richtig: "+fragen.richtigCounter);
+                            if (fragen.getAnzahlFalschtBeantwortet() > fragen.getAnzahlRichtigBeantwortet()) {
+                                Log.d("QuizController", "falsch: " + fragen.getAnzahlFalschtBeantwortet() + " richtig: " + fragen.getAnzahlRichtigBeantwortet());
                                 fragenList.add(fragen);
                             }
                         }
@@ -454,6 +398,10 @@ public class QuizController {
     //Interface Callbacks
     public interface UpdateUI {
         public void updateUI(String datum);
+
+        public void success();
+
+        public void failure();
     }
 
     public void setUpdateInterface(UpdateUI updateInterface) {

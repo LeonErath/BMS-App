@@ -68,7 +68,7 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
                     // lädt den Kurs zum anzeigen
                     kurs = new dbKurs().getKursWithID(id);
                     //zeigt die einfachen Daten an
-                    textViewKurs.setText(kurs.fach.name);
+                    textViewKurs.setText(kurs.fachnew.name);
                     textViewLehrer.setText(kurs.lehrer.titel + " " + kurs.lehrer.name);
                     if (kurs.hinzugefuegtAm != null) {
                         textViewDate.setText("zuletzt geändert am: " + kurs.hinzugefuegtAm);
@@ -129,31 +129,9 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
         if (schulstundeList != null && schulstundeList.size() > 0) {
             for (dbSchulstunde schulstunde : schulstundeList) {
                 stunden stunden = new stunden();
-                stunden.raum = schulstunde.raum.nummer;
-                String wochentag;
-                switch (schulstunde.wochentag) {
-                    case 1:
-                        wochentag = "Montag";
-                        break;
-                    case 2:
-                        wochentag = "Dienstag";
-                        break;
-                    case 3:
-                        wochentag = "Mittwoch";
-                        break;
-                    case 4:
-                        wochentag = "Donnerstag";
-                        break;
-                    case 5:
-                        wochentag = "Freitag";
-                        break;
-                    default:
-                        wochentag = "";
-                }
+                stunden.setSchulstunde(schulstunde);
                 //speichert die neuen Daten
-                stunden.wochentag = wochentag;
                 stunden.stunde = schulstunde.beginnzeit;
-                stunden.timeString = time[schulstunde.beginnzeit - 1];
                 list.add(stunden);
             }
         }

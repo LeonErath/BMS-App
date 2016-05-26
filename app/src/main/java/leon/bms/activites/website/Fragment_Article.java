@@ -71,31 +71,6 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
         return inflater.inflate(R.layout.fragment__article, container, false);
     }
 
-    /**
-     * @param isVisibleToUser gibt an ob das Fragment sichtbar ist oder nicht
-     * @setUserVisibleHint prüft ob Fragment sichtbar ist oder nicht. Wenn nicht und keine Article bereits
-     * heruntergeladen worden sind werden neue Artikel geladen.
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        m_iAmVisible = isVisibleToUser;
-        if (m_iAmVisible) {
-            articleController = new WebsiteArticleController(getActivity(), this);
-            if (generalListForArticles == null || generalListForArticles.size() == 0) {
-                progressDialog = ProgressDialog.show(getActivity(), "Load Articles", "Loading..", true, false);
-                progressDialog.setCancelable(true);
-                // das Interface des articleControllers wird Initialisiert
-                articleController.getRecentPosts(page);
-            } else {
-                Log.d(TAG, "No update needed");
-            }
-            Log.d(TAG, "this fragment is now visible");
-
-        } else {
-            Log.d(TAG, "this fragment is now invisible");
-        }
-    }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -170,6 +145,13 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
                 }
             }
         });
+
+        if (generalListForArticles == null || generalListForArticles.size() == 0) {
+            progressDialog = ProgressDialog.show(getActivity(), "Load Articles", "Loading..", true, false);
+            progressDialog.setCancelable(true);
+            // das Interface des articleControllers wird Initialisiert
+            articleController.getRecentPosts(page);
+        }
 
 
     }

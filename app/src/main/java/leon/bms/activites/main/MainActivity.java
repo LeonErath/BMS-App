@@ -7,8 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -29,20 +27,21 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import java.util.ArrayList;
 
-import leon.bms.activites.login.normal.KursauswahlActivity;
 import leon.bms.R;
 import leon.bms.ViewPagerAdapterMain;
-import leon.bms.activites.website.Website;
-import leon.bms.activites.website.WebsiteArticleActivity;
 import leon.bms.activites.login.normal.LogInActivity;
 import leon.bms.activites.quiz.QuizActivity;
+import leon.bms.activites.website.Website;
 import leon.bms.database.dbAntworten;
 import leon.bms.database.dbAufgabe;
+import leon.bms.database.dbFach;
 import leon.bms.database.dbFragen;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbKursTagConnect;
+import leon.bms.database.dbKursart;
 import leon.bms.database.dbLehrer;
 import leon.bms.database.dbMediaFile;
+import leon.bms.database.dbRaum;
 import leon.bms.database.dbSchulstunde;
 import leon.bms.database.dbThemenbereich;
 import leon.bms.database.dbUser;
@@ -62,10 +61,8 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     TextView textViewTitle;
     NavigationView navigationView;
-    AppBarLayout appBarLayout;
     DrawerLayout drawerLayoutgesamt;
     ActionBarDrawerToggle drawerToggle;
-    CollapsingToolbarLayout collapsingToolbarLayout;
     AHBottomNavigation bottomNavigation;
     int[] tabIcons;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
@@ -75,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        tabIcons = new int[]{R.drawable.ic_home_white_24dp,R.drawable.ic_schedule_white_24dp,R.drawable.ic_done_white_24dp, R.drawable.ic_class_white_24dp,R.drawable.ic_grade_white_24dp};
+        tabIcons = new int[]{R.drawable.ic_home_white_24dp, R.drawable.ic_schedule_white_24dp, R.drawable.ic_done_white_24dp, R.drawable.ic_class_white_24dp, R.drawable.ic_grade_white_24dp};
 
         //setUp Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -91,14 +89,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         drawerToggle.syncState();
 
-        //applying CollapsingToolbar
-        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-
         textViewTitle = (TextView) findViewById(R.id.textViewTitle);
-        textViewTitle.setText("");
-
-        appBarLayout = (AppBarLayout) findViewById(R.id.AppBarLayout);
 
 
         //viewpager for tablayout and to switch between the Fragments
@@ -108,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int currentPosition = 0;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -116,10 +108,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 bottomNavigation.setCurrentItem(position);
-                FragmentLifecycle fragmentToShow = (FragmentLifecycle)viewPagerAdapter.getItem(position);
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle) viewPagerAdapter.getItem(position);
                 fragmentToShow.onResumeFragment();
 
-                FragmentLifecycle fragmentToHide = (FragmentLifecycle)viewPagerAdapter.getItem(currentPosition);
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle) viewPagerAdapter.getItem(currentPosition);
                 fragmentToHide.onPauseFragment();
 
                 currentPosition = position;
@@ -131,19 +123,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        findViewById(R.id.toolbar).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, KursauswahlActivity.class));
-            }
-        });
-        findViewById(R.id.viewpager).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, WebsiteArticleActivity.class));
-            }
-        });
 
         navigationView = (NavigationView) findViewById(R.id.navView);
         View headerLayout = navigationView.getHeaderView(0);
@@ -199,6 +178,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setUpBottombar();
     }
+
     public static void setTaskBarColored(Activity context, String color) {
         if (Build.VERSION.SDK_INT >= 21) {
             Window window = context.getWindow();
@@ -207,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
             window.setStatusBarColor(Color.parseColor(color));
         }
     }
+
     private void setUpBottombar() {
         // Create items
         AHBottomNavigationItem item1 = new AHBottomNavigationItem("Highlight", tabIcons[0], Color.parseColor("#4CAF50"));
@@ -233,32 +214,32 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigation.setCurrentItem(0);
         textViewTitle.setText("Highlight");
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(0).getColor(MainActivity.this)));
-        setTaskBarColored(MainActivity.this,"#388E3C");
+        setTaskBarColored(MainActivity.this, "#388E3C");
 
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public void onTabSelected(int position, boolean wasSelected) {
                 viewPager.setCurrentItem(position);
                 getSupportActionBar().setBackgroundDrawable(new ColorDrawable(bottomNavigation.getItem(position).getColor(MainActivity.this)));
-                switch (position){
+                switch (position) {
                     case 0:
-                        setTaskBarColored(MainActivity.this,"#388E3C");
+                        setTaskBarColored(MainActivity.this, "#388E3C");
                         textViewTitle.setText("Highlight");
                         break;
                     case 1:
-                        setTaskBarColored(MainActivity.this,"#00796B");
+                        setTaskBarColored(MainActivity.this, "#00796B");
                         textViewTitle.setText("Stundenplan");
                         break;
                     case 2:
-                        setTaskBarColored(MainActivity.this,"#0288D1");
+                        setTaskBarColored(MainActivity.this, "#0288D1");
                         textViewTitle.setText("Aufgaben");
                         break;
                     case 3:
-                        setTaskBarColored(MainActivity.this,"#303F9F");
+                        setTaskBarColored(MainActivity.this, "#303F9F");
                         textViewTitle.setText("Klausur");
                         break;
                     case 4:
-                        setTaskBarColored(MainActivity.this,"#512DA8");
+                        setTaskBarColored(MainActivity.this, "#512DA8");
                         textViewTitle.setText("Note:");
                         break;
                 }
@@ -319,7 +300,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent2);
                 finish();
                 return true;
-
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -333,6 +315,9 @@ public class MainActivity extends AppCompatActivity {
         dbUser.deleteAll(dbUser.class);
         dbAufgabe.deleteAll(dbAufgabe.class);
         dbKurs.deleteAll(dbKurs.class);
+        dbRaum.deleteAll(dbRaum.class);
+        dbFach.deleteAll(dbFach.class);
+        dbKursart.deleteAll(dbKursart.class);
         dbSchulstunde.deleteAll(dbSchulstunde.class);
         dbMediaFile.deleteAll(dbMediaFile.class);
         dbLehrer.deleteAll(dbLehrer.class);

@@ -51,7 +51,7 @@ dbKurs.java</FONT>
 <a name="l29"><span class="ln">29   </span></a>     * </span><span class="s3">@schriftlich </span><span class="s2">nacher wichtig für das laden des Klausurplans 
 <a name="l30"><span class="ln">30   </span></a>     */</span><span class="s1"> 
 <a name="l31"><span class="ln">31   </span></a>    </span><span class="s0">public </span><span class="s1">Boolean aktiv; 
-<a name="l32"><span class="ln">32   </span></a>    </span><span class="s0">public </span><span class="s1">String fach; 
+<a name="l32"><span class="ln">32   </span></a>    </span><span class="s0">public </span><span class="s1">String fachnew;
 <a name="l33"><span class="ln">33   </span></a>    </span><span class="s0">public </span><span class="s1">Boolean schriftlich; 
 <a name="l34"><span class="ln">34   </span></a>    String geandertAm; 
 <a name="l35"><span class="ln">35   </span></a>    String hinzugefuegtAm; 
@@ -72,11 +72,11 @@ dbKurs.java</FONT>
 <a name="l50"><span class="ln">50   </span></a>        </span><span class="s2">//empty Constructor needed!</span><span class="s1"> 
 <a name="l51"><span class="ln">51   </span></a>    } 
 <a name="l52"><span class="ln">52   </span></a> 
-<a name="l53"><span class="ln">53   </span></a>    </span><span class="s0">public </span><span class="s1">dbKurs(String name, </span><span class="s0">int </span><span class="s1">kursart, Boolean aktiv, String fach, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, </span><span class="s0">int </span><span class="s1">icon, </span><span class="s0">int </span><span class="s1">schuljahr, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, leon.bms.model.dbKursTagConnect dbKursTagConnect) {
+<a name="l53"><span class="ln">53   </span></a>    </span><span class="s0">public </span><span class="s1">dbKurs(String name, </span><span class="s0">int </span><span class="s1">kursart, Boolean aktiv, String fachnew, Boolean schriftlich, String geandertAm, String hinzugefuegtAm, </span><span class="s0">int </span><span class="s1">icon, </span><span class="s0">int </span><span class="s1">schuljahr, Boolean archiviert, dbAufgabe aufgabe, dbKlausur klausur, dbNote note, dbUser user, dbLehrer lehrer, dbSchulstunde stunde, leon.bms.model.dbKursTagConnect dbKursTagConnect) {
 <a name="l54"><span class="ln">54   </span></a>        </span><span class="s0">this</span><span class="s1">.name = name; 
 <a name="l55"><span class="ln">55   </span></a>        </span><span class="s0">this</span><span class="s1">.kursart = kursart; 
 <a name="l56"><span class="ln">56   </span></a>        </span><span class="s0">this</span><span class="s1">.aktiv = aktiv; 
-<a name="l57"><span class="ln">57   </span></a>        </span><span class="s0">this</span><span class="s1">.fach = fach; 
+<a name="l57"><span class="ln">57   </span></a>        </span><span class="s0">this</span><span class="s1">.fachnew = fachnew;
 <a name="l58"><span class="ln">58   </span></a>        </span><span class="s0">this</span><span class="s1">.schriftlich = schriftlich; 
 <a name="l59"><span class="ln">59   </span></a>        </span><span class="s0">this</span><span class="s1">.geandertAm = geandertAm; 
 <a name="l60"><span class="ln">60   </span></a>        </span><span class="s0">this</span><span class="s1">.hinzugefuegtAm = hinzugefuegtAm; 
@@ -166,11 +166,11 @@ dbKurs.java</FONT>
 <a name="l144"><span class="ln">144  </span></a> 
 <a name="l145"><span class="ln">145  </span></a> 
 <a name="l146"><span class="ln">146  </span></a>    </span><span class="s0">public </span><span class="s1">String getFach() { 
-<a name="l147"><span class="ln">147  </span></a>        </span><span class="s0">return </span><span class="s1">fach; 
+<a name="l147"><span class="ln">147  </span></a>        </span><span class="s0">return </span><span class="s1">fachnew;
 <a name="l148"><span class="ln">148  </span></a>    } 
 <a name="l149"><span class="ln">149  </span></a> 
-<a name="l150"><span class="ln">150  </span></a>    </span><span class="s0">public void </span><span class="s1">setFach(String fach) { 
-<a name="l151"><span class="ln">151  </span></a>        </span><span class="s0">this</span><span class="s1">.fach = fach; 
+<a name="l150"><span class="ln">150  </span></a>    </span><span class="s0">public void </span><span class="s1">setFach(String fachnew) {
+<a name="l151"><span class="ln">151  </span></a>        </span><span class="s0">this</span><span class="s1">.fachnew = fachnew;
 <a name="l152"><span class="ln">152  </span></a>    } 
 <a name="l153"><span class="ln">153  </span></a> 
 <a name="l154"><span class="ln">154  </span></a>    </span><span class="s0">public </span><span class="s1">Boolean getSchriftlich() { 
@@ -306,11 +306,11 @@ dbKurs.java</FONT>
 <a name="l284"><span class="ln">284  </span></a>    } 
 <a name="l285"><span class="ln">285  </span></a> 
 <a name="l286"><span class="ln">286  </span></a>    </span><span class="s2">/** 
-<a name="l287"><span class="ln">287  </span></a>     * </span><span class="s3">@getKursWithFach </span><span class="s2">gibt den Kurs zurück des fach 
+<a name="l287"><span class="ln">287  </span></a>     * </span><span class="s3">@getKursWithFach </span><span class="s2">gibt den Kurs zurück des fachnew
 <a name="l288"><span class="ln">288  </span></a>     * Ist bei der AufgabenActivity von Relevanz 
 <a name="l289"><span class="ln">289  </span></a>     */</span><span class="s1"> 
-<a name="l290"><span class="ln">290  </span></a>    </span><span class="s0">public </span><span class="s1">dbKurs getKursWithFach(String fach) { 
-<a name="l291"><span class="ln">291  </span></a>        List&lt;dbKurs&gt; dbKursList = dbKurs.find(dbKurs.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;fach = ?&quot;</span><span class="s1">, fach); 
+<a name="l290"><span class="ln">290  </span></a>    </span><span class="s0">public </span><span class="s1">dbKurs getKursWithFach(String fachnew) {
+<a name="l291"><span class="ln">291  </span></a>        List&lt;dbKurs&gt; dbKursList = dbKurs.find(dbKurs.</span><span class="s0">class</span><span class="s1">, </span><span class="s4">&quot;fachnew = ?&quot;</span><span class="s1">, fachnew);
 <a name="l292"><span class="ln">292  </span></a>        </span><span class="s0">return </span><span class="s1">dbKursList.get(</span><span class="s5">0</span><span class="s1">); 
 <a name="l293"><span class="ln">293  </span></a>    } 
 <a name="l294"><span class="ln">294  </span></a> 

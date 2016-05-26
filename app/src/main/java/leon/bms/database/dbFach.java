@@ -54,6 +54,27 @@ public class dbFach extends SugarRecord{
     }
 
     public List<dbKurs> getAllKurse(long id) {
-        return dbKurs.find(dbKurs.class, "fach = ?", String.valueOf(id));
+        return dbKurs.find(dbKurs.class, "fachnew = ?", String.valueOf(id));
+    }
+
+    /**
+     * @getKursWithFach gibt den Kurs zurück des fachnew
+     * Ist bei der AufgabenActivity von Relevanz
+     */
+    public dbFach getFachWithName(String fach) {
+        List<dbFach> dbFachList = dbFach.find(dbFach.class, "name = ?", fach);
+        if (dbFachList != null && dbFachList.size() == 1){
+            return dbFachList.get(0);
+        }
+       return null;
+    }
+
+    public dbKurs getKursWithFachId(long fachid) {
+        List<dbKurs> dbKursList = dbKurs.find(dbKurs.class, "fachnew = ? and aktiv = ?", String.valueOf(fachid),String.valueOf(1));
+        if (dbKursList.size() == 1) {
+            return dbKursList.get(0);
+        } else {
+            return null;
+        }
     }
 }

@@ -182,15 +182,6 @@ public class dbAufgabe extends SugarRecord {
         return (dbAufgabeList.size() != 0) ? true : false;
     }
 
-    /**
-     * @param aufgabe übergibt eine Aufgabe über deren serverid überprüft wird ob sie erledigt ist
-     * @checkifErledigtAufgabe überprüft ob bestimmte Aufgabe ist erledigt oder nicht . Wichtig für das
-     * richtig Anzeige der Aufgaben in Fragment_aufgabeÜbersicht
-     */
-    public Boolean checkIfErledigtAufgabe(dbAufgabe aufgabe) {
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "serverid = ?", String.valueOf(aufgabe.getId()));
-        return dbAufgabeList.get(0).erledigt;
-    }
 
     /**
      * @param id ist die ID der Aufgabe die rausgesucht werden soll
@@ -198,8 +189,11 @@ public class dbAufgabe extends SugarRecord {
      * @getAufgabe gibt Aufgabe einer bestimmer ID zurück
      */
     public dbAufgabe getAufgabe(long id) {
-        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "serverid = ?", String.valueOf(id));
-        return dbAufgabeList.get(0);
+        List<dbAufgabe> dbAufgabeList = dbAufgabe.find(dbAufgabe.class, "id = ?", String.valueOf(id));
+        if (dbAufgabeList != null && dbAufgabeList.size() == 1){
+            return dbAufgabeList.get(0);
+        }
+        return null;
     }
 
     /**

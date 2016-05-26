@@ -57,7 +57,7 @@ public class KlausurController {
         kursList = new dbKurs().getAllActiveKurse();
         List<Integer> kursidList = new ArrayList<>();
         for (dbKurs kurs: kursList){
-            kursidList.add(kurs.serverId);
+            kursidList.add(kurs.serverid);
         }
         String kurse="";
         for (Integer id: kursidList){
@@ -95,8 +95,8 @@ public class KlausurController {
                     for (dbKurs kurs : kursList) {
                         try {
                             JSONObject jsonResult = new JSONObject(result2);
-                            if (jsonResult.has(String.valueOf(kurs.serverId))){
-                                JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.serverId));
+                            if (jsonResult.has(String.valueOf(kurs.serverid))){
+                                JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.serverid));
                                 dbKlausur klausur = new dbKlausur();
                                 klausur.name = jsonKlausur.getString("name");
                                 klausur.serverid = jsonKlausur.getInt("exam_id");

@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.NestedScrollView;
+import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,9 +20,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +40,15 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
 import leon.bms.Constants;
-import leon.bms.controller.LogInController;
 import leon.bms.NachrichtenActivity;
 import leon.bms.R;
 import leon.bms.adapters.NachrichtenAdapter;
 import leon.bms.atOnline;
+import leon.bms.controller.KlausurController;
+import leon.bms.controller.LogInController;
+import leon.bms.controller.NachrichtenController;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbSchulstunde;
 import leon.bms.database.dbUser;
@@ -53,17 +60,16 @@ import leon.bms.model.stunden;
  * @Fragment_Highlight ist ein Fragment , welches kompakt alles wichtiges anzeigen soll
  * Es soll die aktuelle Stunde sowie wichtige Neuigkeiten und noch zu machen Hausaufgaben anzeigen
  */
-public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.ViewHolder.ClickListener,FragmentLifecycle {
+public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.ViewHolder.ClickListener, FragmentLifecycle {
 
     // views
-    TextView textViewNumber, textViewNumber2, textViewLehrer, textViewLehrer2, textViewStunde, textViewStunde2, textViewRaum, textViewRaum2;
-    RecyclerView recyclerView;
-    Snackbar snackbar;
-    private static boolean m_iAmVisible;
-    LinearLayout linearLayout;
-    NestedScrollView scrollView;
+    TextView textViewLehrer, textViewStunde, textViewRaum;
+    UltimateRecyclerView recyclerView;
+    CardView cardView;
     List<nachrichten> nachrichtenList = new ArrayList<>();
     NachrichtenAdapter nachrichtenAdapter;
+    ImageView imageViewHeader;
+    NachrichtenController nachrichtenController;
 
     private static String TAG = Fragment_Highlight.class.getSimpleName();
     // wichtig für das aktualiseren der Anzeige
@@ -77,7 +83,6 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        scrollView.scrollTo(0,0);
     }
 
     @Override
@@ -85,132 +90,75 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         super.onViewCreated(view, savedInstanceState);
 
 
-        scrollView = (NestedScrollView) view.findViewById(R.id.nestedScroll);
         //initial views
-        textViewNumber = (TextView) view.findViewById(R.id.textViewNumber);
-        textViewNumber2 = (TextView) view.findViewById(R.id.textViewNumber2);
         textViewLehrer = (TextView) view.findViewById(R.id.textViewLehrer);
-        textViewLehrer2 = (TextView) view.findViewById(R.id.textViewLehrer2);
         textViewStunde = (TextView) view.findViewById(R.id.textViewStunde);
-        textViewStunde2 = (TextView) view.findViewById(R.id.textViewStunde2);
         textViewRaum = (TextView) view.findViewById(R.id.textViewRaum);
-        textViewRaum2 = (TextView) view.findViewById(R.id.textViewRaum2);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        linearLayout = (LinearLayout) view.findViewById(R.id.linearlayout);
+        recyclerView = (UltimateRecyclerView) view.findViewById(R.id.recycler_view);
+        cardView = (CardView) view.findViewById(R.id.cardView);
+        imageViewHeader = (ImageView) view.findViewById(R.id.imageViewHeader);
+        final ViewPager vp= (ViewPager) getActivity().findViewById(R.id.viewpager);
+        cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              vp.setCurrentItem(1);
+            }
+        });
 
+        setUpRecylcerView();
 
-
-
-
-        // setUp recylcerView
-        final LinearLayoutManager mLayoutManager;
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        nachrichtenAdapter = new NachrichtenAdapter(this, nachrichtenList);
-        recyclerView.setAdapter(nachrichtenAdapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setLayoutManager(mLayoutManager);
 
         setUpNächsteStunde();
-        snackbar = Snackbar.make(linearLayout, "Loading News..", Snackbar.LENGTH_LONG);
-        snackbar.show();
-        getNews();
 
-    }
-
-
-    public void getNews() {
-        // URL für die Server Anfrage
-        String Url = Constants.NACHRICHTEN_URL;
-        Uri.Builder builder = new Uri.Builder()
-                .appendQueryParameter("username", new dbUser().getUser().benutzername)
-                .appendQueryParameter("pw", new LogInController(getActivity()).getPass())
-                .appendQueryParameter("stufe", new dbUser().getUser().stufe);
-        String params = builder.build().getEncodedQuery();
-
-        atOnline atOnline2 = new atOnline(Url, params, getActivity());
-        atOnline2.setUpdateListener(new atOnline.OnUpdateListener() {
-
+        nachrichtenController = new NachrichtenController(getActivity());
+        nachrichtenController.setUpdateListener(new NachrichtenController.OnUpdateListener() {
             @Override
-            public void onSuccesss(String result) {
-                setUpNews(result);
-                if (snackbar.isShown()) {
-                    snackbar.dismiss();
+            public void onSuccesss(List<nachrichten> nachrichtenList) {
+                if (nachrichtenList != null && nachrichtenList.size()>0){
+                    nachrichtenAdapter.changeDataSet(nachrichtenList);
                 }
             }
 
             @Override
-            public void onFailure(String result) {
+            public void onFailure() {
 
             }
         });
-        atOnline2.execute();
+        if (nachrichtenAdapter != null && nachrichtenAdapter.getAdapterItemCount() == 0) {
+            nachrichtenController.checkUpdate();
+        }
+
 
     }
 
-    public void setUpNews(String result) {
-        if (result == "404") {
-            Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
-        } else {
-
-            try {
-                JSONArray jsonArrayAll = new JSONArray(result);
-                for (int i = 0; i < jsonArrayAll.length(); i++) {
-                    JSONObject jsonObject = jsonArrayAll.getJSONObject(i);
-                    nachrichten nachrichten = new nachrichten();
-                    nachrichten.serverid = jsonObject.getInt("serverid");
-                    nachrichten.titel = jsonObject.getString("titel");
-                    nachrichten.nachricht = jsonObject.getString("nachricht");
-                    nachrichten.hinzugefuegtAm = jsonObject.getString("hinzugefuegtAm");
-                    nachrichten.geandertAm = jsonObject.getString("geaendertAm");
-                    nachrichten.dateString = setUpDate(jsonObject.getString("geaendertAm"));
-                    nachrichten.geloescht = jsonObject.getInt("geloescht");
-                    if (!nachrichtenList.contains(nachrichten)) {
-                        nachrichtenList.add(nachrichten);
+    private void setUpRecylcerView() {
+        final LinearLayoutManager mLayoutManager;
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        nachrichtenAdapter = new NachrichtenAdapter(this, nachrichtenList);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setAdapter(nachrichtenAdapter);
+        LandingAnimator animator = new LandingAnimator();
+        animator.setAddDuration(300);
+        animator.setRemoveDuration(300);
+        recyclerView.setItemAnimator(animator);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setDefaultOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        nachrichtenController.checkUpdate();
+                        Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
+                        recyclerView.setRefreshing(false);
+                        //   ultimateRecyclerView.scrollBy(0, -50);
+                        mLayoutManager.scrollToPosition(0);
                     }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+                }, 1000);
             }
-            nachrichtenAdapter.addList(sortListDate(nachrichtenList));
-
-        }
+        });
     }
 
-    private String setUpDate(String date) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-        try {
-            calendar.setTime(sdf2.parse(date));// all done
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        Date date1 = calendar.getTime();
-        //YEAR_IN_MILLIS wenn das Datum mehr als ein Jahr zurück liegt wird das ganze Datum angezeigt
-        String zuletztAktualisiert = String.valueOf(DateUtils.getRelativeDateTimeString(getActivity(), date1.getTime(), DateUtils.DAY_IN_MILLIS, DateUtils.YEAR_IN_MILLIS, 0));
-        return zuletztAktualisiert;
-    }
-
-
-    /**
-     * @param isVisibleToUser gibt an ob das Fragment sichtbar ist oder nicht
-     * @setUserVisibleHint prüft ob Fragment sichtbar ist oder nicht. Wenn nicht und keine Article bereits
-     * heruntergeladen worden sind werden neue Artikel geladen.
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        m_iAmVisible = isVisibleToUser;
-        if (m_iAmVisible) {
-            Log.d(TAG, "this fragment is now visible");
-
-
-
-
-
-        } else {
-            Log.d(TAG, "this fragment is now invisible");
-        }
-    }
 
     @Override
     public void onStart() {
@@ -280,7 +228,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
             // wenn die aktuelleStunde ein Schulstunde ist
             if (aktuelleStunde > 0 && aktuelleStunde < 10) {
                 // holt sich alle Kurse
-                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse();
+                List<dbKurs> aktiveKurse = new dbKurs().getAllActiveKurse();
 
                 List<dbSchulstunde> schulstundeList = new ArrayList<>();
                 // holt sich von den Kursen die entsprechenden schulstunde für die Woche
@@ -299,40 +247,23 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                             if (aktuelleStunde != letzteStunde) {
                                 if (stunden.active == true) {
                                     // wenn die aktuelle Stunde aktiv ist also keine Freistunde
-                                    textViewStunde.setText(stunden.getStundenname());
-                                    textViewRaum.setText(stunden.getRaum());
-                                    textViewLehrer.setText(stunden.getLehrer());
-                                    textViewNumber.setText(String.valueOf(stunden.getStunde()));
+                                    textViewStunde.setText(stunden.getSchulstunde().kurs.name);
+                                    textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                                    textViewLehrer.setText(stunden.getSchulstunde().lehrer.titel + " " + stunden.getSchulstunde().lehrer.name);
                                 } else {
                                     // sonst Freistunde
                                     textViewStunde.setText("Freistunde");
                                     textViewRaum.setText("");
                                     textViewLehrer.setText("");
-                                    textViewNumber.setText(String.valueOf(stunden.getStunde()));
                                 }
-                                stunden stunden2 = stundenList.get(i + 1);
-                                if (stunden2.active == true) {
-                                    textViewStunde2.setText(stunden2.getStundenname());
-                                    textViewRaum2.setText(stunden2.getRaum());
-                                    textViewLehrer2.setText(stunden2.getLehrer());
-                                    textViewNumber2.setText(String.valueOf(stunden2.getStunde()));
-                                } else {
-                                    textViewStunde2.setText("Freistunde");
-                                    textViewRaum2.setText("");
-                                    textViewLehrer2.setText("");
-                                    textViewNumber2.setText(String.valueOf(stunden2.getStunde()));
-                                }
+
                             } else {
                                 // wenn die aktuelle Stunde die letze Stunde ist
-                                textViewStunde.setText(stunden.getStundenname());
-                                textViewRaum.setText(stunden.getRaum());
-                                textViewLehrer.setText(stunden.getLehrer());
-                                textViewNumber.setText(String.valueOf(stunden.getStunde()));
+                                textViewStunde.setText(stunden.getSchulstunde().kurs.name);
+                                textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                                textViewLehrer.setText(stunden.getSchulstunde().lehrer.titel + " " + stunden.getSchulstunde().lehrer.name);
 
-                                textViewStunde2.setText("Danach kein Unterricht mehr.");
-                                textViewRaum2.setText("");
-                                textViewLehrer2.setText("Schule aus!");
-                                textViewNumber2.setText(String.valueOf(""));
+
                             }
                         }
                     }
@@ -343,58 +274,24 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                 textViewStunde.setText("Kein Unterricht mehr!");
                 textViewRaum.setText("");
                 textViewLehrer.setText("Denk an deine Hausaufgaben.");
-                textViewNumber.setText(String.valueOf(""));
-                textViewStunde2.setText("Kein Unterricht mehr!");
-                textViewRaum2.setText("");
-                textViewLehrer2.setText("");
-                textViewNumber2.setText(String.valueOf(""));
 
             } else if (aktuelleStunde == 0) {
                 // wenn es vor dem Unterricht ist
                 textViewStunde.setText("Kein Unterricht!");
                 textViewRaum.setText("");
                 textViewLehrer.setText("Denk an deine Hausaufgaben.");
-                textViewNumber.setText(String.valueOf(""));
-
-                List<dbKurs> aktiveKurse = new dbKurs().getActiveKurse();
 
 
-                List<dbSchulstunde> schulstundeList = new ArrayList<>();
-                for (dbKurs kurs : aktiveKurse) {
-                    if (kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week) != null) {
-                        schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week));
-                    }
-                }
-                // zeigt die erste Stunde an für den Tag
-                if (schulstundeList.size() > 0) {
-                    List<stunden> stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList));
-                    stunden stunden = stundenList.get(0);
-                    textViewStunde2.setText(stunden.getStundenname());
-                    textViewRaum2.setText(stunden.getRaum());
-                    textViewLehrer2.setText(stunden.getLehrer());
-                    textViewNumber2.setText(String.valueOf(stunden.getStunde()));
-                }
             }
         } else if (week == 6) {
             textViewStunde.setText("Heute ist Samstag ");
             textViewRaum.setText("");
             textViewLehrer.setText("Unterrichtsfrei");
-            textViewNumber.setText("");
 
-            textViewStunde2.setText("Heute ist Samstag ");
-            textViewRaum2.setText("");
-            textViewLehrer2.setText("Unterrichtsfrei");
-            textViewNumber2.setText(" ");
         } else if (week == 0) {
             textViewStunde.setText("Heute ist Sonntag ");
             textViewRaum.setText("");
             textViewLehrer.setText("Unterrichtsfrei");
-            textViewNumber.setText("");
-
-            textViewStunde2.setText("Heute ist Sonntag ");
-            textViewRaum2.setText("");
-            textViewLehrer2.setText("Unterrichtsfrei");
-            textViewNumber2.setText(" ");
         }
 
     }
@@ -444,9 +341,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                     Log.d("MAIN", "stunde erstellt");
                     dbSchulstunde schulstunde = wochentagListe.get(l - 1);
                     stunden.setActive(true);
-                    stunden.setRaum(schulstunde.raum.nummer);
-                    stunden.setStundenname(schulstunde.kurs.fach.name);
-                    stunden.setLehrer(schulstunde.lehrer.titel + " " + schulstunde.lehrer.name);
+                    stunden.setSchulstunde(schulstunde);
                     stunden.setStunde(schulstunde.beginnzeit);
                 } else {
                     Log.d("MAIN", "freistunde erstellt");
@@ -464,38 +359,8 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         }
     }
 
-    /**
-     * @param websiteArtikelList Liste die nach dem Datum sortiert werden soll
-     * @return gibt die sortierte Liste zurück
-     * @sortListDate sortiert die Liste nach ihrem Datum absteigen
-     */
-    private List<nachrichten> sortListDate(List<nachrichten> websiteArtikelList) {
-        Collections.sort(nachrichtenList, new Comparator<nachrichten>() {
-            public int compare(nachrichten nachrichten1, nachrichten nachrichten2) {
-                return stringToCalander(nachrichten1.geandertAm).getTime().compareTo(stringToCalander(nachrichten2.geandertAm).getTime());
-            }
-        });
-        Collections.reverse(websiteArtikelList);
-        return nachrichtenList;
-    }
 
-    /**
-     * @param date date in String
-     * @return gibt Date in Calendar zurück
-     * @stringToCalander parsed ein Datum vom Datentyp String zum Datentyp Calendar, dies
-     * ist wichtig für das sortieren nach dem Datum
-     */
-    public Calendar stringToCalander(String date) {
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd H:m:s");
-        try {
-            calendar.setTime(sdf2.parse(date));// all done
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
-        return calendar;
-    }
 
 
     @Override

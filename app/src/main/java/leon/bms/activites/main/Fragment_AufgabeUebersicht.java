@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.cocosw.bottomsheet.BottomSheet;
 import com.sergiocasero.revealfab.RevealFAB;
@@ -19,11 +20,13 @@ import com.sergiocasero.revealfab.RevealFAB;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.recyclerview.animators.OvershootInLeftAnimator;
 import leon.bms.activites.website.Fragment_Article;
 import leon.bms.R;
 import leon.bms.activites.aufgabe.AufgabenActivity;
 import leon.bms.adapters.AufgabentAdapter;
 import leon.bms.database.dbAufgabe;
+import leon.bms.model.aufgabenModel;
 
 
 /**
@@ -36,9 +39,11 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
     // definieren des recyclcerViews
     RecyclerView recyclerViewAufgaben;
     AufgabentAdapter aufgabeAdapter;
+    TextView textViewAnzahl;
     RevealFAB revealFAB;
-    private static boolean m_iAmVisible;
     private static String TAG = Fragment_Article.class.getSimpleName();
+    List<aufgabenModel> aufgabenModelList = new ArrayList<>();
+
 
     public Fragment_AufgabeUebersicht() {
     }
@@ -50,33 +55,7 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
         return inflater.inflate(R.layout.fragment__aufgabeuebersicht, container, false);
     }
 
-    /**
-     * @param isVisibleToUser gibt an ob das Fragment sichtbar ist oder nicht
-     * @setUserVisibleHint prüft ob Fragment sichtbar ist oder nicht. Wenn das Fragment sichtbar
-     * ist werden die Auggaben geladen und angezeigt.
-     */
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        m_iAmVisible = isVisibleToUser;
-        if (m_iAmVisible) {
-            if (aufgabeAdapter != null) {
-                List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
-                List<dbAufgabe> alleAufgaben = unerledigtList;
-                alleAufgaben.addAll(erledigtList);
-                if (alleAufgaben != null || alleAufgaben.size() != 0) {
-                    aufgabeAdapter.changeDataSet(alleAufgaben);
-                }
-            }
 
-            Log.d(TAG, "this fragment is now visible");
-
-        } else {
-            Log.d(TAG, "this fragment is now invisible");
-        }
-
-    }
 
     /**
      * @onResume aktualisiert das Fragment wenn es wieder aufgerufen wird
@@ -85,14 +64,8 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
     public void onResume() {
         super.onResume();
         if (aufgabeAdapter != null) {
-            List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-            List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
-            List<dbAufgabe> alleAufgaben = unerledigtList;
-            alleAufgaben.addAll(erledigtList);
-            if (alleAufgaben != null || alleAufgaben.size() != 0) {
-                for (dbAufgabe aufgabe : alleAufgaben) {
-                    aufgabeAdapter.addAufgabe(aufgabe);
-                }
+            if (getListForAdapter() != null){
+                aufgabeAdapter.changeDataSet(getListForAdapter());
             }
         }
         revealFAB.onResume();
@@ -105,16 +78,19 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+
         recyclerViewAufgaben = (RecyclerView) view.findViewById(R.id.recycler_view);
+        textViewAnzahl = (TextView) view.findViewById(R.id.textViewAnzahl);
 
-        List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-        List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
-        List<dbAufgabe> alleAufgaben = unerledigtList;
-        alleAufgaben.addAll(erledigtList);
 
-        aufgabeAdapter = new AufgabentAdapter(this, alleAufgaben);
+
+
+        aufgabeAdapter = new AufgabentAdapter(this, aufgabenModelList);
         recyclerViewAufgaben.setAdapter(aufgabeAdapter);
-        recyclerViewAufgaben.setItemAnimator(new DefaultItemAnimator());
+        OvershootInLeftAnimator animator = new OvershootInLeftAnimator();
+        animator.setAddDuration(300);
+        animator.setRemoveDuration(300);
+        recyclerViewAufgaben.setItemAnimator(animator);
         recyclerViewAufgaben.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         revealFAB = (RevealFAB) view.findViewById(R.id.reveal_fab);
@@ -128,249 +104,59 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
             }
         });
 
-    }
-
-
-
-    /**
-     * @param aufgabe ist die Aufgabe auf die geclickt worden ist
-     * @onItemClicked zeigt ein BottomSheet an für weiter Bediengung der Aufgaben
-     */
-    @Override
-    public void onItemClicked(final dbAufgabe aufgabe) {
-        //setUp BootonSheet
-        if (aufgabe.checkIfErledigtAufgabe(aufgabe) != true) {
-            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "             Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    List<dbAufgabe> unerledigtList;
-                    List<dbAufgabe> erledigtList;
-                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
-                    switch (which) {
-                        case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
-                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("serverid", aufgabe.getId());
-                            startActivity(intent);
-                            break;
-                        case R.id.share:
-                            // teilt die Aufgabe
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach.name);
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + "\n" + aufgabe.notizen + "\nAbgabe am:" + aufgabe.abgabeDatum);
-                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
-                            break;
-                        case R.id.delete:
-                            // löscht die Aufgabe und updatet die Liste sowie den Adapter
-                            alleAufgaben.clear();
-                            aufgabe.delete();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.removeAufgabe(aufgabe);
-                            break;
-                        case R.id.erledigt:
-                            // ändert die Aufgabe zu erledigt
-                            alleAufgaben.clear();
-                            aufgabe.erledigt = true;
-                            aufgabe.save();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.changeAufgabe(aufgabe);
-                            break;
-                    }
-                }
-            }).show();
-        } else {
-            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "            Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    List<dbAufgabe> unerledigtList;
-                    List<dbAufgabe> erledigtList;
-                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
-                    switch (which) {
-                        case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
-                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("serverid", aufgabe.getId());
-                            startActivity(intent);
-                            break;
-                        case R.id.share:
-                            // teilt die Aufgabe
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.untisId);
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + "\n" + aufgabe.notizen + "\nAbgabe am:" + aufgabe.abgabeDatum);
-                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
-                            break;
-                        case R.id.delete:
-                            // löscht die Aufgabe und updatet die Liste sowie den Adapter
-                            alleAufgaben.clear();
-                            aufgabe.delete();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.removeAufgabe(aufgabe);
-                            break;
-                        case R.id.cancel:
-                            // ändert die Aufgabe zu nicht erledigt
-                            alleAufgaben.clear();
-                            aufgabe.erledigt = false;
-                            aufgabe.save();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.changeAufgabe(aufgabe);
-                            break;
-                    }
-                }
-            }).show();
+        if (aufgabeAdapter != null && aufgabeAdapter.getItemCount() ==0){
+            if (getListForAdapter() != null){
+                aufgabeAdapter.changeDataSet(getListForAdapter());
+            }
         }
+
     }
 
-    /**
-     * @param aufgabe ist die aufgabe die angeclickt wurde
-     * @return nicht wichtig
-     * @onItemLongClicked wird aufgerufen wenn ein Item lange geclickt wird
-     */
-    @Override
-    public boolean onItemLongClicked(final dbAufgabe aufgabe) {
-        if (aufgabe.checkIfErledigtAufgabe(aufgabe) != true) {
-            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "             Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    List<dbAufgabe> unerledigtList;
-                    List<dbAufgabe> erledigtList;
-                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
-                    switch (which) {
-                        case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
-                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("serverid", aufgabe.getId());
-                            startActivity(intent);
-                            break;
-                        case R.id.share:
-                            // teilt die Aufgabe
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.fach.name);
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + "\n" + aufgabe.notizen + "\nAbgabe am:" + aufgabe.abgabeDatum);
-                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
-                            break;
-                        case R.id.delete:
-                            // löscht die Aufgabe und updatet die Liste sowie den Adapter
-                            alleAufgaben.clear();
-                            aufgabe.delete();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.removeAufgabe(aufgabe);
-                            break;
-                        case R.id.erledigt:
-                            // ändert die Aufgabe zu erledigt
-                            alleAufgaben.clear();
-                            aufgabe.erledigt = true;
-                            aufgabe.save();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.changeAufgabe(aufgabe);
-                            break;
-                    }
-                }
-            }).show();
-        } else {
-            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.beschreibung + "            Fach: " + aufgabe.kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    List<dbAufgabe> unerledigtList;
-                    List<dbAufgabe> erledigtList;
-                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
-                    switch (which) {
-                        case R.id.change:
-                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
-                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
-                            intent.putExtra("Beschreibung", aufgabe.beschreibung);
-                            intent.putExtra("Notizen", aufgabe.notizen);
-                            intent.putExtra("Fach", aufgabe.kurs.untisId);
-                            intent.putExtra("Datum", aufgabe.abgabeDatum);
-                            startActivity(intent);
-                            break;
-                        case R.id.share:
-                            // teilt die Aufgabe
-                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                            sharingIntent.setType("text/plain");
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.kurs.untisId);
-                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.beschreibung + "\n" + aufgabe.notizen + "\nAbgabe am:" + aufgabe.abgabeDatum);
-                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
-                            break;
-                        case R.id.delete:
-                            // löscht die Aufgabe und updatet die Liste sowie den Adapter
-                            alleAufgaben.clear();
-                            aufgabe.delete();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.changeDataSet(alleAufgaben);
-                            break;
-                        case R.id.cancel:
-                            // ändert die Aufgabe zu nicht erledigt
-                            alleAufgaben.clear();
-                            aufgabe.erledigt = false;
-                            aufgabe.save();
-                            if (new dbAufgabe().getUnerledigtAufgabe().size() != 0) {
-                                unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
-                                alleAufgaben.addAll(unerledigtList);
-                            }
-                            if (new dbAufgabe().getErledigtAufgabe().size() != 0) {
-                                erledigtList = new dbAufgabe().getErledigtAufgabe();
-                                alleAufgaben.addAll(erledigtList);
-                            }
-                            aufgabeAdapter.changeAufgabe(aufgabe);
-                            break;
-                    }
-                }
-            }).show();
+
+    public List<aufgabenModel> getListForAdapter(){
+        List<aufgabenModel> convertedList = new ArrayList<>();
+
+        List<dbAufgabe> unerledigtList = new dbAufgabe().getUnerledigtAufgabe();
+        List<dbAufgabe> erledigtList = new dbAufgabe().getErledigtAufgabe();
+        int unerledigt=0;
+        int erledigt=0;
+
+        if (unerledigtList != null && unerledigtList.size()>0){
+            aufgabenModel aufgabenModelHead = new aufgabenModel();
+            aufgabenModelHead.setStatus(1);
+            aufgabenModelHead.setTextHeader("ausstehend");
+            convertedList.add(aufgabenModelHead);
+            for (dbAufgabe aufgabe:unerledigtList){
+                aufgabenModel aufgabenModel1 = new aufgabenModel();
+                aufgabenModel1.setStatus(0);
+                aufgabenModel1.setAufgabe(aufgabe);
+                convertedList.add(aufgabenModel1);
+            }
+            unerledigt = unerledigtList.size();
         }
-        return false;
+        if (erledigtList != null && erledigtList.size()>0){
+            aufgabenModel aufgabenModelHead = new aufgabenModel();
+            aufgabenModelHead.setStatus(1);
+            aufgabenModelHead.setTextHeader("erledigt");
+            convertedList.add(aufgabenModelHead);
+            for (dbAufgabe aufgabe:erledigtList){
+                aufgabenModel aufgabenModel1 = new aufgabenModel();
+                aufgabenModel1.setStatus(0);
+                aufgabenModel1.setAufgabe(aufgabe);
+                convertedList.add(aufgabenModel1);
+            }
+           erledigt = erledigtList.size();
+        }
+
+       textViewAnzahl.setText(unerledigt+" unerledigt - "+erledigt+" erledigt");
+        if (convertedList != null && convertedList.size()>0){
+            return convertedList;
+        }
+        return null;
     }
+
+
+
 
     @Override
     public void onPauseFragment() {
@@ -381,5 +167,102 @@ public class Fragment_AufgabeUebersicht extends Fragment implements AufgabentAda
     public void onResumeFragment() {
 
     }
+
+
+    @Override
+    public void onItemClicked(int position, aufgabenModel aufgabe) {
+        click(position,aufgabe);
+    }
+    @Override
+    public boolean onItemLongClicked(int position, aufgabenModel aufgabe) {
+        return false;
+    }
+
+    private void click(int position, final aufgabenModel aufgabe) {
+        if (aufgabe.getAufgabe().erledigt != true) {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.getAufgabe().beschreibung
+                    + ", Fach: " + aufgabe.getAufgabe().kurs.name).sheet(R.menu.menu_nichtgemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch (which) {
+                        case R.id.change:
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
+                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+                            intent.putExtra("id", aufgabe.getAufgabe().getId());
+                            startActivity(intent);
+                            break;
+                        case R.id.share:
+                            // teilt die Aufgabe
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.getAufgabe().kurs.fachnew.name);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.getAufgabe().beschreibung + "\n" + aufgabe.getAufgabe().notizen
+                                    + "\nAbgabe am:" + aufgabe.getAufgabe().abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
+                            break;
+                        case R.id.delete:
+                            dbAufgabe.delete(aufgabe.getAufgabe());
+                            if (getListForAdapter() != null){
+                                aufgabeAdapter.changeDataSet(getListForAdapter());
+                            }
+                            break;
+                        case R.id.erledigt:
+                            // ändert die Aufgabe zu erledigt
+                            aufgabe.getAufgabe().erledigt = true;
+                            aufgabe.getAufgabe().save();
+                            if (getListForAdapter() != null){
+                                aufgabeAdapter.changeDataSet(getListForAdapter());
+                            }
+                            break;
+                    }
+                }
+            }).show();
+        } else {
+            new BottomSheet.Builder(getActivity()).title("Aufgabe " + aufgabe.getAufgabe().beschreibung
+                    + ", Fach: " + aufgabe.getAufgabe().kurs.name).sheet(R.menu.menu_gemachteaufgaben).listener(new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    List<dbAufgabe> unerledigtList;
+                    List<dbAufgabe> erledigtList;
+                    List<dbAufgabe> alleAufgaben = new ArrayList<dbAufgabe>();
+                    switch (which) {
+                        case R.id.change:
+                            // ruft für die Änderung der Aufgabe die AufgabenActivity auf und übergibt die serverid der Aufgabe
+                            Intent intent = new Intent(getActivity(), AufgabenActivity.class);
+                            intent.putExtra("id", aufgabe.getAufgabe().getId());
+                            startActivity(intent);
+                            break;
+                        case R.id.share:
+                            // teilt die Aufgabe
+                            Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                            sharingIntent.setType("text/plain");
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, aufgabe.getAufgabe().kurs.untisId);
+                            sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, aufgabe.getAufgabe().beschreibung + "\n" + aufgabe.getAufgabe().notizen
+                                    + "\nAbgabe am:" + aufgabe.getAufgabe().abgabeDatum);
+                            startActivity(Intent.createChooser(sharingIntent, "Share.."));
+                            break;
+                        case R.id.delete:
+                            // löscht die Aufgabe und updatet die Liste sowie den Adapter
+                            dbAufgabe.delete(aufgabe.getAufgabe());
+                            if (getListForAdapter() != null){
+                                aufgabeAdapter.changeDataSet(getListForAdapter());
+                            }
+                            break;
+                        case R.id.cancel:
+                            // ändert die Aufgabe zu nicht erledigt
+                            aufgabe.getAufgabe().erledigt = false;
+                            aufgabe.getAufgabe().save();
+                            if (getListForAdapter() != null){
+                                aufgabeAdapter.changeDataSet(getListForAdapter());
+                            }
+                            break;
+                    }
+                }
+            }).show();
+        }
+
+
+    }
+
 }
 

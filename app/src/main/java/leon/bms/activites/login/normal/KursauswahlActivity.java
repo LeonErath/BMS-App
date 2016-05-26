@@ -60,7 +60,6 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
 
         // kurseList wird durch die Methode sortierteListe() mit allen verfügbaren Kursen gefüllt
         kurseList = sortierteListe();
-        Log.d(TAG, kurseList.size() + "");
         // Adapter bekommt die Kurseliste für die Anzeige der Kurse
         kursauswahlAdapter = new KursauswahlAdapter(this, kurseList);
 
@@ -529,5 +528,13 @@ public class KursauswahlActivity extends AppCompatActivity implements Kursauswah
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

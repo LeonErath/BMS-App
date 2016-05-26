@@ -235,7 +235,7 @@ public class StundenplanController {
                     for (int l = 0; l < jsonArrayKurse.length(); l++) {
                         JSONObject jsonObjectKurse = jsonArrayKurse.getJSONObject(l);
                         dbKurs kurs = new dbKurs();
-                        kurs.serverId = jsonObjectKurse.getInt("int_id");
+                        kurs.serverid = jsonObjectKurse.getInt("int_id");
                         kurs.untisId = jsonObjectKurse.getString("id");
                         kurs.name = jsonObjectKurse.getString("name");
                         int lehrerid = jsonObjectKurse.getInt("teacher_id");
@@ -246,7 +246,7 @@ public class StundenplanController {
                             Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
                         }
                         kurs.kursart = kursart;
-                        kurs.fach = fach;
+                        kurs.fachnew = fach;
                         kurs.save();
 
                         JSONArray jsonArraySchulstunde = jsonObjectKurse.getJSONArray("lessons");

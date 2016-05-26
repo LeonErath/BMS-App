@@ -1,64 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="0dp"
+    app:cardBackgroundColor="#ffffff"
     android:foreground="?android:attr/selectableItemBackground"
     android:id="@+id/cardView">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#c7c7c7"
+        ></RelativeLayout>
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:layout_margin="8dp">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+        android:layout_width="match_parent"
+    android:layout_height="50dp">
 
     <TextView
-        android:layout_marginRight="8dp"
-        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:layout_width="0dp"
+        android:layout_weight="0.1"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="10"
         android:textSize="25dp"
-        android:id="@+id/textViewNumber"
-        android:layout_centerVertical="true"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/textViewNumber" />
 
-    <TextView
-        android:layout_marginRight="8dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Stundenname"
-        android:textColor="#000000"
-        android:id="@+id/textViewStunde"
-        android:layout_toStartOf="@+id/textViewRaum"
-        android:layout_toEndOf="@+id/textViewNumber"/>
-    <TextView
-        android:layout_marginRight="8dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Lehrer"
-        android:id="@+id/textViewLehrer"
-        android:layout_below="@+id/textViewStunde"
-        android:textSize="14dp"
-        android:layout_toStartOf="@+id/textViewRaum"
-        android:layout_toEndOf="@+id/textViewNumber" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Raum"
-        android:id="@+id/textViewRaum"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Stundenname"
+                android:maxLines="1"
+                android:textSize="16dp"
+                android:textColor="#000000"
+                android:id="@+id/textViewStunde" />
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:maxLines="1"
+                android:text="Lehrer"
+                android:id="@+id/textViewLehrer"
+                android:textSize="14dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginRight="8dp"
+            android:layout_width="0dp"
+            android:layout_weight="0.2"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom|left">
+            <TextView
+                android:textStyle="bold"
+                android:gravity="center"
+                android:textColor="#000"
+                android:textSize="14dp"
+                android:background="#fff"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Raum"
+                android:id="@+id/textViewRaum"
+                />
+
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
 
 
 </android.support.v7.widget.CardView>

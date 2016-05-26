@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.CoordinatorLayout
@@ -18,8 +19,17 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@+id/AppBarLayout" />
+
+            <TextView
+                android:layout_margin="8dp"
+                android:gravity="center_horizontal"
+                android:text=" 2 unerledigt;0 erledigt"
+                android:layout_width="match_parent"
+                android:id="@+id/textViewAnzahl"
+                android:textSize="12dp"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 

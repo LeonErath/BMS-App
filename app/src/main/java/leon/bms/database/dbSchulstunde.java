@@ -141,5 +141,14 @@ public class dbSchulstunde extends SugarRecord {
         }
     }
 
+    public dbVertretung getVertretung(long id) {
+        List<dbVertretung> vertretungs = dbVertretung.find(dbVertretung.class, "schulstunde = ?",String.valueOf(id));
+        if (vertretungs.size() != 0) {
+            return vertretungs.get(0);
+        } else {
+            return null;
+        }
+    }
+
 
 }

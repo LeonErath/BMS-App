@@ -1,6 +1,7 @@
 package leon.bms.adapters;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import java.util.List;
 
 import leon.bms.R;
 import leon.bms.database.dbAufgabe;
+import leon.bms.model.aufgabenModel;
+import leon.bms.model.nachrichten;
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -31,7 +34,7 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
     // @TAG hier wird der Tag der Klasse gespeichert. Nacher wichtig für die Log-Datein
     private static final String TAG = AufgabentAdapter.class.getSimpleName();
     // Liste mit den nicht erledigten Aufgaben
-    private List<dbAufgabe> aufgabenList;
+    private List<aufgabenModel> aufgabenList;
     // @clickListenere wird immmer bei einem click auf ein Item ausgelöst
     private ViewHolder.ClickListener clickListener;
     private static final int TYPE_INACTIVE = 0;
@@ -41,7 +44,7 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
      * @Constructor benötigt einmal einen clickListener der in der Klasse implentiert sein muss
      * und die Liste der nichterledigten Aufgaben die angezeigt werden sollen.
      */
-    public AufgabentAdapter(ViewHolder.ClickListener clickListener, List<dbAufgabe> aufgabeList) {
+    public AufgabentAdapter(ViewHolder.ClickListener clickListener, List<aufgabenModel> aufgabeList) {
         super();
         this.clickListener = clickListener;
         this.aufgabenList = aufgabeList;
@@ -49,50 +52,27 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
     }
 
     /**
-     * @changeDataSet will be used not often only if the whole data was changed
+     * @changeDataSet Methode zum Austausch der Daten
+     * @param aufgabenModelList alte Liste wird duch die neue Komplett ersetzt
      */
-    public void changeDataSet(List<dbAufgabe> dbAufgabeList) {
-        aufgabenList = dbAufgabeList;
-        notifyDataSetChanged();
-    }
+    public void changeDataSet(List<aufgabenModel> aufgabenModelList) {
 
-    /**
-     * @removeAufgabe get called if you want to remove one Item from the Adapter
-     * check if the aufgabe exist that you want to delete
-     * if it is the last Aufgabe last item get removed
-     * if it not the position of the item will be removed
-     * @notifyItemremoved for a nice Animation and updates the UI
-     */
-    public void removeAufgabe(dbAufgabe aufgabe) {
-        if (aufgabenList.contains(aufgabe)) {
-            if (aufgabenList.size() == 1) {
-                aufgabenList.clear();
-                notifyItemRemoved(0);
-            } else {
-                int position = aufgabenList.indexOf(aufgabe);
-                aufgabenList.remove(aufgabe);
-                notifyItemRemoved(position);
-            }
+        int aufgabenSize = aufgabenList.size();
+        for (int i= 0;i<aufgabenSize;i++){
+            removeArticle(aufgabenList.size()-1);
         }
-    }
+        for (int i= 0;i<aufgabenModelList.size();i++){
+            addArticle(aufgabenModelList.get(i));
+        }
 
-    /**
-     * @addAufgabe get called if you want to add a Aufgabe
-     * checks if the adaoterList contains this Aufgabe
-     * When not it will add the Aufgabe to the list
-     * @notifyItemInsert for a nice Animation and updates the UI
-     */
-    public void addAufgabe(dbAufgabe aufgabe) {
-        boolean contains = false;
-        for (dbAufgabe aufgabe1 : aufgabenList) {
-            if (aufgabe1.getId() == aufgabe.getId()) {
-                contains = true;
-            }
-        }
-        if (contains == false) {
-            aufgabenList.add(aufgabe);
-            notifyItemInserted(aufgabenList.size() - 1);
-        }
+    }
+    public void addArticle(aufgabenModel aufgabenModel) {
+        aufgabenList.add(aufgabenModel);
+        notifyItemInserted(aufgabenList.size() - 1);
+    }
+    public void removeArticle(int position) {
+        aufgabenList.remove(position);
+        notifyItemRemoved(position);
     }
 
     /**
@@ -101,27 +81,16 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
      * @notifyItemChanged for a nice Animation and updates the UI
      */
     public void changeAufgabe(dbAufgabe aufgabeNew) {
-        if (aufgabenList.contains(aufgabeNew)) {
-            int index = aufgabenList.indexOf(aufgabeNew);
-            dbAufgabe aufgabe = aufgabenList.get(index);
-            aufgabe = aufgabeNew;
-            notifyItemChanged(index);
-        }
+
     }
-    public void deleteAufgabe(dbAufgabe aufgabe){
-        if (aufgabenList.contains(aufgabe)) {
-            int index = aufgabenList.indexOf(aufgabe);
-            aufgabenList.remove(index);
-            notifyItemChanged(index);
-        }
-    }
+
 
 
 
     @Override
     public int getItemViewType(int position) {
-        final dbAufgabe aufgabe = aufgabenList.get(position);
-        return aufgabe.erledigt ? TYPE_ACTIVE : TYPE_INACTIVE;
+        final aufgabenModel aufgabe = aufgabenList.get(position);
+        return aufgabe.getStatus();
     }
 
 
@@ -131,7 +100,16 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
      */
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final int layout = viewType == TYPE_INACTIVE ? R.layout.item_aufgabenicht : R.layout.item_aufgabeerledigt;
+        final int layout;
+        switch (viewType){
+            case 0:   layout= R.layout.item_aufgabe;
+                break;
+            case 1: layout= R.layout.item_aufgabe_header;
+                break;
+            default:layout= R.layout.item_aufgabe;
+                break;
+        }
+
         View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
         return new ViewHolder(v, clickListener, aufgabenList);
     }
@@ -143,25 +121,19 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final dbAufgabe aufgabe = aufgabenList.get(position);
+        final aufgabenModel aufgabe = aufgabenList.get(position);
 
         // Die Inhalte der Aufgabe werden angezeigt
-        holder.textViewBeschreibung.setText(aufgabe.beschreibung);
-        holder.textViewKurs.setText(aufgabe.kurs.fach.name);
-
-        if (aufgabe.erledigt == false) {
-            // Anzeige des Countdown wie viele Tage man noch hat bis zur Abgabe der Hausaufgabe
-            int restTage = berechneRestTage(aufgabe);
-            // Überprüft ob noch Zeit für die Aufgaben besteht
-            if (restTage >= 1) {
-                holder.textViewZeit.setText("Noch " + (restTage) + " Tage.");
-            } else {
-                // Wenn der Countdown abgelaufen ist wird der View verändert
-                holder.textViewZeit.setTextColor(Color.RED);
-                holder.textViewZeit.setText("Zeit überschritten!");
+        if (aufgabe.getStatus() == 1){
+            holder.textViewHeader.setText(aufgabe.getTextHeader());
+        }else {
+            holder.textViewBeschreibung.setText(aufgabe.getAufgabe().beschreibung);
+            holder.textViewKursZeit.setText(aufgabe.getAufgabe().abgabeDatum+", "+aufgabe.getAufgabe().kurs.untisId);
+            if (aufgabe.getAufgabe().erledigt){
+                holder.imageViewIcon.setImageResource(R.drawable.ic_done_black_48dp);
+            }else{
+                holder.imageViewIcon.setImageResource(R.drawable.ic_clear_black_48dp);
             }
-        } else {
-            holder.textViewZeit.setText("Erledigt.");
         }
 
     }
@@ -210,21 +182,21 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         private static final String TAG = ViewHolder.class.getSimpleName();
         // Hier werden alle Views des Layout definiert die nacher wichtig sind
         TextView textViewBeschreibung;
-        TextView textViewKurs;
-        TextView textViewZeit;
+        TextView textViewKursZeit;
+        TextView textViewHeader;
         ImageView imageViewIcon;
-        List<dbAufgabe> aufgabeList;
+        List<aufgabenModel> aufgabeList;
 
 
         private ClickListener listener;
 
-        public ViewHolder(View itemView, ClickListener listener, List<dbAufgabe> aufgabeList) {
+        public ViewHolder(View itemView, ClickListener listener, List<aufgabenModel> aufgabeList) {
             super(itemView);
 
             // Hier werden alle View intilisiert bzw ihre Verbindung zugewiesen
             textViewBeschreibung = (TextView) itemView.findViewById(R.id.textViewBeschreibung);
-            textViewKurs = (TextView) itemView.findViewById(R.id.textViewKurs);
-            textViewZeit = (TextView) itemView.findViewById(R.id.textViewZeit);
+            textViewKursZeit = (TextView) itemView.findViewById(R.id.textViewKursZeit);
+            textViewHeader = (TextView) itemView.findViewById(R.id.textViewHeader);
             imageViewIcon = (ImageView) itemView.findViewById(R.id.imageView);
 
             //listener wird initialisiert
@@ -242,7 +214,7 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onItemClicked(aufgabeList.get(getAdapterPosition()));
+                listener.onItemClicked(getAdapterPosition(),aufgabeList.get(getAdapterPosition()));
             }
         }
 
@@ -250,7 +222,7 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         @Override
         public boolean onLongClick(View v) {
             if (listener != null) {
-                return listener.onItemLongClicked(aufgabeList.get(getAdapterPosition()));
+                return listener.onItemLongClicked(getAdapterPosition(),aufgabeList.get(getAdapterPosition()));
             }
 
             return false;
@@ -261,9 +233,9 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
          * beinhalten zwei Click Methoden
          */
         public interface ClickListener {
-            public void onItemClicked(dbAufgabe aufgabe);
+            public void onItemClicked(int position,aufgabenModel aufgabe);
 
-            public boolean onItemLongClicked(dbAufgabe aufgabe);
+            public boolean onItemLongClicked(int position,aufgabenModel aufgabe);
         }
     }
 }

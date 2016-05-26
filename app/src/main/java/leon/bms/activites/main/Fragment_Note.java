@@ -27,12 +27,10 @@ import java.util.Comparator;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.activites.Klausur.KlausurActivity;
 import leon.bms.activites.note.NotenActivity;
 import leon.bms.adapters.NotenAdapter;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbNote;
-import leon.bms.database.dbThemenbereich;
 import leon.bms.model.notenModel;
 
 /**
@@ -42,6 +40,29 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     UltimateRecyclerView recyclerView;
     TextView textViewDurchschnitt;
     NotenAdapter notenAdapter;
+    List<notenModel> notenModelList = new ArrayList<>();
+    Handler handler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            Boolean success = bundle.getBoolean("myKey");
+            if (success) {
+                notenAdapter.changeDataSet(notenModelList);
+            } else {
+
+            }
+        }
+    };
+    Handler handler2 = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            Bundle bundle = msg.getData();
+            String antwort = bundle.getString("myKey");
+            textViewDurchschnitt.setText(antwort);
+        }
+    };
 
     public Fragment_Note() {
         // Required empty public constructor
@@ -69,10 +90,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     }
 
     private void setUpRecyclerView() {
-        List<notenModel> notenModelList = new ArrayList<>();
-        if (getNotenList() != null){
-            notenModelList = getNotenList();
-        }
+        doInBackground();
         final LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getActivity());
         notenAdapter = new NotenAdapter(getActivity(), notenModelList, this);
@@ -86,15 +104,30 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
                     @Override
                     public void run() {
                         Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
-                        List<notenModel> notenModelList = new ArrayList<>();
-                        if (getNotenList() != null){
-                            notenModelList = getNotenList();
-                        }
-                        notenAdapter.changeDataSet(notenModelList);
+                        doInBackground();
                     }
                 }, 1000);
             }
         });
+    }
+
+    private void doInBackground() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if (getNotenList() != null) {
+                    notenModelList = getNotenList();
+                }
+                Message msg = handler.obtainMessage();
+                boolean sucess = true;
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("myKey", sucess);
+                msg.setData(bundle);
+                handler.sendMessage(msg);
+
+            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
     }
 
     private List<notenModel> getNotenList() {
@@ -116,7 +149,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
 
                 notenModelList.add(notenModel1);
             }
-            if (notenModelList.size() > 0){
+            if (notenModelList.size() > 0) {
                 return sortListASC(notenModelList);
             }
         }
@@ -138,41 +171,60 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
         updateDurchschnitt();
     }
 
+
+
     private void updateDurchschnitt() {
-        if (new dbKurs().getAllActiveKurse() != null) {
-            List<notenModel> notenModelList = new ArrayList<>();
-            List<dbKurs> kursList = new dbKurs().getAllActiveKurse();
-            for (dbKurs kurs : kursList) {
-                notenModel notenModel1 = new notenModel();
-                notenModel1.setKurs(kurs);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                String antwort = "Gesamtdurchschnitt: NA";
+                if (new dbKurs().getAllActiveKurse() != null) {
+                    List<notenModel> notenModelList = new ArrayList<>();
+                    List<dbKurs> kursList = new dbKurs().getAllActiveKurse();
+                    for (dbKurs kurs : kursList) {
+                        notenModel notenModel1 = new notenModel();
+                        notenModel1.setKurs(kurs);
 
-                if (kurs.getNoteWithId(kurs.getId(),1) != null){
-                    List<dbNote> schriftlich= kurs.getNoteWithId(kurs.getId(),1);
-                    notenModel1.setSchriftlicheNoten(schriftlich);
-                }
-                if (kurs.getNoteWithId(kurs.getId(),0) != null){
-                    List<dbNote> mündlich= kurs.getNoteWithId(kurs.getId(),0);
-                    notenModel1.setMündlicheNoten(mündlich);
+                        if (kurs.getNoteWithId(kurs.getId(), 1) != null) {
+                            List<dbNote> schriftlich = kurs.getNoteWithId(kurs.getId(), 1);
+                            notenModel1.setSchriftlicheNoten(schriftlich);
+                        }
+                        if (kurs.getNoteWithId(kurs.getId(), 0) != null) {
+                            List<dbNote> mündlich = kurs.getNoteWithId(kurs.getId(), 0);
+                            notenModel1.setMündlicheNoten(mündlich);
+                        }
+
+                        if (getNotenDurchschnitt(notenModel1) != 0) {
+                            notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1), 1));
+                            notenModelList.add(notenModel1);
+                        }
+                    }
+                    if (notenModelList != null && notenModelList.size() > 0) {
+                        double gesamtdurchschnitt = 0;
+                        for (notenModel notenModel1 : notenModelList) {
+                            gesamtdurchschnitt += notenModel1.getDurchschnitt();
+                        }
+                        gesamtdurchschnitt = gesamtdurchschnitt / notenModelList.size();
+                         antwort = "Gesamtdurchschnitt: " + round(gesamtdurchschnitt, 1);
+                    } else {
+                        antwort ="Gesamtdurchschnitt: NA";
+                    }
+
                 }
 
-                if (getNotenDurchschnitt(notenModel1) != 0){
-                    notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1),1));
-                    notenModelList.add(notenModel1);
-                }
+                Message msg = handler2.obtainMessage();
+                Bundle bundle = new Bundle();
+                bundle.putString("myKey",antwort);
+                msg.setData(bundle);
+                handler2.sendMessage(msg);
+
             }
-            if (notenModelList != null &&notenModelList.size()>0){
-                double gesamtdurchschnitt=0;
-                for (notenModel notenModel1:notenModelList){
-                    gesamtdurchschnitt+= notenModel1.getDurchschnitt();
-                }
-                gesamtdurchschnitt = gesamtdurchschnitt/notenModelList.size();
-                textViewDurchschnitt.setText("Gesamtdurchschnitt: "+ round(gesamtdurchschnitt,1));
-            }else {
-                textViewDurchschnitt.setText("Gesamtdurchschnitt: NA");
-            }
+        };
+        Thread mythread = new Thread(runnable);
+        mythread.start();
 
-        }
+
     }
+
     private double getNotenDurchschnitt(notenModel notenModel1) {
         notenModel note = notenModel1;
         List<dbNote> alleNoten = new ArrayList<>();
@@ -217,7 +269,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
 
     @Override
     public void onItemClicked(int position) {
-        if (notenAdapter.get(position )!= null) {
+        if (notenAdapter.get(position) != null) {
             Log.d("Fragment_Note", "Item click");
             Intent intent = new Intent(getActivity(), NotenActivity.class);
             intent.putExtra("id", notenAdapter.get(position).getKurs().getId());
@@ -229,7 +281,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
 
     @Override
     public boolean onItemLongClicked(int position) {
-        if (notenAdapter.get(position )!= null) {
+        if (notenAdapter.get(position) != null) {
             Log.d("Fragment_Note", "Item click");
             Intent intent = new Intent(getActivity(), NotenActivity.class);
             intent.putExtra("id", notenAdapter.get(position).getKurs().getId());
