@@ -15,8 +15,7 @@ import leon.bms.model.quizfragen;
 /**
  * @QuizActivity ist die Activity für das Verwalten des Quizes sowie das Anzeigen der Fragment für das Quiz.
  */
-public class QuizActivity extends AppCompatActivity implements Fragment_QuizStart.nextFragment, Fragment_QuizFachAuswahl.OnFragmentInteractionListener, Fragment_QuizThemenAuswahl.OnFragmentInteractionListener, Fragment_QuizFrage.OnFragmentInteractionListener, Fragment_QuizErgebnis.OnFragmentInteractionListener {
-
+public class QuizActivity extends AppCompatActivity {
     FrameLayout frameLayout;
     int counter = 0;
     String kursid;
@@ -34,9 +33,9 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
 
         if (savedInstanceState == null) {
             // wenn Activity zum ersten mal gestartet wird wird das Fragment_QuizStar geladen
-            Fragment_QuizStart fragment = new Fragment_QuizStart();
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.fragemntContainer, fragment).commit();
+            //Fragment_QuizStart fragment = new Fragment_QuizStart();
+            //FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            //fragmentTransaction.add(R.id.fragemntContainer, fragment).commit();
         }
 
     }
@@ -49,155 +48,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
     public void next() {
         counter++;
         switch (counter) {
-            case 1:
-                //zuerst die Fach auswahl
-                Fragment_QuizFachAuswahl fragment_quizFachAuswahl = new Fragment_QuizFachAuswahl();
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-                // Replace whatever is in the fragment_container view with this fragment,
-                // and add the transaction to the back stack so the user can navigate back
-                transaction.replace(R.id.fragemntContainer, fragment_quizFachAuswahl, "1");
-                transaction.addToBackStack("1");
-                // Addd Custom Animations
-
-                //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                // Commit the transaction
-                transaction.commit();
-                break;
-            case 2:
-                if (kursid != null) {
-                    // als zweites die Themenbreich auswahl
-                    Fragment_QuizThemenAuswahl fragment = new Fragment_QuizThemenAuswahl();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("kursid", kursid);
-                    fragment.setArguments(bundle);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "2");
-                    transaction2.addToBackStack("2");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-                } else {
-                    Toast.makeText(QuizActivity.this, "Ein Fehler ist aufgetreten. Versuche es später nochmal", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case 3:
-                if (kursString != null && fragenList != null && fragenList.size()>0){
-                    // dann wird das Quiz gestartet
-                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(kursString,fragenList);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "3");
-                    transaction2.addToBackStack("3");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-
-                    kursString = null;
-                    fragenList = null;
-                }else if (themenbereichID != null) {
-                    // dann wird das Quiz gestartet
-                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(themenbereichID);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "3");
-                    transaction2.addToBackStack("3");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-                }
-                break;
-            case 4:
-                if (kursString != null && fragenList != null && fragenList.size()>0&& quizfragenList != null && quizfragenList.size() != 0){
-                    // und nach dem Quiz wird das Ergebnis angezeigt
-                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(kursString, quizfragenList,fragenList);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "4");
-                    transaction2.addToBackStack("4");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-
-                    kursString = null;
-                    fragenList = null;
-                }else if (themenbereichID != null && quizfragenList != null && quizfragenList.size() != 0) {
-                    // und nach dem Quiz wird das Ergebnis angezeigt
-                    Fragment_QuizErgebnis fragment = new Fragment_QuizErgebnis(themenbereichID, quizfragenList);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "4");
-                    transaction2.addToBackStack("4");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-                }
-                break;
-            case 5:
-                if (kursString != null && fragenList != null && fragenList.size()>0 && quizfragenList != null ){
-                    // dann wird das Quiz gestartet
-                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(kursString,fragenList,quizfragenList,position);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "5");
-                    transaction2.addToBackStack("5");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-
-                    kursString = null;
-                    fragenList = null;
-                }else if (themenbereichID != null) {
-                    // dann wird das Quiz gestartet
-                    Fragment_QuizFrage fragment = new Fragment_QuizFrage(themenbereichID,quizfragenList,position);
-                    FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-
-                    // Replace whatever is in the fragment_container view with this fragment,
-                    // and add the transaction to the back stack so the user can navigate back
-                    transaction2.replace(R.id.fragemntContainer, fragment, "5");
-                    transaction2.addToBackStack("5");
-                    // Addd Custom Animations
-
-                    //transaction.setCustomAnimations(R.anim.transition_enter,R.anim.fadein);
-
-                    // Commit the transaction
-                    transaction2.commit();
-                }else {
-                    counter--;
-                }
-                break;
+            case 1:break;
             default:break;
         }
 
@@ -228,86 +79,7 @@ public class QuizActivity extends AppCompatActivity implements Fragment_QuizStar
 
     }
 
-    // jetzt kommen jede Menge Interface Callbacks von den Fragmenten
-    @Override
-    public void getNextFragment() {
-        next();
-    }
 
-
-    @Override
-    public void next(String Kursid) {
-        this.kursid = Kursid;
-        next();
-    }
-
-    @Override
-    public void back() {
-        onBackPressed();
-    }
-
-    @Override
-    public void backQuizThemenAuswwahl() {
-        onBackPressed();
-    }
-
-    @Override
-    public void FragmentQuizThemen_next(Long themenbereichID) {
-        this.themenbereichID = themenbereichID;
-        next();
-    }
-
-    @Override
-    public void FragmentQuizThemen_nextSpecial(String kursString, List<dbFragen> fragenList) {
-        this.kursString = kursString;
-        this.fragenList = fragenList;
-        next();
-    }
-
-
-    @Override
-    public void Fragment_QuizFrageShowErgebnis(long themenbereichID, List<quizfragen> quizfragenList) {
-        this.themenbereichID = themenbereichID;
-        this.quizfragenList = quizfragenList;
-        next();
-
-    }
-
-    @Override
-    public void Fragment_QuizFrageShowErgebnisSpecial(String kursid, List<quizfragen> quizfragenList, List<dbFragen> fragenList) {
-        this.kursString = kursid;
-        this.quizfragenList = quizfragenList;
-        this.fragenList = fragenList;
-        next();
-    }
-
-    @Override
-    public void Fragment_QuitFrageBACK() {
-        onBackPressed();
-    }
-
-
-    @Override
-    public void Fragment_QuizErgebnisBACK() {
-        onBackPressed();
-    }
-
-    @Override
-    public void Fragment_QuizErgebnisZuFrage(long themenbereichID, List<quizfragen> quizfragenList, int FrageID) {
-        this.themenbereichID = themenbereichID;
-        this.quizfragenList = quizfragenList;
-        this.position = FrageID;
-        next();
-    }
-
-    @Override
-    public void Fragment_QuizErgebnisZuFrageSpecial(String kursid, List<dbFragen> fragenListNew, List<quizfragen> quizfragenList, int FrageID) {
-        this.kursString = kursid;
-        this.fragenList = fragenListNew;
-        this.quizfragenList = quizfragenList;
-        this.position = FrageID;
-        next();
-    }
 
 
 }

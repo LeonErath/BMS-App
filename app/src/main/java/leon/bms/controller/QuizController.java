@@ -28,7 +28,6 @@ import leon.bms.database.dbKlausur;
 import leon.bms.database.dbKlausuraufsicht;
 import leon.bms.database.dbKlausurinhalt;
 import leon.bms.database.dbKurs;
-import leon.bms.database.dbLehrer;
 import leon.bms.database.dbNote;
 import leon.bms.database.dbQuiz;
 import leon.bms.database.dbThemenbereich;
@@ -114,39 +113,36 @@ public class QuizController {
                 try {
                     JSONArray jsonarray = new JSONArray(result2);
 
-                    for (int i=0;i<jsonarray.length();i++){
+                    for (int i = 0; i < jsonarray.length(); i++) {
                         JSONObject jsonQuiz = jsonarray.getJSONObject(i);
                         dbQuiz quiz = new dbQuiz();
                         quiz.intergerid = jsonQuiz.getInt("id");
                         quiz.name = jsonQuiz.getString("name");
                         quiz.beschreibung = jsonQuiz.getString("description");
-                        quiz.erstelltAm =jsonQuiz.getString("creation_date");
+                        quiz.erstelltAm = jsonQuiz.getString("creation_date");
                         quiz.geandertAm = jsonQuiz.getString("last_change");
                         quiz.gesamtePunkte = jsonQuiz.getInt("total_points");
                         quiz.schwierigkeitsgrad = jsonQuiz.getInt("level_of_difficulty");
                         int kursid = jsonQuiz.getInt("course_id");
                         if (new dbKurs().getKursWithServerId(kursid) != null) {
                             dbKurs kurs = new dbKurs().getKursWithServerId(kursid);
-                           quiz.kurs = kurs;
+                            quiz.kurs = kurs;
                         }
-                        if (!jsonQuiz.isNull("global_id")){
+                        if (!jsonQuiz.isNull("global_id")) {
                             quiz.globaleid = jsonQuiz.getInt("global_id");
                         }
                         quiz.save();
                         JSONArray jsonFragenArray = jsonQuiz.getJSONArray("questions");
-                        for (int k=0;k<jsonFragenArray.length();k++){
+                        for (int k = 0; k < jsonFragenArray.length(); k++) {
                             JSONObject jsonFragen = jsonFragenArray.getJSONObject(k);
                             dbFragen fragen = new dbFragen();
-                            fragen.serverid =jsonFragen.getInt("id");
-
-
+                            fragen.serverid = jsonFragen.getInt("id");
 
 
                         }
 
 
                     }
-
 
 
                     Message msg = handler.obtainMessage();
@@ -164,8 +160,6 @@ public class QuizController {
                     handler.sendMessage(msg);
                     e.printStackTrace();
                 }
-
-
 
 
             }

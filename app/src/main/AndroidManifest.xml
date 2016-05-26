@@ -19,7 +19,6 @@
     <application
         android:name="com.orm.SugarApp"
         android:allowBackup="true"
-        android:debuggable="true"
         android:icon="@drawable/logo_bms"
         android:label="@string/app_name"
         android:supportsRtl="true"
