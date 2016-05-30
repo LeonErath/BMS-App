@@ -22,8 +22,7 @@ import java.util.List;
 
 import belka.us.androidtoggleswitch.widgets.ToggleSwitch;
 import leon.bms.R;
-import leon.bms.activites.Klausur.KlausurActivity;
-import leon.bms.activites.website.WebsiteArticleActivity;
+import leon.bms.activites.klausur.KlausurActivity;
 import leon.bms.adapters.KlausurAdapter;
 import leon.bms.controller.KlausurController;
 import leon.bms.model.klausurModel;

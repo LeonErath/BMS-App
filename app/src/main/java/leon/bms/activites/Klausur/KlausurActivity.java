@@ -1,4 +1,4 @@
-package leon.bms.activites.Klausur;
+package leon.bms.activites.klausur;
 
 import android.app.Dialog;
 import android.content.Context;

@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="leon.bms.NachrichtenActivity"
+    tools:context=".activites.nachrichten.NachrichtenActivity"
     android:background="#02669a">
 
 <LinearLayout

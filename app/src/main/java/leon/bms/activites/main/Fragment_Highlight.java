@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -12,10 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,32 +22,20 @@ import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import leon.bms.Constants;
-import leon.bms.NachrichtenActivity;
+import leon.bms.activites.nachrichten.NachrichtenActivity;
 import leon.bms.R;
 import leon.bms.adapters.NachrichtenAdapter;
-import leon.bms.atOnline;
-import leon.bms.controller.KlausurController;
-import leon.bms.controller.LogInController;
 import leon.bms.controller.NachrichtenController;
 import leon.bms.database.dbKurs;
 import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbUser;
 import leon.bms.model.nachrichten;
 import leon.bms.model.stunden;
 

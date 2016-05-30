@@ -1,4 +1,4 @@
-package leon.bms;
+package leon.bms.activites.nachrichten;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import leon.bms.R;
 
 public class NachrichtenActivity extends AppCompatActivity {
 TextView textViewTitel,textViewContent,textViewOk;

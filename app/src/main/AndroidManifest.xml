@@ -10,6 +10,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature
@@ -32,6 +35,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".PublicClass" />
+
+        <receiver android:name=".AlarmReciever" android:process=":remote">
+            <intent-filter>
+                <action android:name="com.tutorialspoint.CUSTOM_INTENT"></action>
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="DATABASE"
@@ -81,12 +90,16 @@
             android:name=".activites.kurs.KursActivity"
             android:label="@string/title_activity_kurs"
             android:theme="@style/AppTheme" />
-        <activity android:name=".NachrichtenActivity" />
+        <activity android:name=".activites.nachrichten.NachrichtenActivity" />
         <activity android:name=".activites.website.Website" />
         <activity
-            android:name=".activites.Klausur.KlausurActivity"
+            android:name=".activites.klausur.KlausurActivity"
             android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".activites.note.NotenActivity"></activity>
+        <activity android:name=".activites.note.NotenActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

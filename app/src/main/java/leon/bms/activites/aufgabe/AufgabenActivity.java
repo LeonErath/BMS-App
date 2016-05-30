@@ -3,12 +3,15 @@ package leon.bms.activites.aufgabe;
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -45,6 +48,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.meetic.marypopup.MaryPopup;
 
 import java.io.File;
@@ -56,6 +62,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import leon.bms.AlarmReciever;
 import leon.bms.R;
 import leon.bms.activites.main.MainActivity;
 import leon.bms.adapters.PhotoAdapter;
@@ -73,7 +80,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  * an die Aufgabe "dranzuhängen"
  */
 public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.ViewHolder.ClickListener {
-
+    BroadcastReceiver broadcastReceiver;
     private static String TAG = AufgabenActivity.class.getSimpleName();
     private final String overlayColor = "#73000000";
     private final String overlayTransparentColor = "#00000000";
@@ -117,6 +124,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     File photoFile = null;
     View mView;
     MaryPopup popup;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     /**
      * Automatische generierte Methode
@@ -280,6 +292,9 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         });
 
 
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void chooseDate() {
@@ -722,10 +737,30 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
                 }
             }
 
-            //createNotification(this, aufgabe);
+            createNotification(aufgabe.getId());
+
         }
 
     }
+
+    public void createNotification(Long id) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, 3);
+        Intent myIntent = new Intent(this, AlarmReciever.class);
+        myIntent.setAction("com.tutorialspoint.CUSTOM_INTENT");
+        myIntent.putExtra("id", id);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this,
+                100, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(), pendingIntent);
+
+        Log.d("AUFGABEN","alarm set");
+
+    }
+
+
+
 
     public boolean checkAufgabe(dbAufgabe aufgabe) {
         if (aufgabe.abgabeDatum != null) {
@@ -741,50 +776,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         return false;
     }
 
-    public void createNotification(Context context, dbAufgabe aufgabeLoad) {
-        Log.d("onRecieve", "trigger");
-        //create an Notification
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_done_white_48dp)
-                .setContentTitle(aufgabeLoad.beschreibung)
-                .setSubText(aufgabeLoad.kurs.untisId)
-                .setTicker("Neue Hausaufgabe !")
-                .setCategory(Notification.CATEGORY_EVENT)
-                .setContentText(aufgabeLoad.notizen);
-        NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        String multiLines = aufgabeLoad.notizen;
-        String[] text;
-        String delimiter = "\n";
-        text = multiLines.split(delimiter);
-        // Sets a title for the Inbox in expanded layout
-        inboxStyle.setBigContentTitle("Details: ");
-        // Moves events into the expanded layout
-        for (int i = 0; i < text.length; i++) {
-            inboxStyle.addLine(text[i]);
-        }
-        // Moves the expanded layout object into the notification object.
-        mBuilder.setStyle(inboxStyle);
-
-        // Creates an explicit intent for an Activity in your app
-        Intent resultIntent = new Intent(context, AufgabenActivity.class);
-        resultIntent.putExtra("serverid", aufgabeLoad.getId());
-        // The stack builder object will contain an artificial back stack for the
-        // started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(AufgabenActivity.class);
-        // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(resultIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        // mId allows you to update the notification later on.
-
-        mNotificationManager.notify(1, mBuilder.build());
-    }
 
 
     /**
@@ -848,6 +840,8 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             actionMode.invalidate();
         }
     }
+
+
 
     /**
      * @ActionModeCallback ist für die "neue" Toolbar zuständig sowie die Fertigstellung

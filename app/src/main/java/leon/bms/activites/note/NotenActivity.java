@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.activites.Klausur.KlausurActivity;
+import leon.bms.activites.klausur.KlausurActivity;
 import leon.bms.adapters.KlausurenAdapter;
 import leon.bms.adapters.MuendlichAdapter;
 import leon.bms.database.dbKlausur;
