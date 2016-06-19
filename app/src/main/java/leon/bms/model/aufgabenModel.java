@@ -1,6 +1,7 @@
 package leon.bms.model;
 
-import leon.bms.database.dbAufgabe;
+
+import leon.bms.realm.dbAufgabe;
 
 /**
  * Created by Leon E on 25.05.2016.

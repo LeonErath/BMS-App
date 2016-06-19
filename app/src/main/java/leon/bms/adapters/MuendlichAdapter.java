@@ -17,8 +17,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbNote;
 import leon.bms.model.mündlicheNoten;
+import leon.bms.realm.dbNote;
 
 
 public class MuendlichAdapter extends RecyclerView.Adapter<MuendlichAdapter.ViewHolder> {
@@ -110,11 +110,11 @@ public class MuendlichAdapter extends RecyclerView.Adapter<MuendlichAdapter.View
             holder.textViewQuartal.setText(position+1+". Quartal");
             //holder.textViewDatum.setText(getDateString(klausur));
                 dbNote note = münNote.getNote();
-                holder.textViewDatum.setText(getDateString(note.hinzugefuegtAm));
-                holder.textViewNotePunkte.setText(note.punkte+" P.");
-                holder.textViewNote.setText(notenArray[note.punkte-1]);
+                holder.textViewDatum.setText(getDateString(note.getHinzugefuegtAm()));
+                holder.textViewNotePunkte.setText(note.getPunkte()+" P.");
+                holder.textViewNote.setText(notenArray[note.getPunkte()-1]);
                 holder.textViewKeineNote.setVisibility(View.INVISIBLE);
-                if (note.punkte <= 4){
+                if (note.getPunkte() <= 4){
                     holder.imageViewAchtung.setVisibility(View.VISIBLE);
                 }else {
                     holder.imageViewAchtung.setVisibility(View.INVISIBLE);

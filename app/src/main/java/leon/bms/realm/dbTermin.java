@@ -1,43 +1,35 @@
-package leon.bms.database;
-
-import com.orm.SugarRecord;
+package leon.bms.realm;
 
 import java.util.Date;
 
-/**
- * Created by Leon E on 19.11.2015.
- */
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
- * @dbTermin ist eine Tabelle der Datenbank für die Termin
- * Sie verwaltet alle Einträge der Termin und beinhaltet Filter für die weitere
- * Verarbeitung der Datensätze. Constructor und Getter/Setter Methoden sind implentiert.
+ * Created by Leon E on 18.06.2016.
  */
-public class dbTermin extends SugarRecord {
-    //Datensätze des Termines
-    public Boolean beschaeftigt;
-    public Date date;
-    public Date erinnerungDate;
-    public Date hinzugefuegtAm;
-    public String quelle;
-    public Boolean schulfrei;
-    public Integer terminID;
-    public Date zuletztAktualisiert;
+public class dbTermin extends RealmObject {
+    @PrimaryKey @Required
+    private Integer terminID;
+    private Boolean beschaeftigt;
+    private Date date;
+    private Date erinnerungDate;
+    private Date hinzugefuegtAm;
+    private String quelle;
+    private Boolean schulfrei;
+    private Date zuletztAktualisiert;
 
     public dbTermin() {
         // empty Constructor needed!
     }
 
-    public dbTermin(Boolean beschaeftigt, Date date, Date erinnerungDate, Date hinzugefuegtAm, String quelle, Boolean schulfrei, Integer terminID, Date zuletztAktualisiert) {
+    public Integer getTerminID() {
+        return terminID;
+    }
 
-        this.beschaeftigt = beschaeftigt;
-        this.date = date;
-        this.erinnerungDate = erinnerungDate;
-        this.hinzugefuegtAm = hinzugefuegtAm;
-        this.quelle = quelle;
-        this.schulfrei = schulfrei;
+    public void setTerminID(Integer terminID) {
         this.terminID = terminID;
-        this.zuletztAktualisiert = zuletztAktualisiert;
     }
 
     public Boolean getBeschaeftigt() {
@@ -88,14 +80,6 @@ public class dbTermin extends SugarRecord {
         this.schulfrei = schulfrei;
     }
 
-    public Integer getTerminID() {
-        return terminID;
-    }
-
-    public void setTerminID(Integer terminID) {
-        this.terminID = terminID;
-    }
-
     public Date getZuletztAktualisiert() {
         return zuletztAktualisiert;
     }
@@ -103,6 +87,4 @@ public class dbTermin extends SugarRecord {
     public void setZuletztAktualisiert(Date zuletztAktualisiert) {
         this.zuletztAktualisiert = zuletztAktualisiert;
     }
-
-
 }

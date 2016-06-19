@@ -1,6 +1,7 @@
 package leon.bms.model;
 
-import leon.bms.database.dbFehler;
+
+import leon.bms.realm.dbFehler;
 
 /**
  * Created by Leon E on 24.05.2016.

@@ -16,7 +16,6 @@ import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbVertretung;
 import leon.bms.model.stunden;
 
 /**
@@ -81,44 +80,44 @@ public class StundenplanAdapter extends UltimateViewAdapter<StundenplanAdapter.V
             if (stunden.getVertretung() != null) {
                 //dbVertretung vertretung = stunden.getSchulstunde().getVertretung(stunden.getSchulstunde().getId());
                 //stunden.setVertretung(vertretung);
-                if (stunden.getVertretung().eva) {
+                if (stunden.getVertretung().getEva()) {
                     holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
-                    holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
+                    holder.textViewFachname.setText(stunden.getSchulstunde().getKurs().getName());
                     holder.textViewFachname.setPaintFlags(holder.textViewFachname.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    if (stunden.getVertretung().raum != null) {
-                        holder.textViewRaum.setText(stunden.getVertretung().raum.nummer);
+                    if (stunden.getVertretung().getRaum() != null) {
+                        holder.textViewRaum.setText(stunden.getVertretung().getRaum().getName());
                         holder.textViewRaum.setBackgroundColor(Color.parseColor("#ff8002"));
                         holder.textViewRaum.setTextColor(Color.parseColor("#FFFFFF"));
                     } else {
-                        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                        holder.textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
                     }
-                    if (stunden.getVertretung().lehrer != null) {
-                        holder.textViewLehrer.setText(stunden.getVertretung().lehrer.titel + " "
-                                + stunden.getVertretung().lehrer.name);
+                    if (stunden.getVertretung().getLehrer() != null) {
+                        holder.textViewLehrer.setText(stunden.getVertretung().getLehrer().getTitle() + " "
+                                + stunden.getVertretung().getLehrer().getLast_name());
                     } else {
-                        holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
-                                + stunden.getSchulstunde().kurs.lehrer.name);
+                        holder.textViewLehrer.setText(stunden.getSchulstunde().getKurs().getLehrer().getTitle() + " "
+                                + stunden.getSchulstunde().getKurs().getLehrer().getLast_name());
                     }
 
                 } else {
                     if ((holder.textViewFachname.getPaintFlags() & Paint.STRIKE_THRU_TEXT_FLAG) > 0){
                         holder.textViewFachname.setPaintFlags( holder.textViewFachname.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
                     }
-                    holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
+                    holder.textViewFachname.setText(stunden.getSchulstunde().getKurs().getName());
                     holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
-                    if (stunden.getVertretung().raum != null) {
-                        holder.textViewRaum.setText(stunden.getVertretung().raum.nummer);
+                    if (stunden.getVertretung().getRaum()!= null) {
+                        holder.textViewRaum.setText(stunden.getVertretung().getRaum().getName());
                         holder.textViewRaum.setBackgroundColor(Color.parseColor("#ff8002"));
                         holder.textViewRaum.setTextColor(Color.parseColor("#FFFFFF"));
                     } else {
-                        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
+                        holder.textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
                     }
-                    if (stunden.getVertretung().lehrer != null) {
-                        holder.textViewLehrer.setText(stunden.getVertretung().lehrer.titel + " "
-                                + stunden.getVertretung().lehrer.name);
+                    if (stunden.getVertretung().getLehrer() != null) {
+                        holder.textViewLehrer.setText(stunden.getVertretung().getLehrer().getTitle() + " "
+                                + stunden.getVertretung().getLehrer().getLast_name());
                     } else {
-                        holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
-                                + stunden.getSchulstunde().kurs.lehrer.name);
+                        holder.textViewLehrer.setText(stunden.getSchulstunde().getKurs().getLehrer().getTitle() + " "
+                                + stunden.getSchulstunde().getKurs().getLehrer().getLast_name());
                     }
 
                 }
@@ -130,10 +129,10 @@ public class StundenplanAdapter extends UltimateViewAdapter<StundenplanAdapter.V
                 holder.textViewRaum.setBackgroundColor(Color.parseColor("#ffffff"));
                 holder.textViewRaum.setTextColor(Color.parseColor("#000000"));
                 holder.textViewStunde.setText(String.valueOf(stunden.getStunde()));
-                holder.textViewFachname.setText(stunden.getSchulstunde().kurs.name);
-                holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
-                holder.textViewLehrer.setText(stunden.getSchulstunde().kurs.lehrer.titel + " "
-                        + stunden.getSchulstunde().kurs.lehrer.name);
+                holder.textViewFachname.setText(stunden.getSchulstunde().getKurs().getName());
+                holder.textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
+                holder.textViewLehrer.setText(stunden.getSchulstunde().getKurs().getLehrer().getTitle() + " "
+                        + stunden.getSchulstunde().getKurs().getLehrer().getLast_name());
 
             }
 

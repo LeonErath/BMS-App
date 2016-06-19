@@ -9,7 +9,6 @@ import android.widget.Toast;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbFragen;
 import leon.bms.model.quizfragen;
 
 /**
@@ -22,7 +21,7 @@ public class QuizActivity extends AppCompatActivity {
     Long themenbereichID;
     List<quizfragen> quizfragenList;
     String kursString;
-    List<dbFragen> fragenList;
+    //List<dbFragen> fragenList;
     int position;
 
 

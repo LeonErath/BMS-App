@@ -1,25 +1,19 @@
-package leon.bms.database;
+package leon.bms.realm;
 
-import com.orm.SugarRecord;
+import io.realm.RealmObject;
+
 
 /**
- * Created by Leon E on 21.05.2016.
+ * Created by Leon E on 18.06.2016.
  */
-public class dbFehler extends SugarRecord {
-    public Boolean bearbeitet;
-    public String beschreibung;
-    public String erstellungsDatum;
+public class dbFehler extends RealmObject {
+    private Boolean bearbeitet;
+    private String beschreibung;
+    private String erstellungsDatum;
 
-    public  dbKlausur klausur;
+    private dbKlausur klausur;
 
     public dbFehler() {
-    }
-
-    public dbFehler(Boolean bearbeitet, String beschreibung, String erstellungsDatum, dbKlausur klausur) {
-        this.bearbeitet = bearbeitet;
-        this.beschreibung = beschreibung;
-        this.erstellungsDatum = erstellungsDatum;
-        this.klausur = klausur;
     }
 
     public Boolean getBearbeitet() {

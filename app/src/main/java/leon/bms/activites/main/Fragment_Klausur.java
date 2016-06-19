@@ -129,7 +129,7 @@ public class Fragment_Klausur extends Fragment implements KlausurAdapter.ViewHol
         if (klausurAdapter.get(position )!= null) {
             Log.d("Fragment_Klausur", "Item click");
             Intent intent = new Intent(getActivity(), KlausurActivity.class);
-            intent.putExtra("id", klausurAdapter.get(position).klausur.getId());
+            intent.putExtra("id", klausurAdapter.get(position).klausur.getServerid());
             getActivity().startActivity(intent);
         }
 
@@ -140,7 +140,7 @@ public class Fragment_Klausur extends Fragment implements KlausurAdapter.ViewHol
         if (klausurAdapter.get(position )!= null) {
             Log.d("Fragment_Klausur", "Item click");
             Intent intent = new Intent(getActivity(), KlausurActivity.class);
-            intent.putExtra("id", klausurAdapter.get(position).klausur.getId());
+            intent.putExtra("id", klausurAdapter.get(position).klausur.getServerid());
             getActivity().startActivity(intent);
         }
         return false;

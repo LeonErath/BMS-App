@@ -27,25 +27,17 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.R;
 import leon.bms.ViewPagerAdapterMain;
 import leon.bms.activites.login.normal.LogInActivity;
 import leon.bms.activites.quiz.QuizActivity;
 import leon.bms.activites.website.Website;
-import leon.bms.database.dbAntworten;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbFach;
-import leon.bms.database.dbFragen;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbKursTagConnect;
-import leon.bms.database.dbKursart;
-import leon.bms.database.dbLehrer;
-import leon.bms.database.dbMediaFile;
-import leon.bms.database.dbRaum;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbThemenbereich;
-import leon.bms.database.dbUser;
-import leon.bms.database.dbWebsiteTag;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbUser;
+
 
 /**
  * @MainActivity beinhaltet alle Hauptfunktionen und ist der Hauptangelpunkt der App.
@@ -64,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayoutgesamt;
     ActionBarDrawerToggle drawerToggle;
     AHBottomNavigation bottomNavigation;
+    RealmQueries realmQueries;
     int[] tabIcons;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 
@@ -79,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         //setUp Toolbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        realmQueries = new RealmQueries(this);
 
         //setUP Drawerlayout
         drawerLayoutgesamt = (DrawerLayout) findViewById(R.id.drawerlayoutgesamt);
@@ -129,8 +122,9 @@ public class MainActivity extends AppCompatActivity {
         textViewHeaderName = (TextView) headerLayout.findViewById(R.id.headerName);
         textViewHeaderDatum = (TextView) headerLayout.findViewById(R.id.headerEmail);
 
-        textViewHeaderName.setText(new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
-        textViewHeaderDatum.setText("Deine Stufe: " + new dbUser().getUser().stufe);
+        dbUser user = realmQueries.getUser();
+        textViewHeaderName.setText(user.getFirst_name() + " " +user.getLast_name());
+        textViewHeaderDatum.setText("Deine Stufe: " + user.getGrade_string());
 
         //setUp NavigationView
         navigationView.getMenu().getItem(0).setChecked(true);
@@ -286,9 +280,11 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_logout:
                 // User wird augeloggt
-                dbUser user = new dbUser().getUser();
-                user.loggedIn = false;
-                user.save();
+                dbUser user = realmQueries.getUser();
+                user.setLoggedIn(false);
+
+
+                save(user);
                 Intent intent1 = new Intent(this, LogInActivity.class);
                 startActivity(intent1);
                 finish();
@@ -307,25 +303,39 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void save(final RealmObject object){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
+    }
+
     /**
      * @deleteDB Methode zum löschen aller Daten des Users
      */
     public void deleteDB() {
         Log.d(LogInActivity.class.getSimpleName(), "Datenbank wurde zurückgesetzt");
-        dbUser.deleteAll(dbUser.class);
-        dbAufgabe.deleteAll(dbAufgabe.class);
-        dbKurs.deleteAll(dbKurs.class);
-        dbRaum.deleteAll(dbRaum.class);
-        dbFach.deleteAll(dbFach.class);
-        dbKursart.deleteAll(dbKursart.class);
-        dbSchulstunde.deleteAll(dbSchulstunde.class);
-        dbMediaFile.deleteAll(dbMediaFile.class);
-        dbLehrer.deleteAll(dbLehrer.class);
-        dbWebsiteTag.deleteAll(dbWebsiteTag.class);
-        dbFragen.deleteAll(dbFragen.class);
-        dbThemenbereich.deleteAll(dbThemenbereich.class);
-        dbAntworten.deleteAll(dbAntworten.class);
-        dbKursTagConnect.deleteAll(dbKursTagConnect.class);
+
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        RealmConfiguration config = new RealmConfiguration
+                .Builder(this)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
     }
 
     @Override

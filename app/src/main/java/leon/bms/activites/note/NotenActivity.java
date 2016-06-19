@@ -24,15 +24,19 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.R;
 import leon.bms.activites.klausur.KlausurActivity;
 import leon.bms.adapters.KlausurenAdapter;
 import leon.bms.adapters.MuendlichAdapter;
-import leon.bms.database.dbKlausur;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbNote;
 import leon.bms.model.mündlicheNoten;
 import leon.bms.model.notenModel;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKlausur;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbNote;
 
 public class NotenActivity extends AppCompatActivity implements KlausurenAdapter.ViewHolder.ClickListener, MuendlichAdapter.ViewHolder.ClickListener, View.OnClickListener {
 
@@ -43,6 +47,7 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     MuendlichAdapter muendlichAdapter;
     CardView cardViewCircle;
     Boolean punkteAnzeige = true;
+    RealmQueries realmQueries;
 
     dbKurs kurs;
 
@@ -50,6 +55,8 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_noten);
+
+        realmQueries = new RealmQueries(this);
 
         textViewKurs = (TextView) findViewById(R.id.textViewKursID);
         textViewLehrer = (TextView) findViewById(R.id.textViewLehrer);
@@ -65,12 +72,12 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
         //die Activity lädt die Daten des speziellen Artikel
         if (getIntent() != null) {
             Intent intent = getIntent();
-            Long id = intent.getLongExtra("id", 100000000);
+            int id = intent.getIntExtra("id", 100000000);
             if (id != 100000000) {
-                if (new dbKurs().getKursWithID(id) != null) {
-                    kurs = new dbKurs().getKursWithID(id);
-                    textViewKurs.setText(kurs.name);
-                    textViewLehrer.setText(kurs.lehrer.titel + " " + kurs.lehrer.name);
+                if (realmQueries.getKurs(id) != null) {
+                    kurs = realmQueries.getKurs(id);
+                    textViewKurs.setText(kurs.getName());
+                    textViewLehrer.setText(kurs.getLehrer().getTitle() + " " + kurs.getLehrer().getLast_name());
                     if (getNotenList(kurs).getDurchschnitt() == 0) {
                         textViewNote.setText("NA");
                     } else {
@@ -98,12 +105,12 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     private notenModel getNotenList(dbKurs kurs) {
         notenModel notenModel1 = new notenModel();
         notenModel1.setKurs(kurs);
-        if (kurs.getNoteWithId(kurs.getId(), 1) != null) {
-            List<dbNote> schriftlich = kurs.getNoteWithId(kurs.getId(), 1);
+        if (realmQueries.getNoteFromKurs(kurs,true) != null) {
+            List<dbNote> schriftlich = realmQueries.getNoteFromKurs(kurs,true) ;
             notenModel1.setSchriftlicheNoten(schriftlich);
         }
-        if (kurs.getNoteWithId(kurs.getId(), 0) != null) {
-            List<dbNote> mündlich = kurs.getNoteWithId(kurs.getId(), 0);
+        if (realmQueries.getNoteFromKurs(kurs,false)  != null) {
+            List<dbNote> mündlich = realmQueries.getNoteFromKurs(kurs,false) ;
             notenModel1.setMündlicheNoten(mündlich);
         }
         notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1), 1));
@@ -123,7 +130,7 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
             if (alleNoten.size() > 0) {
                 Double newdurchschnitt = 0.0;
                 for (dbNote note1 : alleNoten) {
-                    newdurchschnitt += note1.punkte;
+                    newdurchschnitt += note1.getPunkte();
                 }
                 newdurchschnitt = newdurchschnitt / alleNoten.size();
                 return newdurchschnitt;
@@ -142,9 +149,9 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     }
 
     private void setUpKlausuren(dbKurs kurs) {
-        if (kurs.getKlausurWithId(kurs.getId()) != null) {
-            List<dbKlausur> klausurList = kurs.getKlausurWithId(kurs.getId());
-            klausurenAdapter = new KlausurenAdapter(this, klausurList);
+        if (realmQueries.getKlausurFromKurs(kurs) != null) {
+            List<dbKlausur> klausurList =realmQueries.getKlausurFromKurs(kurs);
+            klausurenAdapter = new KlausurenAdapter(this, klausurList,this);
             recyclerViewKlausuren.setAdapter(klausurenAdapter);
             recyclerViewKlausuren.setHasFixedSize(true);
             recyclerViewKlausuren.setItemAnimator(new DefaultItemAnimator());
@@ -162,8 +169,8 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     }
 
     public List<mündlicheNoten> convertedList() {
-        if (kurs.getNoteWithId(kurs.getId(), 0) != null) {
-            List<dbNote> noteList = kurs.getNoteWithId(kurs.getId(), 0);
+        if (realmQueries.getNoteFromKurs(kurs,false) != null) {
+            List<dbNote> noteList = realmQueries.getNoteFromKurs(kurs,false);
             List<mündlicheNoten> mündlicheNotenList = new ArrayList<>();
             for (dbNote note : noteList) {
                 mündlicheNoten münNote = new mündlicheNoten();
@@ -318,11 +325,11 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
     private void changeNote(Integer punktzahl) {
         dbNote note = new dbNote();
 
-        note.punkte = punktzahl;
-        note.schriftlich = false;
-        note.kurs = kurs;
-        note.hinzugefuegtAm = getZeitString();
-        note.save();
+        note.setPunkte(punktzahl);
+        note.setSchriftlich(false);
+        note.setKurs(kurs);
+        note.setHinzugefuegtAm(getZeitString());
+        save(note);
 
         mündlicheNoten münNote = new mündlicheNoten();
         münNote.setKeinNote(false);
@@ -332,6 +339,19 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
         recyclerViewMündlich.smoothScrollToPosition(0);
 
         updateDurchschnitt();
+    }
+    private void save(final RealmObject object){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
     }
 
     private void updateDurchschnitt() {
@@ -397,14 +417,14 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
         } else {
             if (muendlichAdapter.getFehler(position) != null) {
                 final mündlicheNoten münNote = muendlichAdapter.getFehler(position);
-                String fehlerString = position + 1 + ". Quartal, " + münNote.getNote().punkte + " Punkte";
+                String fehlerString = position + 1 + ". Quartal, " + münNote.getNote().getPunkte() + " Punkte";
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Möchten sie die ausgewählte Note löschen?")
                         .setCancelable(false)
                         .setMessage(fehlerString)
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dbNote.delete(münNote.getNote());
+                                delete(münNote.getNote());
                                 //fehlerAdapter.deleteFehler(position); //TODO fix bug
                                 muendlichAdapter.changeDataSet(convertedList());
                                 updateDurchschnitt();
@@ -423,6 +443,22 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
         }
         return false;
     }
+
+    public void delete(final dbNote note){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                note.deleteFromRealm();
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
+    }
+
+
 
     @Override
     public void onClick(View v) {
@@ -456,7 +492,7 @@ public class NotenActivity extends AppCompatActivity implements KlausurenAdapter
                 Double[] notenRechner = {6.7777, 6.3333, 5.0, 4.7777, 4.3333, 4.0, 3.7777, 3.3333, 3.0, 2.7777, 2.3333, 2.0, 1.7777, 1.3333, 1.0, 0.7777};
                 Double newdurchschnitt = 0.0;
                 for (dbNote note1 : alleNoten) {
-                    newdurchschnitt += notenRechner[note1.punkte];
+                    newdurchschnitt += notenRechner[note1.getPunkte()];
                 }
                 newdurchschnitt = newdurchschnitt / alleNoten.size();
                 textViewNote.setText(String.valueOf(round(newdurchschnitt, 1)));

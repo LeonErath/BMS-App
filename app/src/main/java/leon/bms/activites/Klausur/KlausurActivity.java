@@ -28,16 +28,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.R;
 import leon.bms.adapters.FehlerAdapter;
 import leon.bms.adapters.KlausurAufsichtAdapter;
 import leon.bms.adapters.KlausurInhaltAdapter;
-import leon.bms.database.dbFehler;
-import leon.bms.database.dbKlausur;
-import leon.bms.database.dbKlausuraufsicht;
-import leon.bms.database.dbKlausurinhalt;
-import leon.bms.database.dbNote;
 import leon.bms.model.fehler;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbFehler;
+import leon.bms.realm.dbKlausur;
+import leon.bms.realm.dbKlausuraufsicht;
+import leon.bms.realm.dbKlausurinhalt;
+import leon.bms.realm.dbNote;
 
 public class KlausurActivity extends AppCompatActivity implements View.OnClickListener, KlausurAufsichtAdapter.ViewHolder.ClickListener, KlausurInhaltAdapter.ViewHolder.ClickListener, FehlerAdapter.ViewHolder.ClickListener {
 
@@ -53,7 +57,7 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
     dbKlausur klausur;
     KlausurInhaltAdapter inhaltAdapter;
     FehlerAdapter fehlerAdapter;
-
+    RealmQueries realmQueries;
     String[] notenArray = {"5-", "5", "5+", "4-", "4", "4+", "3-", "3", "3+", "2-", "2", "2+", "1-", "1", "1+"};
 
     @Override
@@ -83,33 +87,34 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         //die Activity lädt die Daten des speziellen Artikel
         if (getIntent() != null) {
             Intent intent = getIntent();
-            Long id = intent.getLongExtra("id", 100000000);
+            int id = intent.getIntExtra("id", 100000000);
             if (id != 100000000) {
-                if (new dbKlausur().getKlausurWithId(id) != null) {
-                    klausur = new dbKlausur().getKlausurWithId(id);
-                    textViewKlausurname.setText(klausur.name);
-                    textViewKursid.setText(klausur.kurs.name);
-                    textViewNotizen.setText(klausur.notizen);
+                realmQueries = new RealmQueries(this);
+                if (realmQueries.getKlausur(id) != null) {
+                    klausur =realmQueries.getKlausur(id);
+                    textViewKlausurname.setText(klausur.getName());
+                    textViewKursid.setText(klausur.getKurs().getName());
+                    textViewNotizen.setText(klausur.getNotizen());
                     textViewDatum.setText(getDateString(klausur));
                     textViewZeit.setText(getZeitString(klausur));
-                    textViewRaum.setText(klausur.raum.nummer);
+                    textViewRaum.setText(klausur.getRaum().getName());
 
-                    if (klausur.getNoteWithId(klausur.getId()) == null) {
+                    if (realmQueries.getNoteFromKlausur(klausur) == null) {
                         Log.d("changeNote", "keine Note vorhanden.");
                         textViewNote.setText("NA");
                         textViewNotePunkte.setText("Klick hier");
                     } else {
-                        dbNote note = klausur.getNoteWithId(klausur.getId());
-                        if (note.punkte != null) {
-                            textViewNotePunkte.setText(String.valueOf(note.punkte) + " Punkte");
-                            textViewNote.setText(notenArray[note.punkte -1]);
+                        dbNote note = realmQueries.getNoteFromKlausur(klausur);
+                        if (note.getPunkte() != null) {
+                            textViewNotePunkte.setText(String.valueOf(note.getPunkte()) + " Punkte");
+                            textViewNote.setText(notenArray[note.getPunkte() -1]);
 
                             Log.d("changeNote", "Note wurde erfolgreich geladen.");
                         }else {
 
                         }
-                        if (note.klassendurchschnitt != null){
-                            editText.setText(String.valueOf(note.klassendurchschnitt));
+                        if (note.getKlassendurchschnitt() != null){
+                            editText.setText(String.valueOf(note.getKlassendurchschnitt()));
                             Log.d("changeNote", "Klassendurchschnitt wurde erfolgreich geladen.");
                         }
                     }
@@ -134,11 +139,11 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
                                     event.getAction() == KeyEvent.ACTION_DOWN &&
                                             event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                                 if (Double.valueOf(v.getText().toString()) > 0.6 && Double.valueOf(v.getText().toString()) < 6.0) {
-                                    if (klausur.getNoteWithId(klausur.getId()) == null) {
+                                    if (realmQueries.getNoteFromKlausur(klausur) == null) {
                                         dbNote note = new dbNote();
-                                        note.klassendurchschnitt = Double.valueOf(v.getText().toString());
-                                        note.klausur = klausur;
-                                        note.save();
+                                        note.setKlassendurchschnitt(Double.valueOf(v.getText().toString()));
+                                        note.setKlausur(klausur);
+                                        save(note);
                                         View view = v.findFocus();
                                         if (view != null) {
                                             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -147,9 +152,9 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
                                         }
                                         Log.d("changeNote2", "Klassendurchschnitt wurde eingespeichert");
                                     } else {
-                                        dbNote note = klausur.getNoteWithId(klausur.getId());
-                                        note.klassendurchschnitt = Double.valueOf(v.getText().toString());
-                                        note.save();
+                                        dbNote note = realmQueries.getNoteFromKlausur(klausur);
+                                        note.setKlassendurchschnitt(Double.valueOf(v.getText().toString()));
+                                        save(note);
                                         View view = v.findFocus();
                                         if (view != null) {
                                             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -173,9 +178,21 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
 
 
     }
-
+    private void save(final RealmObject object){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
+    }
     private void setUpFehler(dbKlausur klausur) {
-        fehlerAdapter = new FehlerAdapter(this, convertedList());
+        fehlerAdapter = new FehlerAdapter(this, convertedList(),this);
         recyclerViewKlausurfehler.setAdapter(fehlerAdapter);
         recyclerViewKlausurfehler.setHasFixedSize(false);
         recyclerViewKlausurfehler.setItemAnimator(new DefaultItemAnimator());
@@ -183,8 +200,8 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public List<fehler> convertedList() {
-        if (klausur.getFehlerFromKlausur(klausur.getId()) != null) {
-            List<dbFehler> fehlerList = klausur.getFehlerFromKlausur(klausur.getId());
+        if (realmQueries.getFehlerFromKlausur(klausur) != null) {
+            List<dbFehler> fehlerList = realmQueries.getFehlerFromKlausur(klausur);
             List<fehler> convertedFehlerList = new ArrayList<>();
             for (dbFehler dbfehler : fehlerList) {
                 fehler fehler1 = new fehler();
@@ -206,9 +223,9 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setUpInhalt(dbKlausur klausur) {
-        if (klausur.getInhaltFromKlausur(klausur.getId()) != null) {
-            List<dbKlausurinhalt> klausurinhaltList = klausur.getInhaltFromKlausur(klausur.getId());
-            inhaltAdapter = new KlausurInhaltAdapter(this, klausurinhaltList);
+        if (realmQueries.getInhaltFromKlausur(klausur) != null) {
+            List<dbKlausurinhalt> klausurinhaltList = realmQueries.getInhaltFromKlausur(klausur);
+            inhaltAdapter = new KlausurInhaltAdapter(this, klausurinhaltList,this);
             recyclerViewKlausurinhalt.setAdapter(inhaltAdapter);
             recyclerViewKlausurinhalt.setHasFixedSize(true);
             recyclerViewKlausurinhalt.setItemAnimator(new DefaultItemAnimator());
@@ -217,8 +234,8 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void setUpAufsicht(dbKlausur klausur) {
-        if (klausur.getAufsichtFromKlausur(klausur.getId()) != null) {
-            List<dbKlausuraufsicht> aufsichtList = klausur.getAufsichtFromKlausur(klausur.getId());
+        if (realmQueries.getAufsichtFromKlausur(klausur) != null) {
+            List<dbKlausuraufsicht> aufsichtList =realmQueries.getAufsichtFromKlausur(klausur) ;
             aufsichtAdapter = new KlausurAufsichtAdapter(this, aufsichtList);
             recyclerViewKlausuraufsicht.setAdapter(aufsichtAdapter);
             recyclerViewKlausuraufsicht.setHasFixedSize(true);
@@ -235,7 +252,7 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            calendar.setTime(myFormat.parse(klausur.datum));
+            calendar.setTime(myFormat.parse(klausur.getDatum()));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -254,8 +271,8 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm:ss");
 
         try {
-            calendar.setTime(myFormat.parse(klausur.beginn));
-            calendar2.setTime(myFormat.parse(klausur.ende));
+            calendar.setTime(myFormat.parse(klausur.getBeginn()));
+            calendar2.setTime(myFormat.parse(klausur.getEnde()));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -426,18 +443,19 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         textViewNote.setText(notenArray[punktzahl-1]);
         if (klausur != null) {
             dbNote note;
-            if (klausur.getNoteWithId(klausur.getId()) == null) {
+            if (realmQueries.getNoteFromKlausur(klausur) == null) {
                 note = new dbNote();
                 Log.d("changeNote", "neue Note wurde erstellt und gespeichert.");
             } else {
-                note = klausur.getNoteWithId(klausur.getId());
+                note = realmQueries.getNoteFromKlausur(klausur);
                 Log.d("changeNote", "alte Note wurde aktualisiert.");
             }
-            note.punkte = punktzahl;
-            note.schriftlich = true;
-            note.klausur = klausur;
-            note.kurs = klausur.kurs;
-            note.save();
+            note.setPunkte(punktzahl);
+            note.setSchriftlich(true);
+            note.setKlausur(klausur);
+            note.setKurs(klausur.getKurs());
+
+            save(note);
         }
     }
 
@@ -489,10 +507,10 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
             public void onClick(View v) {
                 if (!ed.getText().toString().trim().equals("")) {
                     dbFehler fehler = new dbFehler();
-                    fehler.beschreibung = ed.getText().toString();
-                    fehler.bearbeitet = false;
-                    fehler.klausur = klausur;
-                    fehler.save();
+                    fehler.setBeschreibung(ed.getText().toString());
+                    fehler.setBearbeitet(false);
+                    fehler.setKlausur(klausur);
+                    save(fehler);
 
                     fehler fehler1 = new fehler();
                     fehler1.setFehler(fehler);
@@ -521,14 +539,15 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             if (fehlerAdapter.getFehler(position) != null) {
                 final fehler fehler1 = fehlerAdapter.getFehler(position);
-                String fehlerString = fehler1.getFehler().beschreibung;
+                String fehlerString = fehler1.getFehler().getBeschreibung();
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("Möchten sie den ausgewählten Fehler löschen?")
                         .setCancelable(false)
                         .setMessage("Fehler: " + fehlerString)
                         .setPositiveButton("Ja", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                dbFehler.delete(fehler1.getFehler());
+                                delete(fehler1.getFehler());
+
                                 //fehlerAdapter.deleteFehler(position); //TODO fix bug
                                 fehlerAdapter.changeDataSet(convertedList());
                                 dialog.dismiss();
@@ -545,5 +564,19 @@ public class KlausurActivity extends AppCompatActivity implements View.OnClickLi
 
         }
         return false;
+    }
+
+    private void delete(final dbFehler fehler) {
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                fehler.deleteFromRealm();
+
+            }
+        });
     }
 }

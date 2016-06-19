@@ -15,9 +15,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import leon.bms.Constants;
 import leon.bms.atOnline;
-import leon.bms.database.dbUser;
+import leon.bms.realm.dbUser;
+
 
 /**
  * Created by Leon E on 22.12.2015.
@@ -76,28 +79,29 @@ public class LogInController {
      * @createUser erstellt den user anhand der JSON Daten die man vom Server bekommt
      * Speichert den username,vorname,nachname,stufe,zuletztaktualisiert in die Datenbank.
      */
-    public dbUser createUser(String result,String User) {
+    public dbUser createUser(String result, final String User) {
         Log.d("createUser",result);
         try {
-            JSONObject jsonObject = new JSONObject(result);
-            // json to String
-            String Firstname = jsonObject.optString("first_name");
-            String Stufe = jsonObject.optString("grade_string");
-            String Lastname = jsonObject.optString("last_name");
+            final JSONObject jsonObject = new JSONObject(result);
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+            Realm.setDefaultConfiguration(realmConfig);
+            // Get a Realm instance for this thread
+            Realm realm = Realm.getDefaultInstance();
 
+            final leon.bms.realm.dbUser user = new dbUser();
+            user.setFirst_name(jsonObject.optString("first_name"));
+            user.setGrade_string(jsonObject.optString("grade_string"));
+            user.setLast_name(jsonObject.optString("last_name"));
+            user.setSession_hash(jsonObject.optString("session_hash"));
+            user.setLoggedIn(true);
+            user.setBenutzername(User);
 
-            dbUser.deleteAll(dbUser.class);
-
-            dbUser user = new dbUser();
-            user.vorname = Firstname;
-            user.nachname = Lastname;
-            user.loggedIn = true;
-            user.benutzername = User;
-            user.stufe = Stufe;
-            user.save();
-
-
-            Toast.makeText(mainContext, "Herzlich Willkommen " + Firstname + " " + Lastname + " ", Toast.LENGTH_SHORT).show();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    realm.copyToRealm(user);
+                }
+            });
             return user;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -125,31 +129,8 @@ public class LogInController {
         }
     }
 
-    /**
-     * @return wenn kein user eingeloggt ist dann null sonst den aktuelle User
-     * @getActiveUser gibt den aktuellenUser zurück der gerade eingeloggt ist.
-     */
-    public dbUser getActiveUser() {
-        List<dbUser> userList = dbUser.find(dbUser.class, "logged_In = ?", "1");
-        if (userList.size() == 1) {
-            dbUser user = userList.get(0);
-            return user;
-        } else {
-            return null;
-        }
-    }
 
-    /**
-     * @return gibt den aktuelle Usernamen des Users zurück
-     */
-    public String getUsername() {
-        dbUser user = getActiveUser();
-        if (user == null) {
-            return null;
-        } else {
-            return user.benutzername;
-        }
-    }
+
 
     /**
      * @param pass ist das Passwort als String

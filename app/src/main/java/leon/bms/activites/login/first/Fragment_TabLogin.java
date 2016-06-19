@@ -17,7 +17,7 @@ import leon.bms.activites.login.normal.Fragment_LogIn;
 import leon.bms.controller.LogInController;
 import leon.bms.R;
 import leon.bms.controller.StundenplanController;
-import leon.bms.database.dbUser;
+import leon.bms.realm.dbUser;
 
 
 /**

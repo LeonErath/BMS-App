@@ -8,8 +8,9 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
-import leon.bms.database.dbKlausur;
-import leon.bms.database.dbRaum;
+import leon.bms.realm.dbKlausur;
+import leon.bms.realm.dbRaum;
+
 
 /**
  * Created by Leon E on 23.05.2016.
@@ -42,7 +43,7 @@ public class klausurModel {
 
     public long mathDate() {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String inputString1 = klausur.datum;
+        String inputString1 = klausur.getDatum();
 
         try {
             Date date1 = myFormat.parse(inputString1);
@@ -62,7 +63,7 @@ public class klausurModel {
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            calendar.setTime(myFormat.parse(klausur.datum));
+            calendar.setTime(myFormat.parse(klausur.getDatum()));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -81,8 +82,8 @@ public class klausurModel {
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm:ss");
 
         try {
-            calendar.setTime(myFormat.parse(klausur.beginn));
-            calendar2.setTime(myFormat.parse(klausur.ende));
+            calendar.setTime(myFormat.parse(klausur.getBeginn()));
+            calendar2.setTime(myFormat.parse(klausur.getEnde()));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -96,7 +97,7 @@ public class klausurModel {
 
     public Date getDate(){
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String inputString1 = klausur.datum;
+        String inputString1 = klausur.getDatum();
 
         try {
             Date date1 = myFormat.parse(inputString1);

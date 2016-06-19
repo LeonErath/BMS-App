@@ -27,8 +27,8 @@ import leon.bms.R;
 import leon.bms.controller.WebsiteArticleController;
 import leon.bms.model.websiteartikel;
 import leon.bms.adapters.WebsiteArticleAdapter;
-import leon.bms.database.dbUser;
-import leon.bms.database.dbWebsiteTag;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbWebsiteTag;
 
 
 /**
@@ -59,6 +59,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     private boolean loading = true;
     // wichtige Daten zum ermitteln ob der RecyclerView neue Article laden muss
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    RealmQueries realmQueries;
 
     public Fragment_Article() {
     }
@@ -76,7 +77,7 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         articleController = new WebsiteArticleController(getActivity(), this);
-
+        realmQueries = new RealmQueries(getActivity());
         // sagt dem articleController ,dass er den Download der Artikel beginnen kann
         linearLayout = (LinearLayout) view.findViewById(R.id.coordinatorLayout);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
@@ -177,14 +178,14 @@ public class Fragment_Article extends Fragment implements WebsiteArticleAdapter.
                 for (String tag : tagList) {
                     tag = tag.toUpperCase();
                     // wenn der TAG gleich ist mit dem Artikel TAG wird die relevanz erhöht
-                    if (new dbWebsiteTag().tagVorhanden(tag) != false) {
-                        dbWebsiteTag websiteTag = new dbWebsiteTag().getWebsiteTag(tag);
-                        vorkommen += websiteTag.vorkommen;
-                        if (websiteTag.vorkommen != 0) {
+                    if (!realmQueries.isWebsiteTagVorhanden(tag)) {
+                        dbWebsiteTag websiteTag = realmQueries.getWebsiteTagFromTag(tag);
+                        vorkommen += websiteTag.getVorkommen();
+                        if (websiteTag.getVorkommen() != 0) {
                             // wenn der TAG in dem Artikel vorkommt wird die relevanz um 1 erhöht
-                            count += countWord(websiteTag.websitetag, text);
+                            count += countWord(websiteTag.getWebsitetag(), text);
                             // wenn der Name in dem Artikel vorkommt wird die relevanz um 10 erhöht
-                            count += countWord(new dbUser().getUser().vorname, text) * 10;
+                            count += countWord(realmQueries.getUser().getFirst_name()+" "+realmQueries.getUser().getLast_name(), text) * 10;
                         }
 
                     }

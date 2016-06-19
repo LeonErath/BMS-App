@@ -15,7 +15,9 @@ import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
 import leon.bms.activites.aufgabe.AufgabenActivity;
-import leon.bms.database.dbAufgabe;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbAufgabe;
+
 
 /**
  * Created by Leon E on 30.05.2016.
@@ -29,6 +31,7 @@ public class AlarmReciever extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("onRecieve2", "trigger");
+        RealmQueries realmQueries = new RealmQueries(context);
         // Set pm to Power Service so that we can access the power options on device
         pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         // Set WHERE the notification is coming 'from' (You can place your app name here if you wish)
@@ -40,9 +43,9 @@ public class AlarmReciever extends BroadcastReceiver {
             PowerManager.WakeLock wl_cpu = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"MyCpuLock");
             wl_cpu.acquire(10000);
         }
-        long id = intent.getLongExtra("id",100000);
+        int id = intent.getIntExtra("id",100000);
         if (id != 100000){
-            dbAufgabe aufgabe = new dbAufgabe().getAufgabe(id);
+            dbAufgabe aufgabe = realmQueries.getAufgabe(id);
             createNotification(context,aufgabe);
         }
 
@@ -62,25 +65,25 @@ public class AlarmReciever extends BroadcastReceiver {
                 .setSmallIcon(R.drawable.ic_assignment_white_48dp)
                 .setLargeIcon(bm)
                 .setColor(Color.parseColor("#60a532"))
-                .setContentTitle(aufgabeLoad.beschreibung)
+                .setContentTitle(aufgabeLoad.getBeschreibung())
                 .setSubText("1 neue Hausaufgabe")
                 .setPriority(2)
                 .setVibrate(new long[3])
                 .addAction(R.drawable.ic_done_white_18dp, "Erledigt",resultPendingIntent2)
                 .setTicker("Neue Hausaufgabe !")
                 .setCategory(Notification.CATEGORY_CALL)
-                .setContentText(aufgabeLoad.notizen);
+                .setContentText(aufgabeLoad.getNotizen());
 
 
 
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
 
-        String multiLines = aufgabeLoad.notizen;
+        String multiLines = aufgabeLoad.getNotizen();
         String[] text;
         String delimiter = "\n";
         text = multiLines.split(delimiter);
         // Sets a title for the Inbox in expanded layout
-        inboxStyle.setBigContentTitle(aufgabeLoad.beschreibung);
+        inboxStyle.setBigContentTitle(aufgabeLoad.getBeschreibung());
         // Moves events into the expanded layout
         for (int i = 0; i < text.length; i++) {
             inboxStyle.addLine(text[i]);

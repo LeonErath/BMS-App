@@ -1,6 +1,7 @@
 package leon.bms.model;
 
-import leon.bms.database.dbKurs;
+
+import leon.bms.realm.dbKurs;
 
 /**
  * Created by Leon E on 22.05.2016.

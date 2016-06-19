@@ -22,10 +22,11 @@ import java.util.List;
 import leon.bms.R;
 import leon.bms.activites.main.MainActivity;
 import leon.bms.adapters.KursAdapter;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbUser;
 import leon.bms.model.stunden;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbSchulstunde;
+import leon.bms.realm.dbUser;
 
 /**
  * @KursActivity zeigt alle Informationen zu einem bestimmten Kurs an. Es wird der Lehrer sowie eine
@@ -38,12 +39,14 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
     Button buttonEmail;
     RecyclerView recyclerView;
     dbKurs kurs;
+    RealmQueries realmQueries;
     private static String TAG = KursActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kurs);
 
+        realmQueries = new RealmQueries(this);
         //sezUP Toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -64,9 +67,15 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
             public void onClick(View v) {
                 Log.d(TAG, "email trigger");
                 // startet den Email Intent zum verschicken einer Email an einen Lehrer
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", kurs.lehrer.email, null));
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", kurs.getLehrer().getEmail(), null));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Hier der Betreff");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Sehr geehrte/r " + kurs.lehrer.titel + " " + kurs.lehrer.name + ",\n\n\n\nmit freundlichen Grüßen,\n" + new dbUser().getUser().vorname + " " + new dbUser().getUser().nachname);
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Sehr geehrte/r "
+                        + kurs.getLehrer().getTitle()
+                        + " "
+                        + kurs.getLehrer().getLast_name()
+                        + ",\n\n\n\nmit freundlichen Grüßen,\n"
+                        + realmQueries.getUser().getFirst_name()+" "
+                        + realmQueries.getUser().getLast_name());
                 startActivity(Intent.createChooser(emailIntent, "Send email..."));
             }
         });
@@ -75,16 +84,16 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            Long id = intent.getLongExtra("id", 0);
+            int id = intent.getIntExtra("id", 0);
             if (id != 0) {
-                if (new dbKurs().getKursWithID(id) != null) {
+                if (realmQueries.getKurs(id) != null) {
                     // lädt den Kurs zum anzeigen
-                    kurs = new dbKurs().getKursWithID(id);
+                    kurs = realmQueries.getKurs(id);
                     //zeigt die einfachen Daten an
-                    textViewKurs.setText(kurs.fachnew.name);
-                    textViewLehrer.setText(kurs.lehrer.titel + " " + kurs.lehrer.name);
-                    if (kurs.hinzugefuegtAm != null) {
-                        textViewDate.setText("zuletzt geändert am: " + kurs.hinzugefuegtAm);
+                    textViewKurs.setText(kurs.getFach().getDescription());
+                    textViewLehrer.setText(kurs.getLehrer().getTitle() + " " + kurs.getLehrer().getLast_name());
+                    if (kurs.getHinzugefuegtAm() != null) {
+                        textViewDate.setText("zuletzt geändert am: " + kurs.getHinzugefuegtAm());
                     } else {
                         textViewDate.setText("zuletzt geändert am: kein Datum verfügbar.");
                     }
@@ -93,6 +102,7 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
                     Toast.makeText(KursActivity.this, "Kurs nicht vorhanden. ", Toast.LENGTH_SHORT).show();
                 }
             } else {
+                onBackPressed();
                 Toast.makeText(KursActivity.this, "Kein Kurs wurde übergeben. ", Toast.LENGTH_SHORT).show();
             }
         }
@@ -138,13 +148,13 @@ public class KursActivity extends AppCompatActivity implements View.OnTouchListe
                 "15.00 Uhr - 15.45 Uhr",
                 "15.45 Uhr - 16.30 Uhr",};
         // überprüft an welchem Wochentag der Kurs ist
-        List<dbSchulstunde> schulstundeList = kurs.getSchulStunden(kurs.getId());
+        List<dbSchulstunde> schulstundeList = realmQueries.getStunden(kurs);
         if (schulstundeList != null && schulstundeList.size() > 0) {
             for (dbSchulstunde schulstunde : schulstundeList) {
                 stunden stunden = new stunden();
                 stunden.setSchulstunde(schulstunde);
                 //speichert die neuen Daten
-                stunden.stunde = schulstunde.beginnzeit;
+                stunden.stunde = schulstunde.getLesson();
                 list.add(stunden);
             }
         }

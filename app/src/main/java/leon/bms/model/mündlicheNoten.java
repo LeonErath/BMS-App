@@ -1,6 +1,7 @@
 package leon.bms.model;
 
-import leon.bms.database.dbNote;
+
+import leon.bms.realm.dbNote;
 
 /**
  * Created by Leon E on 24.05.2016.

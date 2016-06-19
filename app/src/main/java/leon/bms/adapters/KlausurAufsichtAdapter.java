@@ -15,7 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import leon.bms.R;
-import leon.bms.database.dbKlausuraufsicht;
+import leon.bms.realm.dbKlausuraufsicht;
+
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -67,7 +68,7 @@ public class KlausurAufsichtAdapter extends RecyclerView.Adapter<KlausurAufsicht
         final dbKlausuraufsicht klausuraufsicht = klausuraufsichtList.get(position);
 
         //Setting the Data to the Views
-        holder.textViewLehrer.setText(klausuraufsicht.lehrer.titel+" "+klausuraufsicht.lehrer.name);
+        holder.textViewLehrer.setText(klausuraufsicht.getLehrer().getTitle()+" "+klausuraufsicht.getLehrer().getLast_name());
         holder.textViewZeit.setText(getZeitString(klausuraufsicht));
 
     }
@@ -79,8 +80,8 @@ public class KlausurAufsichtAdapter extends RecyclerView.Adapter<KlausurAufsicht
         SimpleDateFormat myFormat = new SimpleDateFormat("HH:mm:ss");
 
         try {
-            calendar.setTime(myFormat.parse(klausuraufsicht.start));
-            calendar2.setTime(myFormat.parse(klausuraufsicht.end));
+            calendar.setTime(myFormat.parse(klausuraufsicht.getStart()));
+            calendar2.setTime(myFormat.parse(klausuraufsicht.getEnd()));
 
         } catch (ParseException e) {
             e.printStackTrace();

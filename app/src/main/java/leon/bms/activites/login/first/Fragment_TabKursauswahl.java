@@ -18,15 +18,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import leon.bms.R;
 import leon.bms.adapters.KursauswahlAdapter;
-import leon.bms.database.dbFach;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbKursTagConnect;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbUser;
-import leon.bms.database.dbWebsiteTag;
 import leon.bms.model.kursauswahl;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbFach;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbSchulstunde;
+import leon.bms.realm.dbUser;
+import leon.bms.realm.dbWebsiteTag;
 
 
 /**
@@ -42,12 +47,13 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
     private KursauswahlAdapter kursauswahlAdapter;
     private static boolean m_iAmVisible;
     int counter = 0;
-
+    RealmQueries realmQueries;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment__tab_kursauswahl, container, false);
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        realmQueries = new RealmQueries(getActivity());
         return view;
     }
 
@@ -63,24 +69,24 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
      */
     public List<kursauswahl> sortierteListe() {
         List<kursauswahl> sortiereListe = new ArrayList<>();
-        if (new dbFach().getAllFaecher() != null && new dbFach().getAllFaecher().size() != 0) {
-            List<dbFach> fachList = new dbFach().getAllFaecher();
-            fachList = sortListASCFach(fachList);
+        if (realmQueries.getAllFaecher() != null) {
+            RealmResults<dbFach> fachList =realmQueries.getAllFaecher();
+            fachList.sort("description", Sort.ASCENDING);
             for (dbFach fach : fachList) {
-                if (fach.getAllKurse(fach.getId()) != null) {
+                if (realmQueries.getKurseFromFach(fach) != null) {
                     kursauswahl kurswahl = new kursauswahl();
-                    kurswahl.headline = fach.name;
+                    kurswahl.headline = fach.getDescription();
                     kurswahl.headlineOrKurs = true;
                     sortiereListe.add(kurswahl);
 
-                    List<dbKurs> kursList = fach.getAllKurse(fach.getId());
+                    List<dbKurs> kursList = realmQueries.getKurseFromFach(fach);
                     List<dbKurs> lklist = new ArrayList<>();
                     List<dbKurs> gklist = new ArrayList<>();
                     List<dbKurs> aglist = new ArrayList<>();
                     List<dbKurs> pklist = new ArrayList<>();
 
                     for (dbKurs kurs : kursList) {
-                        switch (kurs.kursart.gloablId) {
+                        switch (kurs.getKursart().getGloablId()) {
                             case 0:
                                 lklist.add(kurs);
                                 break;
@@ -169,15 +175,6 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
         return list;
     }
 
-    public List<dbFach> sortListASCFach(List<dbFach> list) {
-        Collections.sort(list, new Comparator<dbFach>() {
-            @Override
-            public int compare(dbFach lhs, dbFach rhs) {
-                return lhs.getName().compareTo(rhs.getName());
-            }
-        });
-        return list;
-    }
 
     /**
      * @return "Kursauswahl"
@@ -208,10 +205,12 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
         // kontrolliert ob die Kombination möglich ist
         if (checkKurseKombination(alleKurse) == true) {
             // all schriftliche Kurse werden gespeichert
+
+            // TODO Website Tag Methode
             for (dbKurs kurs : kursauswahlAdapter.getSchriftlichList()) {
-                kurs.aktiv = true;
-                kurs.schriftlich = true;
-                if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
+                kurs.setAktiv(true);
+                kurs.setSchriftlich(true);
+               /* if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
                     List<dbWebsiteTag> websiteTags = new dbKursTagConnect().getTags(kurs.getId());
                     for (int i = 0; i < websiteTags.size(); i++) {
                         //website TAGs werden gespeichert
@@ -219,15 +218,16 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                         websiteTag.vorkommen++;
                         websiteTag.save();
                     }
-                }
-                kurs.save();
+                }*/
+                save(kurs);
             }
+
             //alle Mündlichen Kurse werden gespeichert
             Log.d(TAG, kursauswahlAdapter.getMündlichList().size() + "  SIZE MÜNDLICH");
             for (dbKurs kurs : kursauswahlAdapter.getMündlichList()) {
-                kurs.aktiv = true;
-                kurs.schriftlich = false;
-                if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
+                kurs.setAktiv(true);
+                kurs.setSchriftlich(false);
+               /* if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
                     List<dbWebsiteTag> websiteTags = new dbKursTagConnect().getTags(kurs.getId());
                     for (int i = 0; i < websiteTags.size(); i++) {
                         //website TAGs werden gespeichert
@@ -236,19 +236,33 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                         Log.d(TAG, websiteTag.websitetag + " kommt: " + websiteTag.vorkommen + " vor");
                         websiteTag.save();
                     }
-                }
+                }*/
 
-                kurs.save();
+                save(kurs);
             }
             alleKurse.clear();
 
-            dbUser user = new dbUser().getUser();
-            user.validData = true;
-            user.save();
+            dbUser user = realmQueries.getUser();
+            user.setValidData(true);
+            save(user);
 
             i++;
 
         }
+    }
+
+    private void save(final RealmObject object){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
     }
 
     /**
@@ -291,7 +305,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                 // überprüft ob das Fach ein GK ist
                 // bei LK wird es automatisch auf schriftlich gesetzt
                 // bei PK und AG wird es automatisch auf mündlich gesetzt
-                if (kurseList.get(position).kurs.kursart.gloablId == 1) {
+                if (kurseList.get(position).kurs.getKursart().getGloablId() == 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Kurswahl")
                             .setCancelable(false)
@@ -308,9 +322,9 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                             });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                } else if (kurseList.get(position).kurs.kursart.gloablId == 0) {
+                } else if (kurseList.get(position).kurs.getKursart().getGloablId() == 0) {
                     kursauswahlAdapter.switchMS(position, true);
-                } else if (kurseList.get(position).kurs.kursart.gloablId > 1) {
+                } else if (kurseList.get(position).kurs.getKursart().getGloablId() > 1) {
                     kursauswahlAdapter.switchMS(position, false);
                 }
             } else {
@@ -346,7 +360,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                 // überprüft ob das Fach ein GK ist
                 // bei LK wird es automatisch auf schriftlich gesetzt
                 // bei PK und AG wird es automatisch auf mündlich gesetzt
-                if (kurseList.get(position).kurs.kursart.gloablId == 1) {
+                if (kurseList.get(position).kurs.getKursart().getGloablId()== 1) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Kurswahl")
                             .setCancelable(false)
@@ -363,9 +377,9 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                             });
                     AlertDialog dialog = builder.create();
                     dialog.show();
-                } else if (kurseList.get(position).kurs.kursart.gloablId == 0) {
+                } else if (kurseList.get(position).kurs.getKursart().getGloablId()== 0) {
                     kursauswahlAdapter.switchMS(position, true);
-                } else if (kurseList.get(position).kurs.kursart.gloablId > 1) {
+                } else if (kurseList.get(position).kurs.getKursart().getGloablId() > 1) {
                     kursauswahlAdapter.switchMS(position, false);
                 }
             } else {
@@ -392,7 +406,7 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
 
         // Liste wird in die einzelnen Kursarten unterteilt
         for (int i = 0; i < kursList.size(); i++) {
-            switch (kursList.get(i).getKursart().gloablId) {
+            switch (kursList.get(i).getKursart().getGloablId()) {
                 case 0:
                     lkList.add(kursList.get(i));
                     break;
@@ -414,12 +428,12 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
          */
 
 
-        if (new dbUser().getUser().stufe.equals("Q2") || new dbUser().getUser().stufe.equals("Q1")) {
+        if (realmQueries.getUser().getGrade_string().equals("Q2") || realmQueries.getUser().getGrade_string().equals("Q1")) {
             if (lkList.size() == 2) {
-                List<dbSchulstunde> stundenList = lkList.get(0).getSchulStunden(lkList.get(0).getId());
-                List<dbSchulstunde> stundenList2 = lkList.get(1).getSchulStunden(lkList.get(1).getId());
+                List<dbSchulstunde> stundenList = realmQueries.getStunden(lkList.get(0));
+                List<dbSchulstunde> stundenList2 = realmQueries.getStunden(lkList.get(1));
 
-                if (stundenList.get(0).wochentag == stundenList2.get(0).wochentag && stundenList.get(0).beginnzeit == stundenList2.get(0).beginnzeit) {
+                if (stundenList.get(0).getDay() == stundenList2.get(0).getDay() && stundenList.get(0).getLesson() == stundenList2.get(0).getLesson()) {
                     Log.d("CHECK", "LKs funktionieren nicht zusammen");
                     return false;
                 }
@@ -438,15 +452,18 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
          *      true zurüclgegeben / wenn nicht dann false
          */
         for (int i = 0; i < gkList.size() - 1; i++) {
-            stundenList = gkList.get(i).getSchulStunden(gkList.get(i).getId());
+            stundenList = realmQueries.getStunden(gkList.get(i));
             dbSchulstunde schulstunde = stundenList.get(0);
 
             for (int k = i + 1; k < gkList.size(); k++) {
-                stundenList2 = gkList.get(k).getSchulStunden(gkList.get(k).getId());
+                stundenList2 =realmQueries.getStunden(gkList.get(k));
                 dbSchulstunde schulstunde2 = stundenList2.get(0);
 
-                if (schulstunde2.wochentag == schulstunde.wochentag && schulstunde.beginnzeit == schulstunde2.beginnzeit) {
-                    Log.d("CHECK", "Kurse gheen nicht zusammen " + schulstunde.kursID + " " + schulstunde2.kursID + " " + schulstunde2.wochentag + " " + schulstunde.wochentag + " " + schulstunde.beginnzeit + " " + schulstunde2.beginnzeit);
+                if (schulstunde2.getDay() == schulstunde.getDay() && schulstunde.getLesson() == schulstunde2.getLesson()) {
+                    Log.d("CHECK", "Kurse gheen nicht zusammen "
+                            + schulstunde.getKursID() + " " + schulstunde2.getKursID() + " "
+                            + schulstunde2.getDay() + " " + schulstunde.getDay() + " "
+                            + schulstunde.getLesson() + " " + schulstunde2.getLesson());
                     return false;
                 }
             }

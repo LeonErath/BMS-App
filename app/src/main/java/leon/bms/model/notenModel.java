@@ -2,8 +2,9 @@ package leon.bms.model;
 
 import java.util.List;
 
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbNote;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbNote;
+
 
 /**
  * Created by Leon E on 24.05.2016.

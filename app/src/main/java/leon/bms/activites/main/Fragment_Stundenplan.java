@@ -31,9 +31,10 @@ import leon.bms.R;
 import leon.bms.activites.kurs.KursActivity;
 import leon.bms.adapters.StundenplanAdapter;
 import leon.bms.controller.VertretungsplanController;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbSchulstunde;
 import leon.bms.model.stunden;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbSchulstunde;
 
 /**
  * Created by Leon E on 18.11.2015.
@@ -58,6 +59,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     List<stunden> mittwoch = new ArrayList<>();
     List<stunden> freitag = new ArrayList<>();
     List<stunden> donnerstag = new ArrayList<>();
+    RealmQueries realmQueries;
 
     ToggleSwitch toggleSwitch;
     TextView textViewDatum, textViewVertretungDatum, textViewStunden;
@@ -92,7 +94,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        realmQueries = new RealmQueries(getActivity());
         recyclerView = (UltimateRecyclerView) view.findViewById(R.id.recyclerview);
         toggleSwitch = (ToggleSwitch) view.findViewById(R.id.toggleButton);
 
@@ -276,30 +278,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     }
 
     public List<stunden> setUpStundenplan(int day) {
-
-
-        // zuerst werden alle GK und LK Kurse in eine Liste gespeichert
-        List<dbKurs> kursList = new dbKurs().getAllActiveKurse();
-
-        // alle Schulstunden der Kurse werden in die Liste dbSchulstundeList geladen
-        List<dbSchulstunde> dbSchulstundeList = new ArrayList<>();
-        for (dbKurs kurs : kursList) {
-            dbSchulstundeList.addAll(kurs.getSchulStunden(kurs.getId()));
-
-        }
-
-        // Wochentagslisten werden initialisiert
-        List<dbSchulstunde> stundenplanList = new ArrayList<>();
-
-        // jeder Schulstunde wird in nachdem Wochentag in die jeweilige Wochentagsliste sortiert
-        for (dbSchulstunde schulstunde : dbSchulstundeList) {
-            if (schulstunde.wochentag == day + 1) {
-                stundenplanList.add(schulstunde);
-            }
-
-        }
-        stundenplanList = sortListASC(stundenplanList);
-        return convertSchulstundenZuStundeListe(stundenplanList);
+        return convertSchulstundenZuStundeListe(realmQueries.getAktiveStundenWithDay(day));
     }
 
     private void aktualisiereDatum() {
@@ -312,18 +291,6 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
 
     }
 
-    /**
-     * @sortListASC sortiert die Übergegebene Schulstunde-Liste nach den Stunden
-     */
-    public List<dbSchulstunde> sortListASC(List<dbSchulstunde> list) {
-        Collections.sort(list, new Comparator<dbSchulstunde>() {
-            @Override
-            public int compare(dbSchulstunde lhs, dbSchulstunde rhs) {
-                return lhs.getBeginnzeit().compareTo(rhs.getBeginnzeit());
-            }
-        });
-        return list;
-    }
 
     /**
      * @convertSchulstundenZuStundeListe guckt wann die letzte Stunden ist und geht dann durch
@@ -333,7 +300,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe) {
         // letzteStunde ist die letzte Schulstunde der WochentagListe
         if (wochentagListe.size() > 0) {
-            int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).beginnzeit;
+            int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).getLesson();
             // stundenplanListe ist nacher die fertige Liste mit alle Schulstunden und Freistunden
             List<stunden> convertedList = new ArrayList<>();
             // geht alle Stunden von 1 bis zu letzten Stunde durch
@@ -343,7 +310,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
                 int l = 0;
                 // überprüft ob die Stunden vorhanden ist
                 for (int k = 0; k < wochentagListe.size(); k++) {
-                    if (wochentagListe.get(k).getBeginnzeit() == i) {
+                    if (wochentagListe.get(k).getLesson() == i) {
                         // wenn die wochentagsListe die Zeit i beinhaltet wir l addiert;
                         l = k + 1;
                     }
@@ -354,9 +321,9 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
                     dbSchulstunde schulstunde = wochentagListe.get(l - 1);
                     stunden.setActive(true);
                     stunden.setSchulstunde(schulstunde);
-                    if (schulstunde.getVertretung(schulstunde.getId()) != null) {
-                        stunden.setVertretung(schulstunde.getVertretung(schulstunde.getId()));
-                        Log.d("Vertreung", i + " Position + stunde:" + schulstunde.kurs.name);
+                    if (realmQueries.getVertretungFromStunde(schulstunde) != null) {
+                        stunden.setVertretung(realmQueries.getVertretungFromStunde(schulstunde));
+                        Log.d("Vertreung", i + " Position + stunde:" + schulstunde.getKurs().getName());
                     } else {
                         stunden.vertretung = null;
                     }
@@ -384,7 +351,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
         stunden stunde = stundenplanAdapter.getStundenplan().get(position);
         if (stunde.active == true) {
             Intent intent = new Intent(getActivity(), KursActivity.class);
-            intent.putExtra("id", stunde.getSchulstunde().kurs.getId());
+            intent.putExtra("id", stunde.getSchulstunde().getKurs().getInt_id());
             startActivity(intent);
         }
 

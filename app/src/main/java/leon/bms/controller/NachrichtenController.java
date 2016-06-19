@@ -26,9 +26,9 @@ import java.util.List;
 
 import leon.bms.Constants;
 import leon.bms.atOnline;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbUser;
 import leon.bms.model.nachrichten;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKurs;
 
 ;
 
@@ -40,10 +40,12 @@ public class NachrichtenController {
     OnUpdateListener listener;
 
     Context mainContext;
+    RealmQueries realmQueries;
 
 
     public NachrichtenController(Context context) {
         this.mainContext = context;
+        realmQueries = new RealmQueries(context);
     }
 
     public void checkUpdate() {
@@ -55,13 +57,13 @@ public class NachrichtenController {
         SimpleDateFormat sdf2 = new SimpleDateFormat("ddMMyyyy");
         String datum = sdf2.format(calendar.getTime());
         String course_ids = "";
-        List<dbKurs> alleKurse = new dbKurs().getAllActiveKurse();
+        List<dbKurs> alleKurse = realmQueries.getAktiveKurse();
         for (dbKurs k : alleKurse) {
-            course_ids += k.serverid + ",";
+            course_ids += k.getInt_id() + ",";
         }
 
 
-        String params ="username="+new LogInController(mainContext).getUsername()+"&password="+new LogInController(mainContext).getPass()+"&last_refresh=" + datum + "&course_ids=" + course_ids; //TODO richtige Paramerter hiinzufügen
+        String params ="username="+realmQueries.getUser().getBenutzername()+"&password="+new LogInController(mainContext).getPass()+"&last_refresh=" + datum + "&course_ids=" + course_ids; //TODO richtige Paramerter hiinzufügen
         Log.d("VERTREUNGSPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);

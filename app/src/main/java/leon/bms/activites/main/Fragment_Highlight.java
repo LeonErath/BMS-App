@@ -30,14 +30,14 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import leon.bms.activites.nachrichten.NachrichtenActivity;
 import leon.bms.R;
+import leon.bms.activites.nachrichten.NachrichtenActivity;
 import leon.bms.adapters.NachrichtenAdapter;
 import leon.bms.controller.NachrichtenController;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbSchulstunde;
 import leon.bms.model.nachrichten;
 import leon.bms.model.stunden;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbSchulstunde;
 
 
 /**
@@ -54,6 +54,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     NachrichtenAdapter nachrichtenAdapter;
     ImageView imageViewHeader;
     NachrichtenController nachrichtenController;
+    RealmQueries realmQueries;
 
     private static String TAG = Fragment_Highlight.class.getSimpleName();
     // wichtig für das aktualiseren der Anzeige
@@ -72,7 +73,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        realmQueries = new RealmQueries(getActivity());
 
         //initial views
         textViewLehrer = (TextView) view.findViewById(R.id.textViewLehrer);
@@ -81,11 +82,11 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         recyclerView = (UltimateRecyclerView) view.findViewById(R.id.recycler_view);
         cardView = (CardView) view.findViewById(R.id.cardView);
         imageViewHeader = (ImageView) view.findViewById(R.id.imageViewHeader);
-        final ViewPager vp= (ViewPager) getActivity().findViewById(R.id.viewpager);
+        final ViewPager vp = (ViewPager) getActivity().findViewById(R.id.viewpager);
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              vp.setCurrentItem(1);
+                vp.setCurrentItem(1);
             }
         });
 
@@ -98,7 +99,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         nachrichtenController.setUpdateListener(new NachrichtenController.OnUpdateListener() {
             @Override
             public void onSuccesss(List<nachrichten> nachrichtenList) {
-                if (nachrichtenList != null && nachrichtenList.size()>0){
+                if (nachrichtenList != null && nachrichtenList.size() > 0) {
                     nachrichtenAdapter.changeDataSet(nachrichtenList);
                 }
             }
@@ -212,17 +213,10 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
             // wenn die aktuelleStunde ein Schulstunde ist
             if (aktuelleStunde > 0 && aktuelleStunde < 10) {
                 // holt sich alle Kurse
-                List<dbKurs> aktiveKurse = new dbKurs().getAllActiveKurse();
+                List<dbSchulstunde> schulstundeList = realmQueries.getStundenFromDay(week);
 
-                List<dbSchulstunde> schulstundeList = new ArrayList<>();
-                // holt sich von den Kursen die entsprechenden schulstunde für die Woche
-                for (dbKurs kurs : aktiveKurse) {
-                    if (kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week) != null) {
-                        schulstundeList.addAll(kurs.getSchulstundeWithWeekAndKurs(kurs.getId(), week));
-                    }
-                }
                 // wenn an dem Tag Unterricht ist also Schulstunden vorhanden sind
-                if (schulstundeList.size() > 0) {
+                if (schulstundeList != null && schulstundeList.size() > 0) {
                     List<stunden> stundenList = convertSchulstundenZuStundeListe(sortListASC(schulstundeList));
                     int letzteStunde = stundenList.get(stundenList.size() - 1).stunde;
                     for (int i = 0; i < stundenList.size(); i++) {
@@ -231,9 +225,9 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                             if (aktuelleStunde != letzteStunde) {
                                 if (stunden.active == true) {
                                     // wenn die aktuelle Stunde aktiv ist also keine Freistunde
-                                    textViewStunde.setText(stunden.getSchulstunde().kurs.name);
-                                    textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
-                                    textViewLehrer.setText(stunden.getSchulstunde().lehrer.titel + " " + stunden.getSchulstunde().lehrer.name);
+                                    textViewStunde.setText(stunden.getSchulstunde().getKurs().getName());
+                                    textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
+                                    textViewLehrer.setText(stunden.getSchulstunde().getLehrer().getTitle() + " " + stunden.getSchulstunde().getLehrer().getLast_name());
                                 } else {
                                     // sonst Freistunde
                                     textViewStunde.setText("Freistunde");
@@ -243,9 +237,9 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
 
                             } else {
                                 // wenn die aktuelle Stunde die letze Stunde ist
-                                textViewStunde.setText(stunden.getSchulstunde().kurs.name);
-                                textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
-                                textViewLehrer.setText(stunden.getSchulstunde().lehrer.titel + " " + stunden.getSchulstunde().lehrer.name);
+                                textViewStunde.setText(stunden.getSchulstunde().getKurs().getName());
+                                textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
+                                textViewLehrer.setText(stunden.getSchulstunde().getLehrer().getTitle() + " " + stunden.getSchulstunde().getLehrer().getLast_name());
 
 
                             }
@@ -289,7 +283,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
         Collections.sort(list, new Comparator<dbSchulstunde>() {
             @Override
             public int compare(dbSchulstunde lhs, dbSchulstunde rhs) {
-                return lhs.getBeginnzeit().compareTo(rhs.getBeginnzeit());
+                return lhs.getLesson().compareTo(rhs.getLesson());
             }
         });
         return list;
@@ -304,7 +298,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
     public List<stunden> convertSchulstundenZuStundeListe(List<dbSchulstunde> wochentagListe) {
         // letzteStunde ist die letzte Schulstunde der WochentagListe
         if (wochentagListe.size() > 0) {
-            int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).beginnzeit;
+            int letzteStunde = wochentagListe.get(wochentagListe.size() - 1).getLesson();
             // stundenplanListe ist nacher die fertige Liste mit alle Schulstunden und Freistunden
             List<stunden> stundenplanListe = new ArrayList<>();
             // geht alle Stunden von 1 bis zu letzten Stunde durch
@@ -314,7 +308,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                 int l = 0;
                 // überprüft ob die Stunden vorhanden ist
                 for (int k = 0; k < wochentagListe.size(); k++) {
-                    if (wochentagListe.get(k).getBeginnzeit() == i) {
+                    if (wochentagListe.get(k).getLesson() == i) {
                         // wenn die wochentagsListe die Zeit i beinhaltet wir l addiert;
                         l = k + 1;
                     }
@@ -326,7 +320,7 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
                     dbSchulstunde schulstunde = wochentagListe.get(l - 1);
                     stunden.setActive(true);
                     stunden.setSchulstunde(schulstunde);
-                    stunden.setStunde(schulstunde.beginnzeit);
+                    stunden.setStunde(schulstunde.getLesson());
                 } else {
                     Log.d("MAIN", "freistunde erstellt");
                     stunden.setStunde(i);
@@ -342,9 +336,6 @@ public class Fragment_Highlight extends Fragment implements NachrichtenAdapter.V
             return new ArrayList<>();
         }
     }
-
-
-
 
 
     @Override

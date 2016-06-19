@@ -15,17 +15,21 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
+import io.realm.RealmResults;
 import leon.bms.Constants;
 import leon.bms.atOnline;
-import leon.bms.database.dbKlausur;
-import leon.bms.database.dbKlausuraufsicht;
-import leon.bms.database.dbKlausurinhalt;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbLehrer;
-import leon.bms.database.dbNote;
-import leon.bms.database.dbRaum;
-import leon.bms.database.dbUser;
 import leon.bms.model.klausurModel;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKlausur;
+import leon.bms.realm.dbKlausuraufsicht;
+import leon.bms.realm.dbKlausurinhalt;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbLehrer;
+import leon.bms.realm.dbNote;
+import leon.bms.realm.dbRaum;
 
 /**
  * Created by Leon E on 22.05.2016.
@@ -34,6 +38,7 @@ public class KlausurController {
     OnUpdateListener listener;
     Context mainContext;
     List<dbKurs> kursList;
+    RealmQueries realmQueries;
     Handler handler = new Handler() {
 
         @Override
@@ -42,7 +47,7 @@ public class KlausurController {
             Boolean success = bundle.getBoolean("myKey");
             if (success) {
                 listener.onSuccesss();
-            }else {
+            } else {
                 listener.onFailure();
             }
         }
@@ -50,22 +55,23 @@ public class KlausurController {
 
     public KlausurController(Context mainContext) {
         this.mainContext = mainContext;
+        realmQueries = new RealmQueries(mainContext);
     }
 
     public void checkUpdate() {
         // WICHTIGE Url für die Anfrage an den Server
         String Url = Constants.EXAM_URL;
-        kursList = new dbKurs().getAllActiveKurse();
+        kursList = realmQueries.getSchriftlicheKurse();
         List<Integer> kursidList = new ArrayList<>();
-        for (dbKurs kurs: kursList){
-            kursidList.add(kurs.serverid);
+        for (dbKurs kurs : kursList) {
+            kursidList.add(kurs.getInt_id());
         }
-        String kurse="";
-        for (Integer id: kursidList){
-            kurse+=id+",";
+        String kurse = "";
+        for (Integer id : kursidList) {
+            kurse += id + ",";
         }
 
-        String params = "username="+new LogInController(mainContext).getUsername() +"&password="+new LogInController(mainContext).getPass()+"&course_ids="+kurse+"&last_refresh="; //TODO richtige Paramerter hiinzufügen
+        final String params = "username=" + realmQueries.getUser().getBenutzername() + "&password=" + new LogInController(mainContext).getPass() + "&course_ids=" + kurse + "&last_refresh="; //TODO richtige Paramerter hiinzufügen
         Log.d("params", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);
@@ -73,11 +79,22 @@ public class KlausurController {
 
             @Override
             public void onSuccesss(String result2) {
-                Log.d("checkUpdate",result2);
-                dbNote.deleteAll(dbNote.class);
-                dbKlausur.deleteAll(dbKlausur.class);
-                dbKlausuraufsicht.deleteAll(dbKlausur.class);
-                dbKlausurinhalt.deleteAll(dbKlausur.class);
+                Log.d("checkUpdate", result2);
+
+                RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+                Realm.setDefaultConfiguration(realmConfig);
+                // Get a Realm instance for this thread
+                final Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm bgrealm) {
+                        bgrealm.delete(dbNote.class);
+                        bgrealm.delete(dbKlausur.class);
+                        bgrealm.delete(dbKlausuraufsicht.class);
+                        bgrealm.delete(dbKlausurinhalt.class);
+                    }
+                });
+
                 parseData(result2);
             }
 
@@ -89,107 +106,125 @@ public class KlausurController {
         atOnline2.execute();
     }
 
-    private void parseData(final String result2) {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                if (kursList != null) {
-                    for (dbKurs kurs : kursList) {
-                        try {
-                            JSONObject jsonResult = new JSONObject(result2);
-                            if (jsonResult.has(String.valueOf(kurs.serverid))){
-                                JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.serverid));
-                                dbKlausur klausur = new dbKlausur();
-                                klausur.name = jsonKlausur.getString("name");
-                                klausur.serverid = jsonKlausur.getInt("exam_id");
-                                klausur.datum = jsonKlausur.getString("date");
-                                klausur.beginn = jsonKlausur.getString("start");
-                                klausur.ende = jsonKlausur.getString("end");
-                                klausur.notizen = jsonKlausur.getString("note");
-                                int roomid = jsonKlausur.getInt("room_id");
-                                if (new dbRaum().getRaumWithId(roomid) != null) {
-                                    dbRaum raum = new dbRaum().getRaumWithId(roomid);
-                                    klausur.raum = raum;
-                                } else {
-                                    Log.d("parseData", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
-                                }
-                                switch (jsonKlausur.getInt("rest_course_eva")){
-                                    case 0:klausur.restkursFrei = true;break;
-                                    case 1:klausur.restkursFrei = false;break;
-                                    default:break;
-                                }
-
-                                klausur.kurs = kurs;
-                                klausur.save();
-                                JSONArray contentArray = jsonKlausur.getJSONArray("content");
-                                for (int i=0;i<contentArray.length();i++){
-                                    JSONObject jsonContent = contentArray.getJSONObject(i);
-                                    dbKlausurinhalt inhalt = new dbKlausurinhalt();
-                                    inhalt.inhaltIndex = jsonContent.getInt("subject_material_number");
-                                    inhalt.beschreibung = jsonContent.getString("material_description");
-                                    inhalt.erledigt = false;
-                                    inhalt.klausur = klausur;
-                                    inhalt.save();
-                                }
-                                JSONArray ausichtArray = jsonKlausur.getJSONArray("supervisors");
-                                for (int i=0;i<ausichtArray.length();i++){
-                                    JSONObject jsonAufsicht = ausichtArray.getJSONObject(i);
-                                    dbKlausuraufsicht aufsicht = new dbKlausuraufsicht();
-                                    aufsicht.start = jsonAufsicht.getString("start");
-                                    aufsicht.end = jsonAufsicht.getString("end");
-                                    aufsicht.klausur = klausur;
-                                    int lehrerid = jsonAufsicht.getInt("teacher_id");
-                                    if (new dbLehrer().getLehereWithId(lehrerid) != null) {
-                                        dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
-                                        aufsicht.lehrer = lehrer;
-                                    } else {
-                                        Log.d("parseData", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
-                                    }
-                                    aufsicht.save();
-                                }
-
-                            }
-
-                            Message msg = handler.obtainMessage();
-                            boolean sucess = true;
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean("myKey", sucess);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Message msg = handler.obtainMessage();
-                            boolean sucess = false;
-                            Bundle bundle = new Bundle();
-                            bundle.putBoolean("myKey", sucess);
-                            msg.setData(bundle);
-                            handler.sendMessage(msg);
-                        }
-
-                    }
-                }
-
+    private void save(final RealmObject object) {
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl", "Saved Object");
             }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+        });
     }
 
 
-    public List<klausurModel> getAllKlausuren(){
+    private void parseData(final String result2) {
+        if (kursList != null) {
+            // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+            Realm.setDefaultConfiguration(realmConfig);
+            // Get a Realm instance for this thread
+            final Realm realm = Realm.getDefaultInstance();
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm bgRealm) {
+                    for (dbKurs kurs : kursList) {
+                        try {
+                            JSONObject jsonResult = new JSONObject(result2);
+                            if (jsonResult.has(String.valueOf(kurs.getInt_id()))) {
+                                JSONObject jsonKlausur = jsonResult.getJSONObject(String.valueOf(kurs.getInt_id()));
+                                dbKlausur klausur = new dbKlausur();
+
+                                klausur.setName(jsonKlausur.getString("name"));
+                                klausur.setDatum(jsonKlausur.getString("date"));
+                                klausur.setBeginn(jsonKlausur.getString("start"));
+                                klausur.setServerid(jsonKlausur.getInt("exam_id"));
+                                klausur.setNotizen(jsonKlausur.getString("note"));
+
+                                int roomid = jsonKlausur.getInt("room_id");
+                                RealmResults<dbRaum> resultRaum = bgRealm.where(leon.bms.realm.dbRaum.class).equalTo("id", roomid).findAll();
+                                if (resultRaum.size() == 1) {
+                                    klausur.setRaum(resultRaum.get(0));
+                                } else {
+                                    Log.d("erstelleStundenplan", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
+                                }
+                                if (jsonKlausur.getInt("rest_course_eva") == 0) {
+                                    klausur.setRestkursFrei(true);
+                                } else {
+                                    klausur.setRestkursFrei(false);
+                                }
+
+                                klausur.setKurs(kurs);
+                                bgRealm.copyToRealmOrUpdate(klausur);
+
+                                JSONArray contentArray = jsonKlausur.getJSONArray("content");
+                                for (int i = 0; i < contentArray.length(); i++) {
+                                    JSONObject jsonContent = contentArray.getJSONObject(i);
+                                    dbKlausurinhalt inhalt = new dbKlausurinhalt();
+                                    inhalt.setBeschreibung(jsonContent.getString("material_description"));
+                                    inhalt.setExam_id(jsonContent.getInt("subject_material_number"));
+                                    inhalt.setErledigt(false);
+                                    inhalt.setKlausur(klausur);
+                                    bgRealm.copyToRealmOrUpdate(inhalt);
+                                }
+                                JSONArray ausichtArray = jsonKlausur.getJSONArray("supervisors");
+                                for (int i = 0; i < ausichtArray.length(); i++) {
+                                    JSONObject jsonAufsicht = ausichtArray.getJSONObject(i);
+                                    dbKlausuraufsicht aufsicht = new dbKlausuraufsicht();
+                                    aufsicht.setStart(jsonAufsicht.getString("start"));
+                                    aufsicht.setEnd(jsonAufsicht.getString("end"));
+                                    aufsicht.setKlausur(klausur);
+
+                                    int lehrerid = jsonAufsicht.getInt("teacher_id");
+                                    RealmResults<dbLehrer> result2 = bgRealm.where(dbLehrer.class).equalTo("id", lehrerid).findAll();
+                                    if (result2.size() == 1) {
+                                        aufsicht.setLehrer(result2.get(0));
+                                    } else {
+                                        Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                    }
+                                    bgRealm.copyToRealm(aufsicht);
+                                }
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }, new Realm.Transaction.OnSuccess() {
+                @Override
+                public void onSuccess() {
+                    // Transaction was a success.
+                }
+            }, new Realm.Transaction.OnError() {
+                @Override
+                public void onError(Throwable error) {
+                    // Transaction failed and was automatically canceled.
+                }
+            });
+
+
+        }
+    }
+
+
+    public List<klausurModel> getAllKlausuren() {
         List<klausurModel> convertedKlausurlist = new ArrayList<>();
-        if (new dbKlausur().getAllKLausur() != null){
-            List<dbKlausur> klausurlist = new dbKlausur().getAllKLausur();
+        if (realmQueries.getKlausuren() != null) {
+            List<dbKlausur> klausurlist =realmQueries.getKlausuren();
             List<klausurModel> klausurModelList = new ArrayList<>();
             List<klausurModel> klausurModelListinPast = new ArrayList<>();
-            for (dbKlausur klausurObject:klausurlist){
+            for (dbKlausur klausurObject : klausurlist) {
                 klausurModel klausurModel = new klausurModel();
-                klausurModel.raum = klausurObject.raum;
+                klausurModel.raum = klausurObject.getRaum();
                 klausurModel.klausur = klausurObject;
-                if (klausurModel.mathDate() < 0){
+                if (klausurModel.mathDate() < 0) {
                     klausurModel.inThePast = true;
                     klausurModelListinPast.add(klausurModel);
-                }else {
+                } else {
                     klausurModelList.add(klausurModel);
                 }
 
@@ -206,7 +241,7 @@ public class KlausurController {
     private List<klausurModel> sortListDate(List<klausurModel> klausurModelList) {
         Collections.sort(klausurModelList, new Comparator<klausurModel>() {
             public int compare(klausurModel kl1, klausurModel kl2) {
-                return kl1.getDate().compareTo( kl2.getDate());
+                return kl1.getDate().compareTo(kl2.getDate());
             }
         });
         Collections.reverse(klausurModelList);
@@ -216,6 +251,7 @@ public class KlausurController {
 
     public interface OnUpdateListener {
         public void onSuccesss();
+
         public void onFailure();
     }
 

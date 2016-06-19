@@ -5,21 +5,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import leon.bms.R;
-import leon.bms.database.dbAntworten;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbFach;
-import leon.bms.database.dbFragen;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbKursTagConnect;
-import leon.bms.database.dbKursart;
-import leon.bms.database.dbLehrer;
-import leon.bms.database.dbMediaFile;
-import leon.bms.database.dbRaum;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbThemenbereich;
-import leon.bms.database.dbUser;
-import leon.bms.database.dbWebsiteTag;
+
 
 /**
  * @LogInActivity zeigt das Fragment_Login und wird immer beim Start geladen.
@@ -33,7 +22,7 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //deleteDB();
+        deleteDB();
         setContentView(R.layout.activity_log_in);
 
     }
@@ -43,20 +32,20 @@ public class LogInActivity extends AppCompatActivity {
      */
     public void deleteDB() {
         Log.d(LogInActivity.class.getSimpleName(), "Datenbank wurde zurückgesetzt");
-        dbUser.deleteAll(dbUser.class);
-        dbAufgabe.deleteAll(dbAufgabe.class);
-        dbKurs.deleteAll(dbKurs.class);
-        dbRaum.deleteAll(dbRaum.class);
-        dbFach.deleteAll(dbFach.class);
-        dbKursart.deleteAll(dbKursart.class);
-        dbSchulstunde.deleteAll(dbSchulstunde.class);
-        dbMediaFile.deleteAll(dbMediaFile.class);
-        dbLehrer.deleteAll(dbLehrer.class);
-        dbWebsiteTag.deleteAll(dbWebsiteTag.class);
-        dbFragen.deleteAll(dbFragen.class);
-        dbThemenbereich.deleteAll(dbThemenbereich.class);
-        dbAntworten.deleteAll(dbAntworten.class);
-        dbKursTagConnect.deleteAll(dbKursTagConnect.class);
+
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        RealmConfiguration config = new RealmConfiguration
+                .Builder(this)
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
     }
 
 

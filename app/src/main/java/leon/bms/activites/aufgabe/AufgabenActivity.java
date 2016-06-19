@@ -62,14 +62,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.AlarmReciever;
 import leon.bms.R;
 import leon.bms.activites.main.MainActivity;
 import leon.bms.adapters.PhotoAdapter;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbFach;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbMediaFile;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbAufgabe;
+import leon.bms.realm.dbFach;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbMediaFile;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -124,6 +128,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
     File photoFile = null;
     View mView;
     MaryPopup popup;
+    RealmQueries realmQueries;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -244,13 +249,15 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
         chooseDate();
 
+        realmQueries = new RealmQueries(this);
+
         // Liste mit alle ausgewählten Kursen wird rausgesucht
-        List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
+        List<dbKurs> allActiveKurse = realmQueries.getAktiveKurse();
         // Spinner Drop down elements
         final List<String> fachlist = new ArrayList<String>();
         for (dbKurs kurs : allActiveKurse) {
             // der Spinner beinhaltet nur die Namen der Kurse
-            fachlist.add(kurs.fachnew.name);
+            fachlist.add(kurs.getFach().getDescription());
         }
         // Spinner wird mit der Liste konfiguriert
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, fachlist);
@@ -276,7 +283,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            Long id = intent.getLongExtra("id", 0);
+            int id = intent.getIntExtra("id", 0);
             reloadData(id);
         } else {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -356,42 +363,42 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
         }
     }
 
-    private void reloadData(Long id) {
+    private void reloadData(int id) {
         // Liste mit alle ausgewählten Kursen wird rausgesucht
-        List<dbKurs> allActiveKurse = new dbKurs().getAllActiveKurse();
-        aufgabe = new dbAufgabe().getAufgabe(id);
+        List<dbKurs> allActiveKurse = realmQueries.getAktiveKurse();
+        aufgabe = realmQueries.getAufgabe(id);
         // check if aufgabe got load successfully
         if (aufgabe != null) {
 
-            editTextBeschreibung.setText(aufgabe.beschreibung);
-            editTextNotizen.setText(aufgabe.notizen);
+            editTextBeschreibung.setText(aufgabe.getBeschreibung());
+            editTextNotizen.setText(aufgabe.getNotizen());
             // setUp the kurs for the Aufgabe
             List<String> fachList = new ArrayList<>();
             for (dbKurs kurs : allActiveKurse) {
-                fachList.add(kurs.fachnew.name);
+                fachList.add(kurs.getFach().getDescription());
             }
-            int position = fachList.indexOf(aufgabe.kurs.fachnew);
+            int position = fachList.indexOf(aufgabe.getKurs().getFach());
             spinner.setSelection(position);
 
             // setUp Time to the DatePicker
             SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy.M.d");
             try {
-                calendar2.setTime(sdf2.parse(aufgabe.zuletztAktualisiert));// all done
+                calendar2.setTime(sdf2.parse(aufgabe.getZuletztAktualisiert()));// all done
             } catch (ParseException e) {
                 e.printStackTrace();
             }
             dateAnzeige = DateUtils.formatDateTime(AufgabenActivity.this, calendar2.getTimeInMillis(), DateUtils.FORMAT_SHOW_DATE);
             textViewDatePicker.setText(dateAnzeige);
-            dateString = aufgabe.zuletztAktualisiert;
+            dateString = aufgabe.getZuletztAktualisiert();
 
             /** loads the images and applys them to the adapter
              **/
-            if (aufgabe.getMediaFile(aufgabe.getId()).size() != 0) {
+            if (realmQueries.getMediaFilesFromAufgabe(aufgabe) != null) {
                 Log.d("IMAGE", "Bild wird geladen");
-                List<dbMediaFile> dbMediaFileList = new dbAufgabe().getMediaFile(aufgabe.getId());
+                List<dbMediaFile> dbMediaFileList = realmQueries.getMediaFilesFromAufgabe(aufgabe);
                 for (int i = 0; i < dbMediaFileList.size(); i++) {
                     dbMediaFile dbMediaFile = dbMediaFileList.get(i);
-                    photoAdapter.addPhoto(dbMediaFile.path);
+                    photoAdapter.addPhoto(dbMediaFile.getPath());
                 }
 
 
@@ -700,28 +707,38 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             aufgabe = new dbAufgabe();
         }
         // Daten werden eingetragen
-        aufgabe.abgabeDatum = fromCalendarToString(calendar2);
-        aufgabe.erstelltAm = fromCalendarToString(Calendar.getInstance());
+        aufgabe.setAbgabeDatum(fromCalendarToString(calendar2));
+        aufgabe.setErstelltAm( fromCalendarToString(Calendar.getInstance()));
         Log.d(TAG, dateString + "");
-        aufgabe.zuletztAktualisiert = dateString;
-        aufgabe.erledigt = false;
-        dbFach fach = new dbFach().getFachWithName(selectedItem);
-        aufgabe.kurs = fach.getKursWithFachId(fach.getId());
-        aufgabe.beschreibung = editTextBeschreibung.getText().toString();
+        aufgabe.setZuletztAktualisiert(dateAnzeige);
+        aufgabe.setErledigt(false);
+        dbFach fach = realmQueries.getFachWithDescription(selectedItem);
+        aufgabe.setKurs(realmQueries.getKursFromFach(fach));
+        aufgabe.setBeschreibung(editTextBeschreibung.getText().toString());
         if (editTextNotizen.getText().toString() != "") {
-            aufgabe.notizen = editTextNotizen.getText().toString();
+            aufgabe.setNotizen(editTextNotizen.getText().toString());
         }
 
 
         // Aufgabe wird in der Datenbank gespeichert
         if (checkAufgabe(aufgabe)) {
             Log.d(TAG, "Aufgabe wurde gespeichert!");
-            aufgabe.save();
+            save(aufgabe);
 
-            if (aufgabe.getMediaFile(aufgabe.getId()).size() != 0) {
-                List<dbMediaFile> mediaFileList = aufgabe.getMediaFile(aufgabe.getId());
-                for (dbMediaFile mediaFile : mediaFileList) {
-                    mediaFile.delete();
+            if (realmQueries.getMediaFilesFromAufgabe(aufgabe).size() != 0) {
+                List<dbMediaFile> mediaFileList = realmQueries.getMediaFilesFromAufgabe(aufgabe);
+                for (final dbMediaFile mediaFile : mediaFileList) {
+                    RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+                    Realm.setDefaultConfiguration(realmConfig);
+                    // Get a Realm instance for this thread
+                    final Realm realm = Realm.getDefaultInstance();
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm bgrealm) {
+                            mediaFile.deleteFromRealm();
+
+                        }
+                    });
                 }
             }
             // Photos werden in der mediaFile Datenbank gespeichert und die Beziehung
@@ -730,9 +747,9 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             if (picturePaths.size() != 0) {
                 for (String path : picturePaths) {
                     dbMediaFile mediaFile = new dbMediaFile();
-                    mediaFile.path = path;
-                    mediaFile.aufgaben = aufgabe;
-                    mediaFile.save();
+                    mediaFile.setPath(path);
+                    mediaFile.setAufgaben(aufgabe);
+                    save(mediaFile);
                     Log.d("Photo", "Photo gespeichert: " + path);
                 }
             }
@@ -743,7 +760,21 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
     }
 
-    public void createNotification(Long id) {
+    private void save(final RealmObject object){
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl","Saved Object");
+            }
+        });
+    }
+
+    public void createNotification(int id) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND, 3);
         Intent myIntent = new Intent(this, AlarmReciever.class);
@@ -763,11 +794,11 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
 
 
     public boolean checkAufgabe(dbAufgabe aufgabe) {
-        if (aufgabe.abgabeDatum != null) {
-            if (aufgabe.beschreibung != null) {
-                if (aufgabe.kurs != null) {
-                    if (aufgabe.erledigt != null) {
-                        if (aufgabe.zuletztAktualisiert != null)
+        if (aufgabe.getAbgabeDatum() != null) {
+            if (aufgabe.getBeschreibung() != null) {
+                if (aufgabe.getKurs() != null) {
+                    if (aufgabe.getErledigt() != null) {
+                        if (aufgabe.getZuletztAktualisiert() != null)
                             return true;
                     }
                 }

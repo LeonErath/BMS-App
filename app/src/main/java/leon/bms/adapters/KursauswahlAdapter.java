@@ -11,9 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbKurs;
 import leon.bms.model.kursauswahl;
+import leon.bms.realm.dbKurs;
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -64,20 +63,20 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
         if (schriftlich == true) {
             if (!schriftlichList.contains(kurs)) {
                 schriftlichList.add(kurs);
-                Log.d(TAG, "schriftlichList.add " + kurs.name);
+                Log.d(TAG, "schriftlichList.add " + kurs.getName());
             }
             if (mündlichList.contains(kurs)) {
                 mündlichList.remove(mündlichList.indexOf(kurs));
-                Log.d(TAG, "Changed " + kurs.name);
+                Log.d(TAG, "Changed " + kurs.getName());
             }
         } else {
             if (!mündlichList.contains(kurs)) {
                 mündlichList.add(kurs);
-                Log.d(TAG, "mündlichList.add " + kurs.name);
+                Log.d(TAG, "mündlichList.add " + kurs.getName());
             }
             if (schriftlichList.contains(kurs)) {
                 schriftlichList.remove(schriftlichList.indexOf(kurs));
-                Log.d(TAG, "Changed " + kurs.name);
+                Log.d(TAG, "Changed " + kurs.getName());
             }
 
         }
@@ -109,7 +108,7 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
         if (mündlichList.contains(kurs)) {
             mündlichList.remove(kurs);
         }
-        Log.d(TAG, "Removed " + kurs.name);
+        Log.d(TAG, "Removed " + kurs.getName());
     }
 
     @Override
@@ -133,21 +132,21 @@ public class KursauswahlAdapter extends SelectableAdapter<KursauswahlAdapter.Vie
             holder.textViewHeadline.setText(kurswahl.headline);
         }else {
             dbKurs kurs = kurswahl.kurs;
-            holder.textViewFachid.setText(kurs.name);
+            holder.textViewFachid.setText(kurs.getName());
 
             String lehrerString = "";
 
-            if (kurs.lehrer != null) {
-                if (kurs.lehrer.name != null) {
-                    if (kurs.lehrer.titel != null) {
+            if (kurs.getLehrer() != null) {
+                if (kurs.getLehrer().getLast_name() != null) {
+                    if (kurs.getLehrer().getTitle()!= null) {
                         //zeigt den Lehrer nur an wenn er vorhanden ist
-                        lehrerString += kurs.lehrer.titel + " ";
+                        lehrerString += kurs.getLehrer().getTitle() + " ";
                     }
-                    lehrerString += kurs.lehrer.name + " ";
+                    lehrerString += kurs.getLehrer().getLast_name() + " ";
                 }
             }
             holder.textViewLehrer.setText(lehrerString);
-            switch (kurs.kursart.gloablId) {
+            switch (kurs.getKursart().getGloablId()) {
                 case 0:
                     holder.textViewArt.setText("LK");
                     break;

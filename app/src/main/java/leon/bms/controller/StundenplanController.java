@@ -12,15 +12,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmResults;
 import leon.bms.Constants;
 import leon.bms.atOnline;
-import leon.bms.database.dbFach;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbKursart;
-import leon.bms.database.dbLehrer;
-import leon.bms.database.dbRaum;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbUser;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbLehrer;
+import leon.bms.realm.dbSchulstunde;
 
 /**
  * Created by Leon E on 21.12.2015.
@@ -32,15 +31,17 @@ import leon.bms.database.dbUser;
  */
 public class StundenplanController {
 
-
+    boolean lehrerDownload, raumDownload, timetable;
     Context mainContext;
     String result = "";
     ProgressDialog progressDialog;
     OnUpdateListener listener;
+    RealmQueries realmQueries;
 
     public StundenplanController(Context context) {
         Log.d("CONSTRUCTOR", " StundenlanController erstellt");
         mainContext = context;
+        realmQueries = new RealmQueries(context);
     }
 
 
@@ -64,7 +65,7 @@ public class StundenplanController {
         }
         String date = calendar.get(Calendar.DAY_OF_MONTH) + "." + calendar.get(Calendar.MONTH) + "." + calendar.get(Calendar.YEAR) + " " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
 
-        String params = "username="+new LogInController(mainContext).getUsername() +"&password="+new LogInController(mainContext).getPass(); //TODO richtige Paramerter hiinzufügen
+        String params = "username=" + realmQueries.getUser().getBenutzername() + "&password=" + new LogInController(mainContext).getPass(); //TODO richtige Paramerter hiinzufügen
         Log.d("STUNDENPLAN", params);
 
         atOnline atOnline2 = new atOnline(Url, params, mainContext);
@@ -72,7 +73,7 @@ public class StundenplanController {
 
             @Override
             public void onSuccesss(String result2) {
-                Log.d("checkUpdate",result2);
+                Log.d("checkUpdate", result2);
                 parseData(result2);
             }
 
@@ -87,204 +88,330 @@ public class StundenplanController {
 
     public void parseData(String result) {
 
-            // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
-            // in folgeneder Reihenfolge:
-            // 1 Lehrerliste
-            // 2 Raum
-            // 3 PK und AGs
-            // 4 Stundenplan
+        this.result = result;
 
-            // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
-            // altualisiert werden können
+        lehrerDownload = false;
+        raumDownload = false;
+        timetable = false;
 
-            //Hier die Lehrerliste
-            if (new dbLehrer().countLehrer() == 0) {
-                try {
-                    JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONObject leherliste = jsonObjectAll.getJSONObject("teacher_data");
-                    boolean leherercheck = saveLehrerliste(String.valueOf(leherliste));
-                    Log.d("leherliste", String.valueOf(leherliste));
+        // nimmt das getAllData.php und guckt welche Daten aktuallisiert werden müssen
+        // in folgeneder Reihenfolge:
+        // 1 Lehrerliste
+        // 2 Raum
+        // 3 PK und AGs
+        // 4 Stundenplan
 
+        // Die einzelnen Daten sollten immer in ihren eigen Catch-Block stehen , sodass bei fehlern andere Daten noch
+        // altualisiert werden können
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        //Hier die Lehrerliste
 
-            if (new dbRaum().countRaum() == 0) {
-                try {
-                    JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONArray raumliste = jsonObjectAll.getJSONArray("room_data");
-                    boolean roomcheck = saveRaumliste(raumliste);
-                    Log.d("raum", String.valueOf(raumliste));
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            //Hier die AGs und Projektkurse
-            if (new dbKurs().countKurse() == 0) {
-                try {
-                    JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                //Hier der Stundenplan und die Kurse
-                try {
-                    JSONObject jsonObjectAll = new JSONObject(result);
-                    JSONArray stundenplan = jsonObjectAll.getJSONArray("timetable_data");
-
-                    erstelleStundenplan(stundenplan);
-                    Log.d("stundenplan", String.valueOf(stundenplan));
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-            listener.onSuccesss();
-    }
-
-    private boolean saveRaumliste(JSONArray jsonArrayRaum) {
         try {
-            for (int i = 0; i < jsonArrayRaum.length(); i++) {
-                JSONObject jsonObjectRaum = jsonArrayRaum.getJSONObject(i);
-                dbRaum raum = new dbRaum();
-                raum.serverid = jsonObjectRaum.getInt("id");
-                raum.nummer = jsonObjectRaum.getString("name");
-                raum.save();
+            JSONObject jsonObjectAll = new JSONObject(result);
+            JSONObject leherliste = jsonObjectAll.getJSONObject("teacher_data");
+            //saveLehrerliste(String.valueOf(leherliste));
+            Log.d("leherliste", String.valueOf(leherliste));
+            saveLehrerRealm(String.valueOf(leherliste));
 
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
 
-        return true;
+        try {
+            JSONObject jsonObjectAll = new JSONObject(result);
+            JSONArray raumliste = jsonObjectAll.getJSONArray("room_data");
+            //saveRaumliste(raumliste);
+            saveRaumRealm(raumliste);
+            Log.d("raum", String.valueOf(raumliste));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        //Hier die AGs und Projektkurse
+
+        try {
+            JSONObject jsonObjectAll = new JSONObject(result);
+            JSONObject pkuags = jsonObjectAll.getJSONObject("pkuags");
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+        //listener.onSuccesss();
+    }
+
+
+    private void saveRaumRealm(final JSONArray jsonArrayRaum) {
+        Log.d("Stundenplan", "Started Transaction");
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                try {
+                    for (int i = 0; i < jsonArrayRaum.length(); i++) {
+                        JSONObject jsonObjectRaum = jsonArrayRaum.getJSONObject(i);
+                        final leon.bms.realm.dbRaum raum1 = new leon.bms.realm.dbRaum();
+                        raum1.setId(jsonObjectRaum.getInt("id"));
+                        raum1.setName(jsonObjectRaum.getString("name"));
+                        bgRealm.copyToRealmOrUpdate(raum1);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+
+                // Transaction was a success.
+                //Realm realm = Realm.getDefaultInstance();
+                //Log.d("StundenplanController2","Size: "+realm.where(leon.bms.realm.dbLehrer.class).findAll().size());
+                Log.d("Stundenplan", "Raum : Successful Transaction");
+                raumDownload = true;
+                update();
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+
+                Log.d("Stundenplan", "Raum : No successful Transaction");
+                raumDownload = true;
+                update();
+
+            }
+        });
+
     }
 
     /**
      * @param result JSON Daten des Server für die Lehrer
      * @erstelltLehrerListe parsed die Daten für die Lehrer in die Datenbank
      */
-    public boolean saveLehrerliste(String result) {
-        try {
-            JSONObject jsonObjectLehrerliste = new JSONObject(result);
-            //JSONObject jsonObjectDatum = jsonObjectAll.getJSONObject("zuletzt Aktualisiert");
-            JSONArray jsonArrayLehrer = jsonObjectLehrerliste.getJSONArray("teachers");
-            for (int i = 0; i < jsonArrayLehrer.length(); i++) {
-                dbLehrer lehrer = new dbLehrer();
-                JSONObject lehrerDaten = jsonArrayLehrer.getJSONObject(i);
-                lehrer.serverid = lehrerDaten.optInt("id");
-                lehrer.name = lehrerDaten.optString("last_name");
-                lehrer.email = lehrerDaten.optString("email");
-                lehrer.titel = lehrerDaten.optString("title");
-                lehrer.kuerzel = lehrerDaten.optString("abbreviation");
-                lehrer.Vorname = lehrerDaten.optString("first_name");
-                lehrer.save();
+
+
+    public void saveLehrerRealm(final String result) {
+        Log.d("Stundenplan", "Started Realm Transaction");
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+
+                try {
+                    JSONObject jsonObjectLehrerliste = new JSONObject(result);
+                    JSONArray jsonArrayLehrer = jsonObjectLehrerliste.getJSONArray("teachers");
+
+                    for (int i = 0; i < jsonArrayLehrer.length(); i++) {
+                        JSONObject lehrerDaten = jsonArrayLehrer.getJSONObject(i);
+
+                        dbLehrer lehrer2 = new dbLehrer();
+                        lehrer2.setId(lehrerDaten.optInt("id"));
+                        lehrer2.setLast_name(lehrerDaten.optString("last_name"));
+                        lehrer2.setEmail(lehrerDaten.optString("email"));
+                        lehrer2.setTitle(lehrerDaten.optString("title"));
+                        lehrer2.setFirst_name(lehrerDaten.optString("first_name"));
+                        lehrer2.setAbbreviation(lehrerDaten.optString("abbreviation"));
+                        Log.d("Stundenplan", "Lehrer: "+lehrer2.getId());
+                        bgRealm.copyToRealmOrUpdate(lehrer2);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
             }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
 
+                // Transaction was a success.
+                //Realm realm = Realm.getDefaultInstance();
+                //Log.d("StundenplanController2","Size: "+realm.where(leon.bms.realm.dbLehrer.class).findAll().size());
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+                Log.d("Stundenplan", "Lehrer : Successful Transaction");
+                lehrerDownload = true;
+                update();
+
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                // Transaction failed and was automatically canceled.
+
+                Log.d("Stundenplan", "Lehrer : No successful Transaction");
+                lehrerDownload = true;
+                update();
+
+            }
+        });
+
 
     }
 
-    // Methode nur für Testzwecke
-    public void erstelleStundenplan(JSONArray timetablearray) {
-        try {
 
-            for (int i = 0; i < timetablearray.length(); i++) {
-                JSONObject jsonObject = timetablearray.getJSONObject(i);
-                dbFach fach = new dbFach();
-                if (jsonObject.isNull("id")==false){
-                    fach.serverId = jsonObject.optInt("id");
-                }
-               if (jsonObject.isNull("abbreviation")== false){
-                   fach.kuerzel = jsonObject.optString("abbreviation");
-               }else {
-                   fach.kuerzel = "";
-               }
-                if (jsonObject.isNull("description")== false){
-                    fach.name = jsonObject.optString("description");
-                }else {
-                    fach.name = "";
-                }
-                fach.save();
-                JSONArray kurstyparray = jsonObject.getJSONArray("course_types");
-                for (int k = 0; k < kurstyparray.length(); k++) {
-                    JSONObject jsonObjectKursart = kurstyparray.getJSONObject(k);
-                    dbKursart kursart = new dbKursart();
-                    kursart.gloablId = jsonObjectKursart.getInt("global_id"); //TODO global id ist im moment immer null
-                    kursart.abkuerzung = jsonObjectKursart.getString("abbreviation");
-                    kursart.name = jsonObjectKursart.getString("name");
-                    kursart.save();
-                    JSONArray jsonArrayKurse = jsonObjectKursart.getJSONArray("courses");
-                    for (int l = 0; l < jsonArrayKurse.length(); l++) {
-                        JSONObject jsonObjectKurse = jsonArrayKurse.getJSONObject(l);
-                        dbKurs kurs = new dbKurs();
-                        kurs.serverid = jsonObjectKurse.getInt("int_id");
-                        kurs.untisId = jsonObjectKurse.getString("id");
-                        kurs.name = jsonObjectKurse.getString("name");
-                        int lehrerid = jsonObjectKurse.getInt("teacher_id");
-                        if (new dbLehrer().getLehereWithId(lehrerid) != null) {
-                            dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
-                            kurs.lehrer = lehrer;
-                        } else {
-                            Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
-                        }
-                        kurs.kursart = kursart;
-                        kurs.fachnew = fach;
-                        kurs.save();
 
-                        JSONArray jsonArraySchulstunde = jsonObjectKurse.getJSONArray("lessons");
-                        for (int m = 0; m < jsonArraySchulstunde.length(); m++) {
-                            JSONObject jsonObjectSchulstunde = jsonArraySchulstunde.getJSONObject(m);
-                            dbSchulstunde schulstunde = new dbSchulstunde();
-                            schulstunde.beginnzeit = jsonObjectSchulstunde.getInt("lesson");
-                            schulstunde.wochentag = jsonObjectSchulstunde.getInt("day");
-                            schulstunde.blocknummer = jsonObjectSchulstunde.getInt("block_number");
-                            schulstunde.serverId = jsonObjectSchulstunde.getInt("lesson_id");
-                            int roomid = jsonObjectSchulstunde.getInt("room_id");
-                            if (new dbLehrer().getLehereWithId(lehrerid) != null) {
-                                dbLehrer lehrer = new dbLehrer().getLehereWithId(lehrerid);
-                                schulstunde.lehrer = lehrer;
+
+
+    public void saveTimetableRealm(final JSONArray timetablearray) {
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgRealm) {
+                try {
+                    for (int i = 0; i < timetablearray.length(); i++) {
+                        JSONObject jsonObject = timetablearray.getJSONObject(i);
+                        leon.bms.realm.dbFach fach1 = new leon.bms.realm.dbFach();
+                        if (jsonObject.isNull("id") == false) {
+                            fach1.setId(jsonObject.optInt("id"));
+                            if (jsonObject.isNull("abbreviation") == false) {
+                                fach1.setAbbreviation(jsonObject.optString("abbreviation"));
                             } else {
-                                Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                fach1.setAbbreviation("");
                             }
-                            if (new dbRaum().getRaumWithId(roomid) != null) {
-                                dbRaum raum = new dbRaum().getRaumWithId(roomid);
-                                schulstunde.raum = raum;
+                            if (jsonObject.isNull("description") == false) {
+                                fach1.setDescription(jsonObject.optString("description"));
                             } else {
-                                Log.d("erstelleStundenplan", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
-                            }
-                            schulstunde.kurs = kurs;
-                            schulstunde.save();
-                        }
+                                fach1.setDescription("");
 
+                            }
+                            bgRealm.copyToRealm(fach1);
+                            JSONArray kurstyparray = jsonObject.getJSONArray("course_types");
+                            for (int k = 0; k < kurstyparray.length(); k++) {
+                                JSONObject jsonObjectKursart = kurstyparray.getJSONObject(k);
+
+                                final leon.bms.realm.dbKursart kursart1 = new leon.bms.realm.dbKursart();
+                                kursart1.setGloablId(jsonObjectKursart.getInt("global_id"));
+                                kursart1.setAbbreviation(jsonObjectKursart.getString("abbreviation"));
+                                kursart1.setName(jsonObjectKursart.getString("name"));
+                                bgRealm.copyToRealm(kursart1);
+
+                                final JSONArray jsonArrayKurse = jsonObjectKursart.getJSONArray("courses");
+                                for (int l = 0; l < jsonArrayKurse.length(); l++) {
+                                    JSONObject jsonObjectKurse = jsonArrayKurse.getJSONObject(l);
+
+                                    final leon.bms.realm.dbKurs kurs1 = new leon.bms.realm.dbKurs();
+                                    kurs1.setInt_id(jsonObjectKurse.optInt("int_id"));
+                                    kurs1.setId(jsonObjectKurse.optString("id"));
+                                    kurs1.setName(jsonObjectKurse.optString("name"));
+                                    int lehrerid = jsonObjectKurse.optInt("teacher_id");
+                                    RealmResults<dbLehrer> result2 = bgRealm.where(dbLehrer.class).equalTo("id", lehrerid).findAll();
+                                    if (result2.size() == 1) {
+                                        kurs1.setLehrer(result2.get(0));
+                                    } else {
+                                        Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                    }
+                                    kurs1.setKursart(kursart1);
+                                    kurs1.setFach(fach1);
+                                    bgRealm.copyToRealmOrUpdate(kurs1);
+
+                                    final JSONArray jsonArraySchulstunde = jsonObjectKurse.getJSONArray("lessons");
+                                    for (int m = 0; m < jsonArraySchulstunde.length(); m++) {
+                                        JSONObject jsonObjectSchulstunde = jsonArraySchulstunde.getJSONObject(m);
+
+                                        final dbSchulstunde schulstunde1 = new dbSchulstunde();
+                                        schulstunde1.setLesson_id(jsonObjectSchulstunde.optInt("lesson_id"));
+                                        schulstunde1.setDay(jsonObjectSchulstunde.optInt("day"));
+                                        schulstunde1.setLesson(jsonObjectSchulstunde.optInt("lesson"));
+                                        schulstunde1.setBlock_number(jsonObjectSchulstunde.optInt("block_number"));
+                                        int roomid = jsonObjectSchulstunde.optInt("room_id");
+
+                                        RealmResults<leon.bms.realm.dbRaum> resultRaum = bgRealm.where(leon.bms.realm.dbRaum.class).equalTo("id", roomid).findAll();
+                                        if (resultRaum.size() == 1) {
+                                            schulstunde1.setRaum(resultRaum.get(0));
+                                        } else {
+                                            Log.d("erstelleStundenplan", "Raum konnte nicht anhand der Serverid herausgefunden werden + id:" + roomid);
+                                        }
+                                        if (result2.size() == 1) {
+                                            schulstunde1.setLehrer(result2.get(0));
+                                        } else {
+                                            Log.d("erstelleStundenplan", "Lehrer konnte nicht anhand der Serverid herausgefunden werden + id:" + lehrerid);
+                                        }
+                                        schulstunde1.setKurs(kurs1);
+                                        bgRealm.copyToRealmOrUpdate(schulstunde1);
+
+                                    }
+
+
+                                }
+
+                            }
+                        }
 
                     }
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
                 }
-
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Log.d("Stundenplan", "Stundenplan : Successful Transaction");
+                timetable = true;
+                update();
 
             }
-            Log.d("erstelleStundenplan", "Success");
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+                Log.d("Stundenplan", "Stundenplan : No successful Transaction " + error);
+                Log.d("Stundenplan", "Error" + error.getLocalizedMessage());
+                Log.d("Stundenplan", "Error" + error.getMessage());
+                Log.d("Stundenplan", "Error" + error.getCause());
+                timetable = true;
+                update();
+            }
+        });
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+
+    }
+
+
+    public void update() {
+        if (lehrerDownload && raumDownload && !timetable){
+            //Hier der Stundenplan und die Kurse
+            try {
+                JSONObject jsonObjectAll = new JSONObject(result);
+                JSONArray stundenplan = jsonObjectAll.getJSONArray("timetable_data");
+
+                //erstelleStundenplan(stundenplan);
+                saveTimetableRealm(stundenplan);
+                Log.d("stundenplan", String.valueOf(stundenplan));
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+        if (lehrerDownload && raumDownload && timetable) {
+            listener.onSuccesss();
+            Log.d("StundenplanController", "Download Completed");
         }
     }
 
@@ -292,6 +419,7 @@ public class StundenplanController {
         public void onSuccesss();
 
         public void onFailure();
+
     }
 
     /**

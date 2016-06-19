@@ -14,8 +14,8 @@ import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbKlausur;
 import leon.bms.model.klausurModel;
+import leon.bms.realm.dbKlausur;
 
 /**
  * Created by Leon E on 22.05.2016.
@@ -76,10 +76,10 @@ public class KlausurAdapter extends UltimateViewAdapter<KlausurAdapter.ViewHolde
         //Set the data
         dbKlausur klausur = klausurList.get(position).klausur;
         klausurModel klausurModel = klausurList.get(position);
-        holder.textViewKlausurname.setText(klausur.name);
+        holder.textViewKlausurname.setText(klausur.getName());
         holder.textViewZeit.setText(klausurModel.getZeitString());
         holder.textViewKlausurDatum.setText(klausurModel.getDateString());
-        holder.textViewKlausurRaum.setText("Raum: "+klausur.raum.nummer);
+        holder.textViewKlausurRaum.setText("Raum: "+klausur.getRaum().getName());
         holder.textViewAblaufdatum.setText(klausurModel.getAblaufdatum());
         holder.textViewAblaufdatum.setTextColor(Color.parseColor(klausurModel.getColor()));
 

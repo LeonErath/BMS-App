@@ -2,9 +2,9 @@ package leon.bms.model;
 
 import java.io.Serializable;
 
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbVertretung;
+import leon.bms.realm.dbSchulstunde;
+import leon.bms.realm.dbVertretung;
+
 
 /**
  * Created by Leon E on 10.02.2016.

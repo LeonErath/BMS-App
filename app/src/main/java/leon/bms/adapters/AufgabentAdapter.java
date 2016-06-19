@@ -16,9 +16,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbAufgabe;
+
 import leon.bms.model.aufgabenModel;
 import leon.bms.model.nachrichten;
+import leon.bms.realm.dbAufgabe;
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -127,9 +128,9 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         if (aufgabe.getStatus() == 1){
             holder.textViewHeader.setText(aufgabe.getTextHeader());
         }else {
-            holder.textViewBeschreibung.setText(aufgabe.getAufgabe().beschreibung);
-            holder.textViewKursZeit.setText(aufgabe.getAufgabe().abgabeDatum+", "+aufgabe.getAufgabe().kurs.untisId);
-            if (aufgabe.getAufgabe().erledigt){
+            holder.textViewBeschreibung.setText(aufgabe.getAufgabe().getBeschreibung());
+            holder.textViewKursZeit.setText(aufgabe.getAufgabe().getAbgabeDatum()+", "+aufgabe.getAufgabe().getKurs().getId());
+            if (aufgabe.getAufgabe().getErledigt()){
                 holder.imageViewIcon.setImageResource(R.drawable.ic_done_black_48dp);
             }else{
                 holder.imageViewIcon.setImageResource(R.drawable.ic_clear_black_48dp);
@@ -150,7 +151,7 @@ public class AufgabentAdapter extends RecyclerView.Adapter<AufgabentAdapter.View
         Calendar heute = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("MM d yyyy");
         try {
-            abgabeDatum.setTime(sdf.parse(aufgabe.abgabeDatum));// all done
+            abgabeDatum.setTime(sdf.parse(aufgabe.getAbgabeDatum()));// all done
         } catch (ParseException e) {
             e.printStackTrace();
         }

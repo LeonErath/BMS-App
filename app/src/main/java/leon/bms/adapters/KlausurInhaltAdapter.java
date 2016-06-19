@@ -4,7 +4,9 @@ package leon.bms.adapters;
  * Created by Leon E on 24.05.2016.
  */
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.R;
-import leon.bms.database.dbKlausuraufsicht;
-import leon.bms.database.dbKlausurinhalt;
+import leon.bms.realm.dbKlausurinhalt;
+
 
 /**
  * Created by Leon E on 21.01.2016.
@@ -31,17 +36,18 @@ public class KlausurInhaltAdapter extends RecyclerView.Adapter<KlausurInhaltAdap
 
     private List<dbKlausurinhalt> klausurinhaltList;
     private ViewHolder.ClickListener clickListener;
+    private Context context;
 
     /**
      * @param clickListener     wird gebraucht um auf Click events zu reagieren
      * @param klausurinhaltList ist die Liste die angezeigt werden soll
      * @KursAdapter ClickListener und anzuzeigende Liste wird übergeben.
      */
-    public KlausurInhaltAdapter(ViewHolder.ClickListener clickListener, List<dbKlausurinhalt> klausurinhaltList) {
+    public KlausurInhaltAdapter(ViewHolder.ClickListener clickListener, List<dbKlausurinhalt> klausurinhaltList, Context context) {
         super();
         this.clickListener = clickListener;
         this.klausurinhaltList = klausurinhaltList;
-
+        this.context = context;
     }
 
     public List<dbKlausurinhalt> getKlausuraufsichtList() {
@@ -67,8 +73,8 @@ public class KlausurInhaltAdapter extends RecyclerView.Adapter<KlausurInhaltAdap
         final dbKlausurinhalt klausurinhalt = klausurinhaltList.get(position);
 
         //Setting the Data to the Views
-        holder.textViewInhalt.setText(klausurinhalt.beschreibung);
-        if (klausurinhalt.erledigt) {
+        holder.textViewInhalt.setText(klausurinhalt.getBeschreibung());
+        if (klausurinhalt.isErledigt()) {
             holder.imageViewErledigt.setVisibility(View.VISIBLE);
         } else {
             holder.imageViewErledigt.setVisibility(View.INVISIBLE);
@@ -78,14 +84,28 @@ public class KlausurInhaltAdapter extends RecyclerView.Adapter<KlausurInhaltAdap
 
     public void changeErledigt(int position) {
         final dbKlausurinhalt klausurinhalt = klausurinhaltList.get(position);
-        if (klausurinhalt.erledigt) {
-            klausurinhalt.erledigt = false;
-            klausurinhalt.save();
+        if (klausurinhalt.isErledigt()) {
+            klausurinhalt.setErledigt(false);
+            save(klausurinhalt);
         } else {
-            klausurinhalt.erledigt = true;
-            klausurinhalt.save();
+            klausurinhalt.setErledigt(true);
+            save(klausurinhalt);
         }
         notifyItemChanged(position);
+    }
+
+    private void save(final RealmObject object) {
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl", "Saved Object");
+            }
+        });
     }
 
 

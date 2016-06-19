@@ -4,7 +4,6 @@ package leon.bms.activites.main;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
+import com.nostra13.universalimageloader.utils.L;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -29,9 +29,10 @@ import java.util.List;
 import leon.bms.R;
 import leon.bms.activites.note.NotenActivity;
 import leon.bms.adapters.NotenAdapter;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbNote;
 import leon.bms.model.notenModel;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKurs;
+import leon.bms.realm.dbNote;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,28 +42,8 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     TextView textViewDurchschnitt;
     NotenAdapter notenAdapter;
     List<notenModel> notenModelList = new ArrayList<>();
-    Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            Boolean success = bundle.getBoolean("myKey");
-            if (success) {
-                notenAdapter.changeDataSet(notenModelList);
-            } else {
-
-            }
-        }
-    };
-    Handler handler2 = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            String antwort = bundle.getString("myKey");
-            textViewDurchschnitt.setText(antwort);
-        }
-    };
+    RealmQueries realmQueries;
+    List<dbKurs> kursList;
 
     public Fragment_Note() {
         // Required empty public constructor
@@ -80,20 +61,23 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+       kursList = realmQueries.getAktiveKurse();
+
+
         recyclerView = (UltimateRecyclerView) view.findViewById(R.id.recyclerview);
         textViewDurchschnitt = (TextView) view.findViewById(R.id.textViewDurchschnitt);
-
+        realmQueries = new RealmQueries(getActivity());
         setUpRecyclerView();
-        updateDurchschnitt();
+        updateDurchschnitt(kursList);
 
 
     }
 
     private void setUpRecyclerView() {
-        doInBackground();
+
         final LinearLayoutManager mLayoutManager;
         mLayoutManager = new LinearLayoutManager(getActivity());
-        notenAdapter = new NotenAdapter(getActivity(), notenModelList, this);
+        notenAdapter = new NotenAdapter(getActivity(), getNotenList(kursList), this);
         recyclerView.setAdapter(notenAdapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -104,53 +88,34 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
                     @Override
                     public void run() {
                         Toast.makeText(getActivity(), "Refresh", Toast.LENGTH_SHORT).show();
-                        doInBackground();
+                        notenAdapter.changeDataSet(getNotenList(kursList));
                     }
                 }, 1000);
             }
         });
     }
 
-    private void doInBackground() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                if (getNotenList() != null) {
-                    notenModelList = getNotenList();
-                }
-                Message msg = handler.obtainMessage();
-                boolean sucess = true;
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("myKey", sucess);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
 
-            }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
-    }
-
-    private List<notenModel> getNotenList() {
-        if (new dbKurs().getAllActiveKurse() != null) {
-            List<notenModel> notenModelList = new ArrayList<>();
-            List<dbKurs> kursList = new dbKurs().getAllActiveKurse();
-            for (dbKurs kurs : kursList) {
+    private List<notenModel> getNotenList(List<dbKurs> aktiveKurse) {
+        if (aktiveKurse != null) {
+            List<notenModel> notenModelList2 = new ArrayList<>();
+            for (dbKurs kurs : aktiveKurse) {
                 notenModel notenModel1 = new notenModel();
                 notenModel1.setKurs(kurs);
-                if (kurs.getNoteWithId(kurs.getId(), 1) != null) {
-                    List<dbNote> schriftlich = kurs.getNoteWithId(kurs.getId(), 1);
+                if (realmQueries.getNoteFromKurs(kurs, true) != null) {
+                    List<dbNote> schriftlich = realmQueries.getNoteFromKurs(kurs, true);
                     notenModel1.setSchriftlicheNoten(schriftlich);
                 }
-                if (kurs.getNoteWithId(kurs.getId(), 0) != null) {
-                    List<dbNote> mündlich = kurs.getNoteWithId(kurs.getId(), 0);
+                if (realmQueries.getNoteFromKurs(kurs, false) != null) {
+                    List<dbNote> mündlich = realmQueries.getNoteFromKurs(kurs, false);
                     notenModel1.setMündlicheNoten(mündlich);
                 }
                 notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1), 1));
 
-                notenModelList.add(notenModel1);
+                notenModelList2.add(notenModel1);
             }
-            if (notenModelList.size() > 0) {
-                return sortListASC(notenModelList);
+            if (notenModelList2.size() > 0) {
+                return sortListASC(notenModelList2);
             }
         }
         return null;
@@ -167,62 +132,47 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     @Override
     public void onResume() {
         super.onResume();
+        kursList = realmQueries.getAktiveKurse();
         setUpRecyclerView();
-        updateDurchschnitt();
+        updateDurchschnitt(kursList);
     }
 
 
+    private void updateDurchschnitt(List<dbKurs> aktiveKurse) {
+        String antwort = "Gesamtdurchschnitt: NA";
+        if (aktiveKurse != null) {
+            List<notenModel> notenModelList2 = new ArrayList<>();
+            for (dbKurs kurs : kursList) {
+                notenModel notenModel1 = new notenModel();
+                notenModel1.setKurs(kurs);
 
-    private void updateDurchschnitt() {
-        Runnable runnable = new Runnable() {
-            public void run() {
-                String antwort = "Gesamtdurchschnitt: NA";
-                if (new dbKurs().getAllActiveKurse() != null) {
-                    List<notenModel> notenModelList = new ArrayList<>();
-                    List<dbKurs> kursList = new dbKurs().getAllActiveKurse();
-                    for (dbKurs kurs : kursList) {
-                        notenModel notenModel1 = new notenModel();
-                        notenModel1.setKurs(kurs);
-
-                        if (kurs.getNoteWithId(kurs.getId(), 1) != null) {
-                            List<dbNote> schriftlich = kurs.getNoteWithId(kurs.getId(), 1);
-                            notenModel1.setSchriftlicheNoten(schriftlich);
-                        }
-                        if (kurs.getNoteWithId(kurs.getId(), 0) != null) {
-                            List<dbNote> mündlich = kurs.getNoteWithId(kurs.getId(), 0);
-                            notenModel1.setMündlicheNoten(mündlich);
-                        }
-
-                        if (getNotenDurchschnitt(notenModel1) != 0) {
-                            notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1), 1));
-                            notenModelList.add(notenModel1);
-                        }
-                    }
-                    if (notenModelList != null && notenModelList.size() > 0) {
-                        double gesamtdurchschnitt = 0;
-                        for (notenModel notenModel1 : notenModelList) {
-                            gesamtdurchschnitt += notenModel1.getDurchschnitt();
-                        }
-                        gesamtdurchschnitt = gesamtdurchschnitt / notenModelList.size();
-                         antwort = "Gesamtdurchschnitt: " + round(gesamtdurchschnitt, 1);
-                    } else {
-                        antwort ="Gesamtdurchschnitt: NA";
-                    }
-
+                if (realmQueries.getNoteFromKurs(kurs, true) != null) {
+                    List<dbNote> schriftlich = realmQueries.getNoteFromKurs(kurs, true);
+                    notenModel1.setSchriftlicheNoten(schriftlich);
+                }
+                if (realmQueries.getNoteFromKurs(kurs, false) != null) {
+                    List<dbNote> mündlich = realmQueries.getNoteFromKurs(kurs, false);
+                    notenModel1.setMündlicheNoten(mündlich);
                 }
 
-                Message msg = handler2.obtainMessage();
-                Bundle bundle = new Bundle();
-                bundle.putString("myKey",antwort);
-                msg.setData(bundle);
-                handler2.sendMessage(msg);
-
+                if (getNotenDurchschnitt(notenModel1) != 0) {
+                    notenModel1.setDurchschnitt(round(getNotenDurchschnitt(notenModel1), 1));
+                    notenModelList2.add(notenModel1);
+                }
             }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+            if (notenModelList2 != null && notenModelList2.size() > 0) {
+                double gesamtdurchschnitt = 0;
+                for (notenModel notenModel1 : notenModelList2) {
+                    gesamtdurchschnitt += notenModel1.getDurchschnitt();
+                }
+                gesamtdurchschnitt = gesamtdurchschnitt / notenModelList2.size();
+                antwort = "Gesamtdurchschnitt: " + round(gesamtdurchschnitt, 1);
+            } else {
+                antwort = "Gesamtdurchschnitt: NA";
+            }
 
-
+        }
+        textViewDurchschnitt.setText(antwort);
     }
 
     private double getNotenDurchschnitt(notenModel notenModel1) {
@@ -237,7 +187,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
         if (alleNoten.size() > 0) {
             Double newdurchschnitt = 0.0;
             for (dbNote note1 : alleNoten) {
-                newdurchschnitt += note1.punkte;
+                newdurchschnitt += note1.getPunkte();
             }
             newdurchschnitt = newdurchschnitt / alleNoten.size();
             return newdurchschnitt;
@@ -260,7 +210,7 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
         Collections.sort(list, new Comparator<notenModel>() {
             @Override
             public int compare(notenModel lhs, notenModel rhs) {
-                return lhs.getKurs().name.compareTo(rhs.getKurs().name);
+                return lhs.getKurs().getName().compareTo(rhs.getKurs().getName());
             }
         });
         //Collections.reverse(list);

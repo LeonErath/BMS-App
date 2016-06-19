@@ -1,40 +1,28 @@
-package leon.bms.database;
+package leon.bms.realm;
 
-import com.orm.SugarRecord;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
- * Created by Leon E on 21.05.2016.
+ * Created by Leon E on 18.06.2016.
  */
-public class dbVertretung extends SugarRecord {
-    public int art;
-    public int artBitfields;
-    public String datum;
-    public Boolean eva;
-    public String hinzugefuegtAm;
-    public String letzteAenderung;
-    public  String notiz;
-    public int serverId;
+public class dbVertretung extends RealmObject {
+    @PrimaryKey
+    private int serverId;
+    private int art;
+    private int artBitfields;
+    private String datum;
+    private Boolean eva;
+    private String hinzugefuegtAm;
+    private String letzteAenderung;
+    private  String notiz;
 
-    public  dbSchulstunde schulstunde;
-    public dbLehrer lehrer;
-    public dbRaum raum;
+
+    private dbSchulstunde schulstunde;
+    private dbLehrer lehrer;
+    private dbRaum raum;
 
     public dbVertretung() {
-    }
-
-
-    public dbVertretung(int art, int artBitfields, String datum, Boolean eva, String hinzugefuegtAm, String letzteAenderung, String notiz, int serverId, dbSchulstunde schulstunde, dbLehrer lehrer, dbRaum raum) {
-        this.art = art;
-        this.artBitfields = artBitfields;
-        this.datum = datum;
-        this.eva = eva;
-        this.hinzugefuegtAm = hinzugefuegtAm;
-        this.letzteAenderung = letzteAenderung;
-        this.notiz = notiz;
-        this.serverId = serverId;
-        this.schulstunde = schulstunde;
-        this.lehrer = lehrer;
-        this.raum = raum;
     }
 
     public int getServerId() {

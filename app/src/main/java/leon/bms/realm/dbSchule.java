@@ -1,59 +1,32 @@
-package leon.bms.database;
+package leon.bms.realm;
 
-import com.orm.SugarRecord;
+import io.realm.RealmObject;
+
+
 
 /**
- * Created by Leon E on 21.05.2016.
+ * Created by Leon E on 18.06.2016.
  */
-public class dbSchule extends SugarRecord {
-    public String abkuerzung;
-    public String adressen;
-    public String appURL;
-    public String bundesland;
-    public int globalID;
-    public String last_change;
-    public Boolean lehrerVersionVerfuegbar;
-    public String loginText;
-    public String logoPath;
-    public String schulname;
-    public String stadt;
-    public int telefonnummer;
-    public int typ;
-    public String webURL;
+public class dbSchule extends RealmObject {
+    private String abkuerzung;
+    private String adressen;
+    private String appURL;
+    private String bundesland;
+    private int globalID;
+    private String last_change;
+    private Boolean lehrerVersionVerfuegbar;
+    private String loginText;
+    private String logoPath;
+    private String schulname;
+    private String stadt;
+    private int telefonnummer;
+    private int typ;
+    private String webURL;
 
-    dbUnterrichtszeit unterrichtszeit;
-    dbUser user;
-
-
-
+    private dbUnterrichtszeit unterrichtszeit;
+    private dbUser user;
 
     public dbSchule() {
-    }
-
-    public dbSchule(String abkuerzung, String adressen, String appURL, String bundesland, int globalID, String last_change, Boolean lehrerVersionVerfuegbar, String loginText, String logoPath, String schulname, String stadt, int telefonnummer, int typ, String webURL, dbUnterrichtszeit unterrichtszeit) {
-        this.abkuerzung = abkuerzung;
-        this.adressen = adressen;
-        this.appURL = appURL;
-        this.bundesland = bundesland;
-        this.globalID = globalID;
-        this.last_change = last_change;
-        this.lehrerVersionVerfuegbar = lehrerVersionVerfuegbar;
-        this.loginText = loginText;
-        this.logoPath = logoPath;
-        this.schulname = schulname;
-        this.stadt = stadt;
-        this.telefonnummer = telefonnummer;
-        this.typ = typ;
-        this.webURL = webURL;
-        this.unterrichtszeit = unterrichtszeit;
-    }
-
-    public dbUnterrichtszeit getUnterrichtszeit() {
-        return unterrichtszeit;
-    }
-
-    public void setUnterrichtszeit(dbUnterrichtszeit unterrichtszeit) {
-        this.unterrichtszeit = unterrichtszeit;
     }
 
     public String getAbkuerzung() {
@@ -166,5 +139,21 @@ public class dbSchule extends SugarRecord {
 
     public void setWebURL(String webURL) {
         this.webURL = webURL;
+    }
+
+    public dbUnterrichtszeit getUnterrichtszeit() {
+        return unterrichtszeit;
+    }
+
+    public void setUnterrichtszeit(dbUnterrichtszeit unterrichtszeit) {
+        this.unterrichtszeit = unterrichtszeit;
+    }
+
+    public dbUser getUser() {
+        return user;
+    }
+
+    public void setUser(dbUser user) {
+        this.user = user;
     }
 }

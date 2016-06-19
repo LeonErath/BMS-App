@@ -4,7 +4,9 @@ package leon.bms.adapters;
  * Created by Leon E on 24.05.2016.
  */
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +15,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmObject;
 import leon.bms.R;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbKlausurinhalt;
 import leon.bms.model.fehler;
 
 /**
@@ -37,15 +40,17 @@ public class FehlerAdapter extends RecyclerView.Adapter<FehlerAdapter.ViewHolder
     private ViewHolder.ClickListener clickListener;
     private static final int TYPE_INACTIVE = 0;
     private static final int TYPE_ACTIVE = 1;
+    private Context context;
 
     /**
      * @Constructor benötigt einmal einen clickListener der in der Klasse implentiert sein muss
      * und die Liste der nichterledigten Aufgaben die angezeigt werden sollen.
      */
-    public FehlerAdapter(ViewHolder.ClickListener clickListener, List<fehler> fehlerList) {
+    public FehlerAdapter(ViewHolder.ClickListener clickListener, List<fehler> fehlerList,Context context) {
         super();
         this.clickListener = clickListener;
         this.fehlerList = fehlerList;
+        this.context = context;
     }
 
     /**
@@ -83,15 +88,30 @@ public class FehlerAdapter extends RecyclerView.Adapter<FehlerAdapter.ViewHolder
     }
     public void changeErledigt(int position) {
         final fehler fehler1 = fehlerList.get(position);
-        if (fehler1.getFehler().bearbeitet) {
-            fehler1.getFehler().bearbeitet = false;
-            fehler1.getFehler().save();
+        if (fehler1.getFehler().getBearbeitet()) {
+            fehler1.getFehler().setBearbeitet(false);
+            save(fehler1.getFehler());
         } else {
-            fehler1.getFehler().bearbeitet= true;
-            fehler1.getFehler().save();
+            fehler1.getFehler().setBearbeitet(true);
+            save(fehler1.getFehler());
         }
         notifyItemChanged(position);
     }
+
+    private void save(final RealmObject object) {
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(context).build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        final Realm realm = Realm.getDefaultInstance();
+        realm.executeTransaction(new Realm.Transaction() {
+            @Override
+            public void execute(Realm bgrealm) {
+                bgrealm.copyToRealmOrUpdate(object);
+                Log.d("Fragment_Kursauswahl", "Saved Object");
+            }
+        });
+    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -124,8 +144,8 @@ public class FehlerAdapter extends RecyclerView.Adapter<FehlerAdapter.ViewHolder
         if (fehler1.isStatus()){
 
         }else {
-            holder.textViewFehler.setText(fehler1.getFehler().beschreibung);
-            if (fehler1.getFehler().bearbeitet) {
+            holder.textViewFehler.setText(fehler1.getFehler().getBeschreibung());
+            if (fehler1.getFehler().getBearbeitet()) {
                 holder.imageViewErledigt.setVisibility(View.VISIBLE);
             } else {
                 holder.imageViewErledigt.setVisibility(View.INVISIBLE);

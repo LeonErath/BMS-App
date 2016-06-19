@@ -91,10 +91,10 @@ public class KursAdapter extends RecyclerView.Adapter<KursAdapter.ViewHolder> {
         final stunden stunden = stundenplan.get(position);
         // TODO aktualisieren
 
-        holder.textViewRaum.setText(stunden.getSchulstunde().raum.nummer);
-        holder.textViewWeek.setText(getWochentagString(stunden.getSchulstunde().wochentag)+ ", " + stunden.getSchulstunde().getBeginnzeit() + ". Std.");
-        Calendar calendar = calendars[stunden.getSchulstunde().beginnzeit];
-        Calendar calendar2 = calendars[stunden.getSchulstunde().beginnzeit+1];
+        holder.textViewRaum.setText(stunden.getSchulstunde().getRaum().getName());
+        holder.textViewWeek.setText(getWochentagString(stunden.getSchulstunde().getDay())+ ", " + stunden.getSchulstunde().getLesson() + ". Std.");
+        Calendar calendar = calendars[stunden.getSchulstunde().getLesson()];
+        Calendar calendar2 = calendars[stunden.getSchulstunde().getLesson()+1];
 
 
         holder.textViewTime.setText(getDateString(calendar)+" - "+getDateString(calendar2));

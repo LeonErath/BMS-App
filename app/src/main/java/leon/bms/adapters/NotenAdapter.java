@@ -77,8 +77,8 @@ public class NotenAdapter extends UltimateViewAdapter<NotenAdapter.ViewHolder> {
     public void onBindViewHolder(NotenAdapter.ViewHolder holder, int position) {
         //Set the data
         notenModel notenModel1 = notenModelList.get(position);
-        holder.textViewKurs.setText(notenModel1.getKurs().name);
-        holder.textViewLehrer.setText(notenModel1.getKurs().getLehrer().titel+" "+notenModel1.getKurs().getLehrer().name);
+        holder.textViewKurs.setText(notenModel1.getKurs().getName());
+        holder.textViewLehrer.setText(notenModel1.getKurs().getLehrer().getTitle()+" "+notenModel1.getKurs().getLehrer().getLast_name());
         int schriftlichSize = 0;
         if (notenModel1.getSchriftlicheNoten() != null){
                 schriftlichSize = notenModel1.getSchriftlicheNoten().size();

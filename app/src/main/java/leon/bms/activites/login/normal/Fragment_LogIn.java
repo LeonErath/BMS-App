@@ -15,17 +15,16 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import leon.bms.activites.login.first.IntroductionActivity;
-import leon.bms.controller.LogInController;
-import leon.bms.activites.main.MainActivity;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import leon.bms.R;
+import leon.bms.activites.login.first.IntroductionActivity;
+import leon.bms.activites.main.MainActivity;
+import leon.bms.controller.LogInController;
 import leon.bms.controller.StundenplanController;
-import leon.bms.database.dbAufgabe;
-import leon.bms.database.dbKurs;
-import leon.bms.database.dbLehrer;
-import leon.bms.database.dbMediaFile;
-import leon.bms.database.dbSchulstunde;
-import leon.bms.database.dbUser;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbUser;
+
 
 /**
  * Created by Leon E on 13.11.2015.
@@ -49,6 +48,7 @@ public class Fragment_LogIn extends Fragment {
     String Stufe;
     String result;
     private static final String TAG = Fragment_LogIn.class.getSimpleName();
+    RealmQueries realmQueries;
 
     @Nullable
     @Override
@@ -63,7 +63,7 @@ public class Fragment_LogIn extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        realmQueries = new RealmQueries(getActivity());
 
         user = (EditText) view.findViewById(R.id.editText);
         pass = (EditText) view.findViewById(R.id.editText2);
@@ -96,9 +96,9 @@ public class Fragment_LogIn extends Fragment {
                     // Es wird überprüft ob der LogIn korrekt war
                     if (result != "Error") {
                         Log.d(TAG, "Login erfolgreich");
-                        if (new dbUser().checkUser() == true) {
+                        if (realmQueries.getUser() != null) {
                             Log.d(TAG, "User vorhanden");
-                            dbUser vorhandenerUser = new dbUser().getUser();
+                            dbUser vorhandenerUser = realmQueries.getUser();
                             JSONObject jsonObject = null;
                             try {
                                 jsonObject = new JSONObject(result);
@@ -110,7 +110,7 @@ public class Fragment_LogIn extends Fragment {
                                 Log.d(TAG, "username: " + Benutzername + " " + vorhandenerUser.getBenutzername());
                                 if (Benutzername.equals(vorhandenerUser.getBenutzername())) {
                                     Log.d(TAG, "vorhandener User ist der gleiche wie der angemeldete User");
-                                    if (vorhandenerUser.validData == true) {
+                                    if (vorhandenerUser.getValidData() == true) {
                                         Log.d(TAG, "ValidData = true -> MainActivity");
                                         Intent intent = new Intent(getActivity(), MainActivity.class);
                                         startActivity(intent);
@@ -124,7 +124,7 @@ public class Fragment_LogIn extends Fragment {
                                 } else {
                                     Log.d(TAG, "vorhandener User ist NICHT der gleiche wie der angemeldete");
                                     deleteDB();
-                                    dbUser user2 = logInController.createUser(result,User);
+                                    dbUser user2 = logInController.createUser(result, User);
                                     if (user2 != null) {
                                         // das Passswort des Users wird gespeichert sodass er es nicht beim
                                         // nächsten Login eingeben muss
@@ -154,7 +154,7 @@ public class Fragment_LogIn extends Fragment {
                             }
                         } else {
                             Log.d(TAG, "Kein User vorhanden");
-                            dbUser user2 = logInController.createUser(result,User);
+                            dbUser user2 = logInController.createUser(result, User);
                             if (user2 != null) {
 
                                 // das Passswort des Users wird gespeichert sodass er es nicht beim
@@ -205,12 +205,12 @@ public class Fragment_LogIn extends Fragment {
      */
     public void checkUser() {
         Log.d(TAG, "User-Check beginnt");
-        if (new dbUser().checkUser() == true) {
+        if (realmQueries.getUser() != null) {
             Log.d(TAG, "User vorhanden");
-            dbUser vorhandenerUser = new dbUser().getUser();
-            if (vorhandenerUser.loggedIn == true) {
+            dbUser vorhandenerUser =realmQueries.getUser();
+            if (vorhandenerUser.getLoggedIn() == true) {
                 Log.d(TAG, "User ist schon angemeldet");
-                if (vorhandenerUser.validData != null && vorhandenerUser.validData == true) {
+                if (vorhandenerUser.getValidData() != null && vorhandenerUser.getValidData() == true) {
                     Log.d(TAG, "ValidData = true -> MainActivity");
                     Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
@@ -237,7 +237,7 @@ public class Fragment_LogIn extends Fragment {
                 Log.d(TAG, "User hat sich vorher abgemeldet");
                 pass.setText(new LogInController(getActivity()).getPass());
                 user.setText(vorhandenerUser.getBenutzername());
-                stufe.setText(vorhandenerUser.getStufe());
+                stufe.setText(vorhandenerUser.getGrade_string());
             }
         } else {
             Log.d(TAG, "Kein User vorhanden");
@@ -254,12 +254,19 @@ public class Fragment_LogIn extends Fragment {
      */
     public void deleteDB() {
         Log.d(TAG, "Datenbank wurde zurückgesetzt");
-        dbUser.deleteAll(dbUser.class);
-        dbAufgabe.deleteAll(dbAufgabe.class);
-        dbKurs.deleteAll(dbKurs.class);
-        dbSchulstunde.deleteAll(dbSchulstunde.class);
-        dbMediaFile.deleteAll(dbMediaFile.class);
-        dbLehrer.deleteAll(dbLehrer.class);
+        // Create a RealmConfiguration that saves the Realm file in the app's "files" directory.
+        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+        RealmConfiguration config = new RealmConfiguration
+                .Builder(getActivity())
+                .deleteRealmIfMigrationNeeded()
+                .build();
+        Realm.setDefaultConfiguration(realmConfig);
+        // Get a Realm instance for this thread
+        Realm realm = Realm.getDefaultInstance();
+
+        realm.beginTransaction();
+        realm.deleteAll();
+        realm.commitTransaction();
     }
 
 

@@ -4,6 +4,7 @@ package leon.bms.adapters;
  * Created by Leon E on 24.05.2016.
  */
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +18,10 @@ import java.util.Calendar;
 import java.util.List;
 
 import leon.bms.R;
-import leon.bms.database.dbKlausur;
-import leon.bms.database.dbNote;
+import leon.bms.realm.RealmQueries;
+import leon.bms.realm.dbKlausur;
+import leon.bms.realm.dbNote;
+
 
 public class KlausurenAdapter extends RecyclerView.Adapter<KlausurenAdapter.ViewHolder> {
     @SuppressWarnings("unused")
@@ -27,16 +30,18 @@ public class KlausurenAdapter extends RecyclerView.Adapter<KlausurenAdapter.View
 
     private List<dbKlausur> klausurList;
     private ViewHolder.ClickListener clickListener;
+    RealmQueries realmQueries;
 
     /**
      * @param clickListener wird gebraucht um auf Click events zu reagieren
      * @param klausurList   ist die Liste die angezeigt werden soll
      * @KursAdapter ClickListener und anzuzeigende Liste wird übergeben.
      */
-    public KlausurenAdapter(ViewHolder.ClickListener clickListener, List<dbKlausur> klausurList) {
+    public KlausurenAdapter(ViewHolder.ClickListener clickListener, List<dbKlausur> klausurList, Context context) {
         super();
         this.clickListener = clickListener;
         this.klausurList = klausurList;
+        realmQueries = new RealmQueries(context);
 
     }
 
@@ -61,14 +66,14 @@ public class KlausurenAdapter extends RecyclerView.Adapter<KlausurenAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final dbKlausur klausur = klausurList.get(position);
-        holder.textViewKlausurenname.setText(klausur.name);
+        holder.textViewKlausurenname.setText(klausur.getName());
         holder.textViewDatum.setText(getDateString(klausur));
-        if (klausur.getNoteWithId(klausur.getId())!=null){
-            dbNote note = klausur.getNoteWithId(klausur.getId());
-            holder.textViewNotePunkte.setText(note.punkte+" P.");
-            holder.textViewNote.setText(notenArray[note.punkte-1]);
+        if (realmQueries.getNoteFromKlausur(klausur)!=null){
+            dbNote note = realmQueries.getNoteFromKlausur(klausur);
+            holder.textViewNotePunkte.setText(note.getPunkte()+" P.");
+            holder.textViewNote.setText(notenArray[note.getPunkte()-1]);
             holder.textViewKeineNote.setVisibility(View.INVISIBLE);
-            if (note.punkte <= 4){
+            if (note.getPunkte() <= 4){
                 holder.imageViewAchtung.setVisibility(View.VISIBLE);
             }else {
                 holder.imageViewAchtung.setVisibility(View.INVISIBLE);
@@ -87,7 +92,7 @@ public class KlausurenAdapter extends RecyclerView.Adapter<KlausurenAdapter.View
         SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
-            calendar.setTime(myFormat.parse(klausur.datum));
+            calendar.setTime(myFormat.parse(klausur.getDatum()));
 
         } catch (ParseException e) {
             e.printStackTrace();
@@ -99,9 +104,9 @@ public class KlausurenAdapter extends RecyclerView.Adapter<KlausurenAdapter.View
         return sdfmt.format(calendar.getTime());
     }
 
-    public long getKlausurId(int position) {
+    public int getKlausurId(int position) {
         final dbKlausur klausur = klausurList.get(position);
-       return klausur.getId();
+       return klausur.getServerid();
     }
 
 
