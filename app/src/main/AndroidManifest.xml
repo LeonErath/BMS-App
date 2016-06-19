@@ -34,7 +34,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PublicClass" />
 
         <receiver android:name=".AlarmReciever" android:process=":remote">
             <intent-filter>
@@ -42,18 +41,6 @@
             </intent-filter>
         </receiver>
 
-        <meta-data
-            android:name="DATABASE"
-            android:value="HausaufgabenDatenbank2.db" />
-        <meta-data
-            android:name="VERSION"
-            android:value="38" />
-        <meta-data
-            android:name="QUERY_LOG"
-            android:value="false" />
-        <meta-data
-            android:name="DOMAIN_PACKAGE_NAME"
-            android:value="leon.bms" />
 
         <activity
             android:name=".activites.main.MainActivity"
@@ -95,7 +82,10 @@
         <activity
             android:name=".activites.klausur.KlausurActivity"
             android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".activites.note.NotenActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+
+        <activity android:name=".activites.note.NotenActivity"></activity>
+
+        <!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
