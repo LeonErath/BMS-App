@@ -1,6 +1,7 @@
 package leon.bms.realm;
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
+import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.Required;
 
 
@@ -20,7 +21,7 @@ import java.util.List;
  */
 public class dbUser extends RealmObject {
     // Datensätze der User
-    @Required
+    @PrimaryKey @Required
     private String session_hash;
     private String grade_string;
     private String benutzername;

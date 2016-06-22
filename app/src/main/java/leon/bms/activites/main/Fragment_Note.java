@@ -61,7 +61,8 @@ public class Fragment_Note extends Fragment implements FragmentLifecycle, NotenA
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-       kursList = realmQueries.getAktiveKurse();
+        realmQueries = new RealmQueries(getActivity());
+        kursList = realmQueries.getAktiveKurse();
 
 
         recyclerView = (UltimateRecyclerView) view.findViewById(R.id.recyclerview);

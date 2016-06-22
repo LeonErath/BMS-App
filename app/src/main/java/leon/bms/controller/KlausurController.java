@@ -39,19 +39,6 @@ public class KlausurController {
     Context mainContext;
     List<dbKurs> kursList;
     RealmQueries realmQueries;
-    Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            Boolean success = bundle.getBoolean("myKey");
-            if (success) {
-                listener.onSuccesss();
-            } else {
-                listener.onFailure();
-            }
-        }
-    };
 
     public KlausurController(Context mainContext) {
         this.mainContext = mainContext;
@@ -84,7 +71,7 @@ public class KlausurController {
                 RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
                 Realm.setDefaultConfiguration(realmConfig);
                 // Get a Realm instance for this thread
-                final Realm realm = Realm.getDefaultInstance();
+                Realm realm = Realm.getDefaultInstance();
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm bgrealm) {
@@ -106,19 +93,6 @@ public class KlausurController {
         atOnline2.execute();
     }
 
-    private void save(final RealmObject object) {
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
-        Realm.setDefaultConfiguration(realmConfig);
-        // Get a Realm instance for this thread
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgrealm) {
-                bgrealm.copyToRealmOrUpdate(object);
-                Log.d("Fragment_Kursauswahl", "Saved Object");
-            }
-        });
-    }
 
 
     private void parseData(final String result2) {
@@ -127,7 +101,7 @@ public class KlausurController {
             RealmConfiguration realmConfig = new RealmConfiguration.Builder(mainContext).build();
             Realm.setDefaultConfiguration(realmConfig);
             // Get a Realm instance for this thread
-            final Realm realm = Realm.getDefaultInstance();
+            Realm realm = Realm.getDefaultInstance();
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm bgRealm) {
@@ -191,6 +165,10 @@ public class KlausurController {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.d("Error",e.getLocalizedMessage());
+                            Log.d("Error",e.getMessage());
+                            Log.d("Error",e.getCause()+"");
+
                         }
                     }
                 }
@@ -198,11 +176,16 @@ public class KlausurController {
                 @Override
                 public void onSuccess() {
                     // Transaction was a success.
+                    listener.onSuccesss();
                 }
             }, new Realm.Transaction.OnError() {
                 @Override
                 public void onError(Throwable error) {
+                    Log.d("Error",error.getLocalizedMessage());
+                    Log.d("Error",error .getMessage());
+                    Log.d("Error",error.getCause()+"");
                     // Transaction failed and was automatically canceled.
+                    listener.onFailure();
                 }
             });
 

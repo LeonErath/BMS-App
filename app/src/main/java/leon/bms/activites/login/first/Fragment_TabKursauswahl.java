@@ -207,9 +207,16 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
             // all schriftliche Kurse werden gespeichert
 
             // TODO Website Tag Methode
-            for (dbKurs kurs : kursauswahlAdapter.getSchriftlichList()) {
-                kurs.setAktiv(true);
-                kurs.setSchriftlich(true);
+            for (final dbKurs kurs : kursauswahlAdapter.getSchriftlichList()) {
+                RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+                Realm.setDefaultConfiguration(realmConfig);
+                // Get a Realm instance for this thread
+                final Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm bgrealm) {
+                        kurs.setAktiv(true);
+                        kurs.setSchriftlich(true);
                /* if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
                     List<dbWebsiteTag> websiteTags = new dbKursTagConnect().getTags(kurs.getId());
                     for (int i = 0; i < websiteTags.size(); i++) {
@@ -219,51 +226,63 @@ public class Fragment_TabKursauswahl extends AbstractStep implements Kursauswahl
                         websiteTag.save();
                     }
                 }*/
-                save(kurs);
+                        bgrealm.copyToRealmOrUpdate(kurs);
+                        Log.d("Fragment_Kursauswahl","Saved Object");
+                    }
+                });
+
+
+
             }
 
             //alle Mündlichen Kurse werden gespeichert
             Log.d(TAG, kursauswahlAdapter.getMündlichList().size() + "  SIZE MÜNDLICH");
-            for (dbKurs kurs : kursauswahlAdapter.getMündlichList()) {
-                kurs.setAktiv(true);
-                kurs.setSchriftlich(false);
+            for (final dbKurs kurs : kursauswahlAdapter.getMündlichList()) {
+                RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+                Realm.setDefaultConfiguration(realmConfig);
+                // Get a Realm instance for this thread
+                final Realm realm = Realm.getDefaultInstance();
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm bgrealm) {
+                        kurs.setAktiv(true);
+                        kurs.setSchriftlich(false);
                /* if (new dbKursTagConnect().getTags(kurs.getId()) != null) {
                     List<dbWebsiteTag> websiteTags = new dbKursTagConnect().getTags(kurs.getId());
                     for (int i = 0; i < websiteTags.size(); i++) {
                         //website TAGs werden gespeichert
                         dbWebsiteTag websiteTag = websiteTags.get(i);
                         websiteTag.vorkommen++;
-                        Log.d(TAG, websiteTag.websitetag + " kommt: " + websiteTag.vorkommen + " vor");
                         websiteTag.save();
                     }
                 }*/
-
-                save(kurs);
+                        bgrealm.copyToRealmOrUpdate(kurs);
+                        Log.d("Fragment_Kursauswahl","Saved Object");
+                    }
+                });
             }
             alleKurse.clear();
 
-            dbUser user = realmQueries.getUser();
-            user.setValidData(true);
-            save(user);
+            final dbUser user = realmQueries.getUser();
+            RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
+            Realm.setDefaultConfiguration(realmConfig);
+            // Get a Realm instance for this thread
+            final Realm realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm bgrealm) {
+                    user.setValidData(true);
+
+                    bgrealm.copyToRealmOrUpdate(user);
+                    Log.d("Fragment_Kursauswahl","Saved Object");
+                }
+            });
 
             i++;
 
         }
     }
 
-    private void save(final RealmObject object){
-        RealmConfiguration realmConfig = new RealmConfiguration.Builder(getActivity()).build();
-        Realm.setDefaultConfiguration(realmConfig);
-        // Get a Realm instance for this thread
-        final Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm bgrealm) {
-                bgrealm.copyToRealmOrUpdate(object);
-                Log.d("Fragment_Kursauswahl","Saved Object");
-            }
-        });
-    }
 
     /**
      * @return

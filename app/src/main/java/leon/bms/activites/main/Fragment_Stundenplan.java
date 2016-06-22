@@ -64,18 +64,6 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
     ToggleSwitch toggleSwitch;
     TextView textViewDatum, textViewVertretungDatum, textViewStunden;
 
-    Handler handler = new Handler() {
-
-        @Override
-        public void handleMessage(Message msg) {
-            Bundle bundle = msg.getData();
-            Boolean success = bundle.getBoolean("myKey");
-            if (success) {
-                aktualisiereDatum();
-                setStundenplan(toggleSwitch.getCheckedTogglePosition());
-            }
-        }
-    };
 
     public Fragment_Stundenplan() {
         //empty Constructor needed!
@@ -131,7 +119,7 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
 
             @Override
             public void onFailure() {
-
+                doInBackground();
             }
         });
 
@@ -255,29 +243,20 @@ public class Fragment_Stundenplan extends Fragment implements StundenplanAdapter
      */
 
     private void doInBackground() {
-        Runnable runnable = new Runnable() {
-            public void run() {
+                montag = setUpStundenplan(1);
+                dienstag = setUpStundenplan(2);
+                mittwoch = setUpStundenplan(3);
+                donnerstag = setUpStundenplan(4);
+                freitag = setUpStundenplan(5);
 
-                montag = setUpStundenplan(0);
-                dienstag = setUpStundenplan(1);
-                mittwoch = setUpStundenplan(2);
-                donnerstag = setUpStundenplan(3);
-                freitag = setUpStundenplan(4);
 
-                Message msg = handler.obtainMessage();
-                boolean sucess = true;
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("myKey", sucess);
-                msg.setData(bundle);
-                handler.sendMessage(msg);
-
-            }
-        };
-        Thread mythread = new Thread(runnable);
-        mythread.start();
+        aktualisiereDatum();
+        setStundenplan(toggleSwitch.getCheckedTogglePosition()+1);
     }
 
     public List<stunden> setUpStundenplan(int day) {
+        Log.d("Size",realmQueries.getAktiveStundenWithDay(day)+"");
+
         return convertSchulstundenZuStundeListe(realmQueries.getAktiveStundenWithDay(day));
     }
 

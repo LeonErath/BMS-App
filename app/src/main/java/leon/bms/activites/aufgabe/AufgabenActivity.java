@@ -725,7 +725,7 @@ public class AufgabenActivity extends AppCompatActivity implements PhotoAdapter.
             Log.d(TAG, "Aufgabe wurde gespeichert!");
             save(aufgabe);
 
-            if (realmQueries.getMediaFilesFromAufgabe(aufgabe).size() != 0) {
+            if (realmQueries.getMediaFilesFromAufgabe(aufgabe)!= null) {
                 List<dbMediaFile> mediaFileList = realmQueries.getMediaFilesFromAufgabe(aufgabe);
                 for (final dbMediaFile mediaFile : mediaFileList) {
                     RealmConfiguration realmConfig = new RealmConfiguration.Builder(this).build();
