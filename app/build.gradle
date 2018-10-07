@@ -35,7 +35,7 @@ buildscript {
 
     }
     dependencies {
-        classpath "io.realm:realm-gradle-plugin:1.0.1"
+        classpath "io.realm:realm-gradle-plugin:5.7.0"
     }
 }
 
