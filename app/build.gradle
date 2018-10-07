@@ -68,6 +68,6 @@ dependencies {
     compile 'in.raveesh:customtype:1.0.0'
     compile 'net.opacapp:multiline-collapsingtoolbar:1.0.0'
     compile 'us.belka:androidtoggleswitch:1.1.1'
-    compile 'org.sufficientlysecure:html-textview:1.4'
+    compile 'org.sufficientlysecure:html-textview:3.6'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
