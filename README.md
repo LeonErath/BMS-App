@@ -1,3 +1,4 @@
+![maintained? no!](https://img.shields.io/badge/maintained%3F-no!-red.svg?style=flat)
 # BMS-App
 ## Der Ultimative Schulplaner
 *Eine App von Schülern für Schüler*
