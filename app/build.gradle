@@ -50,7 +50,7 @@ dependencies {
     compile 'jp.wasabeef:recyclerview-animators:2.3.0'
     compile 'com.hkm.ui:ultimaterecyclerview:0.5.6'
     compile 'de.hdodenhof:circleimageview:2.0.0'
-    compile 'com.github.chrisbanes:PhotoView:1.2.6'
+    compile 'com.github.chrisbanes:PhotoView:2.2.0'
     compile 'com.meetic.marypopup:marypopup:1.0.0'
     compile 'com.meetic.dragueur:dragueur:1.0.3'
     compile 'com.android.support:appcompat-v7:27.0.1'
